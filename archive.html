@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <!-- ===== Meta Tags & SEO ===== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آرشیو پروژه‌ها | مهندس ماهان ادهم قزوینی</title>
+    <meta name="description" content="آرشیو پروژه‌های مهندسی مکانیک شامل تحلیل‌های CFD، طراحی سازه، الکترومغناطیس، ساخت نمونه و پروژه‌های دانشگاهی">
+    <meta name="keywords" content="آرشیو پروژه, پروژه‌های مهندسی مکانیک, تحلیل CFD, طراحی سازه, الکترومغناطیس, ساخت نمونه, پروژه دانشگاهی, ماهان ادهم قزوینی">
+    <meta name="author" content="ماهان ادهم قزوینی">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+    <link rel="canonical" href="https://mahanadham.ir/archive.html">
+<link rel="stylesheet" href="mobile.css">
+    <!-- ===== Open Graph ===== -->
+    <meta property="og:title" content="آرشیو پروژه‌ها | مهندس ماهان ادهم قزوینی">
+    <meta property="og:description" content="آرشیو پروژه‌های مهندسی مکانیک شامل تحلیل‌های CFD، طراحی سازه، الکترومغناطیس و ساخت نمونه">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mahanadham.ir/archive.html">
+    <meta property="og:image" content="https://mahanadham.ir/mahanphoto.png">
+    <meta property="og:site_name" content="مهندس ماهان ادهم قزوینی">
+    <meta property="og:locale" content="fa_IR">
+
+    <!-- ===== Twitter ===== -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="آرشیو پروژه‌ها | مهندس ماهان ادهم قزوینی">
+    <meta name="twitter:description" content="آرشیو پروژه‌های مهندسی مکانیک">
+    <meta name="twitter:image" content="https://mahanadham.ir/mahanphoto.png">
+
+    <!-- ===== Geo ===== -->
+    <meta name="geo.region" content="IR-07">
+    <meta name="geo.placename" content="Tehran">
+    <meta name="geo.position" content="35.6892;51.3890">
+    <meta name="ICBM" content="35.6892, 51.3890">
+
+    <!-- ===== Icons ===== -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="msapplication-TileColor" content="#2c3e50">
+
+    <!-- ===== Fonts & Icons ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- ===== Common Styles (Header, Footer, Menu, Variables) ===== -->
+    <link rel="stylesheet" href="common.css">
+
+    <!-- ===== Archive Page Specific Styles ===== -->
+    <style>
+        /* ============================================================
+           archive.css - استایل‌های اختصاصی صفحه آرشیو
+           ============================================================ */
+
+        .archive-container {
+            max-width: 1280px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+        .archive-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .archive-header .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+            color: #fff;
+            padding: 0.3rem 1.5rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .archive-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 1rem 0;
+        }
+        .archive-header .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .archive-header .divider .line {
+            height: 2px;
+            width: 80px;
+            background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+            border-radius: 10px;
+        }
+        .archive-header .divider .icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-tertiary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+        .archive-header .desc {
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+        .filter-btn {
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .search-box {
+            max-width: 400px;
+            margin: 0 auto 2rem;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 30px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .archive-stats {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .archive-stats strong {
+            color: var(--text-primary);
+        }
+
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 10px;
+        }
+
+        .archive-item {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .archive-item:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+        .archive-item .cover {
+            height: 180px;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--text-secondary);
+            overflow: hidden;
+        }
+        .archive-item .cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .archive-item:hover .cover img {
+            transform: scale(1.05);
+        }
+        .archive-item .cover .no-image {
+            font-size: 3rem;
+            color: var(--text-secondary);
+            opacity: 0.3;
+        }
+
+        .archive-item .body {
+            padding: 18px 20px 20px;
+        }
+        .archive-item .body .type-badge {
+            display: inline-block;
+            padding: 2px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .badge-cfd {
+            background: #3b82f6;
+            color: #fff;
+        }
+        .badge-structure {
+            background: #8b5cf6;
+            color: #fff;
+        }
+        .badge-design {
+            background: #f59e0b;
+            color: #0a0f1a;
+        }
+        .badge-electro {
+            background: #ec4899;
+            color: #fff;
+        }
+        .badge-university {
+            background: #10b981;
+            color: #fff;
+        }
+        .badge-fabrication {
+            background: #f97316;
+            color: #fff;
+        }
+        .badge-other {
+            background: #6b7280;
+            color: #fff;
+        }
+
+        .archive-item .body h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+        .archive-item .body h3 a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .archive-item .body h3 a:hover {
+            color: var(--primary-color);
+        }
+
+        .archive-item .body .excerpt {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .archive-item .body .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+        }
+        .archive-item .body .meta i {
+            margin-left: 4px;
+        }
+        .archive-item .body .meta .has-images i {
+            color: var(--secondary-color);
+        }
+        .archive-item .body .meta .has-files i {
+            color: var(--primary-color);
+        }
+        .archive-item .body .meta .status-badge {
+            display: inline-block;
+            padding: 1px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+        .status-completed {
+            background: var(--secondary-color);
+            color: #fff;
+        }
+        .status-in-progress {
+            background: #f59e0b;
+            color: #0a0f1a;
+        }
+        .status-pending {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .no-result {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        .no-result i {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .loader-spinner {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+        .loader-spinner i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .archive-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <!-- ===== JSON-LD برای صفحه آرشیو ===== -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "آرشیو پروژه‌های مهندسی",
+        "description": "آرشیو پروژه‌های مهندسی مکانیک شامل تحلیل‌های CFD، طراحی سازه، الکترومغناطیس، ساخت نمونه و پروژه‌های دانشگاهی",
+        "url": "https://mahanadham.ir/archive.html",
+        "mainEntity": {
+            "@type": "ItemList",
+            "itemListElement": []
+        }
+    }
+    </script>
+</head>
+<body>
+
+    <!-- ===== هدر و منوی کشویی توسط menu.js بارگذاری می‌شوند ===== -->
+    <!-- هیچ کد هدر و منوی دستی در اینجا وجود ندارد -->
+
+    <!-- ===== محتوای اصلی ===== -->
+    <main style="padding-top:70px;">
+        <section style="padding:4rem 0;background:var(--bg-primary);">
+            <div class="container archive-container">
+
+                <!-- ===== هدر آرشیو ===== -->
+                <div class="archive-header">
+                    <span class="badge"><i class="fas fa-archive"></i> آرشیو پروژه‌ها</span>
+                    <h1>آرشیو پروژه‌های مهندسی</h1>
+                    <div class="divider">
+                        <div class="line"></div>
+                        <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
+                        <div class="line"></div>
+                    </div>
+                    <p class="desc">مجموعه‌ای از پروژه‌های انجام‌شده در حوزه‌های CFD، سازه، طراحی، الکترومغناطیس و ساخت</p>
+                </div>
+
+                <!-- ===== فیلترها و جستجو ===== -->
+                <div class="filter-buttons" id="filterButtons">
+                    <button class="filter-btn active" data-filter="all">همه</button>
+                    <button class="filter-btn" data-filter="cfd">تحلیل CFD</button>
+                    <button class="filter-btn" data-filter="structure">تحلیل سازه</button>
+                    <button class="filter-btn" data-filter="design">طراحی مکانیکی</button>
+                    <button class="filter-btn" data-filter="electro">الکترومغناطیس</button>
+                    <button class="filter-btn" data-filter="university">پروژه دانشگاهی</button>
+                    <button class="filter-btn" data-filter="fabrication">ساخت و نمونه‌سازی</button>
+                    <button class="filter-btn" data-filter="other">سایر</button>
+                </div>
+
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="جستجو در آرشیو..." />
+                </div>
+
+                <!-- ===== آمار ===== -->
+                <div class="archive-stats">
+                    <span><strong id="archiveCount">0</strong> پروژه یافت شد</span>
+                </div>
+
+                <!-- ===== گرید آرشیو ===== -->
+                <div id="archiveContainer" class="archive-grid">
+                    <div class="loader-spinner"><i class="fas fa-spinner"></i></div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== جایگاه فوتر (بارگذاری توسط اسکریپت) ===== -->
+    <div id="footerContainer"></div>
+
+    <!-- ============================================================
+         اسکریپت‌ها (ترتیب مهم است)
+         ============================================================ -->
+
+    <!-- بارگذاری هدر و منوی کشویی از member-menu.html -->
+    <script src="menu.js"></script>
+
+    <!-- اسکریپت اختصاصی آرشیو -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ===== بارگذاری آرشیو =====
+            let allItems = [];
+            let currentFilter = 'all';
+            let searchQuery = '';
+
+            const container = document.getElementById('archiveContainer');
+            const countEl = document.getElementById('archiveCount');
+
+            const typeLabels = {
+                cfd: 'تحلیل CFD',
+                structure: 'تحلیل سازه',
+                design: 'طراحی مکانیکی',
+                electro: 'الکترومغناطیس',
+                university: 'پروژه دانشگاهی',
+                fabrication: 'ساخت و نمونه‌سازی',
+                other: 'سایر'
+            };
+            const typeBadgeClass = {
+                cfd: 'badge-cfd',
+                structure: 'badge-structure',
+                design: 'badge-design',
+                electro: 'badge-electro',
+                university: 'badge-university',
+                fabrication: 'badge-fabrication',
+                other: 'badge-other'
+            };
+            const statusLabels = {
+                'تکمیل شده': 'completed',
+                'در حال انجام': 'in-progress',
+                'در انتظار': 'pending'
+            };
+            const statusClass = {
+                'تکمیل شده': 'status-completed',
+                'در حال انجام': 'status-in-progress',
+                'در انتظار': 'status-pending'
+            };
+
+            async function loadArchive() {
+                try {
+                    const res = await fetch('_data/archive.json?t=' + Date.now());
+                    if (!res.ok) throw new Error('فایل آرشیو پیدا نشد');
+                    const data = await res.json();
+                    allItems = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    allItems.sort((a, b) => (a.date || '').localeCompare(b.date || '') * -1);
+                    renderArchive();
+                } catch (e) {
+                    console.error('خطا در بارگذاری آرشیو:', e);
+                    // داده نمونه برای تست با شناسه‌های ۴ رقمی
+                    allItems = [
+                        { id: '0001', title: 'شبیه‌سازی جریان در مبدل حرارتی پوسته و لوله', excerpt: 'بررسی عددی عملکرد حرارتی مبدل با رویکرد CFD', date: '۱۴۰۳/۰۲/۱۵', type: 'cfd', status: 'تکمیل شده', tags: ['CFD', 'انتقال حرارت'], images: [], files: [] },
+                        { id: '0002', title: 'تحلیل تنش در شاسی خودرو', excerpt: 'بررسی تنش‌های وارده بر شاسی با المان محدود', date: '۱۴۰۳/۰۱/۲۰', type: 'structure', status: 'تکمیل شده', tags: ['سازه', 'انسیس'], images: [], files: [] },
+                        { id: '0003', title: 'طراحی مجموعه گیربکس پلاستیکی', excerpt: 'مدل‌سازی و بهینه‌سازی گیربکس برای پرینتر سه‌بعدی', date: '۱۴۰۲/۱۲/۱۰', type: 'design', status: 'تکمیل شده', tags: ['طراحی', 'سالیدورک'], images: [], files: [] },
+                        { id: '0004', title: 'تحلیل میدان مغناطیسی در موتور BLDC', excerpt: 'شبیه‌سازی میدان مغناطیسی در موتورهای بدون جاروبک', date: '۱۴۰۳/۰۱/۰۵', type: 'electro', status: 'در حال انجام', tags: ['الکترومغناطیس', 'موتور'], images: [], files: [] },
+                        { id: '0005', title: 'پروژه طراحی سیستم تعلیق', excerpt: 'طراحی و تحلیل سیستم تعلیق برای خودروی فرمول یک', date: '۱۴۰۲/۱۱/۲۵', type: 'university', status: 'تکمیل شده', tags: ['تعلیق', 'خودرو'], images: [], files: [] },
+                        { id: '0006', title: 'ساخت نمونه پرینتر سه‌بعدی دلتا', excerpt: 'مراحل ساخت و کالیبراسیون پرینتر دلتا', date: '۱۴۰۲/۱۰/۱۵', type: 'fabrication', status: 'تکمیل شده', tags: ['ساخت', 'پرینتر سه‌بعدی'], images: [], files: [] }
+                    ];
+                    renderArchive();
+                }
+            }
+
+            function renderArchive() {
+                const filtered = allItems.filter(item => {
+                    const matchFilter = currentFilter === 'all' || item.type === currentFilter;
+                    const matchSearch = (item.title || '').includes(searchQuery) ||
+                        (item.excerpt || '').includes(searchQuery) ||
+                        (item.tags || []).join(' ').includes(searchQuery) ||
+                        (item.status || '').includes(searchQuery);
+                    return matchFilter && matchSearch;
+                });
+
+                countEl.textContent = filtered.length;
+
+                if (filtered.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-result">
+                            <i class="fas fa-search"></i>
+                            <p>هیچ پروژه‌ای با این فیلترها یافت نشد.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = filtered.map(item => {
+                    const typeLabel = typeLabels[item.type] || 'سایر';
+                    const badgeClass = typeBadgeClass[item.type] || 'badge-other';
+                    const statusLabel = item.status || 'تکمیل شده';
+                    const statusCls = statusClass[statusLabel] || 'status-completed';
+
+                    const imageHtml = item.cover ?
+                        `<img src="${item.cover}" alt="${item.title}">` :
+                        `<div class="no-image"><i class="fas fa-archive"></i></div>`;
+
+                    const imagesCount = (item.images || []).length;
+                    const filesCount = (item.files || []).length;
+
+                    return `
+                        <div class="archive-item" onclick="location.href='archive-item.html?id=${item.id}'">
+                            <div class="cover">
+                                ${imageHtml}
+                            </div>
+                            <div class="body">
+                                <span class="type-badge ${badgeClass}">${typeLabel}</span>
+                                <span class="status-badge ${statusCls}">${statusLabel}</span>
+                                <h3><a href="archive-item.html?id=${item.id}">${item.title || 'بدون عنوان'}</a></h3>
+                                <div class="excerpt">${item.excerpt || ''}</div>
+                                <div class="meta">
+                                    <span><i class="fas fa-calendar"></i> ${item.date || '---'}</span>
+                                    ${imagesCount > 0 ? `<span class="has-images"><i class="fas fa-images"></i> ${imagesCount}</span>` : ''}
+                                    ${filesCount > 0 ? `<span class="has-files"><i class="fas fa-paperclip"></i> ${filesCount}</span>` : ''}
+                                    ${item.tags && item.tags.length ? `<span><i class="fas fa-tags"></i> ${item.tags.join('، ')}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // ===== دکمه‌های فیلتر =====
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderArchive();
+                });
+            });
+
+            // ===== جستجو =====
+            document.getElementById('searchInput').addEventListener('input', function() {
+                searchQuery = this.value.trim();
+                renderArchive();
+            });
+
+            loadArchive();
+        });
+    </script>
+
+    <!-- ===== اسکریپت بارگذاری فوتر ===== -->
+    <script>
+        (function loadFooter() {
+            fetch('footer.html')
+                .then(res => {
+                    if (!res.ok) throw new Error('خطا در بارگذاری فوتر');
+                    return res.text();
+                })
+                .then(html => {
+                    document.getElementById('footerContainer').innerHTML = html;
+                    // به‌روزرسانی سال در فوتر
+                    const yearEl = document.querySelector('#footerContainer .copyright p:first-child');
+                    if (yearEl) {
+                        const persianYear = new Date().getFullYear() - 621;
+                        yearEl.innerHTML = yearEl.innerHTML.replace('۱۴۰۳', persianYear);
+                    }
+                })
+                .catch(err => console.error('خطا در بارگذاری فوتر:', err));
+        })();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+name: 🔧 Fix JSON Files
+
+on:
+  push:
+    paths:
+      - '_data/*.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-json:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: 🔧 Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq dos2unix
+
+      - name: 🔍 Fix and validate JSON files
+        id: fix
+        run: |
+          set -e
+          echo "🔄 Starting JSON fix process..."
+          FIXED_FILES=""
+          ERROR_FILES=""
+          TOTAL_FILES=0
+
+          for file in _data/*.json; do
+            if [[ ! -f "$file" ]]; then
+              continue
+            fi
+
+            TOTAL_FILES=$((TOTAL_FILES + 1))
+            echo "📄 Processing: $file"
+
+            # اگر فایل خالی است، یک JSON خالی معتبر بساز
+            if [[ ! -s "$file" ]]; then
+              echo "  ⚠️ File is empty - creating valid empty JSON"
+              echo "{}" > "$file"
+            fi
+
+            cp "$file" "$file.bak"
+
+            # حذف BOM (با sed)
+            sed -i '1s/^\xEF\xBB\xBF//' "$file"
+
+            # تبدیل خطوط به Unix (LF)
+            dos2unix "$file" 2>/dev/null || true
+
+            # اعتبارسنجی با jq (فرمت‌سازی)
+            if jq '.' "$file" > "$file.formatted" 2>/dev/null; then
+              mv "$file.formatted" "$file"
+              echo "  ✅ JSON is valid and formatted"
+            else
+              echo "  ❌ Invalid JSON - attempting recovery with Python"
+              # اجرای اسکریپت پایتون (که کاراکترهای فارسی را حفظ می‌کند)
+              python3 fix_json.py "$file"
+              if [ $? -eq 0 ]; then
+                echo "  ✅ JSON recovered"
+              else
+                mv "$file.bak" "$file"
+                ERROR_FILES="$ERROR_FILES $file"
+                echo "  ❌ Recovery failed - keeping backup"
+                continue
+              fi
+            fi
+
+            # بررسی تغییرات
+            if ! cmp -s "$file" "$file.bak"; then
+              FIXED_FILES="$FIXED_FILES $file"
+              echo "  📝 File was modified"
+            else
+              echo "  ✅ File is already clean"
+            fi
+
+            rm -f "$file.bak" "$file.tmp" "$file.formatted" 2>/dev/null || true
+          done
+
+          echo "✅ Total files processed: $TOTAL_FILES"
+          echo "📝 Modified files: $FIXED_FILES"
+          echo "❌ Error files: $ERROR_FILES"
+
+          echo "fixed_files=$FIXED_FILES" >> $GITHUB_OUTPUT
+          echo "error_files=$ERROR_FILES" >> $GITHUB_OUTPUT
+          echo "total_files=$TOTAL_FILES" >> $GITHUB_OUTPUT
+
+      - name: 💾 Commit and push fixes
+        if: steps.fix.outputs.fixed_files != ''
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          for file in ${{ steps.fix.outputs.fixed_files }}; do
+            echo "➕ Adding $file"
+            git add "$file"
+          done
+
+          git commit -m "🔧 Fix JSON files (BOM removal, formatting, invalid JSON recovery)" || echo "⚠️ No changes to commit"
+          git push || echo "⚠️ Push failed, but continuing"
+
+      - name: ⚠️ Report errors (if any)
+        if: steps.fix.outputs.error_files != ''
+        run: |
+          echo "❌ The following files could not be fixed automatically:"
+          for file in ${{ steps.fix.outputs.error_files }}; do
+            echo "  - $file"
+          done
+          echo "Please check them manually."

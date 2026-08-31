@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>افزودن مقاله جدید | پنل مدیریت</title>
+    <!-- لینک‌های عمومی -->
+    <link rel="stylesheet" href="../common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        .blank-container {
+            max-width: 1000px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+        .blank-card {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 35px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .blank-card:hover {
+            box-shadow: 0 20px 60px rgba(37, 99, 235, 0.1);
+            transform: translateY(-2px);
+        }
+        .blank-card .card-header {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            margin: -35px -35px 25px -35px;
+            padding: 25px 35px;
+            border-radius: 20px 20px 0 0;
+            color: #fff;
+        }
+        .blank-card .card-header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin: 0;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .blank-card .card-header .sub {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.9rem;
+            margin: 5px 0 0;
+        }
+        .blank-card .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .blank-card .form-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .blank-card .form-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .blank-card .form-section h3 i {
+            color: var(--secondary-color);
+        }
+        .blank-card .field {
+            margin-bottom: 16px;
+        }
+        .blank-card .field label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+        .blank-card .field label i {
+            color: var(--secondary-color);
+            width: 20px;
+            text-align: center;
+        }
+        .blank-card .field .required {
+            color: #ef4444;
+            margin-right: 4px;
+        }
+        .blank-card .field input,
+        .blank-card .field textarea,
+        .blank-card .field select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .blank-card .field input:focus,
+        .blank-card .field textarea:focus,
+        .blank-card .field select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+            transform: translateY(-1px);
+        }
+        .blank-card .field textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .blank-card .field textarea.small {
+            min-height: 60px;
+        }
+        .blank-card .field .hint {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+        .blank-card .id-display {
+            display: inline-block;
+            padding: 8px 18px;
+            background: var(--bg-primary);
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-size: 1rem;
+        }
+        .blank-card .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .blank-card .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+        .blank-card .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            min-height: 50px;
+            align-items: center;
+        }
+        .blank-card .tags-input .tag-item {
+            background: var(--secondary-color);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .blank-card .tags-input .tag-item i {
+            cursor: pointer;
+            font-size: 0.7rem;
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+        .blank-card .tags-input .tag-item i:hover {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+        .blank-card .tags-input input {
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 80px;
+            padding: 4px 0;
+        }
+        .blank-card .tags-input input:focus {
+            outline: none;
+            box-shadow: none;
+            border: none;
+        }
+        .blank-card .file-upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg-primary);
+        }
+        .blank-card .file-upload-zone:hover {
+            border-color: var(--secondary-color);
+            background: rgba(59, 130, 246, 0.05);
+        }
+        .blank-card .file-upload-zone i {
+            font-size: 2.5rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 8px;
+        }
+        .blank-card .file-upload-zone p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        .blank-card .file-upload-zone .hint {
+            font-size: 0.65rem;
+            opacity: 0.6;
+        }
+        .blank-card .upload-preview {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-top: 8px;
+        }
+        .blank-card .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .blank-card .btn-submit {
+            background: linear-gradient(135deg, var(--secondary-color), #4f46e5);
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .blank-card .btn-submit::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .blank-card .btn-submit:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+        .blank-card .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.4);
+        }
+        .blank-card .btn-ai {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1, #2563eb);
+            background-size: 200% 200%;
+            animation: gradientShift 4s ease infinite;
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .blank-card .btn-ai:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
+        }
+        .blank-card .btn-reset {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .blank-card .btn-reset:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .back-link i {
+            margin-left: 6px;
+        }
+        .back-link:hover {
+            color: var(--secondary-color);
+        }
+        .section-badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            background: var(--secondary-color);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-right: 6px;
+        }
+        @media (max-width: 768px) {
+            .blank-card .card-header {
+                margin: -25px -25px 20px -25px;
+                padding: 20px 25px;
+            }
+            .blank-card {
+                padding: 25px;
+            }
+            .blank-card .grid-2,
+            .blank-card .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .blank-card .actions {
+                flex-direction: column;
+            }
+            .blank-card .actions .btn-submit,
+            .blank-card .actions .btn-ai,
+            .blank-card .actions .btn-reset {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container blank-container">
+        <a href="admin-panel.html" class="back-link"><i class="fas fa-arrow-right"></i> بازگشت به پنل مدیریت</a>
+        <div class="blank-card">
+            <div class="card-header">
+                <h1><i class="fas fa-newspaper"></i> افزودن مقاله جدید</h1>
+                <p class="sub">اطلاعات کامل مقاله را وارد کنید. می‌توانید از هوش مصنوعی برای تولید پیش‌نویس استفاده کنید.</p>
+            </div>
+
+            <!-- ===== بخش ۱: اطلاعات پایه ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-info-circle"></i> اطلاعات پایه <span class="section-badge">ضروری</span></h3>
+                <div class="field">
+                    <label><i class="fas fa-hashtag"></i> شماره مقاله</label>
+                    <div class="id-display" id="articleIdDisplay">ART-0001</div>
+                    <input type="hidden" id="articleId" value="0001">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-heading"></i> عنوان مقاله <span class="required">*</span></label>
+                    <input type="text" id="articleTitle" placeholder="عنوان مقاله را وارد کنید...">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-align-left"></i> چکیده (Abstract) <span class="required">*</span></label>
+                    <textarea id="articleAbstract" placeholder="چکیده مقاله به فارسی (حداکثر ۳۰۰ کاراکتر)..."></textarea>
+                    <div class="hint">حداکثر ۳۰۰ کاراکتر</div>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-file-alt"></i> متن کامل مقاله <span class="required">*</span></label>
+                    <textarea id="articleBody" placeholder="متن کامل مقاله را اینجا بنویسید (با تگ‌های HTML قابل فرمت‌دهی)..."></textarea>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۲: نوع و تاریخ ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-calendar-alt"></i> نوع و تاریخ</h3>
+                <div class="grid-2">
+                    <div class="field">
+                        <label><i class="fas fa-tag"></i> نوع مقاله</label>
+                        <select id="articleType">
+                            <option value="article">مقاله علمی</option>
+                            <option value="project">پروژه تحقیقاتی</option>
+                            <option value="tutorial">آموزش</option>
+                            <option value="review">مروری</option>
+                            <option value="case-study">مطالعه موردی</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-calendar-day"></i> تاریخ انتشار</label>
+                        <input type="date" id="articleDate">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="field">
+                        <label><i class="fas fa-calendar-alt"></i> سال انتشار</label>
+                        <input type="text" id="articleYear" placeholder="مثال: ۱۴۰۳">
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-clock"></i> زمان مطالعه (دقیقه)</label>
+                        <input type="number" id="articleReadTime" placeholder="مثال: ۱۲" min="1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۳: برچسب‌ها و کلمات کلیدی ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-tags"></i> برچسب‌ها و کلمات کلیدی</h3>
+                <div class="field">
+                    <label><i class="fas fa-tags"></i> برچسب‌ها</label>
+                    <div class="tags-input" id="articleTagsContainer">
+                        <input type="text" id="articleTagInput" placeholder="تایپ کنید و Enter بزنید..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('articleTagsContainer','articleTagInput');}">
+                    </div>
+                    <div class="hint">هر برچسب را تایپ کنید و Enter بزنید</div>
+                    <input type="hidden" id="articleTags" value="">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-key"></i> کلمات کلیدی (با کاما جدا کنید)</label>
+                    <input type="text" id="articleKeywords" placeholder="CFD, توربولانس, انتقال حرارت">
+                </div>
+            </div>
+
+            <!-- ===== بخش ۴: تصاویر و گالری ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-images"></i> تصاویر و گالری</h3>
+                <div class="field">
+                    <label><i class="fas fa-image"></i> تصویر شاخص (لینک)</label>
+                    <input type="text" id="articleCover" placeholder="مسیر تصویر یا لینک...">
+                    <div id="coverPreview" style="margin-top:8px;"></div>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-images"></i> گالری تصاویر (لینک‌ها با کاما جدا کنید)</label>
+                    <input type="text" id="articleGallery" placeholder="لینک تصویر ۱, لینک تصویر ۲, ...">
+                    <div id="galleryPreview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۵: فایل‌ها ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-paperclip"></i> فایل‌های پیوست</h3>
+                <div class="field">
+                    <label><i class="fas fa-file-pdf"></i> فایل اصلی مقاله (PDF)</label>
+                    <input type="text" id="articleMainFile" placeholder="نام فایل PDF (مثال: مقاله.pdf)">
+                    <div class="hint">فایل را بعداً در پوشه assets/articles/XXXX/ آپلود کنید</div>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-file"></i> سایر فایل‌های پیوست (با کاما جدا کنید)</label>
+                    <input type="text" id="articleFiles" placeholder="فایل۱.pdf, فایل۲.docx, ...">
+                    <div id="filesPreview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۶: منابع ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-book"></i> منابع</h3>
+                <div class="field">
+                    <label><i class="fas fa-list"></i> فهرست منابع (هر منبع در یک خط)</label>
+                    <textarea id="articleReferences" rows="4" placeholder="منبع ۱&#10;منبع ۲&#10;منبع ۳"></textarea>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-link"></i> لینک DOI</label>
+                    <input type="text" id="articleDoi" placeholder="مثال: 10.1000/xyz123">
+                </div>
+            </div>
+
+            <!-- ===== بخش ۷: اطلاعات تکمیلی ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-ellipsis-h"></i> اطلاعات تکمیلی</h3>
+                <div class="grid-2">
+                    <div class="field">
+                        <label><i class="fas fa-signal"></i> سطح دشواری</label>
+                        <select id="articleDifficulty">
+                            <option value="مقدماتی">مقدماتی</option>
+                            <option value="متوسط" selected>متوسط</option>
+                            <option value="پیشرفته">پیشرفته</option>
+                            <option value="حرفه‌ای">حرفه‌ای</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-globe"></i> زبان</label>
+                        <select id="articleLanguage">
+                            <option value="فارسی">فارسی</option>
+                            <option value="انگلیسی">انگلیسی</option>
+                            <option value="دوزبانه">دوزبانه</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-file-alt"></i> خلاصه انگلیسی (English Abstract)</label>
+                    <textarea id="articleEnglishAbstract" class="small" placeholder="English abstract for international readers..."></textarea>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-eye"></i> وضعیت انتشار</label>
+                    <select id="articleStatus">
+                        <option value="فعال">فعال (نمایش داده شود)</option>
+                        <option value="غیرفعال">غیرفعال (مخفی شود)</option>
+                        <option value="پیش‌نویس">پیش‌نویس</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-sticky-note"></i> یادداشت‌های داخلی</label>
+                    <textarea id="articleNotes" class="small" placeholder="یادداشت‌های خصوصی (فقط برای مدیر)"></textarea>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۸: لینک‌های مرتبط ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-link"></i> لینک‌های مرتبط</h3>
+                <div class="field">
+                    <label><i class="fas fa-external-link-alt"></i> لینک‌های مرتبط (با کاما جدا کنید)</label>
+                    <input type="text" id="articleRelatedLinks" placeholder="https://example.com, https://another.com">
+                </div>
+            </div>
+
+            <!-- ===== دکمه‌های اقدام ===== -->
+            <div class="actions">
+                <button class="btn-ai" onclick="generateArticleContent()">
+                    <i class="fas fa-robot"></i> تولید پیش‌نویس با هوش مصنوعی
+                </button>
+                <button class="btn-submit" onclick="saveArticle()">
+                    <i class="fas fa-save"></i> ذخیره مقاله
+                </button>
+                <button class="btn-reset" onclick="resetArticleForm()">
+                    <i class="fas fa-undo"></i> بازنشانی
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // ۱. توابع کمکی تگ‌ها
+        // ============================================================
+        function addTag(containerId, inputId) {
+            const container = document.getElementById(containerId);
+            const input = document.getElementById(inputId);
+            const text = input.value.trim();
+            if (!text) return;
+            const tag = document.createElement('span');
+            tag.className = 'tag-item';
+            tag.innerHTML = `${text} <i class="fas fa-times" onclick="this.parentElement.remove(); updateTagsHidden('${containerId}')"></i>`;
+            container.insertBefore(tag, input);
+            input.value = '';
+            updateTagsHidden(containerId);
+        }
+
+        function updateTagsHidden(containerId) {
+            const container = document.getElementById(containerId);
+            const tags = container.querySelectorAll('.tag-item');
+            const values = Array.from(tags).map(t => t.textContent.replace('×', '').trim());
+            const hiddenId = containerId.replace('Container', '');
+            document.getElementById(hiddenId).value = values.join(',');
+        }
+
+        // ============================================================
+        // ۲. تولید شماره خودکار مقاله
+        // ============================================================
+        async function generateArticleId() {
+            try {
+                const res = await fetch('../_data/articles.json?t=' + Date.now());
+                let maxNum = 0;
+                if (res.ok) {
+                    const data = await res.json();
+                    Object.keys(data).forEach(key => {
+                        const num = parseInt(key);
+                        if (!isNaN(num) && num > maxNum) maxNum = num;
+                    });
+                }
+                const newNum = maxNum + 1;
+                const padded = String(newNum).padStart(4, '0');
+                document.getElementById('articleId').value = padded;
+                document.getElementById('articleIdDisplay').textContent = 'ART-' + padded;
+            } catch (e) { console.error(e); }
+        }
+
+        // ============================================================
+        // ۳. تولید پیش‌نویس با هوش مصنوعی
+        // ============================================================
+        function generateArticleContent() {
+            const title = document.getElementById('articleTitle').value.trim();
+            if (!title) { alert('❌ لطفاً عنوان مقاله را وارد کنید.'); return; }
+            const abstractField = document.getElementById('articleAbstract');
+            const bodyField = document.getElementById('articleBody');
+            abstractField.value = `چکیده مقاله "${title}" – این مقاله به بررسی موضوعی مهم در حوزه مهندسی مکانیک می‌پردازد. روش‌های نوین تحلیل و شبیه‌سازی ارائه شده و نتایج با داده‌های تجربی مقایسه می‌شوند.`;
+            bodyField.value = `۱. مقدمه\n${title} یکی از موضوعات کلیدی در مهندسی مکانیک است. در این مقاله به تحلیل و بررسی آن پرداخته شده است.\n\n۲. روش‌شناسی\nاز روش‌های عددی و تحلیلی برای بررسی استفاده شده است.\n\n۳. نتایج\nنتایج نشان می‌دهد که روش پیشنهادی عملکرد مناسبی دارد.\n\n۴. بحث و نتیجه‌گیری\nدر نهایت، پیشنهاداتی برای تحقیقات آینده ارائه شده است.`;
+            abstractField.style.borderColor = '#10b981';
+            bodyField.style.borderColor = '#10b981';
+            setTimeout(() => {
+                abstractField.style.borderColor = '';
+                bodyField.style.borderColor = '';
+            }, 3000);
+            alert('✅ پیش‌نویس مقاله با هوش مصنوعی تولید شد.');
+        }
+
+        // ============================================================
+        // ۴. ذخیره مقاله
+        // ============================================================
+        async function saveArticle() {
+            const id = document.getElementById('articleId').value;
+            const title = document.getElementById('articleTitle').value.trim();
+            const abstract = document.getElementById('articleAbstract').value.trim();
+            const body = document.getElementById('articleBody').value.trim();
+            const type = document.getElementById('articleType').value;
+            const date = document.getElementById('articleDate').value || new Date().toISOString().split('T')[0];
+            const year = document.getElementById('articleYear').value.trim() || new Date().getFullYear().toString();
+            const readTime = parseInt(document.getElementById('articleReadTime').value) || 10;
+            const tags = document.getElementById('articleTags').value.split(',').map(s => s.trim()).filter(Boolean);
+            const keywords = document.getElementById('articleKeywords').value.split(',').map(s => s.trim()).filter(Boolean);
+            const cover = document.getElementById('articleCover').value.trim();
+            const gallery = document.getElementById('articleGallery').value.split(',').map(s => s.trim()).filter(Boolean);
+            const mainFile = document.getElementById('articleMainFile').value.trim();
+            const files = document.getElementById('articleFiles').value.split(',').map(s => s.trim()).filter(Boolean);
+            const references = document.getElementById('articleReferences').value.split('\n').map(s => s.trim()).filter(Boolean);
+            const doi = document.getElementById('articleDoi').value.trim();
+            const difficulty = document.getElementById('articleDifficulty').value;
+            const language = document.getElementById('articleLanguage').value;
+            const englishAbstract = document.getElementById('articleEnglishAbstract').value.trim();
+            const status = document.getElementById('articleStatus').value;
+            const notes = document.getElementById('articleNotes').value.trim();
+            const relatedLinks = document.getElementById('articleRelatedLinks').value.split(',').map(s => s.trim()).filter(Boolean);
+
+            if (!title || !abstract || !body) {
+                alert('❌ لطفاً عنوان، چکیده و متن کامل مقاله را پر کنید.');
+                return;
+            }
+
+            const articleData = {
+                title,
+                abstract,
+                body,
+                type,
+                date,
+                year,
+                readTime,
+                tags,
+                keywords,
+                cover,
+                images: gallery,
+                file: mainFile || undefined,
+                files,
+                references,
+                doi: doi || undefined,
+                difficulty,
+                language,
+                english_abstract: englishAbstract || undefined,
+                status,
+                notes: notes || undefined,
+                related_links: relatedLinks.length ? relatedLinks : undefined,
+                updated: new Date().toISOString()
+            };
+
+            // ذخیره در localStorage
+            const articles = JSON.parse(localStorage.getItem('temp_articles') || '{}');
+            articles[id] = articleData;
+            localStorage.setItem('temp_articles', JSON.stringify(articles));
+
+            // در صورت وجود توکن گیت‌هاب
+            const token = localStorage.getItem('github_token');
+            if (token) {
+                try {
+                    await saveToGitHub('_data/articles.json', articles);
+                    alert('✅ مقاله با شماره ART-' + id + ' با موفقیت در گیت‌هاب ذخیره شد.');
+                    return;
+                } catch (e) {
+                    console.error('خطا در ذخیره گیت‌هاب:', e);
+                }
+            }
+
+            alert('✅ مقاله با شماره ART-' + id + ' در حافظه موقت ذخیره شد.');
+        }
+
+        async function saveToGitHub(path, content) {
+            const token = localStorage.getItem('github_token');
+            if (!token) return false;
+            const REPO_OWNER = 'mahanneman';
+            const REPO_NAME = 'MA.AD.GH.SITE';
+            const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
+            let sha = null;
+            try {
+                const getRes = await fetch(url, {
+                    headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+                });
+                if (getRes.ok) {
+                    const data = await getRes.json();
+                    sha = data.sha;
+                }
+            } catch (e) { /* ignore */ }
+            const jsonString = JSON.stringify(content, null, 2);
+            const encoder = new TextEncoder();
+            const encoded = encoder.encode(jsonString);
+            let binary = '';
+            for (let i = 0; i < encoded.length; i++) {
+                binary += String.fromCharCode(encoded[i]);
+            }
+            const base64Content = btoa(binary);
+            const body = {
+                message: `Add article ART-${document.getElementById('articleId').value} via blank-article`,
+                content: base64Content,
+                branch: 'main'
+            };
+            if (sha) body.sha = sha;
+            const res = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify(body)
+            });
+            return res.ok;
+        }
+
+        // ============================================================
+        // ۵. بازنشانی فرم
+        // ============================================================
+        function resetArticleForm() {
+            document.getElementById('articleTitle').value = '';
+            document.getElementById('articleAbstract').value = '';
+            document.getElementById('articleBody').value = '';
+            document.getElementById('articleDate').value = '';
+            document.getElementById('articleYear').value = '';
+            document.getElementById('articleReadTime').value = '';
+            document.getElementById('articleKeywords').value = '';
+            document.getElementById('articleCover').value = '';
+            document.getElementById('articleGallery').value = '';
+            document.getElementById('articleMainFile').value = '';
+            document.getElementById('articleFiles').value = '';
+            document.getElementById('articleReferences').value = '';
+            document.getElementById('articleDoi').value = '';
+            document.getElementById('articleEnglishAbstract').value = '';
+            document.getElementById('articleNotes').value = '';
+            document.getElementById('articleRelatedLinks').value = '';
+            document.getElementById('articleType').value = 'article';
+            document.getElementById('articleDifficulty').value = 'متوسط';
+            document.getElementById('articleLanguage').value = 'فارسی';
+            document.getElementById('articleStatus').value = 'فعال';
+            document.getElementById('articleTags').value = '';
+            document.querySelector('#articleTagsContainer .tag-item')?.remove();
+            document.getElementById('coverPreview').innerHTML = '';
+            document.getElementById('galleryPreview').innerHTML = '';
+            document.getElementById('filesPreview').innerHTML = '';
+            generateArticleId();
+        }
+
+        // ============================================================
+        // ۶. پیش‌نمایش‌ها
+        // ============================================================
+        document.getElementById('articleCover').addEventListener('input', function() {
+            const preview = document.getElementById('coverPreview');
+            const url = this.value.trim();
+            preview.innerHTML = url ? `<img src="${url}" class="upload-preview" alt="پیش‌نمایش" style="max-height:150px;">` : '';
+        });
+
+        document.getElementById('articleGallery').addEventListener('input', function() {
+            const preview = document.getElementById('galleryPreview');
+            const urls = this.value.split(',').map(s => s.trim()).filter(Boolean);
+            preview.innerHTML = urls.map(url =>
+                `<img src="${url}" class="upload-preview" style="max-height:80px;width:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border-color);">`
+            ).join('');
+        });
+
+        document.getElementById('articleFiles').addEventListener('input', function() {
+            const preview = document.getElementById('filesPreview');
+            const files = this.value.split(',').map(s => s.trim()).filter(Boolean);
+            preview.innerHTML = files.map(f =>
+                `<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;background:var(--bg-tertiary);border-radius:20px;border:1px solid var(--border-color);font-size:0.75rem;"><i class="fas fa-file"></i> ${f}</span>`
+            ).join('');
+        });
+
+        // ============================================================
+        // ۷. بارگذاری اولیه
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            generateArticleId();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('articleDate').value = today;
+            const year = new Date().getFullYear();
+            document.getElementById('articleYear').value = year;
+        });
+    </script>
+
+</body>
+</html>

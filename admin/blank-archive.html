@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>افزودن پروژه آرشیو | پنل مدیریت</title>
+    <link rel="stylesheet" href="../common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* همان استایل‌های فایل product (برای اختصار تکرار نمی‌شود، اما دقیقاً مشابه است) */
+        .blank-container { max-width: 1000px; margin: 100px auto 40px; padding: 0 20px; }
+        .blank-card { background: var(--bg-secondary); border-radius: 20px; padding: 35px; border: 1px solid var(--border-color); box-shadow: 0 10px 40px rgba(0,0,0,0.15); transition: box-shadow 0.3s ease, transform 0.3s ease; }
+        .blank-card:hover { box-shadow: 0 20px 60px rgba(37, 99, 235, 0.1); transform: translateY(-2px); }
+        .blank-card .card-header { background: linear-gradient(135deg, #2563eb, #4f46e5); margin: -35px -35px 25px -35px; padding: 25px 35px; border-radius: 20px 20px 0 0; color: #fff; }
+        .blank-card .card-header h1 { font-size: 1.6rem; font-weight: 800; margin: 0; color: #fff; display: flex; align-items: center; gap: 10px; }
+        .blank-card .card-header .sub { color: rgba(255,255,255,0.85); font-size: 0.9rem; margin: 5px 0 0; }
+        .blank-card .form-section { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+        .blank-card .form-section:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .blank-card .form-section h3 { font-size: 1rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .blank-card .form-section h3 i { color: var(--secondary-color); }
+        .blank-card .field { margin-bottom: 16px; }
+        .blank-card .field label { display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+        .blank-card .field label i { color: var(--secondary-color); width: 20px; text-align: center; }
+        .blank-card .field .required { color: #ef4444; margin-right: 4px; }
+        .blank-card .field input, .blank-card .field textarea, .blank-card .field select { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-primary); color: var(--text-primary); font-family: 'Vazirmatn', sans-serif; font-size: 0.95rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .blank-card .field input:focus, .blank-card .field textarea:focus, .blank-card .field select:focus { outline: none; border-color: var(--secondary-color); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); transform: translateY(-1px); }
+        .blank-card .field textarea { min-height: 100px; resize: vertical; }
+        .blank-card .field textarea.small { min-height: 60px; }
+        .blank-card .field .hint { font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; margin-top: 4px; }
+        .blank-card .id-display { display: inline-block; padding: 8px 18px; background: var(--bg-primary); border-radius: 10px; border: 2px solid var(--border-color); font-weight: 700; color: var(--secondary-color); font-size: 1rem; }
+        .blank-card .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .blank-card .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        .blank-card .tags-input { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 12px; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-primary); min-height: 50px; align-items: center; }
+        .blank-card .tags-input .tag-item { background: var(--secondary-color); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; }
+        .blank-card .tags-input .tag-item i { cursor: pointer; font-size: 0.7rem; opacity: 0.7; transition: 0.3s; }
+        .blank-card .tags-input .tag-item i:hover { opacity: 1; transform: scale(1.2); }
+        .blank-card .tags-input input { border: none; background: transparent; color: var(--text-primary); font-family: 'Vazirmatn', sans-serif; font-size: 0.9rem; flex: 1; min-width: 80px; padding: 4px 0; }
+        .blank-card .tags-input input:focus { outline: none; box-shadow: none; border: none; }
+        .blank-card .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .blank-card .btn-submit { background: linear-gradient(135deg, var(--secondary-color), #4f46e5); color: #fff; border: none; padding: 14px 36px; border-radius: 50px; font-family: 'Vazirmatn', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; gap: 10px; position: relative; overflow: hidden; }
+        .blank-card .btn-submit::after { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(255,255,255,0.2); transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s; }
+        .blank-card .btn-submit:hover::after { width: 300px; height: 300px; }
+        .blank-card .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(59, 130, 246, 0.4); }
+        .blank-card .btn-ai { background: linear-gradient(135deg, #8b5cf6, #6366f1, #2563eb); background-size: 200% 200%; animation: gradientShift 4s ease infinite; color: #fff; border: none; padding: 14px 36px; border-radius: 50px; font-family: 'Vazirmatn', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px; }
+        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .blank-card .btn-ai:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4); }
+        .blank-card .btn-reset { background: var(--bg-tertiary); color: var(--text-secondary); border: none; padding: 14px 36px; border-radius: 50px; font-family: 'Vazirmatn', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px; }
+        .blank-card .btn-reset:hover { background: var(--border-color); color: var(--text-primary); transform: translateY(-2px); }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: color 0.3s; }
+        .back-link i { margin-left: 6px; }
+        .back-link:hover { color: var(--secondary-color); }
+        .section-badge { display: inline-block; padding: 2px 12px; border-radius: 20px; background: var(--secondary-color); color: #fff; font-size: 0.65rem; font-weight: 600; margin-right: 6px; }
+        .blank-card .upload-preview { max-width: 100%; max-height: 120px; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 8px; }
+        @media (max-width: 768px) {
+            .blank-card .card-header { margin: -25px -25px 20px -25px; padding: 20px 25px; }
+            .blank-card { padding: 25px; }
+            .blank-card .grid-2, .blank-card .grid-3 { grid-template-columns: 1fr; }
+            .blank-card .actions { flex-direction: column; }
+            .blank-card .actions .btn-submit, .blank-card .actions .btn-ai, .blank-card .actions .btn-reset { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container blank-container">
+        <a href="admin-panel.html" class="back-link"><i class="fas fa-arrow-right"></i> بازگشت به پنل مدیریت</a>
+        <div class="blank-card">
+            <div class="card-header">
+                <h1><i class="fas fa-archive"></i> افزودن پروژه جدید به آرشیو</h1>
+                <p class="sub">اطلاعات کامل پروژه را وارد کنید. می‌توانید از هوش مصنوعی برای تولید پیش‌نویس استفاده کنید.</p>
+            </div>
+
+            <!-- ===== بخش ۱: اطلاعات پایه ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-info-circle"></i> اطلاعات پایه <span class="section-badge">ضروری</span></h3>
+                <div class="field">
+                    <label><i class="fas fa-hashtag"></i> شماره پروژه</label>
+                    <div class="id-display" id="archiveIdDisplay">ARC-0001</div>
+                    <input type="hidden" id="archiveId" value="0001">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-heading"></i> عنوان پروژه <span class="required">*</span></label>
+                    <input type="text" id="archiveTitle" placeholder="عنوان پروژه را وارد کنید...">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-align-left"></i> چکیده (خلاصه) <span class="required">*</span></label>
+                    <textarea id="archiveExcerpt" placeholder="خلاصه‌ای کوتاه از پروژه (حداکثر ۲۰۰ کاراکتر)"></textarea>
+                    <div class="hint">حداکثر ۲۰۰ کاراکتر</div>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-file-alt"></i> توضیحات کامل <span class="required">*</span></label>
+                    <textarea id="archiveBody" placeholder="توضیحات کامل پروژه را بنویسید..."></textarea>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۲: نوع و وضعیت ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-flag"></i> نوع و وضعیت</h3>
+                <div class="grid-2">
+                    <div class="field">
+                        <label><i class="fas fa-tag"></i> نوع پروژه</label>
+                        <select id="archiveType">
+                            <option value="cfd">تحلیل CFD</option>
+                            <option value="structure">تحلیل سازه</option>
+                            <option value="design">طراحی مکانیکی</option>
+                            <option value="electro">الکترومغناطیس</option>
+                            <option value="university">پروژه دانشگاهی</option>
+                            <option value="fabrication">ساخت و نمونه‌سازی</option>
+                            <option value="other">سایر</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-circle"></i> وضعیت</label>
+                        <select id="archiveStatus">
+                            <option value="تکمیل شده">تکمیل شده</option>
+                            <option value="در حال انجام">در حال انجام</option>
+                            <option value="متوقف شده">متوقف شده</option>
+                            <option value="در انتظار تأیید">در انتظار تأیید</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="field">
+                        <label><i class="fas fa-calendar-alt"></i> تاریخ شروع</label>
+                        <input type="date" id="archiveStartDate">
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-calendar-check"></i> تاریخ پایان</label>
+                        <input type="date" id="archiveEndDate">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۳: برچسب‌ها و کلمات کلیدی ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-tags"></i> برچسب‌ها</h3>
+                <div class="field">
+                    <label><i class="fas fa-tags"></i> برچسب‌ها</label>
+                    <div class="tags-input" id="archiveTagsContainer">
+                        <input type="text" id="archiveTagInput" placeholder="تایپ کنید و Enter بزنید..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('archiveTagsContainer','archiveTagInput');}">
+                    </div>
+                    <input type="hidden" id="archiveTags" value="">
+                </div>
+            </div>
+
+            <!-- ===== بخش ۴: تصاویر ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-images"></i> تصاویر</h3>
+                <div class="field">
+                    <label><i class="fas fa-image"></i> تصویر شاخص (لینک)</label>
+                    <input type="text" id="archiveCover" placeholder="مسیر تصویر یا لینک...">
+                    <div id="coverPreview" style="margin-top:8px;"></div>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-images"></i> گالری تصاویر (لینک‌ها با کاما جدا کنید)</label>
+                    <input type="text" id="archiveGallery" placeholder="لینک تصویر ۱, لینک تصویر ۲, ...">
+                    <div id="galleryPreview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۵: فایل‌ها ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-paperclip"></i> فایل‌های پیوست</h3>
+                <div class="field">
+                    <label><i class="fas fa-file-pdf"></i> فایل‌ها (با کاما جدا کنید)</label>
+                    <input type="text" id="archiveFiles" placeholder="گزارش.pdf, مدل.stl, کد.py">
+                    <div id="filesPreview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۶: اطلاعات تکمیلی ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-ellipsis-h"></i> اطلاعات تکمیلی</h3>
+                <div class="grid-2">
+                    <div class="field">
+                        <label><i class="fas fa-users"></i> تیم پروژه</label>
+                        <input type="text" id="archiveTeam" placeholder="نام اعضای تیم (با کاما جدا کنید)">
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-building"></i> سازمان / مشتری</label>
+                        <input type="text" id="archiveClient" placeholder="نام سازمان یا مشتری">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="field">
+                        <label><i class="fas fa-money-bill"></i> بودجه (تومان)</label>
+                        <input type="text" id="archiveBudget" placeholder="مثال: ۵۰,۰۰۰,۰۰۰">
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-chart-line"></i> سطح پیشرفت (%)</label>
+                        <input type="number" id="archiveProgress" placeholder="مثال: ۱۰۰" min="0" max="100">
+                    </div>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-list-ul"></i> فازهای پروژه (هر فاز در یک خط)</label>
+                    <textarea id="archivePhases" rows="3" placeholder="فاز ۱: مطالعه اولیه&#10;فاز ۲: طراحی مفهومی&#10;فاز ۳: اجرا و تست"></textarea>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-link"></i> لینک‌های مرتبط (با کاما جدا کنید)</label>
+                    <input type="text" id="archiveLinks" placeholder="https://example.com, https://github.com/...">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-sticky-note"></i> یادداشت‌های داخلی</label>
+                    <textarea id="archiveNotes" class="small" placeholder="یادداشت‌های خصوصی برای مدیر"></textarea>
+                </div>
+            </div>
+
+            <!-- ===== دکمه‌های اقدام ===== -->
+            <div class="actions">
+                <button class="btn-ai" onclick="generateArchiveContent()">
+                    <i class="fas fa-robot"></i> تولید پیش‌نویس با هوش مصنوعی
+                </button>
+                <button class="btn-submit" onclick="saveArchive()">
+                    <i class="fas fa-save"></i> ذخیره پروژه
+                </button>
+                <button class="btn-reset" onclick="resetArchiveForm()">
+                    <i class="fas fa-undo"></i> بازنشانی
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // توابع کمکی تگ‌ها (همانند article)
+        function addTag(containerId, inputId) {
+            const container = document.getElementById(containerId);
+            const input = document.getElementById(inputId);
+            const text = input.value.trim();
+            if (!text) return;
+            const tag = document.createElement('span');
+            tag.className = 'tag-item';
+            tag.innerHTML = `${text} <i class="fas fa-times" onclick="this.parentElement.remove(); updateTagsHidden('${containerId}')"></i>`;
+            container.insertBefore(tag, input);
+            input.value = '';
+            updateTagsHidden(containerId);
+        }
+
+        function updateTagsHidden(containerId) {
+            const container = document.getElementById(containerId);
+            const tags = container.querySelectorAll('.tag-item');
+            const values = Array.from(tags).map(t => t.textContent.replace('×', '').trim());
+            const hiddenId = containerId.replace('Container', '');
+            document.getElementById(hiddenId).value = values.join(',');
+        }
+
+        // تولید شماره خودکار
+        async function generateArchiveId() {
+            try {
+                const res = await fetch('../_data/archive.json?t=' + Date.now());
+                let maxNum = 0;
+                if (res.ok) {
+                    const data = await res.json();
+                    Object.keys(data).forEach(key => {
+                        const num = parseInt(key);
+                        if (!isNaN(num) && num > maxNum) maxNum = num;
+                    });
+                }
+                const newNum = maxNum + 1;
+                const padded = String(newNum).padStart(4, '0');
+                document.getElementById('archiveId').value = padded;
+                document.getElementById('archiveIdDisplay').textContent = 'ARC-' + padded;
+            } catch (e) { console.error(e); }
+        }
+
+        // تولید پیش‌نویس با هوش مصنوعی
+        function generateArchiveContent() {
+            const title = document.getElementById('archiveTitle').value.trim();
+            if (!title) { alert('❌ لطفاً عنوان پروژه را وارد کنید.'); return; }
+            const excerpt = document.getElementById('archiveExcerpt');
+            const body = document.getElementById('archiveBody');
+            excerpt.value = `پروژه "${title}" – یک پروژه جامع در حوزه مهندسی مکانیک با هدف بهبود فرآیندهای صنعتی و افزایش بهره‌وری.`;
+            body.value = `🔹 **معرفی پروژه**\n\n${title} یک پروژه تخصصی در زمینه مهندسی مکانیک است که با هدف حل یکی از چالش‌های کلیدی صنعت طراحی شده است.\n\n🔹 **روش‌شناسی**\n\n- استفاده از نرم‌افزارهای پیشرفته برای شبیه‌سازی و تحلیل\n- به‌کارگیری استانداردهای بین‌المللی\n\n🔹 **نتایج و دستاوردها**\n\n- کاهش هزینه‌ها تا ۳۰٪\n- افزایش سرعت اجرا\n- بهبود کیفیت نهایی\n\n🔹 **نتیجه‌گیری**\n\nاین پروژه نشان داد که با استفاده از روش‌های نوین می‌توان به نتایج قابل‌توجهی دست یافت.`;
+            excerpt.style.borderColor = '#10b981';
+            body.style.borderColor = '#10b981';
+            setTimeout(() => {
+                excerpt.style.borderColor = '';
+                body.style.borderColor = '';
+            }, 3000);
+            alert('✅ پیش‌نویس پروژه با هوش مصنوعی تولید شد.');
+        }
+
+        // ذخیره پروژه
+        async function saveArchive() {
+            const id = document.getElementById('archiveId').value;
+            const title = document.getElementById('archiveTitle').value.trim();
+            const excerpt = document.getElementById('archiveExcerpt').value.trim();
+            const body = document.getElementById('archiveBody').value.trim();
+            const type = document.getElementById('archiveType').value;
+            const status = document.getElementById('archiveStatus').value;
+            const startDate = document.getElementById('archiveStartDate').value;
+            const endDate = document.getElementById('archiveEndDate').value;
+            const tags = document.getElementById('archiveTags').value.split(',').map(s => s.trim()).filter(Boolean);
+            const cover = document.getElementById('archiveCover').value.trim();
+            const gallery = document.getElementById('archiveGallery').value.split(',').map(s => s.trim()).filter(Boolean);
+            const files = document.getElementById('archiveFiles').value.split(',').map(s => s.trim()).filter(Boolean);
+            const team = document.getElementById('archiveTeam').value.split(',').map(s => s.trim()).filter(Boolean);
+            const client = document.getElementById('archiveClient').value.trim();
+            const budget = document.getElementById('archiveBudget').value.trim();
+            const progress = parseInt(document.getElementById('archiveProgress').value) || 0;
+            const phases = document.getElementById('archivePhases').value.split('\n').map(s => s.trim()).filter(Boolean);
+            const links = document.getElementById('archiveLinks').value.split(',').map(s => s.trim()).filter(Boolean);
+            const notes = document.getElementById('archiveNotes').value.trim();
+
+            if (!title || !excerpt || !body) {
+                alert('❌ لطفاً عنوان، چکیده و توضیحات کامل پروژه را پر کنید.');
+                return;
+            }
+
+            const archiveData = {
+                title,
+                excerpt,
+                body,
+                type,
+                status,
+                start_date: startDate || undefined,
+                end_date: endDate || undefined,
+                tags,
+                cover,
+                images: gallery,
+                files,
+                team: team.length ? team : undefined,
+                client: client || undefined,
+                budget: budget || undefined,
+                progress,
+                phases: phases.length ? phases : undefined,
+                related_links: links.length ? links : undefined,
+                notes: notes || undefined,
+                updated: new Date().toISOString()
+            };
+
+            const archives = JSON.parse(localStorage.getItem('temp_archive') || '{}');
+            archives[id] = archiveData;
+            localStorage.setItem('temp_archive', JSON.stringify(archives));
+
+            const token = localStorage.getItem('github_token');
+            if (token) {
+                try {
+                    await saveToGitHub('_data/archive.json', archives);
+                    alert('✅ پروژه با شماره ARC-' + id + ' با موفقیت در گیت‌هاب ذخیره شد.');
+                    return;
+                } catch (e) { console.error(e); }
+            }
+            alert('✅ پروژه با شماره ARC-' + id + ' در حافظه موقت ذخیره شد.');
+        }
+
+        async function saveToGitHub(path, content) {
+            const token = localStorage.getItem('github_token');
+            if (!token) return false;
+            const REPO_OWNER = 'mahanneman';
+            const REPO_NAME = 'MA.AD.GH.SITE';
+            const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
+            let sha = null;
+            try {
+                const getRes = await fetch(url, {
+                    headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+                });
+                if (getRes.ok) {
+                    const data = await getRes.json();
+                    sha = data.sha;
+                }
+            } catch (e) { /* ignore */ }
+            const jsonString = JSON.stringify(content, null, 2);
+            const encoder = new TextEncoder();
+            const encoded = encoder.encode(jsonString);
+            let binary = '';
+            for (let i = 0; i < encoded.length; i++) {
+                binary += String.fromCharCode(encoded[i]);
+            }
+            const base64Content = btoa(binary);
+            const body = {
+                message: `Add archive ARC-${document.getElementById('archiveId').value} via blank-archive`,
+                content: base64Content,
+                branch: 'main'
+            };
+            if (sha) body.sha = sha;
+            const res = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify(body)
+            });
+            return res.ok;
+        }
+
+        // بازنشانی فرم
+        function resetArchiveForm() {
+            document.getElementById('archiveTitle').value = '';
+            document.getElementById('archiveExcerpt').value = '';
+            document.getElementById('archiveBody').value = '';
+            document.getElementById('archiveStartDate').value = '';
+            document.getElementById('archiveEndDate').value = '';
+            document.getElementById('archiveTeam').value = '';
+            document.getElementById('archiveClient').value = '';
+            document.getElementById('archiveBudget').value = '';
+            document.getElementById('archiveProgress').value = '';
+            document.getElementById('archivePhases').value = '';
+            document.getElementById('archiveLinks').value = '';
+            document.getElementById('archiveNotes').value = '';
+            document.getElementById('archiveCover').value = '';
+            document.getElementById('archiveGallery').value = '';
+            document.getElementById('archiveFiles').value = '';
+            document.getElementById('archiveType').value = 'cfd';
+            document.getElementById('archiveStatus').value = 'تکمیل شده';
+            document.getElementById('archiveTags').value = '';
+            document.querySelector('#archiveTagsContainer .tag-item')?.remove();
+            document.getElementById('coverPreview').innerHTML = '';
+            document.getElementById('galleryPreview').innerHTML = '';
+            document.getElementById('filesPreview').innerHTML = '';
+            generateArchiveId();
+        }
+
+        // پیش‌نمایش‌ها
+        document.getElementById('archiveCover').addEventListener('input', function() {
+            const preview = document.getElementById('coverPreview');
+            const url = this.value.trim();
+            preview.innerHTML = url ? `<img src="${url}" class="upload-preview" alt="پیش‌نمایش" style="max-height:150px;">` : '';
+        });
+        document.getElementById('archiveGallery').addEventListener('input', function() {
+            const preview = document.getElementById('galleryPreview');
+            const urls = this.value.split(',').map(s => s.trim()).filter(Boolean);
+            preview.innerHTML = urls.map(url =>
+                `<img src="${url}" class="upload-preview" style="max-height:80px;width:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border-color);">`
+            ).join('');
+        });
+        document.getElementById('archiveFiles').addEventListener('input', function() {
+            const preview = document.getElementById('filesPreview');
+            const files = this.value.split(',').map(s => s.trim()).filter(Boolean);
+            preview.innerHTML = files.map(f =>
+                `<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;background:var(--bg-tertiary);border-radius:20px;border:1px solid var(--border-color);font-size:0.75rem;"><i class="fas fa-file"></i> ${f}</span>`
+            ).join('');
+        });
+
+        // بارگذاری اولیه
+        document.addEventListener('DOMContentLoaded', function() {
+            generateArchiveId();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>افزودن محصول جدید | پنل مدیریت</title>
+    <!-- لینک‌های عمومی -->
+    <link rel="stylesheet" href="../common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== استایل‌های اختصاصی صفحه خالی محصول ===== */
+        .blank-container {
+            max-width: 1000px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+        .blank-card {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 35px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .blank-card:hover {
+            box-shadow: 0 20px 60px rgba(37, 99, 235, 0.1);
+            transform: translateY(-2px);
+        }
+        .blank-card .card-header {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            margin: -35px -35px 25px -35px;
+            padding: 25px 35px;
+            border-radius: 20px 20px 0 0;
+            color: #fff;
+        }
+        .blank-card .card-header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin: 0;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .blank-card .card-header .sub {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.9rem;
+            margin: 5px 0 0;
+        }
+        .blank-card .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .blank-card .form-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .blank-card .form-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .blank-card .form-section h3 i {
+            color: var(--secondary-color);
+        }
+        .blank-card .field {
+            margin-bottom: 16px;
+        }
+        .blank-card .field label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+        .blank-card .field label i {
+            color: var(--secondary-color);
+            width: 20px;
+            text-align: center;
+        }
+        .blank-card .field .required {
+            color: #ef4444;
+            margin-right: 4px;
+        }
+        .blank-card .field input,
+        .blank-card .field textarea,
+        .blank-card .field select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .blank-card .field input:focus,
+        .blank-card .field textarea:focus,
+        .blank-card .field select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+            transform: translateY(-1px);
+        }
+        .blank-card .field textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .blank-card .field textarea.small {
+            min-height: 60px;
+        }
+        .blank-card .field .hint {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+        .blank-card .id-display {
+            display: inline-block;
+            padding: 8px 18px;
+            background: var(--bg-primary);
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-size: 1rem;
+        }
+        .blank-card .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .blank-card .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+        .blank-card .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            min-height: 50px;
+            align-items: center;
+        }
+        .blank-card .tags-input .tag-item {
+            background: var(--secondary-color);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .blank-card .tags-input .tag-item i {
+            cursor: pointer;
+            font-size: 0.7rem;
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+        .blank-card .tags-input .tag-item i:hover {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+        .blank-card .tags-input input {
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 80px;
+            padding: 4px 0;
+        }
+        .blank-card .tags-input input:focus {
+            outline: none;
+            box-shadow: none;
+            border: none;
+        }
+        .blank-card .file-upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg-primary);
+        }
+        .blank-card .file-upload-zone:hover {
+            border-color: var(--secondary-color);
+            background: rgba(59, 130, 246, 0.05);
+        }
+        .blank-card .file-upload-zone i {
+            font-size: 2.5rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 8px;
+        }
+        .blank-card .file-upload-zone p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        .blank-card .file-upload-zone .hint {
+            font-size: 0.65rem;
+            opacity: 0.6;
+        }
+        .blank-card .upload-preview {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-top: 8px;
+        }
+        .blank-card .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .blank-card .btn-submit {
+            background: linear-gradient(135deg, var(--secondary-color), #4f46e5);
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .blank-card .btn-submit::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .blank-card .btn-submit:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+        .blank-card .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.4);
+        }
+        .blank-card .btn-ai {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1, #2563eb);
+            background-size: 200% 200%;
+            animation: gradientShift 4s ease infinite;
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .blank-card .btn-ai:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
+        }
+        .blank-card .btn-reset {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .blank-card .btn-reset:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .back-link i {
+            margin-left: 6px;
+        }
+        .back-link:hover {
+            color: var(--secondary-color);
+        }
+        .section-badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            background: var(--secondary-color);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-right: 6px;
+        }
+        @media (max-width: 768px) {
+            .blank-card .card-header {
+                margin: -25px -25px 20px -25px;
+                padding: 20px 25px;
+            }
+            .blank-card {
+                padding: 25px;
+            }
+            .blank-card .grid-2,
+            .blank-card .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .blank-card .actions {
+                flex-direction: column;
+            }
+            .blank-card .actions .btn-submit,
+            .blank-card .actions .btn-ai,
+            .blank-card .actions .btn-reset {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container blank-container">
+        <a href="admin-panel.html" class="back-link"><i class="fas fa-arrow-right"></i> بازگشت به پنل مدیریت</a>
+        <div class="blank-card">
+            <div class="card-header">
+                <h1><i class="fas fa-cube"></i> افزودن محصول جدید</h1>
+                <p class="sub">اطلاعات کامل محصول را وارد کنید. می‌توانید از هوش مصنوعی برای تولید توضیحات کمک بگیرید.</p>
+            </div>
+
+            <!-- ===== بخش ۱: اطلاعات پایه ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-info-circle"></i> اطلاعات پایه <span class="section-badge">ضروری</span></h3>
+                <div class="field">
+                    <label><i class="fas fa-hashtag"></i> شماره محصول</label>
+                    <div class="id-display" id="productIdDisplay">PRD-0001</div>
+                    <input type="hidden" id="productId" value="0001">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-tag"></i> نام محصول <span class="required">*</span></label>
+                    <input type="text" id="productName" placeholder="نام محصول را وارد کنید...">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-align-left"></i> توضیحات کامل <span class="required">*</span></label>
+                    <textarea id="productDesc" placeholder="توضیحات کامل محصول را بنویسید..."></textarea>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-file-alt"></i> چکیده (خلاصه کوتاه)</label>
+                    <textarea id="productExcerpt" class="small" placeholder="خلاصه‌ای کوتاه از محصول (حداکثر ۲۰۰ کاراکتر)..."></textarea>
+                    <div class="hint">حداکثر ۲۰۰ کاراکتر</div>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۲: قیمت و موجودی ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-shopping-cart"></i> قیمت و موجودی</h3>
+                <div class="grid-2">
+                    <div class="field">
+                        <label><i class="fas fa-money-bill"></i> قیمت (تومان)</label>
+                        <input type="text" id="productPrice" placeholder="مثال: ۵۰,۰۰۰ یا رایگان">
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-boxes"></i> موجودی</label>
+                        <select id="productStock">
+                            <option value="موجود">موجود</option>
+                            <option value="ناموجود">ناموجود</option>
+                            <option value="پیش‌سفارش">پیش‌سفارش</option>
+                            <option value="سفارشی">سفارشی</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="field">
+                        <label><i class="fas fa-sort-numeric-up"></i> تعداد موجودی انبار</label>
+                        <input type="number" id="productInventory" placeholder="مثال: ۲۵" min="0">
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-calendar-alt"></i> زمان انتشار</label>
+                        <input type="date" id="productReleaseDate">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۳: مشخصات فنی ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-cogs"></i> مشخصات فنی</h3>
+                <div class="grid-3">
+                    <div class="field">
+                        <label><i class="fas fa-cube"></i> جنس / ماده</label>
+                        <input type="text" id="productMaterial" placeholder="مثال: ABS, PLA, فلز">
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-weight"></i> وزن</label>
+                        <input type="text" id="productWeight" placeholder="مثال: ۲۰۰ گرم">
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-arrows-alt"></i> ابعاد</label>
+                        <input type="text" id="productDimensions" placeholder="مثال: ۱۰ × ۵ × ۳ سانتی‌متر">
+                    </div>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-palette"></i> رنگ‌های موجود (با کاما جدا کنید)</label>
+                    <input type="text" id="productColors" placeholder="مثال: مشکی, سفید, قرمز">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-tags"></i> برچسب (Tag)</label>
+                    <input type="text" id="productTag" placeholder="مثال: STL, جدید, پیشرفته">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-folder"></i> دسته‌بندی</label>
+                    <input type="text" id="productCategory" placeholder="مثال: قطعات, الکترونیک, اکسسوری">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-icons"></i> آیکون (FontAwesome)</label>
+                    <input type="text" id="productIcon" value="fa-cube" placeholder="fa-cube">
+                    <div class="hint">نام کلاس آیکون بدون `fas`</div>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۴: گالری و تصاویر ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-images"></i> گالری و تصاویر</h3>
+                <div class="field">
+                    <label><i class="fas fa-image"></i> تصویر شاخص (لینک)</label>
+                    <input type="text" id="productCover" placeholder="مسیر تصویر یا لینک...">
+                    <div id="coverPreview" style="margin-top:8px;"></div>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-images"></i> گالری تصاویر (لینک‌ها با کاما جدا کنید)</label>
+                    <input type="text" id="productGallery" placeholder="لینک تصویر ۱, لینک تصویر ۲, ...">
+                    <div id="galleryPreview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۵: فایل‌های پیوست ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-paperclip"></i> فایل‌های پیوست</h3>
+                <div class="field">
+                    <label><i class="fas fa-file"></i> فایل‌ها (لینک‌ها با کاما جدا کنید)</label>
+                    <input type="text" id="productFiles" placeholder="فایل۱.pdf, فایل۲.stl, ...">
+                    <div id="filesPreview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۶: اطلاعات ارسال و استفاده ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-truck"></i> اطلاعات ارسال و استفاده</h3>
+                <div class="grid-2">
+                    <div class="field">
+                        <label><i class="fas fa-clock"></i> زمان تقریبی ارسال (روز)</label>
+                        <input type="number" id="productShippingTime" placeholder="مثال: ۳" min="1">
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-shipping-fast"></i> روش‌های ارسال</label>
+                        <select id="productShippingMethods" multiple style="height:80px;">
+                            <option value="حضوری">تحویل حضوری (تهران)</option>
+                            <option value="پستی">پست پیشتاز</option>
+                            <option value="تیپاکس">تیپاکس</option>
+                            <option value="سایر">سایر</option>
+                        </select>
+                        <div class="hint">按住 Ctrl (یا Cmd) برای انتخاب چند گزینه</div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-tasks"></i> کاربردها (با کاما جدا کنید)</label>
+                    <input type="text" id="productUsage" placeholder="مثال: طراحی قطعات, پروژه‌های رباتیک">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-graduation-cap"></i> پیش‌نیازها</label>
+                    <input type="text" id="productPrerequisites" placeholder="مثال: آشنایی با پرینتر سه‌بعدی">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-play-circle"></i> نحوه استفاده</label>
+                    <textarea id="productUsageGuide" class="small" placeholder="راهنمای استفاده از محصول..."></textarea>
+                </div>
+            </div>
+
+            <!-- ===== بخش ۷: مشخصات جدولی (هشتگ‌ها) ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-table"></i> مشخصات جدولی (هشتگ‌ها)</h3>
+                <div class="field">
+                    <label><i class="fas fa-hashtag"></i> مشخصات (کلید:مقدار با کاما جدا کنید)</label>
+                    <input type="text" id="productSpecs" placeholder="مثال: #وزن:۲۰۰ گرم, #ابعاد:۱۰x۵x۳, #رنگ:مشکی">
+                    <div class="hint">هر مشخصه با # شروع می‌شود و با کاما جدا می‌شود</div>
+                </div>
+                <div id="specsPreview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+            </div>
+
+            <!-- ===== بخش ۸: وضعیت ===== -->
+            <div class="form-section">
+                <h3><i class="fas fa-toggle-on"></i> وضعیت</h3>
+                <div class="field">
+                    <label><i class="fas fa-eye"></i> وضعیت نمایش</label>
+                    <select id="productStatus">
+                        <option value="فعال">فعال (نمایش داده شود)</option>
+                        <option value="غیرفعال">غیرفعال (مخفی شود)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- ===== دکمه‌های اقدام ===== -->
+            <div class="actions">
+                <button class="btn-ai" onclick="generateProductDesc()">
+                    <i class="fas fa-robot"></i> تولید توضیحات با هوش مصنوعی
+                </button>
+                <button class="btn-submit" onclick="saveProduct()">
+                    <i class="fas fa-save"></i> ذخیره محصول
+                </button>
+                <button class="btn-reset" onclick="resetProductForm()">
+                    <i class="fas fa-undo"></i> بازنشانی
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // ۱. تولید شماره خودکار محصول
+        // ============================================================
+        async function generateProductId() {
+            try {
+                const res = await fetch('../_data/products.json?t=' + Date.now());
+                let maxNum = 0;
+                if (res.ok) {
+                    const data = await res.json();
+                    Object.keys(data).forEach(key => {
+                        const num = parseInt(key);
+                        if (!isNaN(num) && num > maxNum) maxNum = num;
+                    });
+                }
+                const newNum = maxNum + 1;
+                const padded = String(newNum).padStart(4, '0');
+                document.getElementById('productId').value = padded;
+                document.getElementById('productIdDisplay').textContent = 'PRD-' + padded;
+            } catch (e) { console.error(e); }
+        }
+
+        // ============================================================
+        // ۲. تولید توضیحات با هوش مصنوعی
+        // ============================================================
+        function generateProductDesc() {
+            const name = document.getElementById('productName').value.trim();
+            if (!name) { alert('❌ لطفاً نام محصول را وارد کنید.'); return; }
+
+            const descField = document.getElementById('productDesc');
+            const excerptField = document.getElementById('productExcerpt');
+            const usageField = document.getElementById('productUsageGuide');
+
+            descField.value = `🔹 **معرفی محصول ${name}**\n\n${name} یک محصول با کیفیت بالا و طراحی شده برای کاربردهای تخصصی در حوزه مهندسی و صنعت است. این محصول با استفاده از مواد مرغوب و با دقت بالا تولید شده است.\n\n🔹 **ویژگی‌های کلیدی**\n\n- کیفیت ساخت عالی\n- طراحی ارگونومیک و کاربرپسند\n- قیمت مناسب و رقابتی\n- قابلیت استفاده در پروژه‌های متنوع\n\n🔹 **مزایا**\n\n- افزایش بهره‌وری\n- کاهش هزینه‌ها\n- سهولت در نصب و استفاده\n\n🔹 **نظرات کاربران**\n\nکاربران حرفه‌ای از کیفیت و عملکرد این محصول رضایت کامل دارند.`;
+
+            excerptField.value = `خلاصه‌ای از ${name} – محصولی کاربردی و باکیفیت برای مصارف مهندسی و صنعتی.`;
+
+            usageField.value = `۱. محصول را از بسته‌بندی خارج کنید.\n۲. طبق راهنمای نصب، آن را در محل مورد نظر قرار دهید.\n۳. از عملکرد صحیح آن اطمینان حاصل کنید.\n۴. در صورت نیاز به تنظیمات، از دفترچه راهنما استفاده کنید.`;
+
+            descField.style.borderColor = '#10b981';
+            excerptField.style.borderColor = '#10b981';
+            usageField.style.borderColor = '#10b981';
+            setTimeout(() => {
+                descField.style.borderColor = '';
+                excerptField.style.borderColor = '';
+                usageField.style.borderColor = '';
+            }, 3000);
+
+            alert('✅ توضیحات پیش‌نویس با هوش مصنوعی تولید شد.');
+        }
+
+        // ============================================================
+        // ۳. ذخیره محصول در localStorage (برای تست) یا ارسال به سرور
+        // ============================================================
+        async function saveProduct() {
+            const id = document.getElementById('productId').value;
+            const name = document.getElementById('productName').value.trim();
+            const desc = document.getElementById('productDesc').value.trim();
+            const excerpt = document.getElementById('productExcerpt').value.trim();
+            const price = document.getElementById('productPrice').value.trim() || 'رایگان';
+            const stock = document.getElementById('productStock').value;
+            const inventory = parseInt(document.getElementById('productInventory').value) || 0;
+            const material = document.getElementById('productMaterial').value.trim();
+            const weight = document.getElementById('productWeight').value.trim();
+            const dimensions = document.getElementById('productDimensions').value.trim();
+            const colors = document.getElementById('productColors').value.trim();
+            const tag = document.getElementById('productTag').value.trim() || 'جدید';
+            const category = document.getElementById('productCategory').value.trim() || 'متفرقه';
+            const icon = document.getElementById('productIcon').value.trim() || 'fa-cube';
+            const cover = document.getElementById('productCover').value.trim();
+            const gallery = document.getElementById('productGallery').value.trim();
+            const files = document.getElementById('productFiles').value.trim();
+            const releaseDate = document.getElementById('productReleaseDate').value || new Date().toISOString().split('T')[0];
+            const shippingTime = parseInt(document.getElementById('productShippingTime').value) || 3;
+            const shippingMethods = Array.from(document.getElementById('productShippingMethods').selectedOptions).map(o => o.value);
+            const usage = document.getElementById('productUsage').value.trim();
+            const prerequisites = document.getElementById('productPrerequisites').value.trim();
+            const usageGuide = document.getElementById('productUsageGuide').value.trim();
+            const specs = document.getElementById('productSpecs').value.trim();
+            const status = document.getElementById('productStatus').value;
+
+            if (!name || !desc) {
+                alert('❌ لطفاً نام و توضیحات کامل محصول را پر کنید.');
+                return;
+            }
+
+            // پردازش گالری و فایل‌ها
+            const galleryArray = gallery ? gallery.split(',').map(s => s.trim()).filter(s => s) : [];
+            const filesArray = files ? files.split(',').map(s => s.trim()).filter(s => s) : [];
+
+            // پردازش مشخصات
+            const specsObj = {};
+            if (specs) {
+                specs.split(',').forEach(item => {
+                    const parts = item.split(':');
+                    if (parts.length === 2) {
+                        const key = parts[0].trim().replace(/^#/, '');
+                        const value = parts[1].trim();
+                        if (key && value) specsObj['#' + key] = value;
+                    }
+                });
+            }
+
+            const productData = {
+                name,
+                desc,
+                excerpt,
+                price,
+                stock,
+                inventory,
+                material,
+                weight,
+                dimensions,
+                colors,
+                tag,
+                category,
+                icon,
+                cover,
+                images: galleryArray,
+                files: filesArray,
+                release_date: releaseDate,
+                estimated_shipping_time: String(shippingTime),
+                shipping_methods: shippingMethods,
+                usage: usage ? usage.split(',').map(s => s.trim()).filter(s => s) : [],
+                prerequisites: prerequisites ? prerequisites.split(',').map(s => s.trim()).filter(s => s) : [],
+                usage_guide: usageGuide,
+                specifications: specsObj,
+                status: status,
+                updated: new Date().toISOString()
+            };
+
+            // ذخیره در localStorage برای تست
+            const products = JSON.parse(localStorage.getItem('temp_products') || '{}');
+            products[id] = productData;
+            localStorage.setItem('temp_products', JSON.stringify(products));
+
+            // همچنین اگر توکن گیت‌هاب موجود باشد، می‌توانیم به مخزن ذخیره کنیم
+            const token = localStorage.getItem('github_token');
+            if (token) {
+                try {
+                    const saveResult = await saveToGitHub('_data/products.json', products);
+                    if (saveResult) {
+                        alert('✅ محصول با شماره PRD-' + id + ' با موفقیت در گیت‌هاب ذخیره شد.');
+                        return;
+                    }
+                } catch (e) {
+                    console.error('خطا در ذخیره گیت‌هاب:', e);
+                }
+            }
+
+            alert('✅ محصول با شماره PRD-' + id + ' در حافظه موقت ذخیره شد.');
+        }
+
+        // ============================================================
+        // ۴. توابع کمکی برای گیت‌هاب (اختیاری)
+        // ============================================================
+        async function saveToGitHub(path, content) {
+            const token = localStorage.getItem('github_token');
+            if (!token) return false;
+            const REPO_OWNER = 'mahanneman';
+            const REPO_NAME = 'MA.AD.GH.SITE';
+            const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
+
+            // ابتدا فایل را می‌خوانیم تا sha بگیریم
+            let sha = null;
+            try {
+                const getRes = await fetch(url, {
+                    headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+                });
+                if (getRes.ok) {
+                    const data = await getRes.json();
+                    sha = data.sha;
+                }
+            } catch (e) { /* ignore */ }
+
+            const jsonString = JSON.stringify(content, null, 2);
+            const encoder = new TextEncoder();
+            const encoded = encoder.encode(jsonString);
+            let binary = '';
+            for (let i = 0; i < encoded.length; i++) {
+                binary += String.fromCharCode(encoded[i]);
+            }
+            const base64Content = btoa(binary);
+
+            const body = {
+                message: `Add product PRD-${document.getElementById('productId').value} via blank-product`,
+                content: base64Content,
+                branch: 'main'
+            };
+            if (sha) body.sha = sha;
+
+            const res = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify(body)
+            });
+            return res.ok;
+        }
+
+        // ============================================================
+        // ۵. بازنشانی فرم
+        // ============================================================
+        function resetProductForm() {
+            document.getElementById('productName').value = '';
+            document.getElementById('productDesc').value = '';
+            document.getElementById('productExcerpt').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productInventory').value = '';
+            document.getElementById('productMaterial').value = '';
+            document.getElementById('productWeight').value = '';
+            document.getElementById('productDimensions').value = '';
+            document.getElementById('productColors').value = '';
+            document.getElementById('productTag').value = '';
+            document.getElementById('productCategory').value = '';
+            document.getElementById('productIcon').value = 'fa-cube';
+            document.getElementById('productCover').value = '';
+            document.getElementById('productGallery').value = '';
+            document.getElementById('productFiles').value = '';
+            document.getElementById('productReleaseDate').value = '';
+            document.getElementById('productShippingTime').value = '';
+            document.getElementById('productUsage').value = '';
+            document.getElementById('productPrerequisites').value = '';
+            document.getElementById('productUsageGuide').value = '';
+            document.getElementById('productSpecs').value = '';
+            document.getElementById('productStock').value = 'موجود';
+            document.getElementById('productStatus').value = 'فعال';
+            // reset multi-select
+            const shippingSelect = document.getElementById('productShippingMethods');
+            for (let opt of shippingSelect.options) {
+                opt.selected = false;
+            }
+            document.getElementById('coverPreview').innerHTML = '';
+            document.getElementById('galleryPreview').innerHTML = '';
+            document.getElementById('filesPreview').innerHTML = '';
+            document.getElementById('specsPreview').innerHTML = '';
+            generateProductId();
+        }
+
+        // ============================================================
+        // ۶. پیش‌نمایش تصویر شاخص
+        // ============================================================
+        document.getElementById('productCover').addEventListener('input', function() {
+            const preview = document.getElementById('coverPreview');
+            const url = this.value.trim();
+            if (url) {
+                preview.innerHTML = `<img src="${url}" class="upload-preview" alt="پیش‌نمایش" style="max-height:150px;">`;
+            } else {
+                preview.innerHTML = '';
+            }
+        });
+
+        // ============================================================
+        // ۷. پیش‌نمایش گالری
+        // ============================================================
+        document.getElementById('productGallery').addEventListener('input', function() {
+            const preview = document.getElementById('galleryPreview');
+            const urls = this.value.trim().split(',').map(s => s.trim()).filter(s => s);
+            if (urls.length) {
+                preview.innerHTML = urls.map(url =>
+                    `<img src="${url}" class="upload-preview" alt="گالری" style="max-height:80px;width:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border-color);">`
+                ).join('');
+            } else {
+                preview.innerHTML = '';
+            }
+        });
+
+        // ============================================================
+        // ۸. پیش‌نمایش فایل‌ها
+        // ============================================================
+        document.getElementById('productFiles').addEventListener('input', function() {
+            const preview = document.getElementById('filesPreview');
+            const files = this.value.trim().split(',').map(s => s.trim()).filter(s => s);
+            if (files.length) {
+                preview.innerHTML = files.map(f =>
+                    `<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;background:var(--bg-tertiary);border-radius:20px;border:1px solid var(--border-color);font-size:0.75rem;">
+                        <i class="fas fa-file"></i> ${f}
+                    </span>`
+                ).join('');
+            } else {
+                preview.innerHTML = '';
+            }
+        });
+
+        // ============================================================
+        // ۹. پیش‌نمایش مشخصات
+        // ============================================================
+        document.getElementById('productSpecs').addEventListener('input', function() {
+            const preview = document.getElementById('specsPreview');
+            const specs = this.value.trim().split(',').map(s => s.trim()).filter(s => s);
+            if (specs.length) {
+                preview.innerHTML = specs.map(spec => {
+                    const parts = spec.split(':');
+                    if (parts.length === 2) {
+                        const key = parts[0].trim();
+                        const value = parts[1].trim();
+                        return `<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;background:var(--bg-tertiary);border-radius:20px;border:1px solid var(--secondary-color);font-size:0.75rem;">
+                            <span style="font-weight:700;color:var(--secondary-color);">${key}</span>
+                            <span style="color:var(--text-secondary);">:</span>
+                            <span>${value}</span>
+                        </span>`;
+                    }
+                    return '';
+                }).join('');
+            } else {
+                preview.innerHTML = '';
+            }
+        });
+
+        // ============================================================
+        // ۱۰. بارگذاری اولیه
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            generateProductId();
+            // تاریخ امروز را به‌عنوان تاریخ انتشار پیش‌فرض قرار بده
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('productReleaseDate').value = today;
+        });
+    </script>
+
+</body>
+</html>

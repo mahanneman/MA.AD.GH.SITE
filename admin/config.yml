@@ -1,0 +1,38 @@
+backend:
+  name: github
+  repo: mahanneman/MA.AD.GH.SITE
+  branch: main
+  base_url: https://github.com
+
+publish_mode: editorial_workflow
+
+media_folder: "assets/images"
+public_folder: "/assets/images"
+
+collections:
+  - name: "articles"
+    label: "مقالات و پروژه‌ها"
+    folder: "_data/articles"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "عنوان", name: "title", widget: "string" }
+      - { label: "چکیده", name: "excerpt", widget: "text" }
+      - { label: "تاریخ", name: "date", widget: "datetime" }
+      - { label: "برچسب‌ها", name: "tags", widget: "list", default: ["CFD"] }
+      - { label: "نوع مطلب", name: "type", widget: "select", options: ["article", "project", "tutorial"] }
+      - { label: "متن کامل", name: "body", widget: "markdown" }
+
+  - name: "products"
+    label: "محصولات"
+    folder: "_data/products"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "نام محصول", name: "name", widget: "string" }
+      - { label: "توضیحات", name: "desc", widget: "text" }
+      - { label: "قیمت", name: "price", widget: "string", default: "رایگان" }
+      - { label: "آیکون", name: "icon", widget: "string", default: "fa-cube" }
+      - { label: "برچسب", name: "tag", widget: "string", default: "جدید" }
+      - { label: "تصویر", name: "image", widget: "image", required: false }
+      - { label: "تاریخ بروزرسانی", name: "updated", widget: "datetime", default: "{{now}}" }

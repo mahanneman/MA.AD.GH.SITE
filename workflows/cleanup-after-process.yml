@@ -1,0 +1,43 @@
+name: Cleanup After Process
+
+on:
+  workflow_run:
+    workflows: ["Process Pending Orders"]
+    types:
+      - completed
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    if: always()   # ← همیشه اجرا شود، حتی اگر workflow_run شکست خورده باشد
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 🚀 Run cleanup scheduler (60s delay)
+        run: python scripts/cleanup_scheduler.py 60
+        continue-on-error: true   # ← اجازه دهید حتی با خطا ادامه یابد
+
+      - name: 💾 Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add member/orders/pendingorder.json member/orders/pendingorder-sender.json || echo "No such files"
+          git add notify/notify.json notify/historynotify.json 2>/dev/null || echo "Notify files not found, skipping"
+          git commit -m "🗑️ Auto-cleanup queues and history" || echo "No changes to commit"
+          git push origin main || echo "Push failed"
+          

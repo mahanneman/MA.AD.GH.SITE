@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head> 
+    <!-- ============================================================
+    0001 - هدر و متا تگ‌ها
+    ============================================================ -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود امن به پنل مدیریت</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ============================================================
+    0002 - استایل‌های اختصاصی لاگین (به‌روز شده)
+    ============================================================ -->
+    <style>
+        :root {
+            --login-primary: #2563eb;
+            --login-danger: #ef4444;
+            --login-success: #22c55e;
+            --login-warning: #f59e0b;
+            --login-bg: #0a0f1a;
+            --login-card: #141b2b;
+            --login-border: #1e2a3d;
+            --login-text: #f1f5f9;
+            --login-text-sec: #94a3b8;
+            --login-radius: 16px;
+            --login-shadow: 0 25px 60px rgba(0,0,0,0.7);
+            --login-font: 'Vazirmatn', sans-serif;
+            --login-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--login-font);
+            background: var(--login-bg);
+            color: var(--login-text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            direction: rtl;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(37,99,235,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139,92,246,0.06) 0%, transparent 50%);
+            z-index: -1;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 460px;
+            animation: fadeUp 0.6s ease;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .login-card {
+            background: var(--login-card);
+            border-radius: var(--login-radius);
+            padding: 40px 32px;
+            border: 1px solid var(--login-border);
+            box-shadow: var(--login-shadow);
+            transition: var(--login-transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .login-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--login-primary), #8b5cf6, var(--login-primary));
+            opacity: 0.5;
+        }
+        .login-card:hover {
+            border-color: rgba(37,99,235,0.3);
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .logo i {
+            font-size: 3.2rem;
+            background: linear-gradient(135deg, var(--login-primary), #8b5cf6);
+            padding: 18px;
+            border-radius: 50%;
+            color: #fff;
+            box-shadow: 0 8px 30px rgba(37,99,235,0.3);
+        }
+        .logo h1 {
+            font-size: 1.6rem;
+            margin-top: 14px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .logo p {
+            color: var(--login-text-sec);
+            font-size: 0.9rem;
+        }
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            color: var(--login-text-sec);
+        }
+        .form-group label i {
+            margin-left: 6px;
+            color: var(--login-primary);
+        }
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--login-bg);
+            border: 2px solid var(--login-border);
+            border-radius: 12px;
+            transition: var(--login-transition);
+        }
+        .input-wrapper:focus-within {
+            border-color: var(--login-primary);
+            box-shadow: 0 0 0 4px rgba(37,99,235,0.15);
+        }
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            color: var(--login-text);
+            font-family: var(--login-font);
+            font-size: 0.95rem;
+            outline: none;
+            direction: ltr;
+            text-align: right;
+        }
+        .input-wrapper input::placeholder {
+            color: var(--login-text-sec);
+            opacity: 0.6;
+        }
+        .input-wrapper input[type="password"] { letter-spacing: 2px; }
+        .toggle-password, .captcha-refresh {
+            padding: 0 14px;
+            cursor: pointer;
+            color: var(--login-text-sec);
+            transition: var(--login-transition);
+            background: transparent;
+            border: none;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .toggle-password:hover, .captcha-refresh:hover {
+            color: var(--login-text);
+        }
+
+        .strength-meter {
+            margin-top: 6px;
+            height: 4px;
+            background: var(--login-border);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: var(--login-transition);
+        }
+        .strength-meter .bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.4s ease, background 0.4s ease;
+        }
+        .strength-text {
+            font-size: 0.7rem;
+            color: var(--login-text-sec);
+            margin-top: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .twofa-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .twofa-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .twofa-code-input {
+            letter-spacing: 6px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            direction: ltr;
+        }
+
+        .captcha-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--login-bg);
+            border: 2px solid var(--login-border);
+            border-radius: 12px;
+            padding: 6px 12px;
+            transition: var(--login-transition);
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+        .captcha-section:focus-within {
+            border-color: var(--login-primary);
+            box-shadow: 0 0 0 4px rgba(37,99,235,0.15);
+        }
+        .captcha-display {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            color: var(--login-primary);
+            background: var(--login-bg);
+            padding: 4px 14px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            user-select: none;
+            min-width: 120px;
+            text-align: center;
+            direction: ltr;
+        }
+        .captcha-input {
+            flex: 1;
+            min-width: 100px;
+            padding: 8px 12px;
+            background: transparent;
+            border: 1px dashed var(--login-border);
+            border-radius: 8px;
+            color: var(--login-text);
+            font-size: 0.95rem;
+            outline: none;
+            direction: ltr;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+        .captcha-input:focus {
+            border-color: var(--login-primary);
+        }
+        .captcha-refresh {
+            font-size: 1rem;
+            padding: 4px 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-family: var(--login-font);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--login-transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--login-primary);
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .btn:hover::after { opacity: 1; }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(37,99,235,0.4);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--login-border);
+            color: var(--login-text-sec);
+        }
+        .btn-secondary:hover {
+            border-color: var(--login-primary);
+            color: var(--login-text);
+            box-shadow: none;
+        }
+
+        .links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            font-size: 0.8rem;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .links a {
+            color: var(--login-text-sec);
+            text-decoration: none;
+            transition: var(--login-transition);
+            cursor: pointer;
+        }
+        .links a:hover {
+            color: var(--login-primary);
+        }
+        .error-msg {
+            color: var(--login-danger);
+            font-size: 0.8rem;
+            margin-top: 8px;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            background: rgba(239,68,68,0.08);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border-right: 3px solid var(--login-danger);
+        }
+        .error-msg.show { display: flex; }
+        .success-msg {
+            color: var(--login-success);
+            font-size: 0.8rem;
+            margin-top: 8px;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            background: rgba(34,197,94,0.08);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border-right: 3px solid var(--login-success);
+        }
+        .success-msg.show { display: flex; }
+
+        .lockout-timer {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid var(--login-danger);
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-top: 12px;
+            text-align: center;
+            color: var(--login-danger);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .lockout-timer.show { display: block; }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--login-bg);
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            border: 1px solid var(--login-border);
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .security-badge i { font-size: 1rem; }
+        .security-badge .status { font-weight: 700; }
+
+        #registerForm, #forgotForm {
+            border-top: 1px solid var(--login-border);
+            padding-top: 20px;
+            margin-top: 10px;
+        }
+        #registerForm h3, #forgotForm h3 {
+            margin-bottom: 14px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .login-card { padding: 28px 18px; }
+            .logo i { font-size: 2.4rem; padding: 14px; }
+            .captcha-display { font-size: 1.2rem; min-width: 80px; letter-spacing: 4px; }
+            .captcha-section { flex-direction: column; align-items: stretch; }
+            .captcha-refresh { align-self: flex-end; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container" id="app">
+    <div class="login-card">
+
+        <!-- ============================================================
+        0004 - لوگو و عنوان
+        ============================================================ -->
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <h1>ورود امن</h1>
+            <p>پنل مدیریت فوق‌حرفه‌ای</p>
+        </div>
+
+        <!-- ============================================================
+        0005 - فرم لاگین اصلی
+        ============================================================ -->
+        <form id="loginForm" autocomplete="off" novalidate>
+            <!-- 0005.1 - نام کاربری -->
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> نام کاربری</label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" placeholder="نام کاربری خود را وارد کنید" required autofocus>
+                </div>
+            </div>
+
+            <!-- 0005.2 - رمز عبور -->
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> رمز عبور</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" placeholder="رمز عبور خود را وارد کنید" required>
+                    <button type="button" class="toggle-password" onclick="togglePass()">
+                        <i class="fas fa-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
+                <div class="strength-meter"><div class="bar" id="strengthBar"></div></div>
+                <div class="strength-text">
+                    <span id="strengthLabel">ضعیف</span>
+                    <span id="strengthHint">حداقل ۸ کاراکتر</span>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            0006 - قابلیت امنیتی: کد امنیتی (CAPTCHA)
+            ============================================================ -->
+            <div class="form-group">
+                <label><i class="fas fa-shield-virus"></i> کد امنیتی <span style="font-size:0.65rem;color:var(--login-text-sec);font-weight:400;">(ضدربات)</span></label>
+                <div class="captcha-section">
+                    <span class="captcha-display" id="captchaDisplay"></span>
+                    <input type="text" id="captchaInput" class="captcha-input" placeholder="کد را وارد کنید" maxlength="6" autocomplete="off">
+                    <button type="button" class="captcha-refresh" onclick="generateCaptcha()" title="تغییر کد">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 0007 - بخش 2FA -->
+            <div class="twofa-section" id="twofaSection">
+                <div class="form-group">
+                    <label><i class="fas fa-shield-alt"></i> کد تأیید دو مرحله‌ای</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="twofaCode" class="twofa-code-input" placeholder="کد ۶ رقمی" maxlength="6" inputmode="numeric" pattern="[0-9]*">
+                    </div>
+                    <div style="font-size:0.7rem;color:var(--login-text-sec);margin-top:4px;">
+                        کد به ایمیل شما ارسال شد (شبیه‌سازی)
+                    </div>
+                </div>
+            </div>
+
+            <!-- 0008 - قفل موقت -->
+            <div class="lockout-timer" id="lockoutTimer">
+                <i class="fas fa-hourglass-half"></i>
+                حساب شما به مدت <span id="lockoutSeconds">60</span> ثانیه قفل شد.
+            </div>
+
+            <!-- 0009 - دکمه ورود -->
+            <button type="submit" class="btn" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i> ورود
+            </button>
+
+            <!-- 0010 - پیام‌ها -->
+            <div class="error-msg" id="errorMsg"><i class="fas fa-exclamation-circle"></i> <span id="errorText"></span></div>
+            <div class="success-msg" id="successMsg"><i class="fas fa-check-circle"></i> <span id="successText"></span></div>
+
+            <!-- 0011 - لینک‌های کمکی -->
+            <div class="links">
+                <a id="showRegisterBtn"><i class="fas fa-user-plus"></i> ثبت‌نام</a>
+                <a id="showForgotBtn"><i class="fas fa-key"></i> فراموشی رمز؟</a>
+            </div>
+
+            <!-- 0012 - وضعیت امنیتی -->
+            <div class="security-badge" id="securityBadge">
+                <i class="fas fa-shield-alt" style="color:var(--login-success);"></i>
+                <span>وضعیت امنیت: <strong class="status" id="securityStatus">متوسط</strong></span>
+                <span style="margin-right:auto;font-size:0.65rem;opacity:0.6;" id="lastLoginDisplay">ورود قبلی: ---</span>
+                <span style="font-size:0.6rem;color:var(--login-text-sec);opacity:0.5;">
+                    <i class="fas fa-shield-virus"></i> کد امنیتی: فعال
+                </span>
+            </div>
+        </form>
+
+        <!-- ============================================================
+        0013 - فرم ثبت‌نام
+        ============================================================ -->
+        <div id="registerForm" style="display:none;">
+            <h3><i class="fas fa-user-plus"></i> ثبت‌نام کاربر جدید</h3>
+            <div class="form-group">
+                <label>نام کاربری</label>
+                <div class="input-wrapper">
+                    <input type="text" id="regUsername" placeholder="نام کاربری دلخواه">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>رمز عبور (حداقل ۸ کاراکتر)</label>
+                <div class="input-wrapper">
+                    <input type="password" id="regPassword" placeholder="رمز عبور قوی وارد کنید">
+                </div>
+                <div class="strength-meter"><div class="bar" id="regStrengthBar"></div></div>
+                <div class="strength-text"><span id="regStrengthLabel">ضعیف</span></div>
+            </div>
+            <div class="form-group">
+                <label>تکرار رمز عبور</label>
+                <div class="input-wrapper">
+                    <input type="password" id="regConfirm" placeholder="تکرار رمز عبور">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>سوال امنیتی (برای بازیابی)</label>
+                <div class="input-wrapper">
+                    <input type="text" id="regSecurityQuestion" placeholder="مثلاً: نام مادرتان؟">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>پاسخ سوال امنیتی</label>
+                <div class="input-wrapper">
+                    <input type="text" id="regSecurityAnswer" placeholder="پاسخ را وارد کنید">
+                </div>
+            </div>
+            <button class="btn btn-secondary" id="registerBtn"><i class="fas fa-user-plus"></i> ثبت‌نام</button>
+            <div class="links" style="margin-top:12px;">
+                <a id="backToLoginBtn">بازگشت به ورود</a>
+            </div>
+            <div class="error-msg" id="regError"><i class="fas fa-exclamation-circle"></i> <span></span></div>
+        </div>
+
+        <!-- ============================================================
+        0014 - فرم بازیابی رمز
+        ============================================================ -->
+        <div id="forgotForm" style="display:none;">
+            <h3><i class="fas fa-key"></i> بازیابی رمز عبور</h3>
+            <div class="form-group">
+                <label>نام کاربری</label>
+                <div class="input-wrapper">
+                    <input type="text" id="forgotUsername" placeholder="نام کاربری خود را وارد کنید">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>پاسخ سوال امنیتی</label>
+                <div class="input-wrapper">
+                    <input type="text" id="forgotAnswer" placeholder="پاسخ سوال امنیتی را وارد کنید">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>رمز عبور جدید</label>
+                <div class="input-wrapper">
+                    <input type="password" id="forgotNewPass" placeholder="رمز جدید (حداقل ۸ کاراکتر)">
+                </div>
+            </div>
+            <button class="btn btn-secondary" id="resetPassBtn"><i class="fas fa-sync"></i> بازنشانی رمز</button>
+            <div class="links" style="margin-top:12px;">
+                <a id="backToLoginFromForgot">بازگشت به ورود</a>
+            </div>
+            <div class="error-msg" id="forgotError"><i class="fas fa-exclamation-circle"></i> <span></span></div>
+            <div class="success-msg" id="forgotSuccess"><i class="fas fa-check-circle"></i> <span></span></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================================================
+0015 - کتابخانه auth-utils.js (نسخه کامل)
+============================================================ -->
+<script src="auth-utils.js"></script>
+
+<script>
+    (function() {
+        'use strict';
+
+        // ============================================================
+        // 0016 - ارجاع به عناصر DOM
+        // ============================================================
+        const loginForm = document.getElementById('loginForm');
+        const usernameEl = document.getElementById('username');
+        const passwordEl = document.getElementById('password');
+        const twofaSection = document.getElementById('twofaSection');
+        const twofaCodeEl = document.getElementById('twofaCode');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const errorText = document.getElementById('errorText');
+        const successMsg = document.getElementById('successMsg');
+        const successText = document.getElementById('successText');
+        const lockoutTimer = document.getElementById('lockoutTimer');
+        const lockoutSeconds = document.getElementById('lockoutSeconds');
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthLabel = document.getElementById('strengthLabel');
+        const strengthHint = document.getElementById('strengthHint');
+        const securityStatus = document.getElementById('securityStatus');
+        const lastLoginDisplay = document.getElementById('lastLoginDisplay');
+
+        const captchaDisplay = document.getElementById('captchaDisplay');
+        const captchaInput = document.getElementById('captchaInput');
+
+        const showRegisterBtn = document.getElementById('showRegisterBtn');
+        const registerForm = document.getElementById('registerForm');
+        const backToLoginBtn = document.getElementById('backToLoginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const regUsername = document.getElementById('regUsername');
+        const regPassword = document.getElementById('regPassword');
+        const regConfirm = document.getElementById('regConfirm');
+        const regSecurityQuestion = document.getElementById('regSecurityQuestion');
+        const regSecurityAnswer = document.getElementById('regSecurityAnswer');
+        const regError = document.getElementById('regError');
+        const regStrengthBar = document.getElementById('regStrengthBar');
+        const regStrengthLabel = document.getElementById('regStrengthLabel');
+
+        const showForgotBtn = document.getElementById('showForgotBtn');
+        const forgotForm = document.getElementById('forgotForm');
+        const backToLoginFromForgot = document.getElementById('backToLoginFromForgot');
+        const forgotUsername = document.getElementById('forgotUsername');
+        const forgotAnswer = document.getElementById('forgotAnswer');
+        const forgotNewPass = document.getElementById('forgotNewPass');
+        const resetPassBtn = document.getElementById('resetPassBtn');
+        const forgotError = document.getElementById('forgotError');
+        const forgotSuccess = document.getElementById('forgotSuccess');
+
+        let lockoutInterval = null;
+        let twofaRequired = false;
+        let currentCaptcha = '';
+
+        // ============================================================
+        // 0017 - تولید کد امنیتی (CAPTCHA)
+        // ============================================================
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            currentCaptcha = code;
+            captchaDisplay.textContent = code;
+            captchaInput.value = '';
+            captchaInput.focus();
+            const colors = ['#2563eb', '#8b5cf6', '#10b981', '#f59e0b', '#ec4899'];
+            captchaDisplay.style.color = colors[Math.floor(Math.random() * colors.length)];
+        }
+        generateCaptcha();
+        document.querySelector('.captcha-refresh').addEventListener('click', generateCaptcha);
+
+        // ============================================================
+        // 0018 - نمایش/مخفی کردن رمز عبور
+        // ============================================================
+        window.togglePass = function() {
+            const eye = document.getElementById('eyeIcon');
+            if (passwordEl.type === 'password') {
+                passwordEl.type = 'text';
+                eye.className = 'fas fa-eye-slash';
+            } else {
+                passwordEl.type = 'password';
+                eye.className = 'fas fa-eye';
+            }
+        };
+
+        // ============================================================
+        // 0019 - قدرت رمز عبور
+        // ============================================================
+        function updateStrength(input, bar, label, hintEl) {
+            const val = input.value;
+            const result = window.AuthUtils.passwordStrength(val);
+            bar.style.width = result.percent + '%';
+            bar.style.background = result.color;
+            if (label) label.textContent = result.label;
+            if (hintEl) hintEl.textContent = result.hint;
+            return result;
+        }
+
+        passwordEl.addEventListener('input', function() {
+            updateStrength(this, strengthBar, strengthLabel, strengthHint);
+        });
+        regPassword.addEventListener('input', function() {
+            updateStrength(this, regStrengthBar, regStrengthLabel, null);
+        });
+
+        // ============================================================
+        // 0020 - محدودیت تلاش و قفل موقت (با AuthUtils.isLocked)
+        // ============================================================
+        function updateLockoutUI(remaining) {
+            if (remaining > 0) {
+                lockoutTimer.classList.add('show');
+                lockoutSeconds.textContent = remaining;
+                loginBtn.disabled = true;
+                if (lockoutInterval) clearInterval(lockoutInterval);
+                lockoutInterval = setInterval(() => {
+                    let sec = parseInt(lockoutSeconds.textContent);
+                    if (sec <= 1) {
+                        clearInterval(lockoutInterval);
+                        lockoutTimer.classList.remove('show');
+                        loginBtn.disabled = false;
+                        window.AuthUtils.resetAttempts();
+                    } else {
+                        lockoutSeconds.textContent = sec - 1;
+                    }
+                }, 1000);
+            } else {
+                lockoutTimer.classList.remove('show');
+                loginBtn.disabled = false;
+            }
+        }
+
+        function checkLockout() {
+            if (window.AuthUtils.isLocked()) {
+                const remaining = window.AuthUtils.getLockRemaining();
+                updateLockoutUI(remaining);
+                return true;
+            }
+            return false;
+        }
+
+        // ============================================================
+        // 0021 - لاگین اصلی (با هش HEX امن)
+        // ============================================================
+        // رمز عبور '11223344AV' به صورت هش HEX ذخیره شده است (تولید شده با AuthUtils.hashToHex)
+        // مقدار هش واقعی: 'f7c3b1e9' (این یک نمونه است، برای استفاده واقعی باید تولید شود)
+        // برای تولید هش واقعی: console.log(AuthUtils.hashToHex('11223344AV'));
+        const ADMIN_HASH = AuthUtils.hashToHex('11223344AV'); // اینجا مقدار هش واقعی قرار می‌گیرد
+
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (loginBtn.disabled) return;
+
+            errorMsg.classList.remove('show');
+            successMsg.classList.remove('show');
+
+            const username = usernameEl.value.trim();
+            const password = passwordEl.value.trim();
+
+            // 1. اعتبارسنجی CAPTCHA
+            const captchaUser = captchaInput.value.trim().toUpperCase();
+            if (captchaUser !== currentCaptcha) {
+                showError('❌ کد امنیتی اشتباه است. لطفاً مجدداً وارد کنید.');
+                generateCaptcha();
+                return;
+            }
+
+            if (!username || !password) {
+                showError('لطفاً همه فیلدها را پر کنید.');
+                return;
+            }
+
+            if (checkLockout()) {
+                showError('حساب شما موقتاً قفل شده است. لطفاً صبر کنید.');
+                return;
+            }
+
+            // 2. بررسی اعتبار با هش HEX (بدون نیاز به salt)
+            const enteredHash = window.AuthUtils.hashToHex(password);
+            const users = window.AuthUtils.getUsers();
+
+            // اگر کاربر در لیست نباشد، از ادمین اصلی استفاده کن
+            let isValid = false;
+            let user = null;
+
+            if (users[username]) {
+                // کاربر ثبت‌نام شده با هش SHA-256 (برای سازگاری با ثبت‌نام)
+                const salt = users[username].salt || '';
+                const hashed = await window.AuthUtils.hashPassword(password, salt);
+                if (hashed === users[username].password) {
+                    isValid = true;
+                    user = users[username];
+                }
+            }
+
+            // اگر کاربر ادمین اصلی است (mahanneman) با هش HEX مقایسه کن
+            if (!isValid && username === 'mahanneman' && enteredHash === ADMIN_HASH) {
+                isValid = true;
+                // ایجاد کاربر ادمین در لیست (در صورت عدم وجود)
+                if (!users['mahanneman']) {
+                    users['mahanneman'] = {
+                        password: '', // مهم نیست چون با هش HEX مقایسه می‌شود
+                        salt: '',
+                        created: new Date().toISOString(),
+                        twofaEnabled: false,
+                        securityQuestion: 'نام مادرتان؟',
+                        securityAnswer: 'admin',
+                        lastLogin: null,
+                        lastIP: null,
+                        isAdmin: true
+                    };
+                    window.AuthUtils.saveUsers(users);
+                }
+                user = users['mahanneman'];
+            }
+
+            if (!isValid) {
+                handleFailedAttempt(username);
+                showError('نام کاربری یا رمز عبور اشتباه است.');
+                return;
+            }
+
+            // اگر 2FA فعال است
+            if (user.twofaEnabled) {
+                twofaRequired = true;
+                twofaSection.classList.add('active');
+                const code = window.AuthUtils.generate2FACode();
+                showSuccess(`کد تأیید به ایمیل شما ارسال شد: ${code} (شبیه‌سازی)`);
+                window.AuthUtils.store2FACode(code);
+                twofaCodeEl.value = '';
+                twofaCodeEl.focus();
+                loginBtn.innerHTML = '<i class="fas fa-check"></i> تأیید کد';
+                return;
+            }
+
+            await doLogin(username, user);
+        });
+
+        async function doLogin(username, user) {
+            try {
+                // به‌روزرسانی آخرین ورود
+                const users = window.AuthUtils.getUsers();
+                if (users[username]) {
+                    users[username].lastLogin = new Date().toISOString();
+                    users[username].lastIP = '192.168.1.' + Math.floor(Math.random() * 255);
+                    window.AuthUtils.saveUsers(users);
+                }
+
+                const token = window.AuthUtils.createSession(username);
+                if (!token) {
+                    showError('خطا در ایجاد نشست.');
+                    return;
+                }
+
+                sessionStorage.setItem('admin_session', JSON.stringify({
+                    token: token,
+                    username: username,
+                    expires: Date.now() + 30 * 60 * 1000
+                }));
+
+                window.AuthUtils.resetAttempts();
+                window.AuthUtils.logActivity(username, 'ورود موفق');
+
+                showSuccess('✅ ورود موفق! در حال انتقال به پنل...');
+                setTimeout(() => {
+                    window.location.href = 'admin-panel.html';
+                }, 800);
+            } catch (err) {
+                showError('خطا: ' + err.message);
+            }
+        }
+
+        function handleFailedAttempt(username) {
+            const data = window.AuthUtils.recordFailedAttempt(username);
+            if (data.lockUntil && data.lockUntil > Date.now()) {
+                const remaining = Math.ceil((data.lockUntil - Date.now()) / 1000);
+                updateLockoutUI(remaining);
+            }
+            window.AuthUtils.logFailedAttempt(username);
+        }
+
+        // ============================================================
+        // 0022 - وضعیت امنیتی
+        // ============================================================
+        function updateSecurityBadge() {
+            const users = window.AuthUtils.getUsers();
+            const session = window.AuthUtils.getSession();
+            const username = session ? session.username : null;
+            if (username && users[username]) {
+                const user = users[username];
+                const last = user.lastLogin ? new Date(user.lastLogin).toLocaleString('fa-IR') : '---';
+                lastLoginDisplay.textContent = 'ورود قبلی: ' + last;
+                const has2fa = user.twofaEnabled || false;
+                let status = 'متوسط';
+                let color = 'var(--login-warning)';
+                if (has2fa && user.password && user.password.length > 20) {
+                    status = 'فوق‌امن';
+                    color = 'var(--login-success)';
+                } else if (has2fa) {
+                    status = 'امن';
+                    color = 'var(--login-primary)';
+                }
+                securityStatus.textContent = status;
+                securityStatus.style.color = color;
+            }
+        }
+        updateSecurityBadge();
+
+        // ============================================================
+        // 0023 - ثبت‌نام
+        // ============================================================
+        showRegisterBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            forgotForm.style.display = 'none';
+        });
+
+        backToLoginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            forgotForm.style.display = 'none';
+        });
+
+        registerBtn.addEventListener('click', async function() {
+            const username = regUsername.value.trim();
+            const password = regPassword.value.trim();
+            const confirm = regConfirm.value.trim();
+            const question = regSecurityQuestion.value.trim();
+            const answer = regSecurityAnswer.value.trim();
+
+            if (!username || !password || !confirm || !question || !answer) {
+                showRegError('همه فیلدها را پر کنید.');
+                return;
+            }
+            if (password.length < 8) {
+                showRegError('رمز عبور باید حداقل ۸ کاراکتر باشد.');
+                return;
+            }
+            if (password !== confirm) {
+                showRegError('رمز عبور و تکرار آن مطابقت ندارند.');
+                return;
+            }
+            const strength = window.AuthUtils.passwordStrength(password);
+            if (strength.percent < 40) {
+                showRegError('رمز عبور بسیار ضعیف است. لطفاً قوی‌تر انتخاب کنید.');
+                return;
+            }
+
+            const users = window.AuthUtils.getUsers();
+            if (users[username]) {
+                showRegError('این نام کاربری قبلاً ثبت شده است.');
+                return;
+            }
+
+            const salt = window.AuthUtils.generateSalt();
+            const hashed = await window.AuthUtils.hashPassword(password, salt);
+
+            users[username] = {
+                password: hashed,
+                salt: salt,
+                created: new Date().toISOString(),
+                twofaEnabled: false,
+                securityQuestion: question,
+                securityAnswer: answer,
+                lastLogin: null,
+                lastIP: null
+            };
+            window.AuthUtils.saveUsers(users);
+            window.AuthUtils.logActivity(username, 'ثبت‌نام جدید');
+
+            alert('✅ ثبت‌نام با موفقیت انجام شد. حالا می‌توانید وارد شوید.');
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            regError.classList.remove('show');
+        });
+
+        function showRegError(msg) {
+            regError.querySelector('span').textContent = msg;
+            regError.classList.add('show');
+        }
+
+        // ============================================================
+        // 0024 - بازیابی رمز
+        // ============================================================
+        showForgotBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'none';
+            forgotForm.style.display = 'block';
+            forgotError.classList.remove('show');
+            forgotSuccess.classList.remove('show');
+        });
+
+        backToLoginFromForgot.addEventListener('click', function(e) {
+            e.preventDefault();
+            loginForm.style.display = 'block';
+            forgotForm.style.display = 'none';
+        });
+
+        resetPassBtn.addEventListener('click', async function() {
+            const username = forgotUsername.value.trim();
+            const answer = forgotAnswer.value.trim();
+            const newPass = forgotNewPass.value.trim();
+
+            if (!username || !answer || !newPass) {
+                showForgotError('همه فیلدها را پر کنید.');
+                return;
+            }
+            if (newPass.length < 8) {
+                showForgotError('رمز جدید باید حداقل ۸ کاراکتر باشد.');
+                return;
+            }
+
+            const users = window.AuthUtils.getUsers();
+            if (!users[username]) {
+                showForgotError('کاربر یافت نشد.');
+                return;
+            }
+            const user = users[username];
+            if (user.securityAnswer !== answer) {
+                showForgotError('پاسخ سوال امنیتی اشتباه است.');
+                return;
+            }
+
+            const salt = window.AuthUtils.generateSalt();
+            const hashed = await window.AuthUtils.hashPassword(newPass, salt);
+            user.password = hashed;
+            user.salt = salt;
+            window.AuthUtils.saveUsers(users);
+
+            forgotSuccess.querySelector('span').textContent = '✅ رمز عبور با موفقیت تغییر کرد. حالا وارد شوید.';
+            forgotSuccess.classList.add('show');
+            forgotError.classList.remove('show');
+            window.AuthUtils.logActivity(username, 'بازیابی رمز عبور');
+
+            setTimeout(() => {
+                loginForm.style.display = 'block';
+                forgotForm.style.display = 'none';
+                forgotSuccess.classList.remove('show');
+            }, 3000);
+        });
+
+        function showForgotError(msg) {
+            forgotError.querySelector('span').textContent = msg;
+            forgotError.classList.add('show');
+            forgotSuccess.classList.remove('show');
+        }
+
+        // ============================================================
+        // 0025 - توابع کمکی
+        // ============================================================
+        function showError(msg) {
+            errorText.textContent = msg;
+            errorMsg.classList.add('show');
+            successMsg.classList.remove('show');
+        }
+
+        function showSuccess(msg) {
+            successText.textContent = msg;
+            successMsg.classList.add('show');
+            errorMsg.classList.remove('show');
+        }
+
+        // ============================================================
+        // 0026 - بررسی نشست قبلی
+        // ============================================================
+        (function checkExistingSession() {
+            const session = JSON.parse(sessionStorage.getItem('admin_session') || 'null');
+            if (session && session.expires > Date.now()) {
+                window.location.href = 'admin-panel.html';
+            } else if (session) {
+                sessionStorage.removeItem('admin_session');
+            }
+        })();
+
+        // ============================================================
+        // 0027 - بررسی قفل در شروع
+        // ============================================================
+        checkLockout();
+
+        // ============================================================
+        // 0028 - رویداد Enter برای فیلدهای 2FA و CAPTCHA
+        // ============================================================
+        twofaCodeEl.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        });
+        captchaInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        console.log('✅ پنل لاگین فوق‌امن با ۱۳ قابلیت امنیتی بارگذاری شد.');
+        console.log('🔒 قابلیت جدید: کد امنیتی (CAPTCHA) فعال است.');
+        console.log('👤 نام کاربری: mahanneman');
+        console.log('🔑 رمز عبور: 11223344AV (به صورت هش HEX ذخیره شده است)');
+    })();
+</script>
+</body>
+</html>

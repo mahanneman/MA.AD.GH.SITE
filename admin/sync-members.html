@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>همگام‌سازی کاربران و سفارشات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            direction: rtl;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .card {
+            background: #141b2b;
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid #1e2a3d;
+            margin-bottom: 20px;
+        }
+        h1 { font-size: 1.8rem; display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        h1 i { color: #2563eb; }
+        .btn {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #8b5cf6);
+            color: #fff;
+        }
+        .btn-primary:hover { transform: scale(1.03); }
+        .btn-success {
+            background: #10b981;
+            color: #fff;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        .log-area {
+            background: #0a0f1a;
+            border-radius: 12px;
+            padding: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            border: 1px solid #1e2a3d;
+            font-family: 'Courier New', monospace;
+            direction: ltr;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .log-area .success { color: #10b981; }
+        .log-area .error { color: #ef4444; }
+        .log-area .info { color: #60a5fa; }
+        .log-area .warning { color: #f59e0b; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .stat-item {
+            background: #0a0f1a;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #1e2a3d;
+        }
+        .stat-item .number { font-size: 1.8rem; font-weight: 800; color: #2563eb; }
+        .stat-item .label { font-size: 0.75rem; color: #94a3b8; }
+        .token-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+        .token-status.ok { background: rgba(16,185,129,0.1); border: 1px solid #10b981; color: #10b981; }
+        .token-status.fail { background: rgba(239,68,68,0.1); border: 1px solid #ef4444; color: #ef4444; }
+        .token-status input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #1e2a3d;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            font-family: 'Vazirmatn', sans-serif;
+            direction: ltr;
+        }
+        .token-status input:focus { outline: none; border-color: #2563eb; }
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .footer { text-align: center; color: #94a3b8; font-size: 0.75rem; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1><i class="fas fa-sync-alt"></i> همگام‌سازی کاربران و سفارشات</h1>
+        <p style="color:#94a3b8;margin-bottom:16px;">
+            این ابزار تمام کاربران (پوشه‌های member/memberXXXX) را اسکن کرده و
+            اطلاعات آن‌ها را در فایل‌های مرکزی جدید جمع‌آوری می‌کند:
+            <code>member/orders/pendingorder.json</code> (سفارشات در صف) و
+            <code>member/orders/30day-autodelete-orderlist.json</code> (بکاپ ماهانه).
+        </p>
+
+        <!-- وضعیت توکن -->
+        <div class="token-status fail" id="tokenStatus">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>توکن گیت‌هاب یافت نشد. لطفاً توکن را وارد کنید:</span>
+            <input type="text" id="tokenInput" placeholder="github_pat_xxx..." style="flex:2;">
+            <button class="btn btn-primary" onclick="saveToken()" style="padding:8px 20px;"><i class="fas fa-save"></i> ذخیره</button>
+        </div>
+
+        <!-- آمار -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-item"><div class="number" id="statUsers">0</div><div class="label">تعداد کاربران</div></div>
+            <div class="stat-item"><div class="number" id="statOrders">0</div><div class="label">تعداد سفارشات</div></div>
+            <div class="stat-item"><div class="number" id="statFiles">0</div><div class="label">فایل‌های خوانده شده</div></div>
+        </div>
+
+        <!-- دکمه‌ها -->
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+            <button class="btn btn-primary" id="syncBtn" onclick="startSync()"><i class="fas fa-sync-alt"></i> شروع همگام‌سازی</button>
+            <button class="btn btn-success" onclick="exportData()"><i class="fas fa-download"></i> دانلود JSON</button>
+            <button class="btn btn-danger" onclick="clearLog()"><i class="fas fa-eraser"></i> پاک کردن لاگ</button>
+        </div>
+
+        <!-- لاگ عملیات -->
+        <div class="log-area" id="logArea">⏳ منتظر شروع...</div>
+    </div>
+    <div class="footer">🔒 اطلاعات شما فقط در مرورگر ذخیره می‌شود و به سرور دیگری ارسال نمی‌شود.</div>
+</div>
+
+<script>
+    (function() {
+        'use strict';
+
+        const REPO_OWNER = 'mahanneman';
+        const REPO_NAME = 'MA.AD.GH.SITE';
+        const REPO_PATH = `repos/${REPO_OWNER}/${REPO_NAME}/contents`;
+        let TOKEN = localStorage.getItem('github_token') || '';
+
+        // ===== DOM =====
+        const logArea = document.getElementById('logArea');
+        const syncBtn = document.getElementById('syncBtn');
+        const statUsers = document.getElementById('statUsers');
+        const statOrders = document.getElementById('statOrders');
+        const statFiles = document.getElementById('statFiles');
+
+        // ===== توکن =====
+        function updateTokenUI() {
+            const status = document.getElementById('tokenStatus');
+            if (TOKEN) {
+                status.className = 'token-status ok';
+                status.innerHTML = `<i class="fas fa-check-circle"></i> <span>✅ توکن معتبر است (آخرین ۴ کاراکتر: ...${TOKEN.slice(-4)})</span>`;
+                document.getElementById('tokenInput').value = '';
+            } else {
+                status.className = 'token-status fail';
+                status.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>توکن گیت‌هاب یافت نشد. لطفاً توکن را وارد کنید:</span>
+                    <input type="text" id="tokenInput" placeholder="github_pat_xxx..." style="flex:2;">
+                    <button class="btn btn-primary" onclick="saveToken()" style="padding:8px 20px;"><i class="fas fa-save"></i> ذخیره</button>
+                `;
+            }
+        }
+
+        window.saveToken = function() {
+            const input = document.getElementById('tokenInput');
+            if (input && input.value.trim()) {
+                TOKEN = input.value.trim();
+                localStorage.setItem('github_token', TOKEN);
+                updateTokenUI();
+                log('✅ توکن با موفقیت ذخیره شد.', 'success');
+            } else {
+                log('❌ لطفاً توکن معتبر وارد کنید.', 'error');
+            }
+        };
+
+        // ===== لاگ =====
+        function log(msg, type = 'info') {
+            const time = new Date().toLocaleTimeString('fa-IR');
+            const colors = {
+                success: 'color:#10b981',
+                error: 'color:#ef4444',
+                warning: 'color:#f59e0b',
+                info: 'color:#60a5fa'
+            };
+            const color = colors[type] || colors.info;
+            logArea.innerHTML += `<span style="${color}">[${time}]</span> ${msg}\n`;
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        window.clearLog = function() {
+            logArea.innerHTML = '🧹 لاگ پاک شد.';
+        };
+
+        // ===== GitHub API =====
+        async function fetchFromGitHub(path) {
+            if (!TOKEN) throw new Error('توکن گیت‌هاب موجود نیست.');
+            const url = `https://api.github.com/${REPO_PATH}/${path}`;
+            const res = await fetch(url, {
+                headers: {
+                    'Authorization': 'token ' + TOKEN,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            if (res.status === 404) return null;
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.message || `خطا: ${res.status}`);
+            }
+            const data = await res.json();
+            const binaryString = atob(data.content);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            const decoder = new TextDecoder('utf-8');
+            const content = decoder.decode(bytes).replace(/^\uFEFF/, '');
+            return { ...data, content };
+        }
+
+        async function saveToGitHub(path, content, sha = null) {
+            if (!TOKEN) throw new Error('توکن گیت‌هاب موجود نیست.');
+            const url = `https://api.github.com/${REPO_PATH}/${path}`;
+            const jsonString = JSON.stringify(content, null, 2);
+            const encoder = new TextEncoder();
+            const encoded = encoder.encode(jsonString);
+            let binary = '';
+            for (let i = 0; i < encoded.length; i++) {
+                binary += String.fromCharCode(encoded[i]);
+            }
+            const base64Content = btoa(binary);
+            const body = {
+                message: `Sync members via admin tool - ${new Date().toISOString()}`,
+                content: base64Content,
+                branch: 'main'
+            };
+            if (sha) body.sha = sha;
+            const res = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'token ' + TOKEN,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify(body)
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.message || `خطا: ${res.status}`);
+            }
+            return await res.json();
+        }
+
+        // ===== لیست پوشه‌های member =====
+        async function listMemberFolders() {
+            const path = 'member';
+            const url = `https://api.github.com/${REPO_PATH}/${path}`;
+            const res = await fetch(url, {
+                headers: {
+                    'Authorization': 'token ' + TOKEN,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            if (!res.ok) throw new Error('خطا در خواندن پوشه member');
+            const data = await res.json();
+            return data
+                .filter(item => item.type === 'dir' && item.name.startsWith('member'))
+                .map(item => item.name);
+        }
+
+        // ============================================================
+        // 0400 - همگام‌سازی اصلی (با مسیرهای جدید)
+        // ============================================================
+        window.startSync = async function() {
+            if (!TOKEN) {
+                log('❌ لطفاً ابتدا توکن گیت‌هاب را وارد کنید.', 'error');
+                return;
+            }
+
+            syncBtn.disabled = true;
+            syncBtn.innerHTML = '<i class="fas fa-spinner spinner"></i> در حال همگام‌سازی...';
+            log('🚀 شروع همگام‌سازی...', 'info');
+
+            try {
+                // ۱. لیست پوشه‌های member
+                log('📂 اسکن پوشه‌های member...', 'info');
+                const folders = await listMemberFolders();
+                log(`🔍 ${folders.length} پوشه پیدا شد: ${folders.join(', ')}`, 'info');
+
+                if (folders.length === 0) {
+                    log('⚠️ هیچ پوشه member یافت نشد.', 'warning');
+                    syncBtn.disabled = false;
+                    syncBtn.innerHTML = '<i class="fas fa-sync-alt"></i> شروع همگام‌سازی';
+                    return;
+                }
+
+                let allUsers = {};
+                let allOrders = [];
+                let filesRead = 0;
+
+                // ۲. برای هر پوشه، info.json و orders.json را بخوان
+                for (const folder of folders) {
+                    const memberId = folder.replace('member', '');
+                    log(`📖 خواندن اطلاعات ${folder}...`, 'info');
+
+                    // info.json
+                    try {
+                        const infoPath = `${folder}/info.json`;
+                        const infoData = await fetchFromGitHub(infoPath);
+                        if (infoData) {
+                            const user = JSON.parse(infoData.content);
+                            allUsers[memberId] = user;
+                            filesRead++;
+                            log(`   ✅ ${folder}/info.json خوانده شد (${user.name || 'بدون نام'})`, 'success');
+                        } else {
+                            log(`   ⚠️ ${folder}/info.json یافت نشد`, 'warning');
+                        }
+                    } catch (e) {
+                        log(`   ❌ خطا در ${folder}/info.json: ${e.message}`, 'error');
+                    }
+
+                    // orders.json
+                    try {
+                        const orderPath = `${folder}/orders.json`;
+                        const orderData = await fetchFromGitHub(orderPath);
+                        if (orderData) {
+                            let orders = JSON.parse(orderData.content);
+                            // پشتیبانی از هر دو ساختار
+                            if (Array.isArray(orders)) {
+                                orders.forEach(o => { if (o) allOrders.push({ ...o, userId: memberId }); });
+                            } else if (orders.orders && Array.isArray(orders.orders)) {
+                                orders.orders.forEach(o => { if (o) allOrders.push({ ...o, userId: memberId }); });
+                            }
+                            filesRead++;
+                            log(`   ✅ ${folder}/orders.json خوانده شد (${orders.length || 0} سفارش)`, 'success');
+                        } else {
+                            log(`   ⚠️ ${folder}/orders.json یافت نشد`, 'warning');
+                        }
+                    } catch (e) {
+                        log(`   ❌ خطا در ${folder}/orders.json: ${e.message}`, 'error');
+                    }
+                }
+
+                // ۳. ذخیره در فایل‌های مرکزی جدید
+                log('💾 ذخیره فایل‌های مرکزی جدید...', 'info');
+
+                // ===== ۳.۱ ذخیره pendingorder.json =====
+                try {
+                    const pendingPath = 'member/orders/pendingorder.json';
+                    
+                    // ساخت لیست سفارشات در صف
+                    const pendingOrders = allOrders.filter(o => 
+                        o.status === 'pending' || o.status === 'paid'
+                    );
+                    
+                    // گروه‌بندی بر اساس کاربر
+                    const pendingByUser = {};
+                    pendingOrders.forEach(order => {
+                        const userId = order.userId;
+                        if (!pendingByUser[userId]) {
+                            pendingByUser[userId] = {
+                                userId: userId,
+                                userName: allUsers[userId]?.name || 'کاربر',
+                                orders: []
+                            };
+                        }
+                        pendingByUser[userId].orders.push(order);
+                    });
+
+                    const pendingData = {
+                        updated: new Date().toISOString(),
+                        total_pending: pendingOrders.length,
+                        orders: Object.values(pendingByUser)
+                    };
+
+                    const existingPending = await fetchFromGitHub(pendingPath);
+                    let sha = existingPending ? existingPending.sha : null;
+                    await saveToGitHub(pendingPath, pendingData, sha);
+                    log(`✅ member/orders/pendingorder.json ذخیره شد (${pendingOrders.length} سفارش در صف)`, 'success');
+                } catch (e) {
+                    log(`❌ خطا در ذخیره pendingorder.json: ${e.message}`, 'error');
+                }
+
+                // ===== ۳.۲ ذخیره 30day-autodelete-orderlist.json =====
+                try {
+                    const backupPath = 'member/orders/30day-autodelete-orderlist.json';
+                    
+                    // گروه‌بندی همه سفارشات بر اساس کاربر
+                    const allByUser = {};
+                    allOrders.forEach(order => {
+                        const userId = order.userId;
+                        if (!allByUser[userId]) {
+                            allByUser[userId] = {
+                                userId: userId,
+                                userName: allUsers[userId]?.name || 'کاربر',
+                                orders: []
+                            };
+                        }
+                        allByUser[userId].orders.push(order);
+                    });
+
+                    const backupData = {
+                        created: new Date().toISOString(),
+                        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                        total_orders: allOrders.length,
+                        users: Object.values(allByUser)
+                    };
+
+                    const existingBackup = await fetchFromGitHub(backupPath);
+                    let sha = existingBackup ? existingBackup.sha : null;
+                    await saveToGitHub(backupPath, backupData, sha);
+                    log(`✅ member/orders/30day-autodelete-orderlist.json ذخیره شد (${allOrders.length} سفارش)`, 'success');
+                } catch (e) {
+                    log(`❌ خطا در ذخیره 30day-autodelete-orderlist.json: ${e.message}`, 'error');
+                }
+
+                // ۴. به‌روزرسانی آمار
+                statUsers.textContent = Object.keys(allUsers).length;
+                statOrders.textContent = allOrders.length;
+                statFiles.textContent = filesRead;
+
+                log(`🎉 همگام‌سازی کامل شد! ${Object.keys(allUsers).length} کاربر و ${allOrders.length} سفارش.`, 'success');
+
+            } catch (e) {
+                log(`❌ خطای کلی: ${e.message}`, 'error');
+                console.error(e);
+            }
+
+            syncBtn.disabled = false;
+            syncBtn.innerHTML = '<i class="fas fa-sync-alt"></i> شروع همگام‌سازی';
+        };
+
+        // ============================================================
+        // 0401 - خروجی JSON (با ساختار جدید)
+        // ============================================================
+        window.exportData = async function() {
+            try {
+                const [pendingData, backupData, userData] = await Promise.all([
+                    fetchFromGitHub('member/orders/pendingorder.json'),
+                    fetchFromGitHub('member/orders/30day-autodelete-orderlist.json'),
+                    fetchFromGitHub('member/id.json')  // اگر هنوز وجود دارد
+                ]);
+
+                if (!pendingData && !backupData) {
+                    log('⚠️ هیچ داده‌ای برای خروجی وجود ندارد.', 'warning');
+                    return;
+                }
+
+                const exportObj = {
+                    pending_orders: pendingData ? JSON.parse(pendingData.content) : null,
+                    backup_orders: backupData ? JSON.parse(backupData.content) : null,
+                    users: userData ? JSON.parse(userData.content) : {},
+                    exported: new Date().toISOString()
+                };
+
+                const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `members-export-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                log('✅ خروجی کامل دانلود شد.', 'success');
+            } catch (e) {
+                log(`❌ خطا در خروجی: ${e.message}`, 'error');
+            }
+        };
+
+        // ============================================================
+        // 0402 - بارگذاری اولیه
+        // ============================================================
+        function init() {
+            updateTokenUI();
+            log('👋 خوش آمدید! برای شروع روی "شروع همگام‌سازی" کلیک کنید.', 'info');
+            log('📌 اطمینان حاصل کنید که توکن گیت‌هاب با دسترسی repo وارد شده است.', 'info');
+            log('📂 فایل‌های جدید: pendingorder.json و 30day-autodelete-orderlist.json در پوشه member/orders/', 'info');
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+
+    })();
+</script>
+</body>
+</html>

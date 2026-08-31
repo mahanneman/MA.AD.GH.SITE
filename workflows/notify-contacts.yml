@@ -1,0 +1,42 @@
+name: Notify New Contact Message
+
+on:
+  push:
+    paths:
+      - 'notify/notify.json'   # فقط وقتی این فایل تغییر کند
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 2
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          FILES=$(git diff --name-only HEAD~1 HEAD | grep 'notify/notify.json' || true)
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+
+      - name: Send new messages
+        if: steps.changed-files.outputs.files != ''
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/send_contact_to_telegram.py   # ← مسیر جدید

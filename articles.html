@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <!-- ===== Meta Tags & SEO ===== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مقالات و پروژه‌های علمی | مهندس ماهان ادهم قزوینی</title>
+    <meta name="description" content="مقالات علمی، پروژه‌های تحقیقاتی و آموزش‌های مهندسی مکانیک در زمینه تحلیل CFD، طراحی سیستم‌های مکانیکی و پرینتر سه‌بعدی">
+    <meta name="keywords" content="مقالات مهندسی مکانیک, پروژه‌های CFD, آموزش سالیدورک, تحلیل اجزاء محدود, مهندس ماهان ادهم قزوینی">
+    <meta name="author" content="ماهان ادهم قزوینی">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+    <link rel="canonical" href="https://mahanadham.ir/articles.html">
+<link rel="stylesheet" href="mobile.css">
+    <!-- ===== Open Graph ===== -->
+    <meta property="og:title" content="مقالات و پروژه‌های علمی | مهندس ماهان ادهم قزوینی">
+    <meta property="og:description" content="مجموعه مقالات تخصصی، پروژه‌های تحقیقاتی و آموزش‌های مهندسی مکانیک در زمینه CFD، طراحی مکانیک و پرینتر سه‌بعدی">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mahanadham.ir/articles.html">
+    <meta property="og:image" content="https://mahanadham.ir/mahanphoto.png">
+    <meta property="og:site_name" content="مهندس ماهان ادهم قزوینی">
+    <meta property="og:locale" content="fa_IR">
+
+    <!-- ===== Twitter ===== -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="مقالات و پروژه‌های علمی | مهندس ماهان ادهم قزوینی">
+    <meta name="twitter:description" content="مجموعه مقالات و پروژه‌های مهندسی مکانیک">
+    <meta name="twitter:image" content="https://mahanadham.ir/mahanphoto.png">
+
+    <!-- ===== Geo ===== -->
+    <meta name="geo.region" content="IR-07">
+    <meta name="geo.placename" content="Tehran">
+    <meta name="geo.position" content="35.6892;51.3890">
+    <meta name="ICBM" content="35.6892, 51.3890">
+
+    <!-- ===== Icons ===== -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="msapplication-TileColor" content="#2c3e50">
+
+    <!-- ===== Fonts & Icons ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- ===== Common Styles (Header, Footer, Menu, Variables) ===== -->
+    <link rel="stylesheet" href="common.css">
+
+    <!-- ===== Articles Page Specific Styles ===== -->
+    <style>
+        /* ============================================================
+           articles.css - استایل‌های اختصاصی صفحه مقالات
+           ============================================================ */
+
+        .articles-container {
+            max-width: 1280px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+        .articles-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .articles-header .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+            color: #fff;
+            padding: 0.3rem 1.5rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .articles-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 1rem 0;
+        }
+        .articles-header .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .articles-header .divider .line {
+            height: 2px;
+            width: 80px;
+            background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+            border-radius: 10px;
+        }
+        .articles-header .divider .icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-tertiary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+        .articles-header .desc {
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+        .filter-btn {
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .search-box {
+            max-width: 400px;
+            margin: 0 auto 2rem;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 30px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .articles-stats {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .articles-stats strong {
+            color: var(--text-primary);
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 10px;
+        }
+
+        .article-item {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .article-item:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+        .article-item .cover {
+            height: 180px;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--text-secondary);
+            overflow: hidden;
+        }
+        .article-item .cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .article-item:hover .cover img {
+            transform: scale(1.05);
+        }
+        .article-item .cover .no-image {
+            font-size: 3rem;
+            color: var(--text-secondary);
+            opacity: 0.3;
+        }
+
+        .article-item .body {
+            padding: 18px 20px 20px;
+        }
+        .article-item .body .type-badge {
+            display: inline-block;
+            padding: 2px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .badge-article {
+            background: #3b82f6;
+            color: #fff;
+        }
+        .badge-project {
+            background: #8b5cf6;
+            color: #fff;
+        }
+        .badge-tutorial {
+            background: #f59e0b;
+            color: #0a0f1a;
+        }
+
+        .article-item .body h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+        .article-item .body h3 a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .article-item .body h3 a:hover {
+            color: var(--primary-color);
+        }
+
+        .article-item .body .excerpt {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .article-item .body .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+        }
+        .article-item .body .meta i {
+            margin-left: 4px;
+        }
+        .article-item .body .meta .has-images i {
+            color: var(--secondary-color);
+        }
+        .article-item .body .meta .has-files i {
+            color: var(--primary-color);
+        }
+
+        .no-result {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        .no-result i {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .loader-spinner {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+        .loader-spinner i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== داده‌های ساختاریافته (JSON-LD) برای سئو ===== */
+    </style>
+
+    <!-- ===== JSON-LD برای صفحه مقالات ===== -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "مقالات و پروژه‌های علمی",
+        "description": "مجموعه مقالات تخصصی، پروژه‌های تحقیقاتی و آموزش‌های مهندسی مکانیک",
+        "url": "https://mahanadham.ir/articles.html",
+        "mainEntity": {
+            "@type": "ItemList",
+            "itemListElement": []
+        }
+    }
+    </script>
+</head>
+<body>
+
+    <!-- ===== هدر و منوی کشویی توسط menu.js بارگذاری می‌شوند ===== -->
+    <!-- هیچ کد هدر و منوی دستی در اینجا وجود ندارد -->
+
+    <!-- ===== محتوای اصلی ===== -->
+    <main style="padding-top:70px;">
+        <section style="padding:4rem 0;background:var(--bg-primary);">
+            <div class="container articles-container">
+
+                <!-- ===== هدر مقالات ===== -->
+                <div class="articles-header">
+                    <span class="badge"><i class="fas fa-newspaper"></i> مقالات علمی</span>
+                    <h1>مقالات، پروژه‌ها و آموزش‌ها</h1>
+                    <div class="divider">
+                        <div class="line"></div>
+                        <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
+                        <div class="line"></div>
+                    </div>
+                    <p class="desc">مجموعه‌ای از مقالات تخصصی، پروژه‌های تحقیقاتی و آموزش‌های مهندسی مکانیک</p>
+                </div>
+
+                <!-- ===== فیلترها و جستجو ===== -->
+                <div class="filter-buttons" id="filterButtons">
+                    <button class="filter-btn active" data-filter="all">همه</button>
+                    <button class="filter-btn" data-filter="article">مقاله</button>
+                    <button class="filter-btn" data-filter="project">پروژه</button>
+                    <button class="filter-btn" data-filter="tutorial">آموزش</button>
+                </div>
+
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="جستجو در مقالات..." />
+                </div>
+
+                <!-- ===== آمار ===== -->
+                <div class="articles-stats">
+                    <span><strong id="articlesCount">0</strong> مورد یافت شد</span>
+                </div>
+
+                <!-- ===== گرید مقالات ===== -->
+                <div id="articlesContainer" class="articles-grid">
+                    <div class="loader-spinner"><i class="fas fa-spinner"></i></div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== جایگاه فوتر (بارگذاری توسط اسکریپت) ===== -->
+    <div id="footerContainer"></div>
+
+    <!-- ============================================================
+         اسکریپت‌ها (ترتیب مهم است)
+         ============================================================ -->
+
+    <!-- بارگذاری هدر و منوی کشویی از member-menu.html -->
+    <script src="menu.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ===== بارگذاری مقالات =====
+            let allItems = [];
+            let currentFilter = 'all';
+            let searchQuery = '';
+
+            const container = document.getElementById('articlesContainer');
+            const countEl = document.getElementById('articlesCount');
+
+            const typeLabels = {
+                article: 'مقاله',
+                project: 'پروژه',
+                tutorial: 'آموزش'
+            };
+            const typeBadgeClass = {
+                article: 'badge-article',
+                project: 'badge-project',
+                tutorial: 'badge-tutorial'
+            };
+
+            async function loadArticles() {
+                try {
+                    const res = await fetch('_data/articles.json?t=' + Date.now());
+                    if (!res.ok) throw new Error('فایل مقالات پیدا نشد');
+                    const data = await res.json();
+                    allItems = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    allItems.sort((a, b) => (a.date || '').localeCompare(b.date || '') * -1);
+                    renderArticles();
+                } catch (e) {
+                    console.error('خطا در بارگذاری مقالات:', e);
+                    // داده نمونه برای تست با شناسه‌های ۴ رقمی
+                    allItems = [
+                        { id: '0001', title: 'شبیه‌سازی جریان در نازل همگرا-واگرا', excerpt: 'بررسی عددی جریان تراکم‌پذیر با مدل‌های توربولانس', date: '۱۴۰۳/۰۲/۱۵', type: 'article', tags: ['CFD', 'Fluent'], readTime: 8, images: [], files: [] },
+                        { id: '0002', title: 'طراحی و تحلیل سیستم تعلیق خودرو', excerpt: 'بهینه‌سازی سیستم تعلیق با اجزاء محدود', date: '۱۴۰۳/۰۱/۲۰', type: 'project', tags: ['سازه', 'انسیس'], readTime: 12, images: [], files: [] },
+                        { id: '0003', title: 'آموزش مقدماتی سالیدورک', excerpt: 'راهنمای گام‌به‌گام شروع با سالیدورک', date: '۱۴۰۲/۱۲/۱۰', type: 'tutorial', tags: ['CAD', 'سالیدورک'], readTime: 15, images: [], files: [] },
+                        { id: '0004', title: 'تحلیل انتقال حرارت در مبدل‌های پوسته و لوله', excerpt: 'بررسی عددی عملکرد حرارتی مبدل با رویکرد CFD', date: '۱۴۰۳/۰۱/۰۵', type: 'article', tags: ['انتقال حرارت', 'CFD'], readTime: 10, images: [], files: [] },
+                        { id: '0005', title: 'ساخت پرینتر سه‌بعدی دلتا', excerpt: 'مراحل ساخت و کالیبراسیون پرینتر دلتا', date: '۱۴۰۲/۱۱/۲۵', type: 'project', tags: ['پرینتر سه‌بعدی', 'ساخت'], readTime: 20, images: [], files: [] }
+                    ];
+                    renderArticles();
+                }
+            }
+
+            function renderArticles() {
+                const filtered = allItems.filter(item => {
+                    const matchFilter = currentFilter === 'all' || item.type === currentFilter;
+                    const matchSearch = (item.title || '').includes(searchQuery) ||
+                        (item.excerpt || '').includes(searchQuery) ||
+                        (item.tags || []).join(' ').includes(searchQuery);
+                    return matchFilter && matchSearch;
+                });
+
+                countEl.textContent = filtered.length;
+
+                if (filtered.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-result">
+                            <i class="fas fa-search"></i>
+                            <p>هیچ مقاله‌ای با این فیلترها یافت نشد.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = filtered.map(item => {
+                    const typeLabel = typeLabels[item.type] || 'مقاله';
+                    const badgeClass = typeBadgeClass[item.type] || 'badge-article';
+
+                    const imageHtml = item.cover ?
+                        `<img src="${item.cover}" alt="${item.title}">` :
+                        `<div class="no-image"><i class="fas fa-newspaper"></i></div>`;
+
+                    const imagesCount = (item.images || []).length;
+                    const filesCount = (item.files || []).length;
+
+                    return `
+                        <div class="article-item" onclick="location.href='article.html?id=${item.id}'">
+                            <div class="cover">
+                                ${imageHtml}
+                            </div>
+                            <div class="body">
+                                <span class="type-badge ${badgeClass}">${typeLabel}</span>
+                                <h3><a href="article.html?id=${item.id}">${item.title || 'بدون عنوان'}</a></h3>
+                                <div class="excerpt">${item.excerpt || ''}</div>
+                                <div class="meta">
+                                    <span><i class="fas fa-calendar"></i> ${item.date || '---'}</span>
+                                    ${item.readTime ? `<span><i class="fas fa-clock"></i> ${item.readTime} دقیقه</span>` : ''}
+                                    ${imagesCount > 0 ? `<span class="has-images"><i class="fas fa-images"></i> ${imagesCount}</span>` : ''}
+                                    ${filesCount > 0 ? `<span class="has-files"><i class="fas fa-paperclip"></i> ${filesCount}</span>` : ''}
+                                    ${item.tags && item.tags.length ? `<span><i class="fas fa-tags"></i> ${item.tags.join('، ')}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // ===== دکمه‌های فیلتر =====
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderArticles();
+                });
+            });
+
+            // ===== جستجو =====
+            document.getElementById('searchInput').addEventListener('input', function() {
+                searchQuery = this.value.trim();
+                renderArticles();
+            });
+
+            loadArticles();
+        });
+    </script>
+
+    <!-- ===== اسکریپت بارگذاری فوتر ===== -->
+    <script>
+        (function loadFooter() {
+            fetch('footer.html')
+                .then(res => {
+                    if (!res.ok) throw new Error('خطا در بارگذاری فوتر');
+                    return res.text();
+                })
+                .then(html => {
+                    document.getElementById('footerContainer').innerHTML = html;
+                    // به‌روزرسانی سال در فوتر
+                    const yearEl = document.querySelector('#footerContainer .copyright p:first-child');
+                    if (yearEl) {
+                        const persianYear = new Date().getFullYear() - 621;
+                        yearEl.innerHTML = yearEl.innerHTML.replace('۱۴۰۳', persianYear);
+                    }
+                })
+                .catch(err => console.error('خطا در بارگذاری فوتر:', err));
+        })();
+    </script>
+
+</body>
+</html>

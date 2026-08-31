@@ -1039,47 +1039,6 @@ async function loadSectionsData() {
         }
 
         // ============================================================
-        // 221.3.7 - رندر اطلاعات تماس
-        // ============================================================
-        function renderContactInfo() {
-            const contact = sectionsData.contact || {};
-            const info = document.getElementById('contactInfo');
-            if (!info) return;
-            info.innerHTML = `
-                <div class="contact-item">
-                    <div class="contact-item-icon"><i class="fas fa-phone"></i></div>
-                    <div class="contact-item-content">
-                        <h4>تلفن تماس</h4>
-                        <a href="tel:${contact.phone || '۰۹۹۰۲۲۷۹۷۰۲'}">
-                            <span class="link-text">${contact.phone || '۰۹۹۰۲۲۷۹۷۰۲'}</span>
-                            <span class="link-action"><i class="fas fa-phone-alt"></i> تماس</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-item-icon"><i class="fas fa-envelope"></i></div>
-                    <div class="contact-item-content">
-                        <h4>ایمیل</h4>
-                        <a href="mailto:${contact.email || 'mahan.neman2020@gmail.com'}">
-                            <span class="link-text">${contact.email || 'mahan.neman2020@gmail.com'}</span>
-                            <span class="link-action"><i class="fas fa-paper-plane"></i> ارسال ایمیل</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-item-icon"><i class="fab fa-telegram"></i></div>
-                    <div class="contact-item-content">
-                        <h4>تلگرام</h4>
-                        <a href="https://t.me/mahanenman" target="_blank">
-                            <span class="link-text">@mahanenman</span>
-                            <span class="link-action"><i class="fas fa-external-link-alt"></i> پیام</span>
-                        </a>
-                    </div>
-                </div>
-            `;
-        }
-
-        // ============================================================
         // 221.3.8 - بارگذاری مقالات اخیر
         // ============================================================
         async function loadRecentArticles() {

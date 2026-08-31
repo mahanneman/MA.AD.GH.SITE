@@ -4,8 +4,8 @@
     <!-- ===== Meta Tags ===== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مقالات و پروژه‌های علمی | مهندس ماهان ادهم قزوینی</title>
-    <meta name="description" content="مقالات علمی، پروژه‌های تحقیقاتی و آموزش‌های مهندسی مکانیک">
+    <title>محصولات | مهندس ماهان ادهم قزوینی</title>
+    <meta name="description" content="قطعات پرینتر سه‌بعدی، فایل‌های STL و مدل‌های آماده چاپ طراحی شده توسط مهندس ماهان ادهم قزوینی">
 
     <!-- ===== Fonts & Icons ===== -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,51 +14,51 @@
     <!-- ===== Common Styles (Header, Footer, Menu, Variables) ===== -->
     <link rel="stylesheet" href="common.css">
 
-    <!-- ===== Articles Page Specific Styles ===== -->
+    <!-- ===== Products Page Specific Styles ===== -->
     <style>
         /* ============================================================
-           articles.css - استایل‌های اختصاصی صفحه مقالات
+           products.css - استایل‌های اختصاصی صفحه محصولات
            ============================================================ */
 
-        .articles-container {
+        .products-container {
             max-width: 1280px;
             margin: 100px auto 40px;
             padding: 0 20px;
         }
-        .articles-header {
+        .products-header {
             text-align: center;
             margin-bottom: 3rem;
         }
-        .articles-header .badge {
+        .products-header .badge {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
             color: #fff;
             padding: 0.3rem 1.5rem;
             border-radius: 30px;
             font-size: 0.85rem;
             font-weight: 600;
         }
-        .articles-header h1 {
+        .products-header h1 {
             font-size: 2.2rem;
             font-weight: 800;
             margin: 1rem 0;
         }
-        .articles-header .divider {
+        .products-header .divider {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 1rem;
             margin: 1.5rem 0;
         }
-        .articles-header .divider .line {
+        .products-header .divider .line {
             height: 2px;
             width: 80px;
-            background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
             border-radius: 10px;
         }
-        .articles-header .divider .icon {
+        .products-header .divider .icon {
             width: 40px;
             height: 40px;
             background: var(--bg-tertiary);
@@ -66,9 +66,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary-color);
+            color: var(--secondary-color);
         }
-        .articles-header .desc {
+        .products-header .desc {
             max-width: 600px;
             margin: 0 auto;
             color: var(--text-secondary);
@@ -120,23 +120,23 @@
             border-color: var(--primary-color);
         }
 
-        .articles-stats {
+        .products-stats {
             color: var(--text-secondary);
             font-size: 0.9rem;
             margin-bottom: 1.5rem;
         }
-        .articles-stats strong {
+        .products-stats strong {
             color: var(--text-primary);
         }
 
-        .articles-grid {
+        .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
             margin-top: 10px;
         }
 
-        .article-item {
+        .product-card {
             background: var(--bg-secondary);
             border-radius: var(--radius-xl);
             overflow: hidden;
@@ -144,12 +144,12 @@
             transition: all 0.3s;
             cursor: pointer;
         }
-        .article-item:hover {
+        .product-card:hover {
             transform: translateY(-8px);
             box-shadow: var(--shadow-lg);
             border-color: var(--primary-color);
         }
-        .article-item .cover {
+        .product-card .cover {
             height: 180px;
             background: var(--bg-tertiary);
             display: flex;
@@ -159,61 +159,61 @@
             color: var(--text-secondary);
             overflow: hidden;
         }
-        .article-item .cover img {
+        .product-card .cover img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.5s;
         }
-        .article-item:hover .cover img {
+        .product-card:hover .cover img {
             transform: scale(1.05);
         }
-        .article-item .cover .no-image {
+        .product-card .cover .no-image {
             font-size: 3rem;
             color: var(--text-secondary);
             opacity: 0.3;
         }
 
-        .article-item .body {
+        .product-card .body {
             padding: 18px 20px 20px;
         }
-        .article-item .body .type-badge {
+        .product-card .body .stock-badge {
             display: inline-block;
             padding: 2px 14px;
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
-        .badge-article {
-            background: #3b82f6;
+        .stock-in-stock {
+            background: var(--secondary-color);
             color: #fff;
         }
-        .badge-project {
-            background: #8b5cf6;
+        .stock-out-stock {
+            background: #ef4444;
             color: #fff;
         }
-        .badge-tutorial {
+        .stock-pre-order {
             background: #f59e0b;
             color: #0a0f1a;
         }
 
-        .article-item .body h3 {
+        .product-card .body h3 {
             font-size: 1.1rem;
             font-weight: 700;
             margin-bottom: 6px;
             color: var(--text-primary);
         }
-        .article-item .body h3 a {
+        .product-card .body h3 a {
             color: var(--text-primary);
             text-decoration: none;
             transition: 0.3s;
         }
-        .article-item .body h3 a:hover {
+        .product-card .body h3 a:hover {
             color: var(--primary-color);
         }
 
-        .article-item .body .excerpt {
+        .product-card .body .desc {
             font-size: 0.9rem;
             color: var(--text-secondary);
             line-height: 1.7;
@@ -224,7 +224,14 @@
             overflow: hidden;
         }
 
-        .article-item .body .meta {
+        .product-card .body .price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 6px 0;
+        }
+
+        .product-card .body .meta {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
@@ -233,13 +240,13 @@
             border-top: 1px solid var(--border-color);
             padding-top: 12px;
         }
-        .article-item .body .meta i {
+        .product-card .body .meta i {
             margin-left: 4px;
         }
-        .article-item .body .meta .has-images i {
+        .product-card .body .meta .has-images i {
             color: var(--secondary-color);
         }
-        .article-item .body .meta .has-files i {
+        .product-card .body .meta .has-files i {
             color: var(--primary-color);
         }
 
@@ -273,7 +280,7 @@
         }
 
         @media (max-width: 600px) {
-            .articles-grid {
+            .products-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -287,39 +294,40 @@
     <!-- ===== محتوای اصلی ===== -->
     <main style="padding-top:70px;">
         <section style="padding:4rem 0;background:var(--bg-primary);">
-            <div class="container articles-container">
+            <div class="container products-container">
 
-                <!-- ===== هدر مقالات ===== -->
-                <div class="articles-header">
-                    <span class="badge"><i class="fas fa-newspaper"></i> مقالات علمی</span>
-                    <h1>مقالات، پروژه‌ها و آموزش‌ها</h1>
+                <!-- ===== هدر محصولات ===== -->
+                <div class="products-header">
+                    <span class="badge"><i class="fas fa-cube"></i> محصولات</span>
+                    <h1>قطعات پرینتر سه‌بعدی و فایل‌های STL</h1>
                     <div class="divider">
                         <div class="line"></div>
                         <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
                         <div class="line"></div>
                     </div>
-                    <p class="desc">مجموعه‌ای از مقالات تخصصی، پروژه‌های تحقیقاتی و آموزش‌های مهندسی مکانیک</p>
+                    <p class="desc">مدل‌های طراحی شده آماده برای چاپ سه‌بعدی و استفاده در پروژه‌های مهندسی</p>
                 </div>
 
                 <!-- ===== فیلترها و جستجو ===== -->
                 <div class="filter-buttons" id="filterButtons">
                     <button class="filter-btn active" data-filter="all">همه</button>
-                    <button class="filter-btn" data-filter="article">مقاله</button>
-                    <button class="filter-btn" data-filter="project">پروژه</button>
-                    <button class="filter-btn" data-filter="tutorial">آموزش</button>
+                    <button class="filter-btn" data-filter="STL">STL</button>
+                    <button class="filter-btn" data-filter="پیشرفته">پیشرفته</button>
+                    <button class="filter-btn" data-filter="الکترونیک">الکترونیک</button>
+                    <button class="filter-btn" data-filter="اکسسوری">اکسسوری</button>
+                    <button class="filter-btn" data-filter="قطعات">قطعات</button>
                 </div>
-
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="جستجو در مقالات..." />
+                    <input type="text" id="searchInput" placeholder="جستجو در محصولات..." />
                 </div>
 
                 <!-- ===== آمار ===== -->
-                <div class="articles-stats">
-                    <span><strong id="articlesCount">0</strong> مورد یافت شد</span>
+                <div class="products-stats">
+                    <span><strong id="productCount">0</strong> محصول یافت شد</span>
                 </div>
 
-                <!-- ===== گرید مقالات ===== -->
-                <div id="articlesContainer" class="articles-grid">
+                <!-- ===== گرید محصولات ===== -->
+                <div id="productsContainer" class="products-grid">
                     <div class="loader-spinner"><i class="fas fa-spinner"></i></div>
                 </div>
 
@@ -429,57 +437,49 @@
     <!-- ۳. بارگذاری منوها (رندر منو بر اساس JSON و وضعیت کاربر) -->
     <script src="menu-loader.js"></script>
 
-    <!-- ۴. اسکریپت اختصاصی مقالات -->
+    <!-- ۴. اسکریپت اختصاصی محصولات -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // ===== بارگذاری مقالات =====
+            // ===== بارگذاری محصولات =====
             let allItems = [];
             let currentFilter = 'all';
             let searchQuery = '';
 
-            const container = document.getElementById('articlesContainer');
-            const countEl = document.getElementById('articlesCount');
+            const container = document.getElementById('productsContainer');
+            const countEl = document.getElementById('productCount');
 
-            const typeLabels = {
-                article: 'مقاله',
-                project: 'پروژه',
-                tutorial: 'آموزش'
-            };
-            const typeBadgeClass = {
-                article: 'badge-article',
-                project: 'badge-project',
-                tutorial: 'badge-tutorial'
-            };
-
-            async function loadArticles() {
+            async function loadProducts() {
                 try {
-                    const res = await fetch('_data/articles.json?t=' + Date.now());
-                    if (!res.ok) throw new Error('فایل مقالات پیدا نشد');
+                    const res = await fetch('_data/products.json?t=' + Date.now());
+                    if (!res.ok) throw new Error('فایل محصولات پیدا نشد');
                     const data = await res.json();
                     allItems = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    allItems.sort((a, b) => (a.date || '').localeCompare(b.date || '') * -1);
-                    renderArticles();
+                    allItems.sort((a, b) => (a.updated || '').localeCompare(b.updated || '') * -1);
+                    renderProducts();
                 } catch (e) {
-                    console.error('خطا در بارگذاری مقالات:', e);
+                    console.error('خطا در بارگذاری محصولات:', e);
                     // داده نمونه برای تست
                     allItems = [
-                        { id: '0001', title: 'شبیه‌سازی جریان در نازل همگرا-واگرا', excerpt: 'بررسی عددی جریان تراکم‌پذیر با مدل‌های توربولانس', date: '۱۴۰۳/۰۲/۱۵', type: 'article', tags: ['CFD', 'Fluent'], readTime: 8, images: [], files: [] },
-                        { id: '0002', title: 'طراحی و تحلیل سیستم تعلیق خودرو', excerpt: 'بهینه‌سازی سیستم تعلیق با اجزاء محدود', date: '۱۴۰۳/۰۱/۲۰', type: 'project', tags: ['سازه', 'انسیس'], readTime: 12, images: [], files: [] },
-                        { id: '0003', title: 'آموزش مقدماتی سالیدورک', excerpt: 'راهنمای گام‌به‌گام شروع با سالیدورک', date: '۱۴۰۲/۱۲/۱۰', type: 'tutorial', tags: ['CAD', 'سالیدورک'], readTime: 15, images: [], files: [] },
-                        { id: '0004', title: 'تحلیل انتقال حرارت در مبدل‌های پوسته و لوله', excerpt: 'بررسی عددی عملکرد حرارتی مبدل با رویکرد CFD', date: '۱۴۰۳/۰۱/۰۵', type: 'article', tags: ['انتقال حرارت', 'CFD'], readTime: 10, images: [], files: [] },
-                        { id: '0005', title: 'ساخت پرینتر سه‌بعدی دلتا', excerpt: 'مراحل ساخت و کالیبراسیون پرینتر دلتا', date: '۱۴۰۲/۱۱/۲۵', type: 'project', tags: ['پرینتر سه‌بعدی', 'ساخت'], readTime: 20, images: [], files: [] }
+                        { id: '0001', name: 'پایه موتور پرینتر', desc: 'پایه مقاوم برای نصب موتورهای پله‌ای در پرینترهای سه‌بعدی', price: 'رایگان', icon: 'fa-cogs', tag: 'STL', category: 'قطعات', stock: 'موجود', updated: '۱۴۰۳/۰۲/۱۵', images: [], files: [] },
+                        { id: '0002', name: 'راهگاه فیلامنت', desc: 'راهگاه فیلامنت با طراحی بهینه برای جلوگیری از گره خوردن', price: '۵۰,۰۰۰ تومان', icon: 'fa-tools', tag: 'پیشرفته', category: 'اکسسوری', stock: 'موجود', updated: '۱۴۰۳/۰۲/۱۰', images: [], files: [] },
+                        { id: '0003', name: 'پنل کنترل لمسی', desc: 'پنل کنترل با صفحه نمایش لمسی برای پرینترهای دلتا', price: '۱۲۰,۰۰۰ تومان', icon: 'fa-microchip', tag: 'الکترونیک', category: 'الکترونیک', stock: 'پیش‌سفارش', updated: '۱۴۰۳/۰۱/۲۰', images: [], files: [] },
+                        { id: '0004', name: 'فایل STL مجموعه گیربکس', desc: 'مجموعه کامل گیربکس پلاستیکی برای پروژه‌های رباتیک', price: 'رایگان', icon: 'fa-cube', tag: 'STL', category: 'قطعات', stock: 'موجود', updated: '۱۴۰۳/۰۱/۱۵', images: [], files: [] },
+                        { id: '0005', name: 'نازل چندمنظوره', desc: 'نازل با قابلیت تنظیم دبی برای مواد مختلف', price: '۷۵,۰۰۰ تومان', icon: 'fa-print', tag: 'اکسسوری', category: 'اکسسوری', stock: 'ناموجود', updated: '۱۴۰۳/۰۱/۰۵', images: [], files: [] }
                     ];
-                    renderArticles();
+                    renderProducts();
                 }
             }
 
-            function renderArticles() {
+            function renderProducts() {
                 const filtered = allItems.filter(item => {
-                    const matchFilter = currentFilter === 'all' || item.type === currentFilter;
-                    const matchSearch = (item.title || '').includes(searchQuery) ||
-                        (item.excerpt || '').includes(searchQuery) ||
-                        (item.tags || []).join(' ').includes(searchQuery);
+                    const matchFilter = currentFilter === 'all' ||
+                        item.tag === currentFilter ||
+                        item.category === currentFilter;
+                    const matchSearch = (item.name || '').includes(searchQuery) ||
+                        (item.desc || '').includes(searchQuery) ||
+                        (item.tag || '').includes(searchQuery) ||
+                        (item.category || '').includes(searchQuery);
                     return matchFilter && matchSearch;
                 });
 
@@ -489,38 +489,40 @@
                     container.innerHTML = `
                         <div class="no-result">
                             <i class="fas fa-search"></i>
-                            <p>هیچ مقاله‌ای با این فیلترها یافت نشد.</p>
+                            <p>هیچ محصولی با این فیلترها یافت نشد.</p>
                         </div>
                     `;
                     return;
                 }
 
                 container.innerHTML = filtered.map(item => {
-                    const typeLabel = typeLabels[item.type] || 'مقاله';
-                    const badgeClass = typeBadgeClass[item.type] || 'badge-article';
+                    const stockClass = item.stock === 'موجود' ? 'stock-in-stock' :
+                        item.stock === 'ناموجود' ? 'stock-out-stock' : 'stock-pre-order';
+                    const stockLabel = item.stock || 'موجود';
 
                     const imageHtml = item.cover ?
-                        `<img src="${item.cover}" alt="${item.title}">` :
-                        `<div class="no-image"><i class="fas fa-newspaper"></i></div>`;
+                        `<img src="${item.cover}" alt="${item.name}">` :
+                        `<div class="no-image"><i class="fas fa-cube"></i></div>`;
 
-                    const imagesCount = (item.images || []).length;
-                    const filesCount = (item.files || []).length;
+                    const imagesCount = item.images ? item.images.length : 0;
+                    const filesCount = item.files ? item.files.length : 0;
 
                     return `
-                        <div class="article-item" onclick="location.href='article.html?id=${item.id}'">
+                        <div class="product-card" onclick="location.href='product.html?id=${item.id}'">
                             <div class="cover">
                                 ${imageHtml}
                             </div>
                             <div class="body">
-                                <span class="type-badge ${badgeClass}">${typeLabel}</span>
-                                <h3><a href="article.html?id=${item.id}">${item.title || 'بدون عنوان'}</a></h3>
-                                <div class="excerpt">${item.excerpt || ''}</div>
+                                <span class="stock-badge ${stockClass}">${stockLabel}</span>
+                                ${item.tag ? `<span style="display:inline-block;padding:2px 12px;border-radius:20px;font-size:0.7rem;font-weight:600;background:var(--primary-color);color:#fff;margin-bottom:8px;">${item.tag}</span>` : ''}
+                                <h3><a href="product.html?id=${item.id}">${item.name || 'بدون نام'}</a></h3>
+                                <div class="desc">${item.desc || ''}</div>
+                                <div class="price">${item.price || 'رایگان'}</div>
                                 <div class="meta">
-                                    <span><i class="fas fa-calendar"></i> ${item.date || '---'}</span>
-                                    ${item.readTime ? `<span><i class="fas fa-clock"></i> ${item.readTime} دقیقه</span>` : ''}
+                                    <span><i class="fas fa-calendar"></i> ${item.updated || '---'}</span>
                                     ${imagesCount > 0 ? `<span class="has-images"><i class="fas fa-images"></i> ${imagesCount}</span>` : ''}
                                     ${filesCount > 0 ? `<span class="has-files"><i class="fas fa-paperclip"></i> ${filesCount}</span>` : ''}
-                                    ${item.tags && item.tags.length ? `<span><i class="fas fa-tags"></i> ${item.tags.join('، ')}</span>` : ''}
+                                    ${item.category ? `<span><i class="fas fa-folder"></i> ${item.category}</span>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -534,19 +536,20 @@
                     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
                     currentFilter = this.dataset.filter;
-                    renderArticles();
+                    renderProducts();
                 });
             });
 
             // ===== جستجو =====
             document.getElementById('searchInput').addEventListener('input', function() {
                 searchQuery = this.value.trim();
-                renderArticles();
+                renderProducts();
             });
 
-            loadArticles();
+            loadProducts();
         });
     </script>
 
+</script>
 </body>
 </html>

@@ -1,0 +1,70 @@
+<!-- ===== هدر اصلی ===== -->
+<header class="main-header">
+    <div class="container">
+        <div class="logo">
+            <a href="index.html">
+                <div class="logo-icon"><i class="fas fa-cogs"></i></div>
+                <h1>ماهان ادهم قزوینی</h1>
+            </a>
+        </div>
+        <ul class="nav-list"></ul>
+        <div class="header-actions">
+            <div class="header-user-info"></div>
+            <a href="#" class="header-cart-icon" id="cartToggle">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge">0</span>
+            </a>
+            <button id="themeToggle"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+            <button class="menu-toggle" id="menuToggle">
+                <span><span class="bar"></span><span class="bar"></span><span class="bar"></span></span>
+                منو
+            </button>
+        </div>
+    </div>
+    <!-- در بخش هدر -->
+<div class="header-actions">
+    <!-- ... سایر دکمه‌ها ... -->
+    <a href="#" class="header-cart-icon" title="سبد خرید">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge" style="display:none;">0</span>
+    </a>
+    <!-- ... -->
+</div>
+</header>
+
+<!-- ===== منوی کشویی ===== -->
+<div class="slide-menu-container" id="slideMenu">
+    <button class="slide-menu-close" id="slideMenuClose"><i class="fas fa-times"></i></button>
+    <div class="slide-menu-profile">
+        <img src="mahanphoto.png" alt="ماهان ادهم قزوینی" class="slide-menu-profile-img">
+        <h3>ماهان ادهم قزوینی</h3>
+        <p>متخصص تحلیل CFD و طراحی</p>
+        <div class="status"><span class="dot"></span><span>در دسترس برای پروژه‌ها</span></div>
+    </div>
+    <ul class="slide-menu-list"></ul>
+    <div id="auth-slide" style="padding: 0 20px 20px; border-top: 1px solid var(--border-color); margin: 10px 0 0;">
+        <div style="display: flex; justify-content: center; gap: 1.5rem; font-size: 0.75rem; color: var(--text-secondary); padding-top: 15px;">
+            <a href="member/login.html" style="color: var(--text-secondary); text-decoration: none; transition: 0.3s;">
+                <i class="fas fa-sign-in-alt" style="margin-left: 4px; color: var(--primary-color);"></i> ورود
+            </a>
+            <span style="color: var(--border-color);">|</span>
+            <a href="member/signup.html" style="color: var(--text-secondary); text-decoration: none; transition: 0.3s;">
+                <i class="fas fa-user-plus" style="margin-left: 4px; color: var(--secondary-color);"></i> ثبت‌نام
+            </a>
+        </div>
+    </div>
+    <div class="slide-menu-contact">
+        <div class="item"><i class="fas fa-phone"></i><a href="tel:+989902279702">۰۹۹۰۲۲۷۹۷۰۲</a></div>
+        <div class="item"><i class="fas fa-envelope"></i><a href="mailto:mahan.neman2020@gmail.com">mahan.neman2020@gmail.com</a></div>
+        <div style="display:flex;justify-content:center;gap:15px;margin-top:15px;">
+            <a href="https://t.me/mahanenman" target="_blank" style="width:40px;height:40px;background:var(--bg-tertiary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);transition:0.3s;"><i class="fab fa-telegram"></i></a>
+            <a href="https://www.instagram.com/mahantheloner" target="_blank" style="width:40px;height:40px;background:var(--bg-tertiary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);transition:0.3s;"><i class="fab fa-instagram"></i></a>
+            <a href="mailto:mahan.neman2020@gmail.com" style="width:40px;height:40px;background:var(--bg-tertiary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);transition:0.3s;"><i class="fas fa-envelope"></i></a>
+        </div>
+    </div>
+    <div class="slide-menu-actions">
+        <a href="resume.pdf" download class="btn btn-primary"><i class="fas fa-download"></i> دانلود رزومه</a>
+        <a href="#contact" class="btn btn-secondary"><i class="fas fa-paper-plane"></i> درخواست همکاری</a>
+    </div>
+</div>
+<div class="menu-overlay" id="menuOverlay"></div>

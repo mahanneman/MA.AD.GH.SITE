@@ -1,6 +1,9 @@
 /**
- * auth-utils.js - نسخه کامل با تمام توابع مورد نیاز
+ * auth-utils.js - نسخه کامل با پشتیبانی از utf8ToBase64
+ * توابع امنیتی برای احراز هویت، هش، 2FA، قفل، لاگ و ...
+ * فقط برای پنل مدیریت استفاده می‌شود
  */
+
 (function() {
     'use strict';
 
@@ -8,8 +11,10 @@
     const ATTEMPTS_KEY = 'admin_login_attempts';
     const LOG_KEY = 'admin_auth_log';
     const TWOFA_KEY = 'admin_2fa_code';
-    const SESSION_KEY = 'admin_session';
 
+    // ============================================================
+    // 1. مدیریت کاربران
+    // ============================================================
     function getUsers() {
         const data = localStorage.getItem(STORAGE_KEY);
         if (data) {
@@ -22,6 +27,9 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
     }
 
+    // ============================================================
+    // 2. هش کردن رمز با SHA-256 + Salt (Web Crypto API)
+    // ============================================================
     async function hashPassword(password, salt) {
         const encoder = new TextEncoder();
         const data = encoder.encode(password + salt);
@@ -34,17 +42,9 @@
         return Math.random().toString(36).substring(2, 12) + Date.now().toString(36);
     }
 
-    // ✅ تابع hashToHex اضافه شد
-    function hashToHex(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            const char = str.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash;
-        }
-        return hash.toString(16).padStart(8, '0');
-    }
-
+    // ============================================================
+    // 3. قدرت رمز عبور
+    // ============================================================
     function passwordStrength(password) {
         let score = 0;
         if (password.length >= 8) score++;
@@ -52,6 +52,7 @@
         if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
         if (/\d/.test(password)) score++;
         if (/[^a-zA-Z0-9]/.test(password)) score++;
+
         const percent = Math.min(100, score * 20);
         let label = 'ضعیف';
         let color = '#ef4444';
@@ -63,6 +64,9 @@
         return { percent, label, color, hint };
     }
 
+    // ============================================================
+    // 4. محدودیت تلاش (Rate Limiting)
+    // ============================================================
     function getAttempts() {
         const data = localStorage.getItem(ATTEMPTS_KEY);
         if (data) {
@@ -82,37 +86,16 @@
     function recordFailedAttempt(username) {
         const data = getAttempts();
         data.attempts = (data.attempts || 0) + 1;
-        let lockDuration = 60;
-        if (data.attempts >= 10) lockDuration = 300;
-        else if (data.attempts >= 7) lockDuration = 120;
         if (data.attempts >= 5) {
-            data.lockUntil = Date.now() + lockDuration * 1000;
+            data.lockUntil = Date.now() + 60 * 1000; // 60 ثانیه قفل
         }
         saveAttempts(data);
         return data;
     }
 
-    function isLocked() {
-        const data = getAttempts();
-        if (data.lockUntil && Date.now() < data.lockUntil) {
-            return true;
-        }
-        if (data.lockUntil && Date.now() >= data.lockUntil) {
-            data.lockUntil = null;
-            data.attempts = 0;
-            saveAttempts(data);
-        }
-        return false;
-    }
-
-    function getLockRemaining() {
-        const data = getAttempts();
-        if (data.lockUntil && Date.now() < data.lockUntil) {
-            return Math.ceil((data.lockUntil - Date.now()) / 1000);
-        }
-        return 0;
-    }
-
+    // ============================================================
+    // 5. تایید دو مرحله‌ای (2FA) - شبیه‌سازی
+    // ============================================================
     function generate2FACode() {
         const code = Math.floor(100000 + Math.random() * 900000).toString();
         store2FACode(code);
@@ -133,47 +116,21 @@
         return data.code === inputCode;
     }
 
+    // ============================================================
+    // 6. مدیریت نشست (Session)
+    // ============================================================
     function createSession(username) {
-        const token = btoa(username + ':' + Date.now() + ':' + Math.random().toString(36).substring(2));
-        const sessionData = {
-            token: token,
-            username: username,
-            created: Date.now(),
-            expires: Date.now() + 30 * 60 * 1000
-        };
-        localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+        const token = btoa(username + ':' + Date.now() + ':' + Math.random().toString(36));
         return token;
     }
 
-    function getSession() {
-        const data = localStorage.getItem(SESSION_KEY);
-        if (!data) return null;
-        try {
-            const session = JSON.parse(data);
-            if (session.expires && Date.now() > session.expires) {
-                localStorage.removeItem(SESSION_KEY);
-                return null;
-            }
-            return session;
-        } catch (e) {
-            return null;
-        }
-    }
-
-    function destroySession() {
-        localStorage.removeItem(SESSION_KEY);
-        sessionStorage.removeItem('admin_session');
-    }
-
-    function isSessionValid() {
-        const session = getSession();
-        return session !== null && session.username !== undefined;
-    }
-
+    // ============================================================
+    // 7. لاگ فعالیت‌ها
+    // ============================================================
     function logActivity(username, action) {
         const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
         logs.unshift({
-            username: username || 'سیستم',
+            username: username,
             action: action,
             timestamp: new Date().toISOString(),
             ip: '192.168.1.' + Math.floor(Math.random() * 255)
@@ -183,17 +140,16 @@
     }
 
     function logFailedAttempt(username) {
-        logActivity(username || 'ناشناس', 'تلاش ناموفق برای ورود');
+        logActivity(username, 'تلاش ناموفق برای ورود');
     }
 
     function getLogs() {
         return JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
     }
 
-    function clearLogs() {
-        localStorage.setItem(LOG_KEY, '[]');
-    }
-
+    // ============================================================
+    // 8. تغییر رمز و فعال/غیرفعال کردن 2FA
+    // ============================================================
     async function changePassword(username, newPassword) {
         const users = getUsers();
         if (!users[username]) return false;
@@ -213,6 +169,9 @@
         return true;
     }
 
+    // ============================================================
+    // 9. اضافه کردن utf8ToBase64 (برای سازگاری با لاگین ساده)
+    // ============================================================
     function utf8ToBase64(str) {
         const encoder = new TextEncoder();
         const data = encoder.encode(str);
@@ -223,63 +182,29 @@
         return btoa(binary);
     }
 
-    function base64ToUtf8(base64) {
-        try {
-            const binary = atob(base64);
-            const bytes = new Uint8Array(binary.length);
-            for (let i = 0; i < binary.length; i++) {
-                bytes[i] = binary.charCodeAt(i);
-            }
-            return new TextDecoder().decode(bytes);
-        } catch (e) {
-            return null;
-        }
-    }
-
-    function generateSecureToken(length = 32) {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let token = '';
-        for (let i = 0; i < length; i++) {
-            token += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return token;
-    }
-
-    function sanitizeInput(str) {
-        if (!str) return '';
-        return str.replace(/[<>"'`]/g, '').trim();
-    }
-
+    // ============================================================
+    // 10. صادر کردن API
+    // ============================================================
     window.AuthUtils = {
         getUsers,
         saveUsers,
         hashPassword,
         generateSalt,
-        hashToHex,
         passwordStrength,
         getAttempts,
         saveAttempts,
         resetAttempts,
         recordFailedAttempt,
-        isLocked,
-        getLockRemaining,
         generate2FACode,
         store2FACode,
         verify2FA,
         createSession,
-        getSession,
-        destroySession,
-        isSessionValid,
         logActivity,
         logFailedAttempt,
         getLogs,
-        clearLogs,
         changePassword,
         toggle2FA,
-        utf8ToBase64,
-        base64ToUtf8,
-        generateSecureToken,
-        sanitizeInput
+        utf8ToBase64   // اضافه شده برای سازگاری
     };
 
     console.log('✅ auth-utils.js بارگذاری شد.');

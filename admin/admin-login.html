@@ -44,6 +44,7 @@
             position: relative;
             overflow-x: hidden;
         }
+        /* 0002.1 - پس‌زمینه داینامیک */
         body::before {
             content: '';
             position: fixed;
@@ -171,6 +172,7 @@
             color: var(--login-text);
         }
 
+        /* قدرت رمز */
         .strength-meter {
             margin-top: 6px;
             height: 4px;
@@ -193,6 +195,7 @@
             justify-content: space-between;
         }
 
+        /* 2FA */
         .twofa-section {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -212,6 +215,9 @@
             direction: ltr;
         }
 
+        /* ============================================================
+        0003 - قابلیت جدید: کد امنیتی (CAPTCHA)
+        ============================================================ */
         .captcha-section {
             display: flex;
             align-items: center;
@@ -264,6 +270,7 @@
             padding: 4px 10px;
         }
 
+        /* دکمه‌ها */
         .btn {
             width: 100%;
             padding: 14px;
@@ -388,6 +395,7 @@
         .security-badge i { font-size: 1rem; }
         .security-badge .status { font-weight: 700; }
 
+        /* فرم‌های فرعی */
         #registerForm, #forgotForm {
             border-top: 1px solid var(--login-border);
             padding-top: 20px;
@@ -453,7 +461,7 @@
             </div>
 
             <!-- ============================================================
-            0006 - قابلیت امنیتی: کد امنیتی (CAPTCHA)
+            0006 - قابلیت امنیتی جدید: کد امنیتی (CAPTCHA)
             ============================================================ -->
             <div class="form-group">
                 <label><i class="fas fa-shield-virus"></i> کد امنیتی <span style="font-size:0.65rem;color:var(--login-text-sec);font-weight:400;">(ضدربات)</span></label>
@@ -590,7 +598,7 @@
 </div>
 
 <!-- ============================================================
-0015 - کتابخانه auth-utils.js (نسخه کامل)
+0015 - کتابخانه auth-utils.js (همانند قبل، با اضافه شدن captcha)
 ============================================================ -->
 <script src="auth-utils.js"></script>
 
@@ -619,9 +627,11 @@
         const securityStatus = document.getElementById('securityStatus');
         const lastLoginDisplay = document.getElementById('lastLoginDisplay');
 
+        // عناصر CAPTCHA
         const captchaDisplay = document.getElementById('captchaDisplay');
         const captchaInput = document.getElementById('captchaInput');
 
+        // عناصر ثبت‌نام
         const showRegisterBtn = document.getElementById('showRegisterBtn');
         const registerForm = document.getElementById('registerForm');
         const backToLoginBtn = document.getElementById('backToLoginBtn');
@@ -635,6 +645,7 @@
         const regStrengthBar = document.getElementById('regStrengthBar');
         const regStrengthLabel = document.getElementById('regStrengthLabel');
 
+        // عناصر بازیابی
         const showForgotBtn = document.getElementById('showForgotBtn');
         const forgotForm = document.getElementById('forgotForm');
         const backToLoginFromForgot = document.getElementById('backToLoginFromForgot');
@@ -653,7 +664,7 @@
         // 0017 - تولید کد امنیتی (CAPTCHA)
         // ============================================================
         function generateCaptcha() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // حذف حروف مشابه
             let code = '';
             for (let i = 0; i < 6; i++) {
                 code += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -662,10 +673,15 @@
             captchaDisplay.textContent = code;
             captchaInput.value = '';
             captchaInput.focus();
+            // تغییر رنگ تصادفی برای نمایش
             const colors = ['#2563eb', '#8b5cf6', '#10b981', '#f59e0b', '#ec4899'];
             captchaDisplay.style.color = colors[Math.floor(Math.random() * colors.length)];
         }
+
+        // تولید اولیه
         generateCaptcha();
+
+        // دکمه Refresh
         document.querySelector('.captcha-refresh').addEventListener('click', generateCaptcha);
 
         // ============================================================
@@ -703,7 +719,7 @@
         });
 
         // ============================================================
-        // 0020 - محدودیت تلاش و قفل موقت (با AuthUtils.isLocked)
+        // 0020 - محدودیت تلاش و قفل موقت
         // ============================================================
         function updateLockoutUI(remaining) {
             if (remaining > 0) {
@@ -729,8 +745,9 @@
         }
 
         function checkLockout() {
-            if (window.AuthUtils.isLocked()) {
-                const remaining = window.AuthUtils.getLockRemaining();
+            const { attempts, lockUntil } = window.AuthUtils.getAttempts();
+            if (lockUntil && Date.now() < lockUntil) {
+                const remaining = Math.ceil((lockUntil - Date.now()) / 1000);
                 updateLockoutUI(remaining);
                 return true;
             }
@@ -738,13 +755,8 @@
         }
 
         // ============================================================
-        // 0021 - لاگین اصلی (با هش HEX امن)
+        // 0021 - لاگین اصلی (با اعتبارسنجی CAPTCHA)
         // ============================================================
-        // رمز عبور '11223344AV' به صورت هش HEX ذخیره شده است (تولید شده با AuthUtils.hashToHex)
-        // مقدار هش واقعی: 'f7c3b1e9' (این یک نمونه است، برای استفاده واقعی باید تولید شود)
-        // برای تولید هش واقعی: console.log(AuthUtils.hashToHex('11223344AV'));
-        const ADMIN_HASH = AuthUtils.hashToHex('11223344AV'); // اینجا مقدار هش واقعی قرار می‌گیرد
-
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             if (loginBtn.disabled) return;
@@ -755,7 +767,7 @@
             const username = usernameEl.value.trim();
             const password = passwordEl.value.trim();
 
-            // 1. اعتبارسنجی CAPTCHA
+            // 1. اعتبارسنجی CAPTCHA (همیشه فعال)
             const captchaUser = captchaInput.value.trim().toUpperCase();
             if (captchaUser !== currentCaptcha) {
                 showError('❌ کد امنیتی اشتباه است. لطفاً مجدداً وارد کنید.');
@@ -773,53 +785,39 @@
                 return;
             }
 
-            // 2. بررسی اعتبار با هش HEX (بدون نیاز به salt)
-            const enteredHash = window.AuthUtils.hashToHex(password);
+            // اگر 2FA فعال است
+            if (twofaRequired) {
+                const code = twofaCodeEl.value.trim();
+                if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
+                    showError('کد تأیید ۶ رقمی را به‌درستی وارد کنید.');
+                    return;
+                }
+                if (!window.AuthUtils.verify2FA(code)) {
+                    showError('کد تأیید نامعتبر است.');
+                    return;
+                }
+                await doLogin(username, password);
+                return;
+            }
+
+            // مرحله اول: بررسی رمز
             const users = window.AuthUtils.getUsers();
-
-            // اگر کاربر در لیست نباشد، از ادمین اصلی استفاده کن
-            let isValid = false;
-            let user = null;
-
-            if (users[username]) {
-                // کاربر ثبت‌نام شده با هش SHA-256 (برای سازگاری با ثبت‌نام)
-                const salt = users[username].salt || '';
-                const hashed = await window.AuthUtils.hashPassword(password, salt);
-                if (hashed === users[username].password) {
-                    isValid = true;
-                    user = users[username];
-                }
-            }
-
-            // اگر کاربر ادمین اصلی است (mahanneman) با هش HEX مقایسه کن
-            if (!isValid && username === 'mahanneman' && enteredHash === ADMIN_HASH) {
-                isValid = true;
-                // ایجاد کاربر ادمین در لیست (در صورت عدم وجود)
-                if (!users['mahanneman']) {
-                    users['mahanneman'] = {
-                        password: '', // مهم نیست چون با هش HEX مقایسه می‌شود
-                        salt: '',
-                        created: new Date().toISOString(),
-                        twofaEnabled: false,
-                        securityQuestion: 'نام مادرتان؟',
-                        securityAnswer: 'admin',
-                        lastLogin: null,
-                        lastIP: null,
-                        isAdmin: true
-                    };
-                    window.AuthUtils.saveUsers(users);
-                }
-                user = users['mahanneman'];
-            }
-
-            if (!isValid) {
+            if (!users[username]) {
                 handleFailedAttempt(username);
                 showError('نام کاربری یا رمز عبور اشتباه است.');
                 return;
             }
 
-            // اگر 2FA فعال است
-            if (user.twofaEnabled) {
+            const salt = users[username].salt || '';
+            const hashed = await window.AuthUtils.hashPassword(password, salt);
+            if (hashed !== users[username].password) {
+                handleFailedAttempt(username);
+                showError('نام کاربری یا رمز عبور اشتباه است.');
+                return;
+            }
+
+            // رمز درست → اگر 2FA فعال است
+            if (users[username].twofaEnabled) {
                 twofaRequired = true;
                 twofaSection.classList.add('active');
                 const code = window.AuthUtils.generate2FACode();
@@ -831,18 +829,16 @@
                 return;
             }
 
-            await doLogin(username, user);
+            await doLogin(username, password);
         });
 
-        async function doLogin(username, user) {
+        async function doLogin(username, password) {
             try {
-                // به‌روزرسانی آخرین ورود
                 const users = window.AuthUtils.getUsers();
-                if (users[username]) {
-                    users[username].lastLogin = new Date().toISOString();
-                    users[username].lastIP = '192.168.1.' + Math.floor(Math.random() * 255);
-                    window.AuthUtils.saveUsers(users);
-                }
+                const user = users[username];
+                user.lastLogin = new Date().toISOString();
+                user.lastIP = '192.168.1.' + Math.floor(Math.random() * 255);
+                window.AuthUtils.saveUsers(users);
 
                 const token = window.AuthUtils.createSession(username);
                 if (!token) {
@@ -857,7 +853,6 @@
                 }));
 
                 window.AuthUtils.resetAttempts();
-                window.AuthUtils.logActivity(username, 'ورود موفق');
 
                 showSuccess('✅ ورود موفق! در حال انتقال به پنل...');
                 setTimeout(() => {
@@ -882,8 +877,7 @@
         // ============================================================
         function updateSecurityBadge() {
             const users = window.AuthUtils.getUsers();
-            const session = window.AuthUtils.getSession();
-            const username = session ? session.username : null;
+            const username = sessionStorage.getItem('admin_username');
             if (username && users[username]) {
                 const user = users[username];
                 const last = user.lastLogin ? new Date(user.lastLogin).toLocaleString('fa-IR') : '---';
@@ -1094,8 +1088,6 @@
 
         console.log('✅ پنل لاگین فوق‌امن با ۱۳ قابلیت امنیتی بارگذاری شد.');
         console.log('🔒 قابلیت جدید: کد امنیتی (CAPTCHA) فعال است.');
-        console.log('👤 نام کاربری: mahanneman');
-        console.log('🔑 رمز عبور: 11223344AV (به صورت هش HEX ذخیره شده است)');
     })();
 </script>
 </body>

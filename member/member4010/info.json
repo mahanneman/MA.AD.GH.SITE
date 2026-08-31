@@ -1,0 +1,30 @@
+{
+  "id": "4010",
+  "username": "باران_مرادی37",
+  "name": "باران مرادی",
+  "email": "باران_مرادی37@outlook.com",
+  "phone": "09280787863",
+  "whatsapp": "09739554135",
+  "telegram": "@باران_مرادی37",
+  "postal_code": "4588643260",
+  "addresses": [
+    "خانه|سنندج، خیابان نارمک، پلاک 64|2813839022",
+    "کار|سنندج، خیابان آزادی، پلاک 1|7143321469"
+  ],
+  "created": "2026-08-20",
+  "lastLogin": "2026-08-24",
+  "cart": [
+    {
+      "productId": "PRD-0008",
+      "quantity": 5
+    },
+    {
+      "productId": "PRD-0003",
+      "quantity": 2
+    }
+  ],
+  "password": "Test@1234",
+  "ordersCount": 2,
+  "cartCount": 2,
+  "addressCount": 2
+}

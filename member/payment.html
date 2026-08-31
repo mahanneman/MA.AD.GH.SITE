@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پرداخت | مهندس ماهان ادهم قزوینی</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../common.css">
+    <style>
+        /* استایل‌های قبلی + استایل تایمر */
+        .payment-container {
+            max-width: 700px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+            direction: rtl;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .page-header h1 {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-header h1 i {
+            color: var(--primary-color);
+        }
+        .page-header .back-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .page-header .back-link:hover {
+            color: var(--primary-color);
+        }
+        .payment-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+        .payment-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .payment-card-header h3 {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .payment-card-header h3 i {
+            color: var(--primary-color);
+        }
+        .payment-card-header .status-badge {
+            font-size: 0.75rem;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+        .status-badge.pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+        .status-badge.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        .status-badge.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        .status-badge.timeout {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        /* ===== تایمر ===== */
+        .timer-box {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .timer-box .label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .timer-box .label i {
+            color: var(--primary-color);
+        }
+        .timer-box .time {
+            font-size: 1.6rem;
+            font-weight: 800;
+            font-family: 'Vazirmatn', monospace;
+            direction: ltr;
+            color: var(--primary-color);
+            background: var(--bg-tertiary);
+            padding: 2px 16px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+        }
+        .timer-box .time.warning {
+            color: #f59e0b;
+            border-color: #f59e0b;
+        }
+        .timer-box .time.danger {
+            color: #ef4444;
+            border-color: #ef4444;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .timer-box .refresh-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 4px 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .timer-box .refresh-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* سایر استایل‌ها (همان‌های قبلی) */
+        .bank-info-box {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(139, 92, 246, 0.08));
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .bank-info-box .card-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: 2px;
+            direction: ltr;
+            font-family: 'Vazirmatn', monospace;
+            background: var(--bg-primary);
+            padding: 6px 16px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 6px;
+            border: 1px solid var(--border-color);
+        }
+        .bank-info-box .desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+        .bank-info-box .desc i {
+            color: var(--primary-color);
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 16px;
+        }
+        .field label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+        }
+        .field label i {
+            color: var(--primary-color);
+        }
+        .field label .required {
+            color: #ef4444;
+        }
+        .field input, .field select, .field textarea {
+            padding: 10px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            width: 100%;
+        }
+        .field input:focus, .field select:focus, .field textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+        .field textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+        .field .hint {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            background: var(--bg-primary);
+            position: relative;
+        }
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background: var(--bg-tertiary);
+        }
+        .upload-area.dragover {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.05);
+        }
+        .upload-area .icon {
+            font-size: 3rem;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            margin-bottom: 8px;
+        }
+        .upload-area .text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .upload-area .text strong {
+            color: var(--primary-color);
+        }
+        .upload-area .file-name {
+            margin-top: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        .upload-area input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .image-preview {
+            display: none;
+            margin-top: 12px;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 2px solid var(--border-color);
+        }
+        .image-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .image-preview .remove-image {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(239, 68, 68, 0.9);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-preview .remove-image:hover {
+            transform: scale(1.1);
+        }
+        .order-summary {
+            padding: 16px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+        .order-summary .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+        .order-summary .total-row {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 2px solid var(--border-color);
+        }
+        .order-summary .total-row span {
+            color: var(--primary-color);
+        }
+        .btn {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn:hover {
+            transform: scale(1.03);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+            color: #fff;
+        }
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: #fff;
+        }
+        .btn-success {
+            background: #10b981;
+            color: #fff;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        .btn-lg {
+            padding: 14px 40px;
+            font-size: 1rem;
+        }
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .actions-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .page-header h1 {
+                font-size: 1.4rem;
+            }
+            .payment-card {
+                padding: 18px;
+            }
+            .bank-info-box .card-number {
+                font-size: 1.2rem;
+            }
+            .timer-box .time {
+                font-size: 1.2rem;
+            }
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            z-index: 9999;
+            animation: slideUp 0.4s ease;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+            background: var(--secondary-color);
+            color: #fff;
+            font-family: 'Vazirmatn', sans-serif;
+            direction: rtl;
+        }
+        .toast.error {
+            background: #ef4444;
+        }
+        .toast.success {
+            background: #10b981;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .loader {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+        }
+        .loader.active {
+            display: flex;
+        }
+        .loader i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .success-box {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: 12px;
+            border: 2px solid #10b981;
+        }
+        .success-box.active {
+            display: block;
+        }
+        .success-box .icon {
+            font-size: 4rem;
+            color: #10b981;
+            margin-bottom: 12px;
+        }
+        .success-box h3 {
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+        }
+        .success-box p {
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .success-box .tracking-code {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            background: var(--bg-tertiary);
+            padding: 4px 16px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        .timeout-msg {
+            display: none;
+            text-align: center;
+            padding: 16px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 12px;
+            border: 2px solid #ef4444;
+            margin-top: 12px;
+            color: #ef4444;
+            font-weight: 600;
+        }
+        .timeout-msg.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- هدر بارگذاری می‌شود -->
+
+    <div class="container payment-container">
+        <div class="page-header">
+            <h1><i class="fas fa-credit-card"></i> پرداخت نهایی</h1>
+            <a href="checkout.html" class="back-link"><i class="fas fa-arrow-right"></i> بازگشت به تسویه</a>
+        </div>
+
+        <div class="payment-card">
+
+            <!-- ===== باکس تایمر ===== -->
+            <div class="timer-box">
+                <div class="label">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span>زمان باقی‌مانده برای پرداخت</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                    <span class="time" id="timerDisplay">۱۰:۰۰</span>
+                    <button class="refresh-btn" id="refreshPageBtn" title="بروزرسانی صفحه">
+                        <i class="fas fa-sync-alt"></i> رفرش
+                    </button>
+                </div>
+            </div>
+
+            <div class="payment-card-header">
+                <h3><i class="fas fa-clipboard-list"></i> تأیید و پرداخت</h3>
+                <span class="status-badge pending" id="paymentStatus">در انتظار پرداخت</span>
+            </div>
+
+            <!-- ===== باکس اطلاعات بانکی ===== -->
+            <div class="bank-info-box">
+                <div style="font-size:0.9rem;color:var(--text-secondary);margin-bottom:4px;">
+                    <i class="fas fa-university"></i> شماره کارت واریز:
+                </div>
+                <div class="card-number">۱۲۳۴-۵۶۷۸-۹۰۱۲-۳۴۵۶</div>
+                <div class="desc">
+                    <i class="fas fa-arrow-down"></i>
+                    لطفاً مبلغ را به شماره کارت بالا واریز کرده و تصویر فیش واریزی را آپلود کنید.
+                </div>
+            </div>
+
+            <!-- ===== خلاصه سفارش ===== -->
+            <div class="order-summary" id="orderSummary">
+                <div style="text-align:center;padding:20px;color:var(--text-secondary);">در حال بارگذاری...</div>
+            </div>
+
+            <!-- ===== اطلاعات پرداخت ===== -->
+            <div class="grid-2">
+                <div class="field">
+                    <label><i class="fas fa-user"></i> نام پرداخت‌کننده <span class="required">*</span></label>
+                    <input type="text" id="payerName" placeholder="نام و نام خانوادگی">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-phone"></i> شماره تماس <span class="required">*</span></label>
+                    <input type="tel" id="payerPhone" placeholder="۰۹۹۰۲۲۷۹۷۰۲">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="field">
+                    <label><i class="fas fa-credit-card"></i> شماره کارت (۱۶ رقمی) <span class="required">*</span></label>
+                    <input type="text" id="cardNumber" placeholder="****-****-****-****" maxlength="19">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-university"></i> شماره حساب (شبا) <span class="required">*</span></label>
+                    <input type="text" id="accountNumber" placeholder="IR...">
+                </div>
+            </div>
+
+            <div class="field">
+                <label><i class="fas fa-hashtag"></i> شناسه پرداخت (شماره پیگیری واریز) <span class="required">*</span></label>
+                <input type="text" id="transactionId" placeholder="شناسه یا کد پیگیری واریز را وارد کنید">
+                <div class="hint">شماره پیگیری که پس از واریز از سامانه دریافت می‌کنید.</div>
+            </div>
+
+            <div class="grid-2">
+                <div class="field">
+                    <label><i class="fas fa-money-bill"></i> مبلغ پرداختی (تومان) <span class="required">*</span></label>
+                    <input type="number" id="paymentAmount" placeholder="مبلغ به تومان">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-calendar"></i> تاریخ پرداخت</label>
+                    <input type="text" id="paymentDate" readonly>
+                </div>
+            </div>
+
+            <div class="field">
+                <label><i class="fas fa-comment"></i> توضیحات (اختیاری)</label>
+                <textarea id="paymentNotes" rows="2" placeholder="هر نکته اضافی..."></textarea>
+            </div>
+
+            <!-- ===== آپلود عکس فیش ===== -->
+            <div class="field">
+                <label><i class="fas fa-image"></i> تصویر فیش واریزی <span class="required">*</span></label>
+                <div class="upload-area" id="uploadArea">
+                    <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="text">
+                        <strong>برای آپلود کلیک کنید</strong> یا عکس را بکشید و رها کنید
+                    </div>
+                    <div class="file-name" id="fileName"></div>
+                    <input type="file" id="fileInput" accept="image/*">
+                </div>
+                <div class="image-preview" id="imagePreview">
+                    <img id="previewImg" src="" alt="پیش‌نمایش فیش">
+                    <button class="remove-image" id="removeImage"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="hint">فرمت‌های مجاز: JPG, PNG, GIF (حداکثر ۵ مگابایت)</div>
+            </div>
+
+            <!-- ===== لودر ===== -->
+            <div class="loader" id="loader">
+                <i class="fas fa-spinner"></i>
+                <span>در حال ثبت اطلاعات...</span>
+            </div>
+
+            <!-- ===== پیام انقضای زمان ===== -->
+            <div class="timeout-msg" id="timeoutMsg">
+                <i class="fas fa-exclamation-triangle"></i>
+                زمان مجاز برای پرداخت به پایان رسیده است. لطفاً صفحه را رفرش کنید و مجدداً تلاش کنید.
+            </div>
+
+            <!-- ===== دکمه‌ها ===== -->
+            <div class="actions-row">
+                <button class="btn btn-primary btn-lg btn-block" id="submitPayment" onclick="submitPayment()">
+                    <i class="fas fa-check"></i> ثبت پرداخت و تکمیل سفارش
+                </button>
+            </div>
+            <div id="paymentMsg" style="margin-top:12px;"></div>
+
+            <!-- ===== پیام موفقیت ===== -->
+            <div class="success-box" id="successBox">
+                <div class="icon"><i class="fas fa-check-circle"></i></div>
+                <h3>✅ پرداخت با موفقیت ثبت شد!</h3>
+                <p>سفارش شما ثبت و اطلاعات پرداخت ذخیره شد.</p>
+                <p>کد پیگیری: <span class="tracking-code" id="trackingCode">---</span></p>
+                <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:12px;">
+                    <i class="fas fa-envelope"></i> تأییدیه به ایمیل شما ارسال خواهد شد.
+                </p>
+                <button class="btn btn-primary" onclick="goToOrders()" style="margin-top:16px;">
+                    <i class="fas fa-box"></i> مشاهده سفارشات
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== اسکریپت‌ها ===== -->
+    <script src="../auth.js"></script>
+    <script src="../load-menu.js"></script>
+    <script src="../menu-loader.js"></script>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            // 0600 - تایمر ۱۰ دقیقه‌ای
+            // ============================================================
+            const TIMER_DURATION = 600; // 10 دقیقه به ثانیه
+            let remainingSeconds = TIMER_DURATION;
+            let timerInterval = null;
+            const timerDisplay = document.getElementById('timerDisplay');
+            const submitBtn = document.getElementById('submitPayment');
+            const timeoutMsg = document.getElementById('timeoutMsg');
+            const statusBadge = document.getElementById('paymentStatus');
+
+            function updateTimerDisplay() {
+                const mins = Math.floor(remainingSeconds / 60);
+                const secs = remainingSeconds % 60;
+                timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                
+                // تغییر رنگ در صورت کم بودن زمان
+                timerDisplay.classList.remove('warning', 'danger');
+                if (remainingSeconds <= 60) {
+                    timerDisplay.classList.add('danger');
+                } else if (remainingSeconds <= 180) {
+                    timerDisplay.classList.add('warning');
+                }
+            }
+
+            function startTimer() {
+                // جلوگیری از چند تایمر همزمان
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                
+                // بازیابی زمان ذخیره‌شده در sessionStorage (در صورت رفرش صفحه)
+                const saved = sessionStorage.getItem('payment_timer_remaining');
+                if (saved) {
+                    const savedTime = parseInt(saved, 10);
+                    if (!isNaN(savedTime) && savedTime > 0 && savedTime <= TIMER_DURATION) {
+                        remainingSeconds = savedTime;
+                    } else {
+                        remainingSeconds = TIMER_DURATION;
+                        sessionStorage.removeItem('payment_timer_remaining');
+                    }
+                } else {
+                    remainingSeconds = TIMER_DURATION;
+                }
+                
+                updateTimerDisplay();
+
+                timerInterval = setInterval(() => {
+                    remainingSeconds--;
+                    sessionStorage.setItem('payment_timer_remaining', String(remainingSeconds));
+                    updateTimerDisplay();
+
+                    if (remainingSeconds <= 0) {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        sessionStorage.removeItem('payment_timer_remaining');
+                        // غیرفعال کردن دکمه پرداخت
+                        submitBtn.disabled = true;
+                        timeoutMsg.classList.add('active');
+                        statusBadge.textContent = 'منقضی شده';
+                        statusBadge.className = 'status-badge timeout';
+                        // نمایش پیام در لاگ
+                        console.log('⏰ زمان پرداخت به پایان رسید.');
+                        showToast('⏰ زمان پرداخت به پایان رسید. لطفاً صفحه را رفرش کنید.', 'error');
+                    }
+                }, 1000);
+            }
+
+            // توقف تایمر در صورت ثبت موفق پرداخت
+            function stopTimer() {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                sessionStorage.removeItem('payment_timer_remaining');
+            }
+
+            // ============================================================
+            // 0601 - تنظیمات GitHub (همان‌های قبلی)
+            // ============================================================
+            const REPO_OWNER = 'mahanneman';
+            const REPO_NAME = 'MA.AD.GH.SITE';
+            const REPO_PATH = `repos/${REPO_OWNER}/${REPO_NAME}/contents`;
+
+            let currentUser = null;
+            let checkoutData = null;
+            let selectedFile = null;
+            let uploadedImagePath = null;
+
+            // ============================================================
+            // 0602 - توابع GitHub API (همان‌های قبلی)
+            // ============================================================
+            async function fetchFromGitHub(path) {
+                const token = localStorage.getItem('github_token');
+                if (!token) return null;
+                const url = `https://api.github.com/${REPO_PATH}/${path}`;
+                const res = await fetch(url, {
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                if (res.status === 404) return null;
+                if (!res.ok) return null;
+                const data = await res.json();
+                const binaryString = atob(data.content);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                const decoder = new TextDecoder('utf-8');
+                const content = decoder.decode(bytes).replace(/^\uFEFF/, '');
+                return { ...data, content };
+            }
+
+            async function saveToGitHub(path, content, sha = null) {
+                const token = localStorage.getItem('github_token');
+                if (!token) throw new Error('توکن گیت‌هاب موجود نیست.');
+                const url = `https://api.github.com/${REPO_PATH}/${path}`;
+                const jsonString = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
+                const encoder = new TextEncoder();
+                const encoded = encoder.encode(jsonString);
+                let binary = '';
+                for (let i = 0; i < encoded.length; i++) {
+                    binary += String.fromCharCode(encoded[i]);
+                }
+                const base64Content = btoa(binary);
+                const body = {
+                    message: `Update ${path} via payment - ${new Date().toISOString()}`,
+                    content: base64Content,
+                    branch: 'main'
+                };
+                if (sha) body.sha = sha;
+                const res = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || 'خطا در ذخیره‌سازی');
+                }
+                return await res.json();
+            }
+
+            async function uploadImageToGitHub(file, userId) {
+                const token = localStorage.getItem('github_token');
+                if (!token) throw new Error('توکن گیت‌هاب موجود نیست.');
+
+                const ext = file.name.split('.').pop();
+                const timestamp = Date.now();
+                const fileName = `payphoto${userId}_${timestamp}.${ext}`;
+                const path = `payment/pay-photo/${fileName}`;
+
+                const reader = new FileReader();
+                const base64 = await new Promise((resolve, reject) => {
+                    reader.onload = () => {
+                        const base64String = reader.result.split(',')[1];
+                        resolve(base64String);
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+
+                const url = `https://api.github.com/${REPO_PATH}/${path}`;
+                const body = {
+                    message: `Upload payment photo ${fileName}`,
+                    content: base64,
+                    branch: 'main'
+                };
+
+                const res = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || 'خطا در آپلود عکس');
+                }
+
+                return `payment/pay-photo/${fileName}`;
+            }
+
+            // ============================================================
+            // 0603 - بارگذاری داده‌ها (همان‌های قبلی)
+            // ============================================================
+            function loadUserAndCheckout() {
+                if (typeof window.getCurrentUser === 'function') {
+                    currentUser = window.getCurrentUser();
+                } else {
+                    try {
+                        const data = localStorage.getItem('currentUser');
+                        currentUser = data ? JSON.parse(data) : null;
+                    } catch (e) { currentUser = null; }
+                }
+
+                if (!currentUser) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                try {
+                    const data = sessionStorage.getItem('checkout_data');
+                    if (!data) {
+                        window.location.href = 'checkout.html';
+                        return;
+                    }
+                    checkoutData = JSON.parse(data);
+                } catch (e) {
+                    window.location.href = 'checkout.html';
+                    return;
+                }
+
+                document.getElementById('payerName').value = currentUser.name || '';
+                document.getElementById('payerPhone').value = currentUser.phone || '';
+
+                const today = new Date().toLocaleDateString('fa-IR');
+                document.getElementById('paymentDate').value = today;
+
+                renderOrderSummary();
+            }
+
+            function renderOrderSummary() {
+                const container = document.getElementById('orderSummary');
+                if (!checkoutData) return;
+                let html = '';
+                checkoutData.items.forEach(item => {
+                    html += `<div class="item-row">
+                        <span>${item.productName || item.productId} × ${item.quantity}</span>
+                        <span>${(item.price * item.quantity).toLocaleString()} تومان</span>
+                    </div>`;
+                });
+                html += `<div class="total-row">
+                    <span>جمع کل:</span>
+                    <span>${checkoutData.total.toLocaleString()} تومان</span>
+                </div>`;
+                html += `<div class="item-row">
+                    <span>آدرس:</span>
+                    <span>${typeof checkoutData.address === 'string' ? checkoutData.address : checkoutData.address.address || ''}</span>
+                </div>`;
+                html += `<div class="item-row">
+                    <span>روش ارسال:</span>
+                    <span>${checkoutData.shipping}</span>
+                </div>`;
+                if (checkoutData.notes) {
+                    html += `<div class="item-row">
+                        <span>توضیحات:</span>
+                        <span>${checkoutData.notes}</span>
+                    </div>`;
+                }
+                container.innerHTML = html;
+                document.getElementById('paymentAmount').value = checkoutData.total;
+            }
+
+            // ============================================================
+            // 0604 - مدیریت آپلود عکس (همان‌های قبلی)
+            // ============================================================
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const fileName = document.getElementById('fileName');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            const removeImageBtn = document.getElementById('removeImage');
+
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            });
+
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            });
+
+            function handleFile(file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('حجم فایل باید کمتر از ۵ مگابایت باشد.', 'error');
+                    return;
+                }
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    showToast('فرمت فایل باید JPG، PNG یا GIF باشد.', 'error');
+                    return;
+                }
+
+                selectedFile = file;
+                fileName.textContent = '✅ ' + file.name;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    uploadArea.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+
+            removeImageBtn.addEventListener('click', function() {
+                selectedFile = null;
+                uploadedImagePath = null;
+                fileName.textContent = '';
+                imagePreview.style.display = 'none';
+                uploadArea.style.display = 'block';
+                fileInput.value = '';
+            });
+
+            // ============================================================
+            // 0605 - ثبت پرداخت (اصلاح‌شده + توقف تایمر)
+            // ============================================================
+            window.submitPayment = async function() {
+                if (submitBtn.disabled) {
+                    showToast('زمان پرداخت به پایان رسیده است.', 'error');
+                    return;
+                }
+
+                const msg = document.getElementById('paymentMsg');
+                const loader = document.getElementById('loader');
+                const successBox = document.getElementById('successBox');
+
+                const payerName = document.getElementById('payerName').value.trim();
+                const payerPhone = document.getElementById('payerPhone').value.trim();
+                const cardNumber = document.getElementById('cardNumber').value.trim();
+                const accountNumber = document.getElementById('accountNumber').value.trim();
+                const transactionId = document.getElementById('transactionId').value.trim();
+                const paymentAmount = document.getElementById('paymentAmount').value.trim();
+                const paymentDate = document.getElementById('paymentDate').value;
+                const notes = document.getElementById('paymentNotes').value.trim();
+
+                if (!payerName) {
+                    msg.innerHTML = '<span style="color:#ef4444;">لطفاً نام پرداخت‌کننده را وارد کنید.</span>';
+                    return;
+                }
+                if (!payerPhone) {
+                    msg.innerHTML = '<span style="color:#ef4444;">لطفاً شماره تماس را وارد کنید.</span>';
+                    return;
+                }
+                if (!cardNumber || cardNumber.replace(/-/g, '').length < 16) {
+                    msg.innerHTML = '<span style="color:#ef4444;">لطفاً شماره کارت معتبر (۱۶ رقمی) وارد کنید.</span>';
+                    return;
+                }
+                if (!accountNumber) {
+                    msg.innerHTML = '<span style="color:#ef4444;">لطفاً شماره حساب (شبا) را وارد کنید.</span>';
+                    return;
+                }
+                if (!transactionId) {
+                    msg.innerHTML = '<span style="color:#ef4444;">لطفاً شناسه پرداخت (شماره پیگیری واریز) را وارد کنید.</span>';
+                    return;
+                }
+                if (!paymentAmount || parseInt(paymentAmount) <= 0) {
+                    msg.innerHTML = '<span style="color:#ef4444;">لطفاً مبلغ معتبر وارد کنید.</span>';
+                    return;
+                }
+                if (!selectedFile) {
+                    msg.innerHTML = '<span style="color:#ef4444;">لطفاً تصویر فیش واریزی را آپلود کنید.</span>';
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                loader.classList.add('active');
+                msg.innerHTML = '';
+
+                try {
+                    const userId = currentUser.id || currentUser.username || 'unknown';
+                    const imagePath = await uploadImageToGitHub(selectedFile, userId);
+                    uploadedImagePath = imagePath;
+
+                    const paymentId = 'PAY-' + Date.now().toString(36).toUpperCase();
+
+                    const paymentData = {
+                        id: paymentId,
+                        userId: userId,
+                        userName: currentUser.name || currentUser.username || 'کاربر',
+                        payerName: payerName,
+                        payerPhone: payerPhone,
+                        cardNumber: cardNumber,
+                        accountNumber: accountNumber,
+                        transactionId: transactionId,
+                        amount: parseInt(paymentAmount),
+                        date: paymentDate,
+                        notes: notes,
+                        imagePath: imagePath,
+                        checkout: checkoutData,
+                        status: 'pending',
+                        createdAt: new Date().toISOString()
+                    };
+
+                    // ===== ۱. ذخیره در فایل اختصاصی کاربر =====
+                    const userPaymentPath = `payment/payment${userId}.json`;
+                    let userPayments = [];
+                    let userSha = null;
+                    const existingUser = await fetchFromGitHub(userPaymentPath);
+                    if (existingUser) {
+                        try {
+                            userPayments = JSON.parse(existingUser.content);
+                            if (!Array.isArray(userPayments)) userPayments = [];
+                        } catch (e) {
+                            userPayments = [];
+                        }
+                        userSha = existingUser.sha;
+                    }
+                    userPayments.push(paymentData);
+                    await saveToGitHub(userPaymentPath, userPayments, userSha);
+
+                    // ===== ۲. ذخیره در فایل گلوبال orderhistory.json =====
+                    const globalPath = 'payment/orderhistory.json';
+                    const existingGlobal = await fetchFromGitHub(globalPath);
+                    let historyData = existingGlobal ? JSON.parse(existingGlobal.content) : {
+                        updated: new Date().toISOString(),
+                        total_payments: 0,
+                        payments: []
+                    };
+
+                    historyData.payments.push({
+                        userId: userId,
+                        userName: currentUser.name || currentUser.username || 'کاربر',
+                        payerName: payerName,
+                        payerPhone: payerPhone,
+                        orderId: paymentId,
+                        amount: parseInt(paymentAmount),
+                        date: paymentDate,
+                        transactionId: transactionId,
+                        cardNumber: cardNumber,
+                        accountNumber: accountNumber,
+                        imagePath: imagePath,
+                        notes: notes,
+                        status: 'pending',
+                        createdAt: new Date().toISOString()
+                    });
+                    historyData.total_payments = historyData.payments.length;
+                    historyData.updated = new Date().toISOString();
+
+                    let globalSha = existingGlobal ? existingGlobal.sha : null;
+                    await saveToGitHub(globalPath, historyData, globalSha);
+
+                    // ===== ۳. ذخیره سفارش در فایل member/memberXXX/orders.json =====
+                    const memberOrderPath = `member/member${userId}/orders.json`;
+                    let memberOrderData = await fetchFromGitHub(memberOrderPath);
+                    let memberOrders = [];
+                    let memberSha = null;
+
+                    if (memberOrderData) {
+                        try {
+                            memberOrders = JSON.parse(memberOrderData.content);
+                            if (!Array.isArray(memberOrders)) memberOrders = [];
+                        } catch (e) {
+                            memberOrders = [];
+                        }
+                        memberSha = memberOrderData.sha;
+                    }
+
+                    const orderForMember = {
+                        id: paymentId,
+                        date: paymentDate,
+                        items: checkoutData.items.map(item => ({
+                            productId: item.productId,
+                            productName: item.productName || item.productId,
+                            quantity: item.quantity,
+                            price: item.price
+                        })),
+                        total: checkoutData.total,
+                        address: checkoutData.address,
+                        shipping: checkoutData.shipping,
+                        notes: notes || checkoutData.notes || '',
+                        status: 'pending',
+                        tracking: paymentId,
+                        transactionId: transactionId
+                    };
+
+                    memberOrders.push(orderForMember);
+                    await saveToGitHub(memberOrderPath, memberOrders, memberSha);
+
+                    // ===== ۴. پاک کردن سبد خرید =====
+                    localStorage.setItem('user_cart', '[]');
+                    if (currentUser) {
+                        currentUser.cart = [];
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    }
+                    sessionStorage.removeItem('checkout_data');
+
+                    // ===== ۵. توقف تایمر =====
+                    stopTimer();
+
+                    loader.classList.remove('active');
+                    submitBtn.disabled = false;
+
+                    document.getElementById('trackingCode').textContent = paymentId;
+                    successBox.classList.add('active');
+                    statusBadge.textContent = 'پرداخت ثبت شد';
+                    statusBadge.className = 'status-badge success';
+
+                    showToast('✅ پرداخت با موفقیت ثبت شد!', 'success');
+
+                } catch (error) {
+                    console.error('خطا در ثبت پرداخت:', error);
+                    loader.classList.remove('active');
+                    submitBtn.disabled = false;
+                    msg.innerHTML = `<span style="color:#ef4444;">❌ خطا در ثبت پرداخت: ${error.message}</span>`;
+                    showToast('❌ خطا در ثبت پرداخت', 'error');
+                }
+            };
+
+            // ============================================================
+            // 0606 - توابع کمکی
+            // ============================================================
+            window.goToOrders = function() {
+                window.location.href = 'memberpage.html?tab=orders';
+            };
+
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s';
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+
+            // ============================================================
+            // 0607 - دکمه رفرش صفحه (با حفظ داده‌ها)
+            // ============================================================
+            document.getElementById('refreshPageBtn').addEventListener('click', function() {
+                // ذخیره زمان باقی‌مانده قبل از رفرش
+                sessionStorage.setItem('payment_timer_remaining', String(remainingSeconds));
+                location.reload();
+            });
+
+            // ============================================================
+            // 0608 - بارگذاری اولیه
+            // ============================================================
+            document.addEventListener('DOMContentLoaded', function() {
+                loadUserAndCheckout();
+                // شروع تایمر
+                startTimer();
+                console.log('✅ صفحه پرداخت با تایمر ۱۰ دقیقه‌ای بارگذاری شد.');
+            });
+
+        })();
+    </script>
+
+</body>
+</html>

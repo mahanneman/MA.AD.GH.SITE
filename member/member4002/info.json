@@ -1,0 +1,30 @@
+{
+  "id": "4002",
+  "username": "لیلا_مهرآذر81",
+  "name": "لیلا مهرآذر",
+  "email": "لیلا_مهرآذر81@hotmail.com",
+  "phone": "09548153462",
+  "whatsapp": "09230796807",
+  "telegram": "@لیلا_مهرآذر81",
+  "postal_code": "6761137485",
+  "addresses": [
+    "خانه|شیراز، خیابان صفاییه، پلاک 50|8568517599",
+    "کار|سنندج، خیابان صفاییه، پلاک 82|4842624905"
+  ],
+  "created": "2026-08-25",
+  "lastLogin": "2026-08-26",
+  "cart": [
+    {
+      "productId": "PRD-0010",
+      "quantity": 5
+    },
+    {
+      "productId": "PRD-0002",
+      "quantity": 5
+    }
+  ],
+  "password": "Test@1234",
+  "ordersCount": 2,
+  "cartCount": 2,
+  "addressCount": 2
+}

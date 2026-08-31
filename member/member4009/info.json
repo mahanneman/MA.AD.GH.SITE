@@ -1,0 +1,30 @@
+{
+  "id": "4009",
+  "username": "کیارش_گلشاهی74",
+  "name": "کیارش گلشاهی",
+  "email": "کیارش_گلشاهی74@hotmail.com",
+  "phone": "09837429665",
+  "whatsapp": "09228143638",
+  "telegram": "@کیارش_گلشاهی74",
+  "postal_code": "7747210029",
+  "addresses": [
+    "خانه|کرمانشاه، خیابان زند، پلاک 87|2281610650",
+    "کار|اهواز، خیابان صفاییه، پلاک 61|7527053785"
+  ],
+  "created": "2026-08-03",
+  "lastLogin": "2026-08-21",
+  "cart": [
+    {
+      "productId": "PRD-0007",
+      "quantity": 4
+    },
+    {
+      "productId": "PRD-0005",
+      "quantity": 1
+    }
+  ],
+  "password": "Test@1234",
+  "ordersCount": 2,
+  "cartCount": 2,
+  "addressCount": 2
+}

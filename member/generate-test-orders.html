@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ساخت سفارشات تست پیشرفته</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== استایل‌های مشابه فایل قبلی ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            direction: rtl;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .card {
+            background: #141b2b;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid #1e2a3d;
+            margin-bottom: 20px;
+        }
+        h1 { font-size: 1.8rem; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        h1 i { color: #2563eb; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .field label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .field label i { color: #2563eb; }
+        .field input, .field select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #1e2a3d;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        .field input:focus, .field select:focus { outline: none; border-color: #2563eb; }
+        .field .hint { font-size: 0.7rem; color: #64748b; }
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary { background: linear-gradient(135deg, #2563eb, #8b5cf6); color: #fff; }
+        .btn-success { background: #10b981; color: #fff; }
+        .btn-warning { background: #f59e0b; color: #0a0f1a; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-secondary { background: #6b7280; color: #fff; }
+        .btn:hover { transform: scale(1.03); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        .token-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .token-status.ok { background: rgba(16,185,129,0.1); border: 1px solid #10b981; color: #10b981; }
+        .token-status.fail { background: rgba(239,68,68,0.1); border: 1px solid #ef4444; color: #ef4444; }
+        .token-status input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #1e2a3d;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            font-family: 'Vazirmatn', sans-serif;
+            direction: ltr;
+            min-width: 150px;
+        }
+        .token-status input:focus { outline: none; border-color: #2563eb; }
+        .log-area {
+            background: #0a0f1a;
+            border-radius: 12px;
+            padding: 16px;
+            max-height: 350px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            border: 1px solid #1e2a3d;
+            font-family: 'Courier New', monospace;
+            direction: ltr;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .log-area .success { color: #10b981; }
+        .log-area .error { color: #ef4444; }
+        .log-area .info { color: #60a5fa; }
+        .log-area .warning { color: #f59e0b; }
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .footer { text-align: center; color: #94a3b8; font-size: 0.75rem; margin-top: 20px; }
+        .stats-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 10px 16px;
+            background: #0a0f1a;
+            border-radius: 8px;
+            border: 1px solid #1e2a3d;
+            margin-bottom: 12px;
+        }
+        .stats-row .stat { font-size: 0.9rem; }
+        .stats-row .stat strong { color: #2563eb; }
+        .user-list-select {
+            max-height: 150px;
+            overflow-y: auto;
+            background: #0a0f1a;
+            border: 2px solid #1e2a3d;
+            border-radius: 8px;
+            padding: 4px;
+        }
+        .user-list-select label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            border-radius: 4px;
+        }
+        .user-list-select label:hover { background: #1e2a3d; }
+        .user-list-select input[type="checkbox"] {
+            accent-color: #2563eb;
+            width: 16px;
+            height: 16px;
+        }
+        .feature-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            background: #2563eb;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1><i class="fas fa-shopping-bag"></i> ساخت سفارشات تست پیشرفته</h1>
+        <p style="color:#94a3b8;margin-bottom:12px;">
+            با ۱۰ قابلیت خفن! انتخاب کاربر خاص، تعداد سفارش، وضعیت، تنوع محصولات، تاریخ، روش ارسال و ...
+        </p>
+
+        <!-- توکن -->
+        <div class="token-status fail" id="tokenStatus">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>توکن گیت‌هاب:</span>
+            <input type="text" id="tokenInput" placeholder="github_pat_xxx...">
+            <button class="btn btn-primary" onclick="saveToken()" style="padding:6px 16px;"><i class="fas fa-save"></i> ذخیره</button>
+        </div>
+
+        <!-- تنظیمات -->
+        <div class="grid-2">
+            <div class="field">
+                <label><i class="fas fa-users"></i> کاربران هدف</label>
+                <select id="targetUsers">
+                    <option value="all">همه کاربران</option>
+                    <option value="specific">کاربر خاص</option>
+                    <option value="multiple">چند کاربر</option>
+                </select>
+                <div id="specificUserField" style="display:none;margin-top:4px;">
+                    <input type="text" id="specificUserId" placeholder="شناسه کاربر (مثال: 0401)">
+                </div>
+                <div id="multipleUserField" style="display:none;margin-top:4px;">
+                    <div class="user-list-select" id="userCheckboxList">در حال بارگذاری...</div>
+                </div>
+            </div>
+            <div class="field">
+                <label><i class="fas fa-box"></i> تعداد سفارش برای هر کاربر</label>
+                <input type="number" id="ordersPerUser" value="3" min="1" max="10">
+            </div>
+            <div class="field">
+                <label><i class="fas fa-tag"></i> وضعیت سفارشات</label>
+                <select id="orderStatus">
+                    <option value="random">تصادفی (وزنی)</option>
+                    <option value="all">همه وضعیت‌ها (هر کدوم یکی)</option>
+                    <option value="pending">فقط در انتظار پرداخت</option>
+                    <option value="paid">فقط پرداخت شده</option>
+                    <option value="shipped">فقط ارسال شده</option>
+                    <option value="completed">فقط تکمیل شده</option>
+                    <option value="canceled">فقط لغو شده</option>
+                </select>
+            </div>
+            <div class="field">
+                <label><i class="fas fa-calendar"></i> بازه تاریخی</label>
+                <select id="dateRange">
+                    <option value="7">۷ روز اخیر</option>
+                    <option value="30" selected>۳۰ روز اخیر</option>
+                    <option value="60">۶۰ روز اخیر</option>
+                    <option value="90">۹۰ روز اخیر</option>
+                </select>
+            </div>
+            <div class="field">
+                <label><i class="fas fa-truck"></i> روش ارسال</label>
+                <select id="shippingMethod">
+                    <option value="random">تصادفی</option>
+                    <option value="پست پیشتاز">پست پیشتاز</option>
+                    <option value="تیپاکس">تیپاکس</option>
+                    <option value="حضوری">تحویل حضوری</option>
+                    <option value="سایر">سایر</option>
+                </select>
+            </div>
+            <div class="field">
+                <label><i class="fas fa-cube"></i> تعداد محصول در هر سفارش</label>
+                <select id="itemsPerOrder">
+                    <option value="1">۱ محصول</option>
+                    <option value="2" selected>۲ محصول</option>
+                    <option value="3">۳ محصول</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- دکمه‌ها -->
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;">
+            <button class="btn btn-primary" id="generateBtn" onclick="generateOrders()">
+                <i class="fas fa-plus-circle"></i> ساخت سفارشات
+            </button>
+            <button class="btn btn-secondary" onclick="syncAll()">
+                <i class="fas fa-sync-alt"></i> فقط همگام‌سازی
+            </button>
+            <button class="btn btn-danger" onclick="clearLog()">
+                <i class="fas fa-eraser"></i> پاک کردن لاگ
+            </button>
+        </div>
+
+        <!-- آمار -->
+        <div class="stats-row">
+            <span class="stat"><i class="fas fa-users"></i> کاربران: <strong id="statUsers">۰</strong></span>
+            <span class="stat"><i class="fas fa-shopping-bag"></i> سفارشات جدید: <strong id="statOrders">۰</strong></span>
+            <span class="stat"><i class="fas fa-box"></i> کل آیتم‌ها: <strong id="statItems">۰</strong></span>
+            <span class="stat"><i class="fas fa-money-bill"></i> مبلغ کل: <strong id="statTotal">۰</strong></span>
+        </div>
+
+        <!-- لاگ -->
+        <div class="log-area" id="logArea">⏳ منتظر شروع...</div>
+    </div>
+    <div class="footer">🔒 اطلاعات فقط در مرورگر ذخیره می‌شود | سفارشات با تنوع بالا ساخته می‌شوند</div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    const REPO_OWNER = 'mahanneman';
+    const REPO_NAME = 'MA.AD.GH.SITE';
+    const REPO_PATH = `repos/${REPO_OWNER}/${REPO_NAME}/contents`;
+    let TOKEN = localStorage.getItem('github_token') || '';
+
+    const logArea = document.getElementById('logArea');
+    const generateBtn = document.getElementById('generateBtn');
+
+    const PENDING_FILE = 'member/orders/pendingorder-sender.json';
+
+    const PRODUCTS = [
+        { id: 'PRD-0001', name: 'پایه موتور پرینتر', price: 0 },
+        { id: 'PRD-0002', name: 'راهگاه فیلامنت', price: 50000 },
+        { id: 'PRD-0003', name: 'پنل کنترل لمسی', price: 120000 },
+        { id: 'PRD-0004', name: 'فایل STL گیربکس', price: 0 },
+        { id: 'PRD-0005', name: 'نازل چندمنظوره', price: 75000 }
+    ];
+    const STATUSES = ['pending', 'paid', 'shipped', 'completed', 'canceled'];
+    const SHIPPING_METHODS = ['پست پیشتاز', 'تیپاکس', 'حضوری', 'سایر'];
+    const CITIES = ['تهران', 'اصفهان', 'مشهد', 'شیراز', 'تبریز', 'کرج', 'رشت', 'اهواز', 'قم', 'یزد'];
+    const STREETS = ['خیابان آزادی', 'خیابان ولیعصر', 'خیابان چهارباغ', 'خیابان امام', 'خیابان زند', 'خیابان مدرس'];
+
+    // ===== توابع کمکی =====
+    function random(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function randomDate(days) {
+        const d = new Date();
+        d.setDate(d.getDate() - random(0, days));
+        return d.toISOString().split('T')[0];
+    }
+    function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+    // ===== توکن =====
+    function updateTokenUI() {
+        const status = document.getElementById('tokenStatus');
+        if (TOKEN) {
+            status.className = 'token-status ok';
+            status.innerHTML = `<i class="fas fa-check-circle"></i> <span>✅ توکن معتبر (...${TOKEN.slice(-4)})</span>`;
+            document.getElementById('tokenInput').value = '';
+        } else {
+            status.className = 'token-status fail';
+            status.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <span>توکن:</span>
+                <input type="text" id="tokenInput" placeholder="github_pat_xxx...">
+                <button class="btn btn-primary" onclick="saveToken()" style="padding:6px 16px;"><i class="fas fa-save"></i> ذخیره</button>
+            `;
+        }
+    }
+
+    window.saveToken = function() {
+        const input = document.getElementById('tokenInput');
+        if (input && input.value.trim()) {
+            TOKEN = input.value.trim();
+            localStorage.setItem('github_token', TOKEN);
+            updateTokenUI();
+            log('✅ توکن ذخیره شد.', 'success');
+        } else {
+            log('❌ توکن معتبر وارد کنید.', 'error');
+        }
+    };
+
+    // ===== لاگ =====
+    function log(msg, type = 'info') {
+        const time = new Date().toLocaleTimeString('fa-IR');
+        const colors = {
+            success: 'color:#10b981', error: 'color:#ef4444',
+            warning: 'color:#f59e0b', info: 'color:#60a5fa'
+        };
+        logArea.innerHTML += `<span style="${colors[type] || colors.info}">[${time}]</span> ${msg}\n`;
+        logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    window.clearLog = function() { logArea.innerHTML = '🧹 لاگ پاک شد.'; };
+
+    // ===== GitHub API =====
+    async function fetchFromGitHub(path) {
+        if (!TOKEN) throw new Error('توکن موجود نیست.');
+        const res = await fetch(`https://api.github.com/${REPO_PATH}/${path}`, {
+            headers: { 'Authorization': 'token ' + TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (res.status === 404) return null;
+        if (!res.ok) { const err = await res.json(); throw new Error(err.message || `خطا: ${res.status}`); }
+        const data = await res.json();
+        const binaryString = atob(data.content);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) { bytes[i] = binaryString.charCodeAt(i); }
+        const decoder = new TextDecoder('utf-8');
+        const content = decoder.decode(bytes).replace(/^\uFEFF/, '');
+        return { ...data, content };
+    }
+
+    async function saveToGitHub(path, content, sha = null) {
+        if (!TOKEN) throw new Error('توکن موجود نیست.');
+        const jsonString = JSON.stringify(content, null, 2);
+        const encoder = new TextEncoder();
+        const encoded = encoder.encode(jsonString);
+        let binary = '';
+        for (let i = 0; i < encoded.length; i++) { binary += String.fromCharCode(encoded[i]); }
+        const base64Content = btoa(binary);
+        const body = {
+            message: `Update orders - ${new Date().toISOString()}`,
+            content: base64Content,
+            branch: 'main'
+        };
+        if (sha) body.sha = sha;
+        const res = await fetch(`https://api.github.com/${REPO_PATH}/${path}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'token ' + TOKEN,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify(body)
+        });
+        if (!res.ok) { const err = await res.json(); throw new Error(err.message || `خطا: ${res.status}`); }
+        return await res.json();
+    }
+
+    // ===== دریافت لیست کاربران =====
+    async function getMembersList() {
+        try {
+            const res = await fetch(`https://api.github.com/${REPO_PATH}/member/`, {
+                headers: { 'Authorization': 'token ' + TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (!res.ok) return [];
+            const items = await res.json();
+            const dirs = items.filter(i => i.type === 'dir' && i.name.startsWith('member'));
+            const users = [];
+            for (const dir of dirs) {
+                const id = dir.name.replace('member', '');
+                const info = await getUserInfo(id);
+                if (info) users.push({ id, name: info.name || 'کاربر' });
+            }
+            return users;
+        } catch (e) { return []; }
+    }
+
+    async function getUserInfo(userId) {
+        try {
+            const data = await fetchFromGitHub(`member/member${userId}/info.json`);
+            if (data) return JSON.parse(data.content);
+            return null;
+        } catch (e) { return null; }
+    }
+
+    async function getUserOrders(userId) {
+        try {
+            const data = await fetchFromGitHub(`member/member${userId}/orders.json`);
+            if (data) {
+                const orders = JSON.parse(data.content);
+                return Array.isArray(orders) ? orders : [];
+            }
+            return [];
+        } catch (e) { return []; }
+    }
+
+    // ===== تولید سفارش =====
+    function generateOrder(userId, status, dateRange, shipping, itemsCount) {
+        const products = shuffle([...PRODUCTS]).slice(0, itemsCount);
+        const items = products.map(p => ({
+            productId: p.id,
+            productName: p.name,
+            quantity: random(1, 3),
+            price: p.price
+        }));
+        const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+        let finalStatus = status;
+        if (status === 'random') {
+            const weights = [0.3, 0.2, 0.2, 0.2, 0.1];
+            let r = Math.random(), cum = 0;
+            for (let i = 0; i < STATUSES.length; i++) {
+                cum += weights[i];
+                if (r < cum) { finalStatus = STATUSES[i]; break; }
+            }
+        } else if (status === 'all') {
+            finalStatus = pick(STATUSES);
+        }
+
+        const address = `${pick(CITIES)}، ${pick(STREETS)}، پلاک ${random(1, 50)}`;
+        const shippingMethod = shipping === 'random' ? pick(SHIPPING_METHODS) : shipping;
+
+        return {
+            id: `ORD-${Date.now().toString(36).toUpperCase()}-${String(random(100, 999))}`,
+            date: randomDate(dateRange),
+            items: items,
+            total: total,
+            address: address,
+            shipping: shippingMethod,
+            status: finalStatus,
+            tracking: `IR${random(100000000, 999999999)}`,
+            notes: `سفارش تست - ${new Date().toLocaleDateString('fa-IR')}`
+        };
+    }
+
+    // ===== همگام‌سازی به pendingorder-sender.json (با مدیریت کامل خطا) =====
+    async function syncAllOrdersToSender(users) {
+        try {
+            // ۱. دریافت محتوای فعلی sender (در صورت وجود)
+            const existing = await fetchFromGitHub(PENDING_FILE);
+            let senderData = [];
+
+            if (existing) {
+                try {
+                    const content = existing.content;
+                    // بررسی خالی بودن یا نامعتبر بودن محتوا
+                    if (content && content.trim() !== '') {
+                        senderData = JSON.parse(content);
+                        if (!Array.isArray(senderData)) senderData = [];
+                    } else {
+                        log(`   ⚠️ فایل sender خالی است، بازنشانی می‌شود.`, 'warning');
+                        senderData = [];
+                    }
+                } catch (parseErr) {
+                    // اگر JSON نامعتبر است (مانند Unexpected end of JSON input)، آرایه خالی بگیر
+                    log(`   ⚠️ محتوای sender نامعتبر است (Unexpected end of JSON input)، بازنشانی می‌شود.`, 'warning');
+                    senderData = [];
+                }
+            } else {
+                // فایل وجود ندارد
+                log(`   ℹ️ فایل sender وجود ندارد، ایجاد می‌شود.`, 'info');
+                senderData = [];
+            }
+
+            // ۲. جمع‌آوری سفارشات pending/paid/new از همه کاربران
+            const pendingOrders = [];
+            for (const user of users) {
+                const orders = await getUserOrders(user.id);
+                const pending = orders.filter(o => o.status === 'pending' || o.status === 'paid' || o.status === 'new');
+                if (pending.length > 0) {
+                    pendingOrders.push({
+                        userId: user.id,
+                        userName: user.name || 'کاربر',
+                        orders: pending
+                    });
+                }
+            }
+
+            // ۳. اضافه کردن سفارشات به senderData
+            let addedCount = 0;
+            for (const user of pendingOrders) {
+                for (const order of user.orders) {
+                    senderData.push({
+                        ...order,
+                        userId: user.userId,
+                        userName: user.userName
+                    });
+                    addedCount++;
+                }
+            }
+
+            if (addedCount === 0) {
+                log(`   ℹ️ هیچ سفارش جدیدی برای اضافه کردن وجود ندارد.`, 'info');
+                return true;
+            }
+
+            // ۴. ذخیره در گیت‌هاب
+            const sha = existing ? existing.sha : null;
+            await saveToGitHub(PENDING_FILE, senderData, sha);
+            log(`   ✅ ${addedCount} سفارش به sender اضافه شد.`, 'success');
+            return true;
+        } catch (e) {
+            log(`   ❌ خطا در همگام‌سازی: ${e.message}`, 'error');
+            return false;
+        }
+    }
+
+    // ===== بارگذاری لیست کاربران برای انتخاب =====
+    async function loadUserCheckboxes() {
+        const container = document.getElementById('userCheckboxList');
+        try {
+            const users = await getMembersList();
+            if (users.length === 0) {
+                container.innerHTML = '<span style="color:#64748b;">هیچ کاربری یافت نشد</span>';
+                return;
+            }
+            container.innerHTML = users.map(u => `
+                <label>
+                    <input type="checkbox" value="${u.id}">
+                    ${u.name} (#${u.id})
+                </label>
+            `).join('');
+        } catch (e) {
+            container.innerHTML = '<span style="color:#ef4444;">خطا در بارگذاری</span>';
+        }
+    }
+
+    // ===== تغییر نمایش فیلدها =====
+    document.getElementById('targetUsers').addEventListener('change', function() {
+        const val = this.value;
+        document.getElementById('specificUserField').style.display = val === 'specific' ? 'block' : 'none';
+        document.getElementById('multipleUserField').style.display = val === 'multiple' ? 'block' : 'none';
+        if (val === 'multiple') loadUserCheckboxes();
+    });
+
+    // ===== تابع اصلی ساخت سفارشات =====
+    window.generateOrders = async function() {
+        if (!TOKEN) { log('❌ لطفاً توکن را وارد کنید.', 'error'); return; }
+
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = '<i class="fas fa-spinner spinner"></i> در حال ساخت...';
+        log('🚀 شروع ساخت سفارشات تست...', 'info');
+
+        try {
+            const ordersPerUser = parseInt(document.getElementById('ordersPerUser').value) || 3;
+            const status = document.getElementById('orderStatus').value;
+            const dateRange = parseInt(document.getElementById('dateRange').value) || 30;
+            const shipping = document.getElementById('shippingMethod').value;
+            const itemsPerOrder = parseInt(document.getElementById('itemsPerOrder').value) || 2;
+
+            let selectedUsers = [];
+            const targetType = document.getElementById('targetUsers').value;
+
+            if (targetType === 'all') {
+                const allUsers = await getMembersList();
+                if (allUsers.length === 0) { log('⚠️ هیچ کاربری یافت نشد.', 'warning'); return; }
+                selectedUsers = allUsers;
+                log(`📌 همه کاربران (${selectedUsers.length} نفر)`, 'info');
+            } else if (targetType === 'specific') {
+                const userId = document.getElementById('specificUserId').value.trim();
+                if (!userId) { log('⚠️ شناسه کاربر را وارد کنید.', 'warning'); return; }
+                const info = await getUserInfo(userId);
+                if (!info) { log(`❌ کاربر ${userId} یافت نشد.`, 'error'); return; }
+                selectedUsers = [{ id: userId, name: info.name || 'کاربر' }];
+                log(`📌 کاربر خاص: ${userId} (${info.name})`, 'info');
+            } else if (targetType === 'multiple') {
+                const checkboxes = document.querySelectorAll('#userCheckboxList input[type="checkbox"]:checked');
+                if (checkboxes.length === 0) { log('⚠️ حداقل یک کاربر را انتخاب کنید.', 'warning'); return; }
+                const allUsers = await getMembersList();
+                const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+                selectedUsers = allUsers.filter(u => selectedIds.includes(u.id));
+                log(`📌 ${selectedUsers.length} کاربر انتخاب شد.`, 'info');
+            }
+
+            let totalOrders = 0, totalItems = 0, totalAmount = 0;
+
+            for (const user of selectedUsers) {
+                try {
+                    let orders = await getUserOrders(user.id);
+                    const initialCount = orders.length;
+
+                    const newOrders = [];
+                    for (let i = 0; i < ordersPerUser; i++) {
+                        const newOrder = generateOrder(user.id, status, dateRange, shipping, itemsPerOrder);
+                        newOrders.push(newOrder);
+                    }
+
+                    orders = [...orders, ...newOrders];
+                    const orderPath = `member/member${user.id}/orders.json`;
+                    const existing = await fetchFromGitHub(orderPath);
+                    await saveToGitHub(orderPath, orders, existing ? existing.sha : null);
+
+                    const created = newOrders.length;
+                    const items = newOrders.reduce((sum, o) => sum + o.items.length, 0);
+                    const amount = newOrders.reduce((sum, o) => sum + o.total, 0);
+                    totalOrders += created;
+                    totalItems += items;
+                    totalAmount += amount;
+
+                    log(`   ✅ ${user.name}: +${created} سفارش (${items} آیتم، ${amount.toLocaleString()} تومان)`, 'success');
+                } catch (e) {
+                    log(`   ❌ خطا در ${user.name}: ${e.message}`, 'error');
+                }
+            }
+
+            // آمار
+            document.getElementById('statUsers').textContent = selectedUsers.length;
+            document.getElementById('statOrders').textContent = totalOrders;
+            document.getElementById('statItems').textContent = totalItems;
+            document.getElementById('statTotal').textContent = totalAmount.toLocaleString();
+
+            log(`📊 ${totalOrders} سفارش جدید (${totalItems} آیتم، ${totalAmount.toLocaleString()} تومان)`, 'info');
+            log('🔄 همگام‌سازی با sender...', 'info');
+
+            // ✅ همگام‌سازی با pendingorder-sender.json
+            const allUsers = await getMembersList();
+            await syncAllOrdersToSender(allUsers);
+
+            log(`🎉 عملیات کامل شد! فایل sender به‌روز شد و پیام به تلگرام خواهد رفت.`, 'success');
+
+        } catch (e) {
+            log(`❌ خطای کلی: ${e.message}`, 'error');
+        }
+
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<i class="fas fa-plus-circle"></i> ساخت سفارشات';
+    };
+
+    // ===== همگام‌سازی دستی =====
+    window.syncAll = async function() {
+        if (!TOKEN) { log('❌ لطفاً توکن را وارد کنید.', 'error'); return; }
+        log('🔄 شروع همگام‌سازی با sender...', 'info');
+        const users = await getMembersList();
+        if (users.length === 0) { log('⚠️ هیچ کاربری یافت نشد.', 'warning'); return; }
+        await syncAllOrdersToSender(users);
+        log('✅ همگام‌سازی کامل شد!', 'success');
+    };
+
+    // ===== بارگذاری اولیه =====
+    async function init() {
+        updateTokenUI();
+        log('👋 ابزار ساخت سفارشات تست (نسخه ترکیبی)', 'info');
+        log('📌 تمام قابلیت‌های نسخه‌های قبل + انتخاب چند کاربر، وضعیت‌های متنوع، تاریخ و ...', 'info');
+        log('📂 سفارشات در pendingorder-sender.json ذخیره می‌شوند.', 'info');
+        setTimeout(loadUserCheckboxes, 500);
+    }
+    document.addEventListener('DOMContentLoaded', init);
+
+})();
+</script>
+</body>
+</html>

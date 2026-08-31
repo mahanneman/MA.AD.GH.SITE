@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ساخت کاربران تست پیشرفته</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            direction: rtl;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .card {
+            background: #141b2b;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid #1e2a3d;
+            margin-bottom: 20px;
+        }
+        h1 { font-size: 1.8rem; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        h1 i { color: #2563eb; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .field label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .field label i { color: #2563eb; }
+        .field input, .field select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #1e2a3d;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        .field input:focus, .field select:focus { outline: none; border-color: #2563eb; }
+        .field .hint { font-size: 0.7rem; color: #64748b; }
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary { background: linear-gradient(135deg, #2563eb, #8b5cf6); color: #fff; }
+        .btn-success { background: #10b981; color: #fff; }
+        .btn-warning { background: #f59e0b; color: #0a0f1a; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-secondary { background: #6b7280; color: #fff; }
+        .btn:hover { transform: scale(1.03); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        .token-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .token-status.ok { background: rgba(16,185,129,0.1); border: 1px solid #10b981; color: #10b981; }
+        .token-status.fail { background: rgba(239,68,68,0.1); border: 1px solid #ef4444; color: #ef4444; }
+        .token-status input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #1e2a3d;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            font-family: 'Vazirmatn', sans-serif;
+            direction: ltr;
+            min-width: 150px;
+        }
+        .token-status input:focus { outline: none; border-color: #2563eb; }
+        .log-area {
+            background: #0a0f1a;
+            border-radius: 12px;
+            padding: 16px;
+            max-height: 350px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            border: 1px solid #1e2a3d;
+            font-family: 'Courier New', monospace;
+            direction: ltr;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .log-area .success { color: #10b981; }
+        .log-area .error { color: #ef4444; }
+        .log-area .info { color: #60a5fa; }
+        .log-area .warning { color: #f59e0b; }
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .footer { text-align: center; color: #94a3b8; font-size: 0.75rem; margin-top: 20px; }
+        .stats-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 10px 16px;
+            background: #0a0f1a;
+            border-radius: 8px;
+            border: 1px solid #1e2a3d;
+            margin-bottom: 12px;
+        }
+        .stats-row .stat { font-size: 0.9rem; }
+        .stats-row .stat strong { color: #2563eb; }
+        .feature-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            background: #2563eb;
+            color: #fff;
+        }
+        .badge-count {
+            background: #2563eb;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1><i class="fas fa-users-cog"></i> ساخت کاربران تست پیشرفته</h1>
+        <p style="color:#94a3b8;margin-bottom:12px;">
+            با ۱۰ قابلیت خفن! کاربران با اطلاعات متنوع، سبد خرید، آدرس‌های متعدد و سفارشات تست.
+        </p>
+
+        <!-- توکن -->
+        <div class="token-status fail" id="tokenStatus">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>توکن گیت‌هاب:</span>
+            <input type="text" id="tokenInput" placeholder="github_pat_xxx...">
+            <button class="btn btn-primary" onclick="saveToken()" style="padding:6px 16px;"><i class="fas fa-save"></i> ذخیره</button>
+        </div>
+
+        <!-- تنظیمات -->
+        <div class="grid-2">
+            <div class="field">
+                <label><i class="fas fa-users"></i> تعداد کاربران</label>
+                <input type="number" id="userCount" value="5" min="1" max="20">
+                <span class="hint">حداکثر ۲۰ کاربر در هر بار</span>
+            </div>
+            <div class="field">
+                <label><i class="fas fa-shopping-cart"></i> آیتم‌های سبد خرید</label>
+                <select id="cartItems">
+                    <option value="0">بدون سبد</option>
+                    <option value="1">۱ آیتم</option>
+                    <option value="2" selected>۲ آیتم</option>
+                    <option value="3">۳ آیتم</option>
+                </select>
+            </div>
+            <div class="field">
+                <label><i class="fas fa-map-pin"></i> تعداد آدرس</label>
+                <select id="addressCount">
+                    <option value="1">۱ آدرس</option>
+                    <option value="2" selected>۲ آدرس</option>
+                    <option value="3">۳ آدرس</option>
+                </select>
+            </div>
+            <div class="field">
+                <label><i class="fas fa-box"></i> سفارشات اولیه</label>
+                <select id="initialOrders">
+                    <option value="0">بدون سفارش</option>
+                    <option value="1">۱ سفارش</option>
+                    <option value="2" selected>۲ سفارش</option>
+                    <option value="3">۳ سفارش</option>
+                </select>
+            </div>
+            <div class="field">
+                <label><i class="fas fa-calendar"></i> بازه تاریخ ثبت</label>
+                <select id="dateRange">
+                    <option value="7">۷ روز اخیر</option>
+                    <option value="30" selected>۳۰ روز اخیر</option>
+                    <option value="90">۳ ماه اخیر</option>
+                    <option value="180">۶ ماه اخیر</option>
+                </select>
+            </div>
+            <div class="field">
+                <label><i class="fas fa-key"></i> رمز عبور</label>
+                <input type="text" id="commonPassword" value="Test@1234">
+            </div>
+        </div>
+
+        <!-- دکمه‌ها -->
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;">
+            <button class="btn btn-primary" id="generateBtn" onclick="generateUsers()">
+                <i class="fas fa-user-plus"></i> ساخت کاربران
+            </button>
+            <button class="btn btn-success" onclick="exportUserList()">
+                <i class="fas fa-download"></i> دانلود لیست
+            </button>
+            <button class="btn btn-danger" onclick="clearLog()">
+                <i class="fas fa-eraser"></i> پاک کردن لاگ
+            </button>
+        </div>
+
+        <!-- آمار -->
+        <div class="stats-row">
+            <span class="stat"><i class="fas fa-users"></i> ساخته شد: <strong id="statUsers">۰</strong></span>
+            <span class="stat"><i class="fas fa-shopping-cart"></i> سبد: <strong id="statCarts">۰</strong></span>
+            <span class="stat"><i class="fas fa-box"></i> سفارش: <strong id="statOrders">۰</strong></span>
+            <span class="stat"><i class="fas fa-map-pin"></i> آدرس: <strong id="statAddresses">۰</strong></span>
+        </div>
+
+        <!-- لاگ -->
+        <div class="log-area" id="logArea">⏳ منتظر شروع...</div>
+    </div>
+    <div class="footer">🔒 اطلاعات فقط در مرورگر ذخیره می‌شود | رمز همه کاربران: Test@1234</div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    const REPO_OWNER = 'mahanneman';
+    const REPO_NAME = 'MA.AD.GH.SITE';
+    const REPO_PATH = `repos/${REPO_OWNER}/${REPO_NAME}/contents`;
+    let TOKEN = localStorage.getItem('github_token') || '';
+
+    const logArea = document.getElementById('logArea');
+    const generateBtn = document.getElementById('generateBtn');
+
+    // ===== لیست اسامی =====
+    const FIRST_NAMES = [
+        'ماهان', 'رضا', 'سارا', 'علی', 'نرگس', 'حامد', 'زهرا', 'محسن', 'لیلا', 'پرهام',
+        'امیر', 'فاطمه', 'حسین', 'مریم', 'محمد', 'نگار', 'کیان', 'یسنا', 'آرتین', 'باران',
+        'آیدا', 'دانیال', 'هانیه', 'یاسمن', 'پویا', 'سوگند', 'آرمین', 'شایان', 'نازنین', 'کیارش'
+    ];
+    const LAST_NAMES = [
+        'ادهم قزوینی', 'کریمی', 'محمدی', 'احمدی', 'خانی', 'قربانی', 'مرادی', 'فتحی', 'هاشمی', 'اسفندیاری',
+        'رضایی', 'علی‌پور', 'اکبری', 'نوری', 'حسینی', 'موسوی', 'صادقی', 'تاج‌الدین', 'یزدانی', 'رفیعی'
+    ];
+    const CITIES = ['تهران', 'اصفهان', 'مشهد', 'شیراز', 'تبریز', 'کرج', 'رشت', 'اهواز', 'قم', 'یزد'];
+    const STREETS = ['خیابان آزادی', 'خیابان ولیعصر', 'خیابان چهارباغ', 'خیابان امام', 'خیابان زند', 'خیابان مدرس', 'خیابان طالقانی', 'خیابان کوی ملت', 'خیابان صفاییه', 'خیابان پاسداران'];
+    const PRODUCTS = [
+        { id: 'PRD-0001', name: 'پایه موتور پرینتر', price: 0 },
+        { id: 'PRD-0002', name: 'راهگاه فیلامنت', price: 50000 },
+        { id: 'PRD-0003', name: 'پنل کنترل لمسی', price: 120000 },
+        { id: 'PRD-0004', name: 'فایل STL گیربکس', price: 0 },
+        { id: 'PRD-0005', name: 'نازل چندمنظوره', price: 75000 }
+    ];
+    const STATUSES = ['pending', 'paid', 'shipped', 'completed', 'canceled'];
+
+    // ===== توابع کمکی =====
+    function random(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function randomDate(days) {
+        const d = new Date();
+        d.setDate(d.getDate() - random(0, days));
+        return d.toISOString();
+    }
+    function pad(n) { return String(n).padStart(4, '0'); }
+
+    // ===== توکن =====
+    function updateTokenUI() {
+        const status = document.getElementById('tokenStatus');
+        if (TOKEN) {
+            status.className = 'token-status ok';
+            status.innerHTML = `<i class="fas fa-check-circle"></i> <span>✅ توکن معتبر (...${TOKEN.slice(-4)})</span>`;
+            document.getElementById('tokenInput').value = '';
+        } else {
+            status.className = 'token-status fail';
+            status.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <span>توکن:</span>
+                <input type="text" id="tokenInput" placeholder="github_pat_xxx...">
+                <button class="btn btn-primary" onclick="saveToken()" style="padding:6px 16px;"><i class="fas fa-save"></i> ذخیره</button>
+            `;
+        }
+    }
+
+    window.saveToken = function() {
+        const input = document.getElementById('tokenInput');
+        if (input && input.value.trim()) {
+            TOKEN = input.value.trim();
+            localStorage.setItem('github_token', TOKEN);
+            updateTokenUI();
+            log('✅ توکن ذخیره شد.', 'success');
+        } else {
+            log('❌ توکن معتبر وارد کنید.', 'error');
+        }
+    };
+
+    // ===== لاگ =====
+    function log(msg, type = 'info') {
+        const time = new Date().toLocaleTimeString('fa-IR');
+        const colors = {
+            success: 'color:#10b981', error: 'color:#ef4444',
+            warning: 'color:#f59e0b', info: 'color:#60a5fa'
+        };
+        logArea.innerHTML += `<span style="${colors[type] || colors.info}">[${time}]</span> ${msg}\n`;
+        logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    window.clearLog = function() { logArea.innerHTML = '🧹 لاگ پاک شد.'; };
+
+    // ===== GitHub API =====
+    async function fetchFromGitHub(path) {
+        if (!TOKEN) throw new Error('توکن موجود نیست.');
+        const res = await fetch(`https://api.github.com/${REPO_PATH}/${path}`, {
+            headers: { 'Authorization': 'token ' + TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (res.status === 404) return null;
+        if (!res.ok) { const err = await res.json(); throw new Error(err.message || `خطا: ${res.status}`); }
+        const data = await res.json();
+        const binaryString = atob(data.content);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) { bytes[i] = binaryString.charCodeAt(i); }
+        const decoder = new TextDecoder('utf-8');
+        const content = decoder.decode(bytes).replace(/^\uFEFF/, '');
+        return { ...data, content };
+    }
+
+    async function saveToGitHub(path, content, sha = null) {
+        if (!TOKEN) throw new Error('توکن موجود نیست.');
+        const jsonString = JSON.stringify(content, null, 2);
+        const encoder = new TextEncoder();
+        const encoded = encoder.encode(jsonString);
+        let binary = '';
+        for (let i = 0; i < encoded.length; i++) { binary += String.fromCharCode(encoded[i]); }
+        const base64Content = btoa(binary);
+        const body = {
+            message: `Create test user - ${new Date().toISOString()}`,
+            content: base64Content,
+            branch: 'main'
+        };
+        if (sha) body.sha = sha;
+        const res = await fetch(`https://api.github.com/${REPO_PATH}/${path}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'token ' + TOKEN,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify(body)
+        });
+        if (!res.ok) { const err = await res.json(); throw new Error(err.message || `خطا: ${res.status}`); }
+        return await res.json();
+    }
+
+    // ===== دریافت کاربران موجود =====
+    async function getExistingMembers() {
+        try {
+            const res = await fetch(`https://api.github.com/${REPO_PATH}/member/`, {
+                headers: { 'Authorization': 'token ' + TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (!res.ok) return [];
+            const items = await res.json();
+            return items.filter(i => i.type === 'dir' && i.name.startsWith('member'))
+                .map(i => parseInt(i.name.replace('member', '')));
+        } catch (e) { return []; }
+    }
+
+    // ===== ساخت کاربر =====
+    async function createUser(index, startId, settings) {
+        const userId = String(startId + index).padStart(4, '0');
+        const firstName = pick(FIRST_NAMES);
+        const lastName = pick(LAST_NAMES);
+        const fullName = firstName + ' ' + lastName;
+        const username = (firstName + '_' + lastName).replace(/\s/g, '').toLowerCase() + random(10, 99);
+        const email = username + '@' + pick(['gmail.com', 'yahoo.com', 'outlook.com']);
+
+        // آدرس‌ها
+        const addresses = [];
+        const addrCount = parseInt(settings.addressCount);
+        const labels = ['خانه', 'کار', 'سایر'];
+        for (let i = 0; i < addrCount && i < 3; i++) {
+            const city = pick(CITIES);
+            const street = pick(STREETS);
+            const postal = String(random(1000000000, 9999999999));
+            addresses.push(`${labels[i]}|${city}، ${street}، پلاک ${random(1, 50)}|${postal}`);
+        }
+
+        // سبد خرید
+        const cart = [];
+        const cartCount = parseInt(settings.cartItems);
+        const shuffledProducts = [...PRODUCTS].sort(() => Math.random() - 0.5);
+        for (let i = 0; i < cartCount && i < shuffledProducts.length; i++) {
+            cart.push({
+                productId: shuffledProducts[i].id,
+                quantity: random(1, 3)
+            });
+        }
+
+        // سفارشات اولیه
+        const orders = [];
+        const orderCount = parseInt(settings.initialOrders);
+        const dateRange = parseInt(settings.dateRange);
+        for (let i = 0; i < orderCount; i++) {
+            const product = pick(PRODUCTS);
+            const qty = random(1, 3);
+            const total = product.price * qty;
+            const date = randomDate(dateRange);
+            const status = pick(STATUSES);
+            orders.push({
+                id: `ORD-${Date.now().toString(36).toUpperCase()}-${String(i).padStart(3,'0')}`,
+                date: date.split('T')[0],
+                items: [{ productId: product.id, productName: product.name, quantity: qty, price: product.price }],
+                total: total,
+                address: pick(addresses) || 'آدرس تست',
+                shipping: pick(['پست پیشتاز', 'تیپاکس', 'حضوری', 'سایر']),
+                status: status,
+                tracking: `IR${random(100000000, 999999999)}`,
+                notes: `سفارش تست ${i+1}`
+            });
+        }
+
+        const userInfo = {
+            id: userId,
+            username: username,
+            name: fullName,
+            email: email,
+            phone: `09${random(100000000, 999999999)}`,
+            whatsapp: `09${random(100000000, 999999999)}`,
+            telegram: '@' + username,
+            postal_code: String(random(1000000000, 9999999999)),
+            addresses: addresses,
+            created: randomDate(dateRange),
+            lastLogin: randomDate(7),
+            cart: cart,
+            password: settings.password
+        };
+
+        // ذخیره در گیت‌هاب
+        const folder = `member/member${userId}`;
+        await saveToGitHub(`${folder}/info.json`, userInfo, null);
+        await saveToGitHub(`${folder}/orders.json`, orders, null);
+
+        return { userInfo, ordersCount: orders.length, cartCount: cart.length, addressCount: addresses.length };
+    }
+
+    // ===== تابع اصلی =====
+    window.generateUsers = async function() {
+        if (!TOKEN) { log('❌ لطفاً توکن را وارد کنید.', 'error'); return; }
+
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = '<i class="fas fa-spinner spinner"></i> در حال ساخت...';
+        log('🚀 شروع ساخت کاربران تست...', 'info');
+
+        try {
+            const count = parseInt(document.getElementById('userCount').value) || 5;
+            if (count < 1 || count > 20) { log('⚠️ تعداد کاربران باید بین ۱ تا ۲۰ باشد.', 'warning'); return; }
+
+            const settings = {
+                cartItems: document.getElementById('cartItems').value,
+                addressCount: document.getElementById('addressCount').value,
+                initialOrders: document.getElementById('initialOrders').value,
+                dateRange: document.getElementById('dateRange').value,
+                password: document.getElementById('commonPassword').value.trim() || 'Test@1234'
+            };
+
+            // پیدا کردن شروع ID
+            const existing = await getExistingMembers();
+            let startId = 4001;
+            if (existing.length > 0) {
+                const maxId = Math.max(...existing);
+                if (isFinite(maxId)) startId = maxId + 1;
+            }
+            if (!isFinite(startId) || startId < 4001) startId = 4001;
+
+            let totalUsers = 0, totalOrders = 0, totalCarts = 0, totalAddresses = 0;
+            const created = [];
+
+            for (let i = 0; i < count; i++) {
+                try {
+                    const result = await createUser(i, startId, settings);
+                    created.push(result.userInfo);
+                    totalUsers++;
+                    totalOrders += result.ordersCount;
+                    totalCarts += result.cartCount;
+                    totalAddresses += result.addressCount;
+                    log(`   ✅ ${result.userInfo.name} (${result.userInfo.id}) | ${result.ordersCount} سفارش | ${result.cartCount} سبد | ${result.addressCount} آدرس`, 'success');
+                } catch (e) {
+                    log(`   ❌ خطا در کاربر ${i+1}: ${e.message}`, 'error');
+                }
+            }
+
+            // آمار
+            document.getElementById('statUsers').textContent = totalUsers;
+            document.getElementById('statOrders').textContent = totalOrders;
+            document.getElementById('statCarts').textContent = totalCarts;
+            document.getElementById('statAddresses').textContent = totalAddresses;
+
+            log(`🎉 ${totalUsers} کاربر با ${totalOrders} سفارش، ${totalCarts} سبد و ${totalAddresses} آدرس ساخته شد.`, 'success');
+            log(`🔑 رمز عبور: ${settings.password}`, 'warning');
+            log(`📋 برای ورود: https://mahanneman.github.io/MA.AD.GH.SITE/member/login.html`, 'info');
+
+        } catch (e) {
+            log(`❌ خطای کلی: ${e.message}`, 'error');
+        }
+
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<i class="fas fa-user-plus"></i> ساخت کاربران';
+    };
+
+    // ===== خروجی لیست =====
+    window.exportUserList = function() {
+        const users = [];
+        document.querySelectorAll('.user-item')?.forEach(el => {
+            const id = el.querySelector('.id')?.textContent?.replace('#', '') || '';
+            const name = el.querySelector('.name')?.textContent || '';
+            if (id) users.push({ id, name });
+        });
+        if (users.length === 0) { log('⚠️ کاربری برای خروجی وجود ندارد.', 'warning'); return; }
+        const blob = new Blob([JSON.stringify(users, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `test-users-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        log('✅ لیست کاربران دانلود شد.', 'success');
+    };
+
+    // ===== بارگذاری =====
+    function init() {
+        updateTokenUI();
+        log('👋 ابزار ساخت کاربران تست پیشرفته', 'info');
+        log('📌 ۱۰ قابلیت: تعداد کاربر، سبد خرید، آدرس‌ها، سفارشات، تاریخ متنوع، اسامی متنوع، رمز یکسان، و ...', 'info');
+    }
+    document.addEventListener('DOMContentLoaded', init);
+
+})();
+</script>
+</body>
+</html>

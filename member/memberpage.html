@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <!-- ===== Meta Tags ===== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل کاربری | مهندس ماهان ادهم قزوینی</title>
+    <meta name="description" content="پنل مدیریت کاربری – پروفایل، آدرس‌ها، سبد خرید و سفارشات">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../common.css">
+
+    <style>
+        /* ===== استایل‌های پنل کاربری ===== */
+        :root {
+            --member-primary: #2563eb;
+            --member-secondary: #10b981;
+            --member-danger: #ef4444;
+            --member-warning: #f59e0b;
+            --member-bg: #0a0f1a;
+            --member-card: #141b2b;
+            --member-border: #1e2a3d;
+            --member-text: #f1f5f9;
+            --member-text-sec: #94a3b8;
+            --member-radius: 16px;
+            --member-shadow: 0 15px 50px rgba(0,0,0,0.5);
+            --member-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        [data-theme="light"] {
+            --member-bg: #f1f5f9;
+            --member-card: #ffffff;
+            --member-border: #cbd5e1;
+            --member-text: #0f172a;
+            --member-text-sec: #334155;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: var(--member-bg);
+            color: var(--member-text);
+            min-height: 100vh;
+            direction: rtl;
+            padding-top: 75px;
+            transition: background 0.3s, color 0.3s;
+        }
+        .no-scroll { overflow: hidden; }
+
+        .member-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .member-tabs {
+            display: flex; gap: 4px; flex-wrap: wrap;
+            border-bottom: 2px solid var(--member-border);
+            margin-bottom: 24px; overflow-x: auto; padding-bottom: 2px;
+        }
+        .member-tabs .tab-btn {
+            padding: 8px 18px; background: transparent; border: none;
+            color: var(--member-text-sec); font-family: 'Vazirmatn', sans-serif;
+            font-weight: 600; font-size: 0.85rem; cursor: pointer;
+            border-radius: var(--member-radius) var(--member-radius) 0 0;
+            transition: var(--member-transition);
+            display: flex; align-items: center; gap: 6px; white-space: nowrap;
+            position: relative;
+        }
+        .member-tabs .tab-btn:hover {
+            color: var(--member-text); background: rgba(255,255,255,0.03);
+        }
+        .member-tabs .tab-btn.active {
+            color: var(--member-text); background: var(--member-card);
+        }
+        .member-tabs .tab-btn.active::after {
+            content: ''; position: absolute; bottom: -2px; right: 20%;
+            width: 60%; height: 3px; background: var(--member-primary);
+            border-radius: 10px;
+        }
+        .member-tabs .tab-btn .badge {
+            background: var(--member-primary); color: #fff; font-size: 0.55rem;
+            padding: 1px 8px; border-radius: 20px; font-weight: 700;
+        }
+        .tab-content { display: none; animation: fadeIn 0.35s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .member-card {
+            background: var(--member-card); border-radius: var(--member-radius);
+            padding: 22px; margin-bottom: 20px; border: 1px solid var(--member-border);
+            transition: var(--member-transition);
+        }
+        .member-card:hover { border-color: rgba(37,99,235,0.2); }
+        .member-card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 10px; margin-bottom: 16px;
+            padding-bottom: 12px; border-bottom: 1px solid var(--member-border);
+        }
+        .member-card-header h3 { font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+        .member-card-header h3 i { color: var(--member-primary); }
+        .member-card-header .sub { color: var(--member-text-sec); font-size: 0.75rem; font-weight: 400; }
+        .member-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .member-grid .full { grid-column: 1 / -1; }
+        @media (max-width: 768px) { .member-grid { grid-template-columns: 1fr; } }
+        .member-field { display: flex; flex-direction: column; gap: 4px; }
+        .member-field label { font-weight: 600; font-size: 0.8rem; display: flex; align-items: center; gap: 4px; color: var(--member-text-sec); }
+        .member-field label i { color: var(--member-primary); }
+        .member-field input, .member-field textarea, .member-field select {
+            padding: 8px 12px; border: 2px solid var(--member-border);
+            border-radius: var(--member-radius); background: var(--member-bg);
+            color: var(--member-text); font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.9rem; transition: var(--member-transition); width: 100%;
+        }
+        .member-field input:focus, .member-field textarea:focus, .member-field select:focus {
+            outline: none; border-color: var(--member-primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        .member-field textarea { min-height: 60px; resize: vertical; }
+        .member-field .hint { font-size: 0.65rem; color: var(--member-text-sec); opacity: 0.6; }
+        .member-btn {
+            padding: 8px 22px; border: none; border-radius: 30px;
+            font-family: 'Vazirmatn', sans-serif; font-weight: 600; font-size: 0.8rem;
+            cursor: pointer; transition: var(--member-transition);
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .member-btn:hover { transform: scale(1.03); }
+        .member-btn-primary { background: var(--member-primary); color: #fff; }
+        .member-btn-secondary { background: var(--member-secondary); color: #fff; }
+        .member-btn-danger { background: var(--member-danger); color: #fff; }
+        .member-btn-outline { background: transparent; border: 2px solid var(--member-border); color: var(--member-text-sec); }
+        .member-btn-sm { padding: 4px 12px; font-size: 0.7rem; }
+        .form-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+        .member-items { display: grid; grid-template-columns: 1fr; gap: 8px; }
+        .member-item {
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 8px; padding: 10px 14px;
+            background: var(--member-bg); border-radius: var(--member-radius);
+            border: 1px solid var(--member-border); transition: var(--member-transition);
+        }
+        .member-item:hover { border-color: rgba(37,99,235,0.2); }
+        .member-item .info { flex: 1; min-width: 100px; }
+        .member-item .info .title { font-weight: 600; font-size: 0.9rem; margin-bottom: 2px; }
+        .member-item .info .meta { font-size: 0.7rem; color: var(--member-text-sec); display: flex; flex-wrap: wrap; gap: 8px; }
+        .member-item .info .meta i { margin-left: 3px; }
+        .member-empty { text-align: center; padding: 30px 20px; color: var(--member-text-sec); }
+        .member-empty i { font-size: 2.5rem; color: var(--member-border); display: block; margin-bottom: 10px; }
+
+        .cart-item {
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            gap: 10px; align-items: center; padding: 10px 14px;
+            background: var(--member-bg); border-radius: var(--member-radius);
+            border: 1px solid var(--member-border); margin-bottom: 6px;
+        }
+        .cart-item .qty-control { display: flex; align-items: center; gap: 4px; }
+        .cart-item .qty-control button {
+            width: 26px; height: 26px; border-radius: 50%;
+            border: 1px solid var(--member-border); background: transparent;
+            color: var(--member-text); cursor: pointer;
+            transition: var(--member-transition); font-size: 0.8rem;
+        }
+        .cart-item .qty-control button:hover { background: var(--member-primary); color: #fff; }
+        .cart-item .qty-control span { min-width: 26px; text-align: center; font-weight: 700; }
+        .cart-total { text-align: left; font-size: 1.1rem; font-weight: 700; padding: 12px; border-top: 2px solid var(--member-border); margin-top: 10px; }
+        .cart-total span { color: var(--member-primary); }
+
+        .order-status {
+            display: inline-flex; align-items: center; gap: 3px;
+            padding: 2px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 600;
+        }
+        .order-status.pending { background: rgba(245,158,11,0.2); color: var(--member-warning); }
+        .order-status.paid { background: rgba(16,185,129,0.2); color: var(--member-secondary); }
+        .order-status.shipped { background: rgba(37,99,235,0.2); color: var(--member-primary); }
+        .order-status.completed { background: rgba(16,185,129,0.3); color: #10b981; }
+        .order-status.canceled { background: rgba(239,68,68,0.2); color: var(--member-danger); }
+
+        .member-modal-overlay {
+            position: fixed; top: 0; right: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 999;
+            display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .member-modal-overlay.active { display: flex; }
+        .member-modal {
+            background: var(--member-card); border-radius: var(--member-radius);
+            padding: 28px; max-width: 700px; width: 100%; max-height: 90vh;
+            overflow-y: auto; border: 1px solid var(--member-border);
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.96) translateY(15px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .member-modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 12px; border-bottom: 1px solid var(--member-border);
+            margin-bottom: 16px;
+        }
+        .member-modal-header h3 { display: flex; align-items: center; gap: 8px; font-size: 1rem; }
+        .member-modal-header h3 i { color: var(--member-primary); }
+        .member-modal-close {
+            background: none; border: none; color: var(--member-text-sec);
+            font-size: 1.3rem; cursor: pointer; transition: var(--member-transition);
+        }
+        .member-modal-close:hover { color: var(--member-danger); transform: rotate(90deg); }
+
+        @media (max-width: 768px) {
+            .member-container { padding: 12px; }
+            .member-tabs .tab-btn { padding: 6px 12px; font-size: 0.75rem; }
+            .member-card { padding: 16px; }
+            .cart-item { grid-template-columns: 1fr; gap: 4px; }
+            .cart-item .qty-control { justify-content: center; }
+        }
+        @media (max-width: 480px) {
+            .member-tabs .tab-btn { padding: 4px 10px; font-size: 0.65rem; }
+        }
+
+        .toast {
+            position: fixed; bottom: 30px; left: 30px;
+            padding: 14px 24px; border-radius: var(--member-radius);
+            font-weight: 600; z-index: 9999;
+            animation: slideUp 0.4s ease;
+            box-shadow: var(--member-shadow);
+            background: var(--member-secondary);
+            color: #fff;
+            font-family: 'Vazirmatn', sans-serif;
+            direction: rtl;
+        }
+        .toast.error { background: var(--member-danger); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== استایل دراپ‌داون سبد خرید در هدر ===== */
+        .header-cart-icon { position: relative; cursor: pointer; }
+        .cart-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: auto;
+            min-width: 300px;
+            max-width: 380px;
+            background: var(--member-card);
+            border: 1px solid var(--member-border);
+            border-radius: 12px;
+            box-shadow: var(--member-shadow);
+            z-index: 1000;
+            margin-top: 8px;
+            padding: 12px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .cart-dropdown.show { display: block; }
+        .cart-dropdown-header {
+            padding: 0 16px 8px;
+            border-bottom: 1px solid var(--member-border);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .cart-dropdown-content { padding: 8px 16px; }
+        .cart-dropdown-footer {
+            padding: 8px 16px;
+            border-top: 1px solid var(--member-border);
+        }
+        .cart-dropdown-footer .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .cart-dropdown-footer .total-row span:last-child {
+            color: var(--member-primary);
+        }
+        .cart-dropdown-footer .checkout-btn {
+            width: 100%;
+            justify-content: center;
+            padding: 8px;
+            font-size: 0.85rem;
+        }
+        .cart-dropdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--member-border);
+            font-size: 0.85rem;
+        }
+        .cart-dropdown-empty {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--member-text-sec);
+        }
+        .cart-dropdown-empty i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+         هدر و منوی کشویی توسط load-menu.js بارگذاری می‌شوند
+         ============================================================ -->
+
+    <!-- ============================================================
+         محتوای اصلی (پنل کاربری)
+         ============================================================ -->
+    <main style="padding-top:70px;">
+        <div class="member-container">
+
+            <!-- تب‌ها -->
+            <div class="member-tabs" id="memberTabs">
+                <button class="tab-btn active" data-tab="profile"><i class="fas fa-id-card"></i> پروفایل</button>
+                <button class="tab-btn" data-tab="addresses"><i class="fas fa-map-pin"></i> آدرس‌ها</button>
+                <button class="tab-btn" data-tab="cart"><i class="fas fa-shopping-cart"></i> سبد خرید <span class="badge" id="cartTabBadge">0</span></button>
+                <button class="tab-btn" data-tab="orders"><i class="fas fa-box"></i> سفارشات</button>
+                <button class="tab-btn" data-tab="settings"><i class="fas fa-cog"></i> تنظیمات</button>
+            </div>
+
+            <!-- تب پروفایل -->
+            <div class="tab-content active" id="tab-profile">
+                <div class="member-card">
+                    <div class="member-card-header">
+                        <h3><i class="fas fa-user-edit"></i> اطلاعات شخصی</h3>
+                        <span class="sub" id="completionLabel">تکمیل اطلاعات: ۰%</span>
+                    </div>
+                    <div class="completion-bar" style="width:100%;height:6px;background:var(--member-border);border-radius:10px;overflow:hidden;margin:6px 0 10px;">
+                        <div class="fill" id="completionBar" style="width:0%;height:100%;background:linear-gradient(135deg,var(--member-primary),var(--member-secondary));border-radius:10px;transition:width 0.5s ease;"></div>
+                    </div>
+                    <form id="profileForm">
+                        <div class="member-grid">
+                            <div class="member-field full"><label><i class="fas fa-user"></i> نام کامل <span class="required">*</span></label><input type="text" id="editFullName" placeholder="نام و نام خانوادگی"></div>
+                            <div class="member-field"><label><i class="fas fa-envelope"></i> ایمیل <span class="required">*</span></label><input type="email" id="editEmail" placeholder="example@mail.com"></div>
+                            <div class="member-field"><label><i class="fas fa-phone"></i> شماره موبایل</label><input type="tel" id="editPhone" placeholder="۰۹۹۰۲۲۷۹۷۰۲"></div>
+                            <div class="member-field"><label><i class="fas fa-user-tag"></i> نام کاربری</label><input type="text" id="editUsername" placeholder="نام کاربری" disabled><span class="hint">نام کاربری قابل تغییر نیست.</span></div>
+                            <div class="member-field"><label><i class="fas fa-map-pin"></i> کد پستی</label><input type="text" id="editPostalCode" placeholder="۱۲۳۴۵۶۷۸۹۰"></div>
+                            <div class="member-field"><label><i class="fab fa-whatsapp"></i> واتساپ</label><input type="tel" id="editWhatsapp" placeholder="۰۹۹۰۲۲۷۹۷۰۲"></div>
+                            <div class="member-field"><label><i class="fab fa-telegram"></i> تلگرام</label><input type="text" id="editTelegram" placeholder="@username"></div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="member-btn member-btn-primary"><i class="fas fa-save"></i> ذخیره تغییرات</button>
+                            <button type="button" class="member-btn member-btn-outline" onclick="showChangePassword()"><i class="fas fa-key"></i> تغییر رمز</button>
+                            <button type="button" class="member-btn member-btn-secondary" onclick="exportUserData()"><i class="fas fa-download"></i> پشتیبان</button>
+                        </div>
+                        <div id="profileMsg" style="margin-top:10px;"></div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- تب آدرس‌ها -->
+            <div class="tab-content" id="tab-addresses">
+                <div class="member-card">
+                    <div class="member-card-header"><h3><i class="fas fa-map-pin"></i> آدرس‌های من</h3><span class="sub">افزودن، ویرایش و حذف</span></div>
+                    <div id="addressesList" class="member-items"><div class="member-empty"><i class="fas fa-map-pin"></i>هیچ آدرسی ثبت نشده است.</div></div>
+                    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+                        <div class="member-field" style="flex:2;min-width:150px;"><input type="text" id="newAddressInput" placeholder="آدرس جدید"></div>
+                        <div class="member-field" style="flex:1;min-width:100px;"><input type="text" id="newAddressPostal" placeholder="کد پستی"></div>
+                        <button class="member-btn member-btn-secondary" onclick="addAddress()"><i class="fas fa-plus"></i> افزودن</button>
+                    </div>
+                    <div id="addressMsg" style="margin-top:10px;"></div>
+                </div>
+            </div>
+
+            <!-- تب سبد خرید -->
+            <div class="tab-content" id="tab-cart">
+                <div class="member-card">
+                    <div class="member-card-header"><h3><i class="fas fa-shopping-cart"></i> سبد خرید</h3><span class="sub" id="cartCountDisplay">۰ محصول</span></div>
+                    <div id="cartItemsContainer"><div class="member-empty"><i class="fas fa-shopping-cart"></i>سبد خرید شما خالی است.</div></div>
+                    <div id="cartTotalContainer" style="display:none;">
+                        <div class="cart-total">جمع کل: <span id="cartTotalPrice">۰</span> تومان</div>
+                        <div class="form-actions">
+                            <button class="member-btn member-btn-primary" onclick="openCheckout()"><i class="fas fa-credit-card"></i> ادامه خرید</button>
+                            <button class="member-btn member-btn-danger" onclick="clearCart()"><i class="fas fa-trash-alt"></i> خالی کردن سبد</button>
+                        </div>
+                    </div>
+                    <div id="cartMsg" style="margin-top:10px;"></div>
+                </div>
+            </div>
+
+            <!-- تب سفارشات -->
+            <div class="tab-content" id="tab-orders">
+                <div class="member-card">
+                    <div class="member-card-header"><h3><i class="fas fa-box"></i> تاریخچه سفارشات</h3><span class="sub" id="ordersCount">۰ سفارش</span></div>
+                    <div id="ordersList" class="member-items"><div class="member-empty"><i class="fas fa-box"></i>هیچ سفارشی ثبت نشده است.</div></div>
+                </div>
+            </div>
+
+            <!-- تب تنظیمات -->
+            <div class="tab-content" id="tab-settings">
+                <div class="member-card">
+                    <div class="member-card-header"><h3><i class="fas fa-key"></i> تغییر رمز عبور</h3></div>
+                    <form id="changePassForm">
+                        <div class="member-field"><label>رمز فعلی</label><input type="password" id="currentPass" required></div>
+                        <div class="member-field"><label>رمز جدید (حداقل ۸ کاراکتر)</label><input type="password" id="newPass" required minlength="8"></div>
+                        <div class="member-field"><label>تکرار رمز جدید</label><input type="password" id="confirmPass" required minlength="8"></div>
+                        <button type="submit" class="member-btn member-btn-primary"><i class="fas fa-save"></i> تغییر رمز</button>
+                        <div id="settingsPassMsg" style="margin-top:10px;"></div>
+                    </form>
+                </div>
+                <div class="member-card">
+                    <div class="member-card-header"><h3><i class="fas fa-download"></i> پشتیبان‌گیری از اطلاعات</h3></div>
+                    <button class="member-btn member-btn-secondary" onclick="exportUserData()"><i class="fas fa-download"></i> دانلود JSON</button>
+                    <p style="margin-top:8px;color:var(--member-text-sec);font-size:0.85rem;">همه اطلاعات کاربری، سفارشات و سبد خرید شما در یک فایل JSON ذخیره می‌شود.</p>
+                </div>
+                <div class="member-card">
+                    <div class="member-card-header"><h3><i class="fas fa-sign-out-alt"></i> خروج از حساب</h3></div>
+                    <button class="member-btn member-btn-danger" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> خروج</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ===== مودال تغییر رمز ===== -->
+    <div class="member-modal-overlay" id="changePassModal">
+        <div class="member-modal">
+            <div class="member-modal-header"><h3><i class="fas fa-key"></i> تغییر رمز عبور</h3><button class="member-modal-close" onclick="closeModal('changePassModal')"><i class="fas fa-times"></i></button></div>
+            <form id="changePassModalForm">
+                <div class="member-field"><label>رمز عبور فعلی</label><input type="password" id="modalCurrentPass" required></div>
+                <div class="member-field" style="margin-top:10px;"><label>رمز عبور جدید (حداقل ۸ کاراکتر)</label><input type="password" id="modalNewPass" required minlength="8"></div>
+                <div class="member-field" style="margin-top:10px;"><label>تکرار رمز عبور جدید</label><input type="password" id="modalConfirmPass" required minlength="8"></div>
+                <div class="form-actions"><button type="submit" class="member-btn member-btn-primary"><i class="fas fa-save"></i> تغییر رمز</button><button type="button" class="member-btn member-btn-outline" onclick="closeModal('changePassModal')">انصراف</button></div>
+                <div id="modalPassMsg" style="margin-top:10px;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         اسکریپت‌ها
+         ============================================================ -->
+
+    <script src="../auth.js"></script>
+    <script src="../load-menu.js"></script>
+    <script src="../menu-loader.js"></script>
+
+    <!-- ============================================================
+         اسکریپت اختصاصی پنل کاربری (اصلاح‌شده)
+         ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            // متغیرهای عمومی
+            // ============================================================
+            let currentUser = null;
+            let currentUserId = null;
+            let cartItems = [];
+            let userAddresses = [];
+            let allOrders = [];
+
+            // ============================================================
+            // توابع گیت‌هاب (برای پروفایل و آدرس‌ها و سفارشات قدیمی)
+            // ============================================================
+            const REPO_OWNER = 'mahanneman';
+            const REPO_NAME = 'MA.AD.GH.SITE';
+            const REPO_PATH = `repos/${REPO_OWNER}/${REPO_NAME}/contents`;
+
+            async function fetchFromGitHub(path) {
+                const token = localStorage.getItem('github_token');
+                if (!token) return null;
+                const url = `https://api.github.com/${REPO_PATH}/${path}`;
+                const res = await fetch(url, {
+                    headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+                });
+                if (res.status === 404) return null;
+                if (!res.ok) return null;
+                const data = await res.json();
+                const binaryString = atob(data.content);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) { bytes[i] = binaryString.charCodeAt(i); }
+                const decoder = new TextDecoder('utf-8');
+                const content = decoder.decode(bytes).replace(/^\uFEFF/, '');
+                return { ...data, content };
+            }
+
+            async function saveToGitHub(path, content, sha = null) {
+                const token = localStorage.getItem('github_token');
+                if (!token) throw new Error('توکن گیت‌هاب موجود نیست.');
+                const url = `https://api.github.com/${REPO_PATH}/${path}`;
+                const jsonString = JSON.stringify(content, null, 2);
+                const encoder = new TextEncoder();
+                const encoded = encoder.encode(jsonString);
+                let binary = '';
+                for (let i = 0; i < encoded.length; i++) { binary += String.fromCharCode(encoded[i]); }
+                const base64Content = btoa(binary);
+                const body = {
+                    message: `Update ${path} via memberpage - ${new Date().toISOString()}`,
+                    content: base64Content,
+                    branch: 'main'
+                };
+                if (sha) body.sha = sha;
+                const res = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || 'خطا در ذخیره‌سازی');
+                }
+                return await res.json();
+            }
+
+            // ============================================================
+            // به‌روزرسانی فایل ids.json (برای کاربران)
+            // ============================================================
+            async function updateIdsFile(userData) {
+                try {
+                    const idsPath = '_data/ids.json';
+                    const existing = await fetchFromGitHub(idsPath);
+                    let idsList = [];
+                    let sha = null;
+                    if (existing) {
+                        idsList = JSON.parse(existing.content);
+                        sha = existing.sha;
+                    }
+                    const exists = idsList.some(u => u.id === userData.id);
+                    if (!exists) {
+                        idsList.push({
+                            id: userData.id,
+                            username: userData.username || userData.name,
+                            name: userData.name,
+                            email: userData.email,
+                            phone: userData.phone || '',
+                            created: new Date().toISOString()
+                        });
+                        await saveToGitHub(idsPath, idsList, sha);
+                        console.log(`✅ کاربر ${userData.id} به ids.json اضافه شد.`);
+                    }
+                    return true;
+                } catch (e) {
+                    console.error('❌ خطا در به‌روزرسانی ids.json:', e);
+                    return false;
+                }
+            }
+
+            // ============================================================
+            // بارگذاری کاربر جاری (با گیت‌هاب)
+            // ============================================================
+            async function loadCurrentUser() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const userId = urlParams.get('id') || sessionStorage.getItem('current_user_id');
+                if (!userId) {
+                    window.location.replace('../member/login.html');
+                    return;
+                }
+                currentUserId = userId;
+                sessionStorage.setItem('current_user_id', userId);
+
+                try {
+                    const infoPath = `member/member${userId}/info.json`;
+                    const data = await fetchFromGitHub(infoPath);
+                    if (data) {
+                        currentUser = JSON.parse(data.content);
+                    } else {
+                        const users = JSON.parse(localStorage.getItem('users_db') || '{}');
+                        for (const [key, val] of Object.entries(users)) {
+                            if (val.id === userId) { currentUser = val; break; }
+                        }
+                        if (!currentUser) { window.location.replace('../member/login.html'); return; }
+                    }
+                } catch (e) {
+                    console.error('خطا در خواندن فایل JSON:', e);
+                    const users = JSON.parse(localStorage.getItem('users_db') || '{}');
+                    for (const [key, val] of Object.entries(users)) {
+                        if (val.id === userId) { currentUser = val; break; }
+                    }
+                    if (!currentUser) { window.location.replace('../member/login.html'); return; }
+                }
+
+                // ===== ذخیره در ids.json =====
+                if (currentUser && currentUserId) {
+                    await updateIdsFile(currentUser);
+                }
+
+                document.getElementById('editFullName').value = currentUser.name || '';
+                document.getElementById('editEmail').value = currentUser.email || '';
+                document.getElementById('editPhone').value = currentUser.phone || '';
+                document.getElementById('editUsername').value = currentUser.username || '';
+                document.getElementById('editPostalCode').value = currentUser.postal_code || '';
+                document.getElementById('editWhatsapp').value = currentUser.whatsapp || '';
+                document.getElementById('editTelegram').value = currentUser.telegram || '';
+
+                // ===== سبد خرید – از API یا گیت‌هاب (fallback) =====
+                try {
+                    // ابتدا از API Worker بخوان
+                    const workerRes = await fetch('https://your-worker.workers.dev/api/cart?userId=' + userId);
+                    if (workerRes.ok) {
+                        const data = await workerRes.json();
+                        cartItems = data.items || [];
+                    } else {
+                        // fallback: از گیت‌هاب (info.json)
+                        cartItems = currentUser.cart || [];
+                    }
+                } catch (e) {
+                    console.warn('⚠️ خطا در دریافت سبد خرید از API، استفاده از گیت‌هاب:', e);
+                    cartItems = currentUser.cart || [];
+                }
+
+                userAddresses = currentUser.addresses || [];
+                renderCart();
+                renderAddresses();
+                loadOrders();
+                updateCartBadge();
+                updateCompletionBar();
+
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+                // ===== همگام‌سازی خودکار با گلوبال =====
+                setTimeout(() => {
+                    if (currentUserId) {
+                        syncOrderToGlobal(currentUserId);
+                    }
+                }, 2000);
+            }
+
+            // ============================================================
+            // نوار پیشرفت تکمیل اطلاعات
+            // ============================================================
+            function updateCompletionBar() {
+                const fields = [
+                    currentUser.name, currentUser.email, currentUser.phone,
+                    currentUser.postal_code, currentUser.whatsapp, currentUser.telegram
+                ];
+                const filled = fields.filter(f => f && f.trim()).length;
+                const total = fields.length;
+                const percent = Math.round((filled / total) * 100);
+                document.getElementById('completionBar').style.width = percent + '%';
+                document.getElementById('completionLabel').textContent = 'تکمیل اطلاعات: ' + percent + '%';
+            }
+
+            // ============================================================
+            // مدیریت تب‌ها
+            // ============================================================
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    const tabId = this.dataset.tab;
+                    document.getElementById('tab-' + tabId).classList.add('active');
+                    if (tabId === 'cart') renderCart();
+                    if (tabId === 'orders') loadOrders();
+                    if (tabId === 'addresses') renderAddresses();
+                });
+            });
+
+            // ============================================================
+            // مدیریت پروفایل (با گیت‌هاب)
+            // ============================================================
+            document.getElementById('profileForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const msg = document.getElementById('profileMsg');
+                const name = document.getElementById('editFullName').value.trim();
+                const email = document.getElementById('editEmail').value.trim();
+                const phone = document.getElementById('editPhone').value.trim();
+                const postal = document.getElementById('editPostalCode').value.trim();
+                const whatsapp = document.getElementById('editWhatsapp').value.trim();
+                const telegram = document.getElementById('editTelegram').value.trim();
+
+                if (!name || !email) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">نام و ایمیل الزامی هستند.</span>';
+                    return;
+                }
+                if (!email.includes('@')) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">ایمیل معتبر نیست.</span>';
+                    return;
+                }
+
+                currentUser.name = name;
+                currentUser.email = email;
+                currentUser.phone = phone;
+                currentUser.postal_code = postal;
+                currentUser.whatsapp = whatsapp;
+                currentUser.telegram = telegram;
+
+                try {
+                    const infoPath = `member/member${currentUserId}/info.json`;
+                    const existing = await fetchFromGitHub(infoPath);
+                    let sha = null;
+                    if (existing) sha = existing.sha;
+                    await saveToGitHub(infoPath, currentUser, sha);
+                    await updateIdsFile(currentUser);
+                    msg.innerHTML = '<span style="color:var(--member-secondary);">✅ اطلاعات با موفقیت ذخیره شد.</span>';
+                    updateCompletionBar();
+                } catch (e) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">❌ خطا: ' + e.message + '</span>';
+                }
+                setTimeout(() => { msg.innerHTML = ''; }, 4000);
+            });
+
+            // ============================================================
+            // تغییر رمز عبور (مودال) – با گیت‌هاب
+            // ============================================================
+            window.showChangePassword = function() {
+                document.getElementById('changePassModal').classList.add('active');
+                document.getElementById('modalCurrentPass').value = '';
+                document.getElementById('modalNewPass').value = '';
+                document.getElementById('modalConfirmPass').value = '';
+                document.getElementById('modalPassMsg').innerHTML = '';
+            };
+
+            document.getElementById('changePassModalForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const current = document.getElementById('modalCurrentPass').value.trim();
+                const newPass = document.getElementById('modalNewPass').value.trim();
+                const confirm = document.getElementById('modalConfirmPass').value.trim();
+                const msg = document.getElementById('modalPassMsg');
+
+                if (!current || !newPass || !confirm) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">همه فیلدها را پر کنید.</span>';
+                    return;
+                }
+                if (newPass.length < 8) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">رمز جدید باید حداقل ۸ کاراکتر باشد.</span>';
+                    return;
+                }
+                if (newPass !== confirm) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">رمز جدید و تکرار آن مطابقت ندارند.</span>';
+                    return;
+                }
+                if (currentUser.password !== current) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">رمز عبور فعلی اشتباه است.</span>';
+                    return;
+                }
+
+                currentUser.password = newPass;
+                try {
+                    const infoPath = `member/member${currentUserId}/info.json`;
+                    const existing = await fetchFromGitHub(infoPath);
+                    let sha = null;
+                    if (existing) sha = existing.sha;
+                    await saveToGitHub(infoPath, currentUser, sha);
+                    await updateIdsFile(currentUser);
+                    msg.innerHTML = '<span style="color:var(--member-secondary);">✅ رمز عبور با موفقیت تغییر کرد.</span>';
+                    setTimeout(() => { closeModal('changePassModal'); }, 1500);
+                } catch (e) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">❌ خطا: ' + e.message + '</span>';
+                }
+            });
+
+            // ============================================================
+            // تغییر رمز در تب تنظیمات – با گیت‌هاب
+            // ============================================================
+            document.getElementById('changePassForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const current = document.getElementById('currentPass').value.trim();
+                const newPass = document.getElementById('newPass').value.trim();
+                const confirm = document.getElementById('confirmPass').value.trim();
+                const msg = document.getElementById('settingsPassMsg');
+
+                if (!current || !newPass || !confirm) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">همه فیلدها را پر کنید.</span>';
+                    return;
+                }
+                if (newPass.length < 8) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">رمز جدید باید حداقل ۸ کاراکتر باشد.</span>';
+                    return;
+                }
+                if (newPass !== confirm) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">رمز جدید و تکرار آن مطابقت ندارند.</span>';
+                    return;
+                }
+                if (currentUser.password !== current) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">رمز عبور فعلی اشتباه است.</span>';
+                    return;
+                }
+
+                currentUser.password = newPass;
+                try {
+                    const infoPath = `member/member${currentUserId}/info.json`;
+                    const existing = await fetchFromGitHub(infoPath);
+                    let sha = null;
+                    if (existing) sha = existing.sha;
+                    await saveToGitHub(infoPath, currentUser, sha);
+                    await updateIdsFile(currentUser);
+                    msg.innerHTML = '<span style="color:var(--member-secondary);">✅ رمز عبور با موفقیت تغییر کرد.</span>';
+                    document.getElementById('currentPass').value = '';
+                    document.getElementById('newPass').value = '';
+                    document.getElementById('confirmPass').value = '';
+                } catch (e) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">❌ خطا: ' + e.message + '</span>';
+                }
+            });
+
+            // ============================================================
+            // مدیریت آدرس‌ها – با گیت‌هاب
+            // ============================================================
+            function renderAddresses() {
+                const container = document.getElementById('addressesList');
+                if (!userAddresses || userAddresses.length === 0) {
+                    container.innerHTML = '<div class="member-empty"><i class="fas fa-map-pin"></i>هیچ آدرسی ثبت نشده است.</div>';
+                    return;
+                }
+                container.innerHTML = userAddresses.map((addr, idx) => {
+                    let display = '';
+                    if (typeof addr === 'string') {
+                        display = addr;
+                    } else {
+                        display = `${addr.address || ''} - ${addr.city || ''} - ${addr.province || ''} (کدپستی: ${addr.postalCode || ''})`;
+                    }
+                    return `
+                        <div class="member-item">
+                            <div class="info">
+                                <div class="title">${display}</div>
+                                <div class="meta">${addr.desc ? 'توضیحات: ' + addr.desc : ''}</div>
+                            </div>
+                            <div class="actions">
+                                <button class="member-btn member-btn-danger member-btn-sm" onclick="removeAddress(${idx})"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            window.addAddress = async function() {
+                const addrInput = document.getElementById('newAddressInput');
+                const postalInput = document.getElementById('newAddressPostal');
+                const addr = addrInput.value.trim();
+                const postal = postalInput.value.trim();
+                const msg = document.getElementById('addressMsg');
+                if (!addr) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">لطفاً آدرس را وارد کنید.</span>';
+                    return;
+                }
+                const newAddr = { address: addr, postalCode: postal };
+                userAddresses.push(newAddr);
+                currentUser.addresses = userAddresses;
+
+                try {
+                    const infoPath = `member/member${currentUserId}/info.json`;
+                    const existing = await fetchFromGitHub(infoPath);
+                    let sha = null;
+                    if (existing) sha = existing.sha;
+                    await saveToGitHub(infoPath, currentUser, sha);
+                    await updateIdsFile(currentUser);
+                    addrInput.value = '';
+                    postalInput.value = '';
+                    renderAddresses();
+                    msg.innerHTML = '<span style="color:var(--member-secondary);">✅ آدرس با موفقیت اضافه شد.</span>';
+                } catch (e) {
+                    msg.innerHTML = '<span style="color:var(--member-danger);">❌ خطا: ' + e.message + '</span>';
+                }
+                setTimeout(() => { msg.innerHTML = ''; }, 3000);
+            };
+
+            window.removeAddress = async function(index) {
+                if (!confirm('آیا از حذف این آدرس مطمئن هستید؟')) return;
+                userAddresses.splice(index, 1);
+                currentUser.addresses = userAddresses;
+                try {
+                    const infoPath = `member/member${currentUserId}/info.json`;
+                    const existing = await fetchFromGitHub(infoPath);
+                    let sha = null;
+                    if (existing) sha = existing.sha;
+                    await saveToGitHub(infoPath, currentUser, sha);
+                    await updateIdsFile(currentUser);
+                    renderAddresses();
+                    document.getElementById('addressMsg').innerHTML = '<span style="color:var(--member-secondary);">✅ آدرس حذف شد.</span>';
+                } catch (e) {
+                    document.getElementById('addressMsg').innerHTML = '<span style="color:var(--member-danger);">❌ خطا: ' + e.message + '</span>';
+                }
+                setTimeout(() => { document.getElementById('addressMsg').innerHTML = ''; }, 3000);
+            };
+
+            // ============================================================
+            // سبد خرید – با API Worker
+            // ============================================================
+            const WORKER_API = 'https://your-worker.workers.dev/api'; // 🔴 آدرس واقعی Worker را جایگزین کنید
+
+            // ===== لیست محصولات (برای نمایش قیمت و نام) =====
+            let productsList = [];
+
+            async function loadProductList() {
+                try {
+                    const res = await fetch('../_data/products.json?t=' + Date.now());
+                    if (res.ok) {
+                        const data = await res.json();
+                        productsList = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    } else {
+                        // داده‌های نمونه
+                        productsList = [
+                            { id: 'PRD-0001', name: 'پایه موتور پرینتر', price: 0, icon: 'fa-cogs' },
+                            { id: 'PRD-0002', name: 'راهگاه فیلامنت', price: 50000, icon: 'fa-tools' },
+                            { id: 'PRD-0003', name: 'پنل کنترل لمسی', price: 120000, icon: 'fa-microchip' },
+                            { id: 'PRD-0004', name: 'فایل STL گیربکس', price: 0, icon: 'fa-cube' },
+                            { id: 'PRD-0005', name: 'نازل چندمنظوره', price: 75000, icon: 'fa-print' }
+                        ];
+                    }
+                } catch (e) {
+                    console.warn('خطا در بارگذاری محصولات:', e);
+                    productsList = [];
+                }
+            }
+
+            function getProducts() {
+                // اگر productsList پر شده، از آن استفاده کن، وگرنه لیست نمونه
+                return productsList.length > 0 ? productsList : [
+                    { id: 'PRD-0001', name: 'پایه موتور پرینتر', price: 0, icon: 'fa-cogs' },
+                    { id: 'PRD-0002', name: 'راهگاه فیلامنت', price: 50000, icon: 'fa-tools' },
+                    { id: 'PRD-0003', name: 'پنل کنترل لمسی', price: 120000, icon: 'fa-microchip' },
+                    { id: 'PRD-0004', name: 'فایل STL گیربکس', price: 0, icon: 'fa-cube' },
+                    { id: 'PRD-0005', name: 'نازل چندمنظوره', price: 75000, icon: 'fa-print' }
+                ];
+            }
+
+            function updateCartBadge() {
+                const count = cartItems.reduce((sum, item) => sum + (item.quantity || 0), 0);
+                document.getElementById('cartTabBadge').textContent = count;
+                document.getElementById('cartCountDisplay').textContent = count + ' محصول';
+                const badges = document.querySelectorAll('.cart-badge');
+                badges.forEach(b => {
+                    b.textContent = count;
+                    b.style.display = count > 0 ? 'flex' : 'none';
+                });
+                const dropdown = document.getElementById('cartDropdown');
+                if (dropdown && dropdown.classList.contains('show')) {
+                    renderCartDropdownContent();
+                }
+            }
+
+            function renderCart() {
+                const container = document.getElementById('cartItemsContainer');
+                const totalContainer = document.getElementById('cartTotalContainer');
+                if (!cartItems || cartItems.length === 0) {
+                    container.innerHTML = '<div class="member-empty"><i class="fas fa-shopping-cart"></i>سبد خرید شما خالی است.</div>';
+                    totalContainer.style.display = 'none';
+                    updateCartBadge();
+                    return;
+                }
+                const products = getProducts();
+                let totalPrice = 0;
+                let html = '';
+                cartItems.forEach((item, idx) => {
+                    const product = products.find(p => p.id === item.productId);
+                    const price = product ? product.price : 0;
+                    const name = product ? product.name : item.productId;
+                    const icon = product ? product.icon : 'fa-cube';
+                    const itemTotal = price * item.quantity;
+                    totalPrice += itemTotal;
+                    html += `
+                        <div class="cart-item">
+                            <div><i class="fas ${icon}"></i> ${name}</div>
+                            <div>${price.toLocaleString()} تومان</div>
+                            <div class="qty-control">
+                                <button onclick="updateCartQty(${idx}, -1)"><i class="fas fa-minus"></i></button>
+                                <span>${item.quantity}</span>
+                                <button onclick="updateCartQty(${idx}, 1)"><i class="fas fa-plus"></i></button>
+                            </div>
+                            <div><strong>${itemTotal.toLocaleString()} تومان</strong></div>
+                            <button class="member-btn member-btn-danger member-btn-sm" onclick="removeFromCart(${idx})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+                totalContainer.style.display = 'block';
+                document.getElementById('cartTotalPrice').textContent = totalPrice.toLocaleString();
+                updateCartBadge();
+                // ذخیره در API (نه گیت‌هاب)
+                saveCartToAPI();
+            }
+
+            // ===== ذخیره سبد خرید در API =====
+            async function saveCartToAPI() {
+                if (!currentUserId) return;
+                try {
+                    const res = await fetch(`${WORKER_API}/cart`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: currentUserId, items: cartItems })
+                    });
+                    if (!res.ok) throw new Error('خطا در ذخیره سبد خرید');
+                } catch (e) {
+                    console.error('❌ خطا در ذخیره سبد خرید:', e);
+                    showToast('❌ خطا در ذخیره سبد خرید', true);
+                }
+            }
+
+            // ===== به‌روزرسانی تعداد در API =====
+            window.updateCartQty = async function(index, delta) {
+                if (!cartItems[index]) return;
+                const newQuantity = (cartItems[index].quantity || 1) + delta;
+                if (newQuantity <= 0) {
+                    await removeFromCart(index);
+                    return;
+                }
+                try {
+                    const response = await fetch(`${WORKER_API}/cart`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            userId: currentUserId,
+                            productId: cartItems[index].productId,
+                            quantity: newQuantity,
+                            action: 'update'
+                        })
+                    });
+                    if (!response.ok) throw new Error('خطا در به‌روزرسانی');
+                    cartItems[index].quantity = newQuantity;
+                    renderCart();
+                    updateCartBadge();
+                } catch (e) {
+                    showToast('❌ خطا: ' + e.message, 'error');
+                }
+            };
+
+            // ===== حذف از API =====
+            window.removeFromCart = async function(index) {
+                if (!confirm('آیا از حذف این محصول مطمئن هستید؟')) return;
+                const productId = cartItems[index].productId;
+                try {
+                    const response = await fetch(`${WORKER_API}/cart`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            userId: currentUserId,
+                            productId: productId,
+                            action: 'remove'
+                        })
+                    });
+                    if (!response.ok) throw new Error('خطا در حذف');
+                    cartItems.splice(index, 1);
+                    renderCart();
+                    updateCartBadge();
+                } catch (e) {
+                    showToast('❌ خطا: ' + e.message, 'error');
+                }
+            };
+
+            // ===== خالی کردن سبد خرید =====
+            window.clearCart = async function() {
+                if (!confirm('آیا از خالی کردن سبد خرید مطمئن هستید؟')) return;
+                try {
+                    const response = await fetch(`${WORKER_API}/cart`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: currentUserId, action: 'clear' })
+                    });
+                    if (!response.ok) throw new Error('خطا در خالی کردن سبد خرید');
+                    cartItems = [];
+                    renderCart();
+                    updateCartBadge();
+                    showToast('✅ سبد خرید خالی شد.');
+                } catch (e) {
+                    showToast('❌ خطا: ' + e.message, 'error');
+                }
+            };
+
+            // ============================================================
+            // تسویه حساب
+            // ============================================================
+            window.openCheckout = function() {
+                if (!cartItems || cartItems.length === 0) {
+                    alert('سبد خرید شما خالی است.');
+                    return;
+                }
+                if (!userAddresses || userAddresses.length === 0) {
+                    alert('لطفاً ابتدا یک آدرس ثبت کنید.');
+                    return;
+                }
+                const products = getProducts();
+                sessionStorage.setItem('checkout_data', JSON.stringify({
+                    items: cartItems,
+                    total: cartItems.reduce((sum, item) => {
+                        const product = products.find(p => p.id === item.productId);
+                        return sum + (product ? product.price : 0) * item.quantity;
+                    }, 0)
+                }));
+                window.location.href = '../member/checkout.html';
+            };
+
+            // ============================================================
+            // همگام‌سازی سفارشات با sender (گیت‌هاب)
+            // ============================================================
+            async function syncOrderToGlobal(userId) {
+                try {
+                    const orderPath = `member/member${userId}/orders.json`;
+                    const data = await fetchFromGitHub(orderPath);
+                    if (!data) return;
+
+                    let orders = JSON.parse(data.content);
+                    if (!Array.isArray(orders)) orders = [];
+
+                    const pendingOrders = orders.filter(o => 
+                        o.status === 'pending' || o.status === 'paid' || o.status === 'new'
+                    );
+
+                    if (pendingOrders.length === 0) {
+                        console.log(`ℹ️ کاربر ${userId} سفارش در صف ندارد.`);
+                        return;
+                    }
+
+                    const senderPath = 'member/orders/pendingorder-sender.json';
+                    const existing = await fetchFromGitHub(senderPath);
+                    let senderData = existing ? JSON.parse(existing.content) : [];
+
+                    const userInfo = await getUserData(userId);
+                    const userName = userInfo?.name || currentUser?.name || 'کاربر';
+
+                    let addedCount = 0;
+                    for (const order of pendingOrders) {
+                        const isDuplicate = senderData.some(s => s.id === order.id);
+                        if (!isDuplicate) {
+                            senderData.push({
+                                ...order,
+                                userId: userId,
+                                userName: userName,
+                                status: order.status || 'pending'
+                            });
+                            addedCount++;
+                        }
+                    }
+
+                    if (addedCount > 0) {
+                        let sha = existing ? existing.sha : null;
+                        await saveToGitHub(senderPath, senderData, sha);
+                        console.log(`✅ ${addedCount} سفارش کاربر ${userId} به sender اضافه شد.`);
+                    }
+
+                    return true;
+                } catch (e) {
+                    console.error('❌ خطا در همگام‌سازی sender:', e);
+                    return false;
+                }
+            }
+
+            async function getUserData(userId) {
+                try {
+                    const infoPath = `member/member${userId}/info.json`;
+                    const data = await fetchFromGitHub(infoPath);
+                    if (data) return JSON.parse(data.content);
+                    return null;
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            // ============================================================
+            // سفارشات (گیت‌هاب)
+            // ============================================================
+            async function loadOrders() {
+                const container = document.getElementById('ordersList');
+                try {
+                    const orderPath = `member/member${currentUserId}/orders.json`;
+                    const data = await fetchFromGitHub(orderPath);
+                    let orders = [];
+                    if (data) {
+                        const parsed = JSON.parse(data.content);
+                        if (Array.isArray(parsed)) {
+                            orders = parsed;
+                        } else if (parsed.orders && Array.isArray(parsed.orders)) {
+                            orders = parsed.orders;
+                        }
+                    }
+                    allOrders = orders;
+                    document.getElementById('ordersCount').textContent = allOrders.length + ' سفارش';
+                    if (orders.length === 0) {
+                        container.innerHTML = '<div class="member-empty"><i class="fas fa-box"></i>هیچ سفارشی ثبت نشده است.</div>';
+                        return;
+                    }
+                    orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    const statusLabels = {
+                        'pending': 'در انتظار پرداخت',
+                        'paid': 'پرداخت شده',
+                        'shipped': 'ارسال شده',
+                        'completed': 'تکمیل شده',
+                        'canceled': 'لغو شده'
+                    };
+                    const statusClasses = {
+                        'pending': 'pending',
+                        'paid': 'paid',
+                        'shipped': 'shipped',
+                        'completed': 'completed',
+                        'canceled': 'canceled'
+                    };
+                    container.innerHTML = orders.map(order => `
+                        <div class="member-item" style="cursor:pointer;" onclick="viewOrderDetail('${order.id}')">
+                            <div class="info">
+                                <div class="title">سفارش #${order.id.slice(-6)}</div>
+                                <div class="meta">
+                                    <span><i class="fas fa-calendar"></i> ${convertToPersianDate(order.date)}</span>
+                                    <span><i class="fas fa-tag"></i> ${order.items ? order.items.length : 0} محصول</span>
+                                    <span><i class="fas fa-money-bill"></i> ${(order.total || 0).toLocaleString()} تومان</span>
+                                    <span><span class="order-status ${statusClasses[order.status] || 'pending'}">${statusLabels[order.status] || order.status}</span></span>
+                                    <span><i class="fas fa-hash-tag"></i> ${order.tracking || order.id || '---'}</span>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <button class="member-btn member-btn-primary member-btn-sm" onclick="event.stopPropagation();viewOrderDetail('${order.id}')"><i class="fas fa-eye"></i></button>
+                                <button class="member-btn member-btn-outline member-btn-sm" onclick="event.stopPropagation();trackOrder('${order.id}')"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                    `).join('');
+                } catch (e) {
+                    container.innerHTML = '<div class="member-empty"><i class="fas fa-exclamation-triangle" style="color:var(--member-danger);"></i>خطا در بارگذاری سفارشات</div>';
+                    console.error(e);
+                }
+            }
+
+            function convertToPersianDate(dateStr) {
+                if (!dateStr) return '---';
+                try {
+                    const d = new Date(dateStr);
+                    if (isNaN(d.getTime())) return dateStr;
+                    return d.toLocaleDateString('fa-IR', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    });
+                } catch (e) { 
+                    return dateStr; 
+                }
+            }
+
+            // ============================================================
+            // قابلیت‌های پیشرفته سفارشات
+            // ============================================================
+            function getOrderStatusBadge(status) {
+                const map = {
+                    'pending': { label: '⏳ در انتظار پرداخت', color: '#f59e0b' },
+                    'paid': { label: '✅ پرداخت شده', color: '#10b981' },
+                    'shipped': { label: '📦 ارسال شده', color: '#3b82f6' },
+                    'completed': { label: '✔️ تکمیل شده', color: '#10b981' },
+                    'canceled': { label: '❌ لغو شده', color: '#ef4444' }
+                };
+                const info = map[status] || map['pending'];
+                return `<span style="background:${info.color}20; color:${info.color}; padding:2px 10px; border-radius:12px; font-size:0.7rem; font-weight:600;">${info.label}</span>`;
+            }
+
+            window.trackOrder = function(orderId) {
+                const order = allOrders.find(o => o.id === orderId);
+                if (!order) {
+                    alert('❌ سفارش یافت نشد.');
+                    return;
+                }
+                const tracking = order.tracking || order.id || '---';
+                const statusLabel = {
+                    'pending': 'در انتظار پرداخت',
+                    'paid': 'پرداخت شده',
+                    'shipped': 'ارسال شده',
+                    'completed': 'تکمیل شده',
+                    'canceled': 'لغو شده'
+                }[order.status] || order.status;
+                alert(`🔍 اطلاعات پیگیری سفارش #${order.id.slice(-6)}\n\n📦 کد پیگیری: ${tracking}\n📌 وضعیت: ${statusLabel}\n📅 تاریخ: ${convertToPersianDate(order.date)}\n💰 مبلغ: ${(order.total || 0).toLocaleString()} تومان`);
+            };
+
+            window.findOrderByTracking = function(trackingCode) {
+                const result = allOrders.find(o => o.tracking === trackingCode || o.id === trackingCode);
+                if (result) {
+                    viewOrderDetail(result.id);
+                } else {
+                    alert('❌ سفارشی با این کد پیگیری یافت نشد.');
+                }
+            };
+
+            // ============================================================
+            // نمایش جزئیات سفارش
+            // ============================================================
+            window.viewOrderDetail = function(orderId) {
+                const order = allOrders.find(o => o.id === orderId);
+                if (!order) { 
+                    alert('سفارش یافت نشد.'); 
+                    return; 
+                }
+                const modal = document.createElement('div');
+                modal.className = 'member-modal-overlay active';
+                modal.style.display = 'flex';
+                const statusLabels = {
+                    'pending': 'در انتظار پرداخت',
+                    'paid': 'پرداخت شده',
+                    'shipped': 'ارسال شده',
+                    'completed': 'تکمیل شده',
+                    'canceled': 'لغو شده'
+                };
+                modal.innerHTML = `
+                    <div class="member-modal" style="max-width:700px;">
+                        <div class="member-modal-header">
+                            <h3><i class="fas fa-receipt"></i> جزئیات سفارش #${order.id.slice(-6)}</h3>
+                            <button class="member-modal-close" onclick="this.closest('.member-modal-overlay').remove()"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;background:var(--member-bg);border-radius:var(--member-radius);border:1px solid var(--member-border);">
+                            <div><span style="color:var(--member-text-sec);">تاریخ:</span> <strong>${convertToPersianDate(order.date)}</strong></div>
+                            <div><span style="color:var(--member-text-sec);">وضعیت:</span> ${getOrderStatusBadge(order.status)}</div>
+                            <div><span style="color:var(--member-text-sec);">آدرس:</span> <strong>${typeof order.address === 'string' ? order.address : order.address?.address || '---'}</strong></div>
+                            <div><span style="color:var(--member-text-sec);">روش ارسال:</span> <strong>${order.shipping || '---'}</strong></div>
+                            <div><span style="color:var(--member-text-sec);">کد پیگیری:</span> <strong>${order.tracking || order.id || '---'}</strong></div>
+                            <div><span style="color:var(--member-text-sec);">مبلغ کل:</span> <strong style="color:var(--member-primary);">${(order.total || 0).toLocaleString()} تومان</strong></div>
+                            ${order.notes ? `<div style="grid-column:1/-1;"><span style="color:var(--member-text-sec);">توضیحات:</span> <strong>${order.notes}</strong></div>` : ''}
+                            ${order.transactionId ? `<div style="grid-column:1/-1;"><span style="color:var(--member-text-sec);">شناسه پرداخت:</span> <strong>${order.transactionId}</strong></div>` : ''}
+                        </div>
+                        <h4 style="margin-top:12px;margin-bottom:6px;">محصولات</h4>
+                        <div style="background:var(--member-bg);border-radius:var(--member-radius);border:1px solid var(--member-border);padding:10px;">
+                            ${(order.items || []).map(item => `
+                                <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--member-border);font-size:0.85rem;">
+                                    <span>${item.productName || item.productId} × ${item.quantity || 1}</span>
+                                    <span>${((item.price || 0) * (item.quantity || 1)).toLocaleString()} تومان</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="form-actions" style="margin-top:12px;">
+                            <button class="member-btn member-btn-outline" onclick="this.closest('.member-modal-overlay').remove()">بستن</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                modal.addEventListener('click', function(e) { 
+                    if (e.target === this) this.remove(); 
+                });
+            };
+
+            // ============================================================
+            // پشتیبان‌گیری
+            // ============================================================
+            window.exportUserData = function() {
+                const data = {
+                    user: currentUser,
+                    orders: allOrders,
+                    cart: cartItems,
+                    addresses: userAddresses,
+                    exported: new Date().toISOString()
+                };
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `user-backup-${currentUserId}-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('✅ پشتیبان با موفقیت دریافت شد.');
+            };
+
+            // ============================================================
+            // Toast
+            // ============================================================
+            function showToast(message, isError = false) {
+                const toast = document.createElement('div');
+                toast.className = 'toast' + (isError ? ' error' : '');
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s';
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+
+            // ============================================================
+            // مودال‌ها
+            // ============================================================
+            window.closeModal = function(id) {
+                const modal = document.getElementById(id);
+                if (modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            };
+            document.querySelectorAll('.member-modal-overlay').forEach(el => {
+                el.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+
+            // ============================================================
+            // خروج از حساب (با replace برای حذف از تاریخچه)
+            // ============================================================
+            window.logoutUser = function() {
+                if (confirm('آیا از خروج از حساب کاربری مطمئن هستید؟')) {
+                    sessionStorage.removeItem('current_user_id');
+                    sessionStorage.removeItem('current_username');
+                    sessionStorage.removeItem('checkout_data');
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('currentUser');
+                    localStorage.removeItem('user_cart');
+                    window.location.replace('../index.html');
+                }
+            };
+
+            // ============================================================
+            // دراپ‌داون سبد خرید در هدر
+            // ============================================================
+            function renderCartDropdownContent() {
+                const dropdownContent = document.getElementById('cartDropdownContent');
+                const totalEl = document.getElementById('cartDropdownTotal');
+                const checkoutBtn = document.getElementById('cartCheckoutBtn');
+                if (!dropdownContent) return;
+
+                if (!currentUser) {
+                    dropdownContent.innerHTML = `
+                        <div style="text-align:center; padding:20px 0; color:var(--member-text-sec);">
+                            <i class="fas fa-exclamation-triangle" style="font-size:1.5rem; display:block; margin-bottom:8px;"></i>
+                            برای مشاهده سبد خرید وارد شوید.
+                        </div>
+                    `;
+                    if (totalEl) totalEl.textContent = '۰ تومان';
+                    if (checkoutBtn) checkoutBtn.disabled = true;
+                    return;
+                }
+
+                if (cartItems.length === 0) {
+                    dropdownContent.innerHTML = `
+                        <div style="text-align:center; padding:20px 0; color:var(--member-text-sec);">
+                            <i class="fas fa-shopping-cart" style="font-size:1.5rem; display:block; margin-bottom:8px;"></i>
+                            سبد خرید شما خالی است.
+                        </div>
+                    `;
+                    if (totalEl) totalEl.textContent = '۰ تومان';
+                    if (checkoutBtn) checkoutBtn.disabled = true;
+                    return;
+                }
+
+                const products = getProducts();
+                let totalPrice = 0;
+                let html = '';
+                cartItems.forEach(item => {
+                    const product = products.find(p => p.id === item.productId);
+                    const price = product ? product.price : 0;
+                    const name = product ? product.name : item.productId;
+                    const icon = product ? product.icon : 'fa-cube';
+                    const itemTotal = price * item.quantity;
+                    totalPrice += itemTotal;
+                    html += `
+                        <div class="cart-dropdown-item">
+                            <div><i class="fas ${icon}"></i> ${name} × ${item.quantity}</div>
+                            <div style="font-weight:600;">${itemTotal.toLocaleString()} تومان</div>
+                        </div>
+                    `;
+                });
+                dropdownContent.innerHTML = html;
+                if (totalEl) totalEl.textContent = totalPrice.toLocaleString() + ' تومان';
+                if (checkoutBtn) {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.onclick = function() {
+                        const cartTab = document.querySelector('.tab-btn[data-tab="cart"]');
+                        if (cartTab) cartTab.click();
+                        const dd = document.getElementById('cartDropdown');
+                        if (dd) dd.classList.remove('show');
+                    };
+                }
+            }
+
+            function initCartDropdown() {
+                const cartIcon = document.querySelector('.header-cart-icon');
+                if (!cartIcon) {
+                    setTimeout(initCartDropdown, 500);
+                    return;
+                }
+                if (!document.getElementById('cartDropdown')) {
+                    const dropdown = document.createElement('div');
+                    dropdown.id = 'cartDropdown';
+                    dropdown.className = 'cart-dropdown';
+                    dropdown.innerHTML = `
+                        <div class="cart-dropdown-header">🛒 سبد خرید</div>
+                        <div class="cart-dropdown-content" id="cartDropdownContent"></div>
+                        <div class="cart-dropdown-footer">
+                            <div class="total-row">
+                                <span>جمع کل:</span>
+                                <span id="cartDropdownTotal">۰ تومان</span>
+                            </div>
+                            <button id="cartCheckoutBtn" class="member-btn member-btn-primary checkout-btn" disabled>
+                                <i class="fas fa-credit-card"></i> تسویه حساب
+                            </button>
+                        </div>
+                    `;
+                    cartIcon.style.position = 'relative';
+                    cartIcon.appendChild(dropdown);
+
+                    cartIcon.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (!currentUser) {
+                            showToast('لطفاً ابتدا وارد شوید.', true);
+                            return;
+                        }
+                        const dd = document.getElementById('cartDropdown');
+                        if (dd) {
+                            dd.classList.toggle('show');
+                            if (dd.classList.contains('show')) {
+                                renderCartDropdownContent();
+                            }
+                        }
+                    });
+
+                    document.addEventListener('click', function(e) {
+                        const dd = document.getElementById('cartDropdown');
+                        if (dd && dd.classList.contains('show') && !dd.contains(e.target) && !cartIcon.contains(e.target)) {
+                            dd.classList.remove('show');
+                        }
+                    });
+                }
+                renderCartDropdownContent();
+            }
+
+            // ============================================================
+            // بارگذاری اولیه
+            // ============================================================
+            document.addEventListener('DOMContentLoaded', async function() {
+                await loadProductList();
+                await loadCurrentUser();
+
+                // راه‌اندازی دراپ‌داون بعد از بارگذاری هدر
+                setTimeout(initCartDropdown, 500);
+                setTimeout(initCartDropdown, 1500);
+
+                // گوش دادن به تغییرات storage (برای هماهنگی با تب‌های دیگر)
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'currentUser') {
+                        try {
+                            currentUser = JSON.parse(e.newValue);
+                            if (currentUser) {
+                                cartItems = currentUser.cart || [];
+                                renderCart();
+                                updateCartBadge();
+                            }
+                        } catch (ex) {}
+                    }
+                });
+
+                window.renderCartDropdownContent = renderCartDropdownContent;
+                window.updateCartBadge = updateCartBadge;
+
+                console.log('✅ صفحه کاربری با منوی یکپارچه و API Worker بارگذاری شد.');
+            });
+
+        })();
+    </script>
+
+</body>
+</html>

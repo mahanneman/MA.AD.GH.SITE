@@ -1,0 +1,30 @@
+{
+  "id": "4007",
+  "username": "حسین_موسوی44",
+  "name": "حسین موسوی",
+  "email": "حسین_موسوی44@gmail.com",
+  "phone": "09392652908",
+  "whatsapp": "09514720678",
+  "telegram": "@حسین_موسوی44",
+  "postal_code": "2765986032",
+  "addresses": [
+    "خانه|کرمانشاه، خیابان طالقانی، پلاک 36|3613444356",
+    "کار|همدان، خیابان صفاییه، پلاک 57|4876126639"
+  ],
+  "created": "2026-08-01",
+  "lastLogin": "2026-08-21",
+  "cart": [
+    {
+      "productId": "PRD-0006",
+      "quantity": 1
+    },
+    {
+      "productId": "PRD-0002",
+      "quantity": 5
+    }
+  ],
+  "password": "Test@1234",
+  "ordersCount": 2,
+  "cartCount": 2,
+  "addressCount": 2
+}

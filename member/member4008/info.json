@@ -1,0 +1,30 @@
+{
+  "id": "4008",
+  "username": "حامد_مرادی60",
+  "name": "حامد مرادی",
+  "email": "حامد_مرادی60@yahoo.com",
+  "phone": "09315002647",
+  "whatsapp": "09900262800",
+  "telegram": "@حامد_مرادی60",
+  "postal_code": "7088490696",
+  "addresses": [
+    "خانه|قم، خیابان ولیعصر، پلاک 70|9821346447",
+    "کار|قم، خیابان ولیعصر، پلاک 9|2777174079"
+  ],
+  "created": "2026-08-05",
+  "lastLogin": "2026-08-21",
+  "cart": [
+    {
+      "productId": "PRD-0004",
+      "quantity": 2
+    },
+    {
+      "productId": "PRD-0008",
+      "quantity": 3
+    }
+  ],
+  "password": "Test@1234",
+  "ordersCount": 2,
+  "cartCount": 2,
+  "addressCount": 2
+}

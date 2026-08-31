@@ -1,0 +1,30 @@
+{
+  "id": "4003",
+  "username": "محمد_قربانی10",
+  "name": "محمد قربانی",
+  "email": "محمد_قربانی10@hotmail.com",
+  "phone": "09646819390",
+  "whatsapp": "09126819885",
+  "telegram": "@محمد_قربانی10",
+  "postal_code": "3583311060",
+  "addresses": [
+    "خانه|زنجان، خیابان صفاییه، پلاک 80|5840768804",
+    "کار|زنجان، خیابان شریعتی، پلاک 38|1777234597"
+  ],
+  "created": "2026-08-04",
+  "lastLogin": "2026-08-21",
+  "cart": [
+    {
+      "productId": "PRD-0004",
+      "quantity": 4
+    },
+    {
+      "productId": "PRD-0002",
+      "quantity": 3
+    }
+  ],
+  "password": "Test@1234",
+  "ordersCount": 2,
+  "cartCount": 2,
+  "addressCount": 2
+}

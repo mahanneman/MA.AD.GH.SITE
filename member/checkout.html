@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <!-- ============================================================
+    0101 - هدر و متا تگ‌ها
+    ============================================================ -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ثبت‌نام فوق‌حرفه‌ای | ماهان ادهم قزوینی</title>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- ============================================================
+    0102 - استایل‌های اختصاصی با ۱۰ قابلیت جدید
+    ============================================================ -->
+    <style>
+        :root {
+            --signup-primary: #2563eb;
+            --signup-secondary: #10b981;
+            --signup-danger: #ef4444;
+            --signup-warning: #f59e0b;
+            --signup-bg: #0a0f1a;
+            --signup-card: #141b2b;
+            --signup-border: #1e2a3d;
+            --signup-text: #f1f5f9;
+            --signup-text-sec: #94a3b8;
+            --signup-radius: 16px;
+            --signup-shadow: 0 25px 60px rgba(0,0,0,0.7);
+            --signup-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        [data-theme="light"] {
+            --signup-bg: #f1f5f9;
+            --signup-card: #ffffff;
+            --signup-border: #cbd5e1;
+            --signup-text: #0f172a;
+            --signup-text-sec: #334155;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: var(--signup-bg);
+            color: var(--signup-text);
+            min-height: 100vh;
+            padding: 30px 16px;
+            direction: rtl;
+            transition: background 0.3s, color 0.3s;
+        }
+        .signup-container { max-width: 680px; margin: 0 auto; animation: fadeUp 0.6s ease; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .signup-card {
+            background: var(--signup-card);
+            border-radius: var(--signup-radius);
+            padding: 34px 28px;
+            border: 1px solid var(--signup-border);
+            box-shadow: var(--signup-shadow);
+            transition: var(--signup-transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .signup-card::after {
+            content: ''; position: absolute; top: 0; right: 0;
+            width: 4px; height: 100%;
+            background: linear-gradient(180deg, var(--signup-primary), #8b5cf6);
+            opacity: 0.4;
+        }
+        .signup-card:hover { border-color: rgba(37,99,235,0.2); }
+
+        /* ============================================================
+        0103 - لوگو و منو
+        ============================================================ */
+        .signup-header {
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 10px; margin-bottom: 24px;
+        }
+        .signup-header .logo { display: flex; align-items: center; gap: 10px; }
+        .signup-header .logo i { font-size: 2.2rem; color: var(--signup-primary); }
+        .signup-header .logo h1 { font-size: 1.4rem; font-weight: 800; }
+        .signup-header .menu-links {
+            display: flex; gap: 12px; align-items: center;
+        }
+        .signup-header .menu-links a {
+            color: var(--signup-text-sec); text-decoration: none;
+            font-size: 0.8rem; font-weight: 500;
+            transition: var(--signup-transition);
+            display: flex; align-items: center; gap: 4px;
+        }
+        .signup-header .menu-links a:hover { color: var(--signup-primary); }
+        .signup-header .menu-links .btn-login {
+            background: var(--signup-primary); color: #fff;
+            padding: 6px 16px; border-radius: 30px;
+            font-weight: 600;
+        }
+        .signup-header .menu-links .btn-login:hover {
+            background: var(--signup-primary); opacity: 0.9; color: #fff;
+        }
+        .theme-toggle {
+            background: var(--signup-bg); border: 2px solid var(--signup-border);
+            width: 36px; height: 36px; border-radius: 50%;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: var(--signup-transition); color: var(--signup-text);
+        }
+        .theme-toggle:hover { border-color: var(--signup-primary); }
+
+        /* ============================================================
+        0104 - مراحل پیشرفت (Progress Steps)
+        ============================================================ */
+        .progress-steps {
+            display: flex; justify-content: center; gap: 6px;
+            margin-bottom: 24px; position: relative;
+        }
+        .progress-steps .step {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 3px; flex: 1; position: relative; cursor: pointer;
+        }
+        .progress-steps .step .circle {
+            width: 32px; height: 32px; border-radius: 50%;
+            border: 2px solid var(--signup-border);
+            background: var(--signup-bg); color: var(--signup-text-sec);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.75rem; transition: var(--signup-transition);
+            position: relative; z-index: 2;
+        }
+        .progress-steps .step.active .circle {
+            border-color: var(--signup-primary);
+            background: var(--signup-primary); color: #fff;
+            box-shadow: 0 0 20px rgba(37,99,235,0.3);
+        }
+        .progress-steps .step.done .circle {
+            border-color: var(--signup-secondary);
+            background: var(--signup-secondary); color: #fff;
+        }
+        .progress-steps .step .label {
+            font-size: 0.55rem; color: var(--signup-text-sec);
+            transition: var(--signup-transition);
+        }
+        .progress-steps .step.active .label { color: var(--signup-text); }
+        .progress-steps .step.done .label { color: var(--signup-secondary); }
+        .progress-steps .step:not(:last-child)::after {
+            content: ''; position: absolute; top: 16px;
+            right: calc(50% + 16px); left: calc(-50% + 16px);
+            height: 2px; background: var(--signup-border);
+            z-index: 1; transition: var(--signup-transition);
+        }
+        .progress-steps .step.active:not(:last-child)::after,
+        .progress-steps .step.done:not(:last-child)::after {
+            background: var(--signup-primary);
+        }
+
+        /* ============================================================
+        0105 - فرم و فیلدها
+        ============================================================ */
+        .form-step { display: none; animation: fadeStep 0.4s ease; }
+        .form-step.active { display: block; }
+        @keyframes fadeStep { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: translateX(0); } }
+
+        .form-group { margin-bottom: 16px; position: relative; }
+        .form-group label {
+            display: block; font-weight: 600; font-size: 0.8rem;
+            margin-bottom: 4px; color: var(--signup-text-sec);
+        }
+        .form-group label i { margin-left: 4px; color: var(--signup-primary); }
+        .form-group label .required { color: var(--signup-danger); font-weight: 700; }
+        .form-group .hint {
+            font-size: 0.6rem; color: var(--signup-text-sec); opacity: 0.6;
+            margin-top: 3px; display: block;
+        }
+
+        .input-wrapper {
+            position: relative; display: flex; align-items: center;
+            background: var(--signup-bg); border: 2px solid var(--signup-border);
+            border-radius: 12px; transition: var(--signup-transition);
+        }
+        .input-wrapper:focus-within {
+            border-color: var(--signup-primary);
+            box-shadow: 0 0 0 4px rgba(37,99,235,0.08);
+        }
+        .input-wrapper.error { border-color: var(--signup-danger); }
+        .input-wrapper.success { border-color: var(--signup-secondary); }
+        .input-wrapper input, .input-wrapper select, .input-wrapper textarea {
+            width: 100%; padding: 10px 14px;
+            background: transparent; border: none;
+            color: var(--signup-text); font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.9rem; outline: none; direction: rtl;
+        }
+        .input-wrapper input::placeholder, .input-wrapper textarea::placeholder {
+            color: var(--signup-text-sec); opacity: 0.5;
+        }
+        .input-wrapper textarea { min-height: 50px; resize: vertical; }
+        .input-wrapper select { appearance: none; cursor: pointer; }
+        .input-wrapper .input-icon {
+            padding: 0 10px; color: var(--signup-text-sec);
+            font-size: 0.9rem; flex-shrink: 0;
+        }
+        .input-wrapper .toggle-pass {
+            padding: 0 12px; cursor: pointer; color: var(--signup-text-sec);
+            background: transparent; border: none; font-size: 1rem;
+            transition: var(--signup-transition);
+        }
+        .input-wrapper .toggle-pass:hover { color: var(--signup-text); }
+
+        /* ============================================================
+        0106 - قدرت رمز عبور
+        ============================================================ */
+        .strength-meter { margin-top: 5px; height: 4px; background: var(--signup-border); border-radius: 4px; overflow: hidden; }
+        .strength-meter .bar { height: 100%; width: 0%; border-radius: 4px; transition: width 0.4s ease, background 0.4s ease; }
+        .strength-text { font-size: 0.6rem; color: var(--signup-text-sec); margin-top: 3px; display: flex; justify-content: space-between; }
+
+        /* ============================================================
+        0107 - آدرس‌ها با برچسب
+        ============================================================ */
+        .address-list { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+        .address-item {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--signup-bg); padding: 6px 10px;
+            border-radius: 8px; border: 1px solid var(--signup-border);
+            font-size: 0.8rem; transition: var(--signup-transition);
+        }
+        .address-item:hover { border-color: rgba(37,99,235,0.2); }
+        .address-item .addr-label {
+            background: var(--signup-primary); color: #fff;
+            padding: 1px 8px; border-radius: 10px; font-size: 0.55rem;
+            font-weight: 600; flex-shrink: 0;
+        }
+        .address-item .addr-text { flex: 1; }
+        .address-item .remove-addr {
+            background: var(--signup-danger); color: #fff; border: none;
+            border-radius: 50%; width: 22px; height: 22px;
+            cursor: pointer; font-size: 0.65rem;
+            transition: var(--signup-transition);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .address-item .remove-addr:hover { transform: scale(1.1); }
+        .address-add-row {
+            display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px;
+        }
+        .address-add-row .input-wrapper { flex: 2; min-width: 120px; }
+        .address-add-row .input-wrapper input { padding: 8px 12px; font-size: 0.8rem; }
+        .address-add-row select {
+            padding: 8px 10px; border-radius: 10px;
+            border: 2px solid var(--signup-border);
+            background: var(--signup-bg); color: var(--signup-text);
+            font-family: 'Vazirmatn', sans-serif; font-size: 0.8rem;
+        }
+        .address-add-row .btn-add {
+            background: var(--signup-secondary); color: #fff; border: none;
+            border-radius: 10px; padding: 8px 16px; cursor: pointer;
+            font-family: 'Vazirmatn', sans-serif; font-weight: 600;
+            transition: var(--signup-transition);
+        }
+        .address-add-row .btn-add:hover { transform: scale(1.05); }
+
+        /* ============================================================
+        0108 - کد امنیتی ساده (CAPTCHA)
+        ============================================================ */
+        .captcha-section {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--signup-bg); border: 2px solid var(--signup-border);
+            border-radius: 12px; padding: 4px 12px;
+            transition: var(--signup-transition); flex-wrap: wrap;
+        }
+        .captcha-section:focus-within { border-color: var(--signup-primary); }
+        .captcha-display {
+            font-size: 1.4rem; font-weight: 700; letter-spacing: 6px;
+            color: var(--signup-primary); font-family: 'Courier New', monospace;
+            user-select: none; min-width: 100px; text-align: center;
+            direction: ltr;
+        }
+        .captcha-input { flex: 1; min-width: 80px; }
+        .captcha-input input {
+            width: 100%; padding: 6px 10px; background: transparent;
+            border: 1px dashed var(--signup-border); border-radius: 8px;
+            color: var(--signup-text); font-size: 0.9rem; outline: none;
+            text-align: center; letter-spacing: 3px; direction: ltr;
+        }
+        .captcha-input input:focus { border-color: var(--signup-primary); }
+        .captcha-refresh {
+            background: none; border: none; color: var(--signup-text-sec);
+            cursor: pointer; font-size: 1.1rem; padding: 4px 8px;
+            transition: var(--signup-transition);
+        }
+        .captcha-refresh:hover { color: var(--signup-primary); transform: rotate(60deg); }
+
+        /* ============================================================
+        0109 - دکمه‌ها
+        ============================================================ */
+        .btn {
+            padding: 12px 24px; border: none; border-radius: 12px;
+            font-family: 'Vazirmatn', sans-serif; font-weight: 700;
+            font-size: 0.9rem; cursor: pointer; transition: var(--signup-transition);
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 8px;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--signup-primary), #8b5cf6);
+            color: #fff; box-shadow: 0 4px 20px rgba(37,99,235,0.25);
+        }
+        .btn-primary:hover { box-shadow: 0 8px 40px rgba(37,99,235,0.35); }
+        .btn-secondary {
+            background: var(--signup-secondary); color: #fff;
+        }
+        .btn-secondary:hover { box-shadow: 0 8px 30px rgba(16,185,129,0.3); }
+        .btn-outline {
+            background: transparent; border: 2px solid var(--signup-border);
+            color: var(--signup-text-sec);
+        }
+        .btn-outline:hover { border-color: var(--signup-primary); color: var(--signup-text); }
+        .btn-block { width: 100%; justify-content: center; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+        .form-actions {
+            display: flex; gap: 10px; flex-wrap: wrap;
+            margin-top: 18px; justify-content: space-between;
+        }
+        .form-actions .left-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        /* ============================================================
+        0110 - پیام‌ها
+        ============================================================ */
+        .msg {
+            font-size: 0.8rem; margin-top: 8px; padding: 8px 14px;
+            border-radius: 8px; display: none; align-items: center; gap: 6px;
+        }
+        .msg.show { display: flex; }
+        .msg.error {
+            background: rgba(239,68,68,0.08); color: var(--signup-danger);
+            border-right: 3px solid var(--signup-danger);
+        }
+        .msg.success {
+            background: rgba(16,185,129,0.08); color: var(--signup-secondary);
+            border-right: 3px solid var(--signup-secondary);
+        }
+        .msg.info {
+            background: rgba(37,99,235,0.08); color: var(--signup-primary);
+            border-right: 3px solid var(--signup-primary);
+        }
+
+        /* ============================================================
+        0112 - لینک‌ها
+        ============================================================ */
+        .links {
+            display: flex; justify-content: space-between;
+            margin-top: 14px; font-size: 0.75rem; flex-wrap: wrap; gap: 6px;
+        }
+        .links a {
+            color: var(--signup-text-sec); text-decoration: none;
+            transition: var(--signup-transition); cursor: pointer;
+        }
+        .links a:hover { color: var(--signup-primary); }
+
+        /* ============================================================
+        0113 - ریسپانسیو
+        ============================================================ */
+        @media (max-width: 600px) {
+            .signup-card { padding: 22px 16px; }
+            .signup-header .logo h1 { font-size: 1.1rem; }
+            .signup-header .menu-links a span { display: none; }
+            .progress-steps .step .label { font-size: 0.45rem; }
+            .progress-steps .step .circle { width: 28px; height: 28px; font-size: 0.65rem; }
+            .address-add-row { flex-direction: column; }
+            .captcha-section { flex-direction: column; align-items: stretch; }
+            .captcha-display { text-align: center; }
+        }
+        @media (max-width: 400px) {
+            /* حذف استایل‌های مرتبط با کد تأیید که دیگر وجود ندارند */
+        }
+    </style>
+</head>
+<body>
+
+<div class="signup-container">
+    <div class="signup-card">
+
+        <!-- ============================================================
+        0103 - هدر با منو و دکمه تم
+        ============================================================ -->
+        <div class="signup-header">
+            <div class="logo">
+                <i class="fas fa-user-plus"></i>
+                <h1>ثبت‌نام</h1>
+            </div>
+            <div class="menu-links">
+                <a href="../../../index.html" title="صفحه اصلی"><i class="fas fa-home"></i> <span>صفحه اصلی</span></a>
+                <a href="login.html" class="btn-login"><i class="fas fa-sign-in-alt"></i> <span>ورود</span></a>
+                <button class="theme-toggle" id="themeToggle" title="تغییر تم">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        0104 - مراحل پیشرفت
+        ============================================================ -->
+        <div class="progress-steps" id="progressSteps">
+            <div class="step active" data-step="1">
+                <div class="circle">1</div>
+                <span class="label">اطلاعات پایه</span>
+            </div>
+            <div class="step" data-step="2">
+                <div class="circle">2</div>
+                <span class="label">حرفه‌ای</span>
+            </div>
+            <div class="step" data-step="3">
+                <div class="circle">3</div>
+                <span class="label">تأیید</span>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        0105 - فرم ثبت‌نام
+        ============================================================ -->
+        <form id="signupForm" autocomplete="off" novalidate>
+
+            <!-- ===== مرحله ۱: اطلاعات پایه ===== -->
+            <div class="form-step active" data-step="1">
+
+                <!-- 0105.1 - نام کاربری -->
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> نام کاربری <span class="required">*</span></label>
+                    <div class="input-wrapper" id="usernameWrapper">
+                        <span class="input-icon"><i class="fas fa-at"></i></span>
+                        <input type="text" id="regUsername" placeholder="نام کاربری دلخواه (حداقل ۳ کاراکتر)" required autofocus>
+                    </div>
+                    <span class="hint" id="usernameHint">فقط حروف انگلیسی، اعداد و زیرخط مجاز است</span>
+                </div>
+
+                <!-- 0105.2 - ایمیل -->
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> ایمیل <span class="required">*</span></label>
+                    <div class="input-wrapper" id="emailWrapper">
+                        <span class="input-icon"><i class="fas fa-at"></i></span>
+                        <input type="email" id="regEmail" placeholder="example@mail.com" required>
+                    </div>
+                </div>
+
+                <!-- 0105.3 - نام کامل -->
+                <div class="form-group">
+                    <label><i class="fas fa-id-card"></i> نام کامل <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><i class="fas fa-user"></i></span>
+                        <input type="text" id="regFullName" placeholder="نام و نام خانوادگی" required>
+                    </div>
+                </div>
+
+                <!-- 0105.4 - شماره موبایل -->
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> شماره موبایل</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><i class="fas fa-mobile-alt"></i></span>
+                        <input type="tel" id="regPhone" placeholder="۰۹۹۰۲۲۷۹۷۰۲">
+                    </div>
+                </div>
+
+                <!-- 0105.5 - کد پستی (جدید) -->
+                <div class="form-group">
+                    <label><i class="fas fa-map-pin"></i> کد پستی</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><i class="fas fa-code"></i></span>
+                        <input type="text" id="regPostalCode" placeholder="۱۲۳۴۵۶۷۸۹۰">
+                    </div>
+                    <span class="hint">کد پستی ۱۰ رقمی محل سکونت</span>
+                </div>
+
+                <!-- 0105.6 - واتساپ (جدید) -->
+                <div class="form-group">
+                    <label><i class="fab fa-whatsapp"></i> واتساپ</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><i class="fab fa-whatsapp"></i></span>
+                        <input type="tel" id="regWhatsapp" placeholder="۰۹۹۰۲۲۷۹۷۰۲">
+                    </div>
+                    <span class="hint">شماره واتساپ برای ارتباط سریع</span>
+                </div>
+
+                <!-- 0105.7 - تلگرام (جدید) -->
+                <div class="form-group">
+                    <label><i class="fab fa-telegram"></i> تلگرام</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><i class="fab fa-telegram"></i></span>
+                        <input type="text" id="regTelegram" placeholder="@username">
+                    </div>
+                    <span class="hint">آیدی تلگرام خود را وارد کنید</span>
+                </div>
+
+                <!-- 0105.8 - رمز عبور -->
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> رمز عبور <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><i class="fas fa-key"></i></span>
+                        <input type="password" id="regPassword" placeholder="حداقل ۸ کاراکتر" required>
+                        <button type="button" class="toggle-pass" onclick="togglePassword('regPassword','regEyeIcon')">
+                            <i class="fas fa-eye" id="regEyeIcon"></i>
+                        </button>
+                    </div>
+                    <div class="strength-meter"><div class="bar" id="regStrengthBar"></div></div>
+                    <div class="strength-text">
+                        <span id="regStrengthLabel">ضعیف</span>
+                        <span id="regStrengthHint">حداقل ۸ کاراکتر</span>
+                    </div>
+                </div>
+
+                <!-- 0105.9 - تکرار رمز -->
+                <div class="form-group">
+                    <label><i class="fas fa-check-circle"></i> تکرار رمز عبور <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><i class="fas fa-check"></i></span>
+                        <input type="password" id="regConfirm" placeholder="تکرار رمز عبور" required>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <div></div>
+                    <button type="button" class="btn btn-primary" onclick="goToStep(2)">
+                        <i class="fas fa-arrow-left"></i> مرحله بعد
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== مرحله ۲: اطلاعات تکمیلی ===== -->
+            <div class="form-step" data-step="2">
+
+                <!-- 0105.10 - سوال امنیتی -->
+                <div class="form-group">
+                    <label><i class="fas fa-question-circle"></i> سوال امنیتی <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><i class="fas fa-list"></i></span>
+                        <select id="regSecurityQuestion">
+                            <option value="">-- انتخاب سوال --</option>
+                            <option value="نام مادرتان چیست؟">نام مادرتان چیست؟</option>
+                            <option value="نام اولین معلم شما؟">نام اولین معلم شما؟</option>
+                            <option value="شهر تولد شما؟">شهر تولد شما؟</option>
+                            <option value="نام اولین حیوان خانگی شما؟">نام اولین حیوان خانگی شما؟</option>
+                            <option value="نام بهترین دوست شما؟">نام بهترین دوست شما؟</option>
+                            <option value="سفارشی">سفارشی (خودتان بنویسید)</option>
+                        </select>
+                    </div>
+                    <div class="input-wrapper" style="margin-top:4px;display:none;" id="customQuestionWrapper">
+                        <span class="input-icon"><i class="fas fa-pen"></i></span>
+                        <input type="text" id="customQuestion" placeholder="سوال امنیتی خود را وارد کنید">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-answer"></i> پاسخ سوال امنیتی <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><i class="fas fa-pen"></i></span>
+                        <input type="text" id="regSecurityAnswer" placeholder="پاسخ را وارد کنید" required>
+                    </div>
+                </div>
+
+                <!-- 0107 - آدرس‌ها -->
+                <div class="form-group">
+                    <label><i class="fas fa-map-pin"></i> آدرس‌ها</label>
+                    <div id="addressList" class="address-list"></div>
+                    <div class="address-add-row">
+                        <div class="input-wrapper">
+                            <span class="input-icon"><i class="fas fa-plus"></i></span>
+                            <input type="text" id="newAddress" placeholder="آدرس جدید">
+                        </div>
+                        <select id="addressLabel">
+                            <option value="خانه">🏠 خانه</option>
+                            <option value="کار">🏢 کار</option>
+                            <option value="سایر">📍 سایر</option>
+                        </select>
+                        <button type="button" class="btn-add" onclick="addAddress()"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <span class="hint">آدرس‌ها را برای انتخاب هنگام خرید ذخیره کنید</span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="goToStep(1)"><i class="fas fa-arrow-right"></i> مرحله قبل</button>
+                    <button type="button" class="btn btn-primary" onclick="goToStep(3)"><i class="fas fa-arrow-left"></i> مرحله بعد</button>
+                </div>
+            </div>
+
+            <!-- ===== مرحله ۳: تأیید نهایی ===== -->
+            <div class="form-step" data-step="3">
+
+                <!-- 0110 - خلاصه اطلاعات -->
+                <div class="form-group">
+                    <label><i class="fas fa-clipboard-list"></i> خلاصه اطلاعات</label>
+                    <div style="background:var(--signup-bg);border-radius:var(--signup-radius);padding:14px;border:1px solid var(--signup-border);font-size:0.85rem;line-height:2;">
+                        <p><strong>نام کاربری:</strong> <span id="summaryUsername">---</span></p>
+                        <p><strong>ایمیل:</strong> <span id="summaryEmail">---</span></p>
+                        <p><strong>نام کامل:</strong> <span id="summaryName">---</span></p>
+                        <p><strong>موبایل:</strong> <span id="summaryPhone">---</span></p>
+                        <p><strong>کد پستی:</strong> <span id="summaryPostal">---</span></p>
+                        <p><strong>تعداد آدرس‌ها:</strong> <span id="summaryAddresses">۰</span></p>
+                    </div>
+                </div>
+
+                <!-- 0108 - کد امنیتی (CAPTCHA) -->
+                <div class="form-group">
+                    <label><i class="fas fa-shield-virus"></i> کد امنیتی <span class="required">*</span></label>
+                    <div class="captcha-section">
+                        <span class="captcha-display" id="captchaDisplay"></span>
+                        <div class="captcha-input">
+                            <input type="text" id="captchaInput" placeholder="کد را وارد کنید" maxlength="6" autocomplete="off">
+                        </div>
+                        <button type="button" class="captcha-refresh" onclick="generateCaptcha()" title="تغییر کد">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <span class="hint">کد امنیتی برای جلوگیری از ثبت‌نام خودکار</span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="goToStep(2)"><i class="fas fa-arrow-right"></i> مرحله قبل</button>
+                    <button type="submit" class="btn btn-primary" id="signupBtn">
+                        <i class="fas fa-user-plus"></i> ثبت‌نام نهایی
+                    </button>
+                </div>
+
+                <div class="msg error" id="regError"><i class="fas fa-exclamation-circle"></i> <span id="regErrorText"></span></div>
+                <div class="msg success" id="regSuccess"><i class="fas fa-check-circle"></i> <span id="regSuccessText"></span></div>
+
+                <div class="links">
+                    <a href="login.html"><i class="fas fa-sign-in-alt"></i> قبلاً ثبت‌نام کرده‌اید؟ ورود</a>
+                    <a href="../../index.html"><i class="fas fa-home"></i> بازگشت به صفحه اصلی</a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- ============================================================
+0114 - اسکریپت‌ها
+============================================================ -->
+<script>
+    (function() {
+        'use strict';
+
+        // ============================================================
+        // 0115 - متغیرها و DOM
+        // ============================================================
+        let addresses = [];
+        let currentStep = 1;
+        let captchaCode = '';
+
+        // ============================================================
+        // 0116 - توابع گیت‌هاب (ذخیره JSON)
+        // ============================================================
+        const REPO_OWNER = 'mahanneman';
+        const REPO_NAME = 'MA.AD.GH.SITE';
+        const REPO_PATH = `repos/${REPO_OWNER}/${REPO_NAME}/contents`;
+
+        async function fetchFromGitHub(path) {
+            const token = localStorage.getItem('github_token');
+            if (!token) return null;
+            const url = `https://api.github.com/${REPO_PATH}/${path}`;
+            const res = await fetch(url, {
+                headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (res.status === 404) return null;
+            if (!res.ok) return null;
+            const data = await res.json();
+            const binaryString = atob(data.content);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) { bytes[i] = binaryString.charCodeAt(i); }
+            const decoder = new TextDecoder('utf-8');
+            const content = decoder.decode(bytes).replace(/^\uFEFF/, '');
+            return { ...data, content };
+        }
+
+        async function saveToGitHub(path, content, sha = null) {
+            const token = localStorage.getItem('github_token');
+            if (!token) throw new Error('توکن گیت‌هاب موجود نیست.');
+            const url = `https://api.github.com/${REPO_PATH}/${path}`;
+            const jsonString = JSON.stringify(content, null, 2);
+            const encoder = new TextEncoder();
+            const encoded = encoder.encode(jsonString);
+            let binary = '';
+            for (let i = 0; i < encoded.length; i++) { binary += String.fromCharCode(encoded[i]); }
+            const base64Content = btoa(binary);
+            const body = {
+                message: `Create/Update ${path} via signup - ${new Date().toISOString()}`,
+                content: base64Content,
+                branch: 'main'
+            };
+            if (sha) body.sha = sha;
+            const res = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify(body)
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.message || 'خطا در ذخیره‌سازی');
+            }
+            return await res.json();
+        }
+
+        async function deleteFromGitHub(path, sha) {
+            const token = localStorage.getItem('github_token');
+            if (!token) throw new Error('توکن گیت‌هاب موجود نیست.');
+            const url = `https://api.github.com/${REPO_PATH}/${path}`;
+            const res = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({ message: 'Delete ' + path, sha: sha, branch: 'main' })
+            });
+            if (!res.ok) throw new Error('خطا در حذف فایل');
+            return await res.json();
+        }
+
+        // ============================================================
+        // 0117 - قابلیت ۱: کد امنیتی (CAPTCHA)
+        // ============================================================
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            captchaCode = code;
+            document.getElementById('captchaDisplay').textContent = code;
+            document.getElementById('captchaInput').value = '';
+            document.getElementById('captchaInput').focus();
+        }
+        generateCaptcha();
+
+        // ============================================================
+        // 0118 - قابلیت ۲: نمایش/مخفی‌سازی رمز
+        // ============================================================
+        window.togglePassword = function(inputId, eyeId) {
+            const input = document.getElementById(inputId);
+            const eye = document.getElementById(eyeId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                eye.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                eye.className = 'fas fa-eye';
+            }
+        };
+
+        // ============================================================
+        // 0119 - قابلیت ۳: قدرت رمز عبور (لحظه‌ای)
+        // ============================================================
+        document.getElementById('regPassword').addEventListener('input', function() {
+            const val = this.value;
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (val.length >= 12) score++;
+            if (/[a-z]/.test(val) && /[A-Z]/.test(val)) score++;
+            if (/\d/.test(val)) score++;
+            if (/[^a-zA-Z0-9]/.test(val)) score++;
+            const percent = Math.min(score * 20, 100);
+            const colors = ['#ef4444', '#f59e0b', '#22c55e'];
+            const labels = ['ضعیف', 'متوسط', 'قوی'];
+            const index = percent < 40 ? 0 : percent < 70 ? 1 : 2;
+            document.getElementById('regStrengthBar').style.width = percent + '%';
+            document.getElementById('regStrengthBar').style.background = colors[index];
+            document.getElementById('regStrengthLabel').textContent = labels[index];
+            document.getElementById('regStrengthHint').textContent = percent < 40 ? 'رمز ضعیف است' : percent < 70 ? 'رمز متوسط است' : 'رمز عالی است';
+        });
+
+        // ============================================================
+        // 0120 - قابلیت ۴: اعتبارسنجی لحظه‌ای نام کاربری
+        // ============================================================
+        document.getElementById('regUsername').addEventListener('input', function() {
+            const val = this.value.trim();
+            const wrapper = document.getElementById('usernameWrapper');
+            const hint = document.getElementById('usernameHint');
+            if (val.length < 3 && val.length > 0) {
+                wrapper.className = 'input-wrapper error';
+                hint.textContent = 'نام کاربری باید حداقل ۳ کاراکتر باشد.';
+                hint.style.color = 'var(--signup-danger)';
+            } else if (val.length >= 3 && /^[a-zA-Z0-9_]+$/.test(val)) {
+                wrapper.className = 'input-wrapper success';
+                hint.textContent = '✅ نام کاربری معتبر است.';
+                hint.style.color = 'var(--signup-secondary)';
+            } else if (val.length > 0) {
+                wrapper.className = 'input-wrapper error';
+                hint.textContent = 'فقط حروف انگلیسی، اعداد و زیرخط مجاز است.';
+                hint.style.color = 'var(--signup-danger)';
+            } else {
+                wrapper.className = 'input-wrapper';
+                hint.textContent = 'فقط حروف انگلیسی، اعداد و زیرخط مجاز است.';
+                hint.style.color = 'var(--signup-text-sec)';
+            }
+        });
+
+        // ============================================================
+        // 0121 - قابلیت ۵: اعتبارسنجی لحظه‌ای ایمیل
+        // ============================================================
+        document.getElementById('regEmail').addEventListener('input', function() {
+            const val = this.value.trim();
+            const wrapper = document.getElementById('emailWrapper');
+            if (val && val.includes('@') && val.includes('.')) {
+                wrapper.className = 'input-wrapper success';
+            } else if (val) {
+                wrapper.className = 'input-wrapper error';
+            } else {
+                wrapper.className = 'input-wrapper';
+            }
+        });
+
+        // ============================================================
+        // 0122 - قابلیت ۶: مدیریت آدرس‌ها
+        // ============================================================
+        function renderAddresses() {
+            const container = document.getElementById('addressList');
+            if (addresses.length === 0) {
+                container.innerHTML = '<div style="font-size:0.75rem;color:var(--signup-text-sec);opacity:0.6;padding:4px 0;">هیچ آدرسی ثبت نشده است.</div>';
+                return;
+            }
+            container.innerHTML = addresses.map((addr, idx) => `
+                <div class="address-item">
+                    <span class="addr-label">${addr.label || 'سایر'}</span>
+                    <span class="addr-text">${addr.address}</span>
+                    <button type="button" class="remove-addr" onclick="removeAddress(${idx})" title="حذف آدرس">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+            updateSummary();
+        }
+
+        window.addAddress = function() {
+            const input = document.getElementById('newAddress');
+            const label = document.getElementById('addressLabel');
+            const addr = input.value.trim();
+            if (!addr) { alert('لطفاً آدرس را وارد کنید.'); return; }
+            addresses.push({ address: addr, label: label.value });
+            input.value = '';
+            renderAddresses();
+        };
+
+        window.removeAddress = function(index) {
+            addresses.splice(index, 1);
+            renderAddresses();
+        };
+
+        // ============================================================
+        // 0124 - قابلیت ۸: مراحل ثبت‌نام (Progress Steps) - اصلاح‌شده
+        // ============================================================
+        function updateSteps(step) {
+            document.querySelectorAll('.progress-steps .step').forEach((el, idx) => {
+                const num = idx + 1;
+                el.className = 'step';
+                if (num < step) el.classList.add('done');
+                else if (num === step) el.classList.add('active');
+            });
+            document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+            currentStep = step;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== تابع نمایش خطا با fallback =====
+        function showError(msg) {
+            const el = document.getElementById('regError');
+            const text = document.getElementById('regErrorText');
+            if (el && text) {
+                text.textContent = msg;
+                el.classList.add('show');
+                document.getElementById('regSuccess').classList.remove('show');
+            } else {
+                alert('❌ ' + msg);
+            }
+        }
+
+        function showSuccess(msg) {
+            const el = document.getElementById('regSuccess');
+            const text = document.getElementById('regSuccessText');
+            if (el && text) {
+                text.textContent = msg;
+                el.classList.add('show');
+                document.getElementById('regError').classList.remove('show');
+            } else {
+                alert('✅ ' + msg);
+            }
+        }
+
+        function clearMessages() {
+            document.getElementById('regError').classList.remove('show');
+            document.getElementById('regSuccess').classList.remove('show');
+        }
+
+        // ===== تابع اصلی goToStep (اصلاح‌شده) =====
+        window.goToStep = function(step) {
+            // === مرحله ۱ → ۲ ===
+            if (step === 2) {
+                const username = document.getElementById('regUsername').value.trim();
+                const email = document.getElementById('regEmail').value.trim();
+                const fullName = document.getElementById('regFullName').value.trim();
+                const password = document.getElementById('regPassword').value.trim();
+                const confirm = document.getElementById('regConfirm').value.trim();
+
+                // بررسی فیلدهای خالی
+                if (!username || !email || !fullName || !password || !confirm) {
+                    showError('❌ لطفاً همه فیلدهای الزامی مرحله اول را پر کنید.');
+                    return;
+                }
+                if (username.length < 3) {
+                    showError('❌ نام کاربری باید حداقل ۳ کاراکتر باشد.');
+                    return;
+                }
+                if (!email.includes('@')) {
+                    showError('❌ ایمیل معتبر نیست.');
+                    return;
+                }
+                if (password.length < 8) {
+                    showError('❌ رمز عبور باید حداقل ۸ کاراکتر باشد.');
+                    return;
+                }
+                if (password !== confirm) {
+                    showError('❌ رمز عبور و تکرار آن مطابقت ندارند.');
+                    return;
+                }
+
+                // بررسی قدرت رمز عبور
+                let score = 0;
+                if (password.length >= 8) score++;
+                if (password.length >= 12) score++;
+                if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+                if (/\d/.test(password)) score++;
+                if (/[^a-zA-Z0-9]/.test(password)) score++;
+                if (score < 3) {
+                    showError('❌ رمز عبور بسیار ضعیف است. لطفاً از حروف بزرگ، کوچک، عدد و نماد استفاده کنید.');
+                    return;
+                }
+
+                updateSummary();
+            }
+
+            // === مرحله ۲ → ۳ ===
+            if (step === 3) {
+                const question = document.getElementById('regSecurityQuestion').value;
+                const answer = document.getElementById('regSecurityAnswer').value.trim();
+                if (!question || !answer) {
+                    showError('❌ لطفاً سوال و پاسخ امنیتی را وارد کنید.');
+                    return;
+                }
+                updateSummary();
+            }
+
+            // انتقال به مرحله بعد
+            updateSteps(step);
+        };
+
+        function updateSummary() {
+            document.getElementById('summaryUsername').textContent = document.getElementById('regUsername').value.trim() || '---';
+            document.getElementById('summaryEmail').textContent = document.getElementById('regEmail').value.trim() || '---';
+            document.getElementById('summaryName').textContent = document.getElementById('regFullName').value.trim() || '---';
+            document.getElementById('summaryPhone').textContent = document.getElementById('regPhone').value.trim() || '---';
+            document.getElementById('summaryPostal').textContent = document.getElementById('regPostalCode').value.trim() || '---';
+            document.getElementById('summaryAddresses').textContent = addresses.length;
+        }
+
+        // ============================================================
+        // 0125 - قابلیت ۹: سوال امنیتی سفارشی
+        // ============================================================
+        document.getElementById('regSecurityQuestion').addEventListener('change', function() {
+            const wrapper = document.getElementById('customQuestionWrapper');
+            if (this.value === 'سفارشی') {
+                wrapper.style.display = 'flex';
+                document.getElementById('customQuestion').focus();
+            } else {
+                wrapper.style.display = 'none';
+            }
+        });
+
+        function getSecurityQuestion() {
+            const select = document.getElementById('regSecurityQuestion');
+            if (select.value === 'سفارشی') {
+                return document.getElementById('customQuestion').value.trim() || 'سوال امنیتی';
+            }
+            return select.value;
+        }
+
+        // ============================================================
+        // 0126 - قابلیت ۱۰: مدیریت خطا و پیام‌ها
+        // ============================================================
+        // (توابع showError, showSuccess, clearMessages قبلاً تعریف شدند)
+
+        // ============================================================
+        // 0127 - قابلیت ۱۱: تم تاریک/روشن
+        // ============================================================
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        let currentTheme = localStorage.getItem('signup_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'light') {
+            themeIcon.className = 'fas fa-sun';
+        } else {
+            themeIcon.className = 'fas fa-moon';
+        }
+        themeToggle.addEventListener('click', function() {
+            const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('signup_theme', newTheme);
+            if (newTheme === 'light') {
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+            }
+        });
+
+        // ============================================================
+        // 0128 - قابلیت ۱۲: محدودیت تلاش ثبت‌نام (امنیت ملایم)
+        // ============================================================
+        let signupAttempts = 0;
+        const MAX_ATTEMPTS = 5;
+
+        // ============================================================
+        // 0129 - رویداد ارسال فرم (ثبت‌نام نهایی)
+        // ============================================================
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearMessages();
+
+            // محدودیت تلاش
+            if (signupAttempts >= MAX_ATTEMPTS) {
+                showError('❌ تعداد تلاش‌های شما بیش از حد مجاز است. لطفاً بعداً تلاش کنید.');
+                return;
+            }
+
+            // اعتبارسنجی کد امنیتی (CAPTCHA)
+            const captchaUser = document.getElementById('captchaInput').value.trim().toUpperCase();
+            if (captchaUser !== captchaCode) {
+                showError('❌ کد امنیتی اشتباه است. لطفاً مجدداً وارد کنید.');
+                generateCaptcha();
+                return;
+            }
+
+            // دریافت مقادیر
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const fullName = document.getElementById('regFullName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const postalCode = document.getElementById('regPostalCode').value.trim();
+            const whatsapp = document.getElementById('regWhatsapp').value.trim();
+            const telegram = document.getElementById('regTelegram').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const confirm = document.getElementById('regConfirm').value.trim();
+            const securityQuestion = getSecurityQuestion();
+            const securityAnswer = document.getElementById('regSecurityAnswer').value.trim();
+
+            // اعتبارسنجی نهایی
+            if (!username || !email || !fullName || !password || !confirm) {
+                showError('❌ همه فیلدهای الزامی را پر کنید.');
+                return;
+            }
+            if (password !== confirm) {
+                showError('❌ رمز عبور و تکرار آن مطابقت ندارند.');
+                return;
+            }
+
+            // بررسی عدم تکراری بودن
+            const users = JSON.parse(localStorage.getItem('users_db') || '{}');
+            for (const [key, data] of Object.entries(users)) {
+                if (data.username === username) { showError('❌ این نام کاربری قبلاً ثبت شده است.'); return; }
+                if (data.email === email) { showError('❌ این ایمیل قبلاً ثبت شده است.'); return; }
+            }
+
+            // ===== ساخت کاربر جدید =====
+            const keys = Object.keys(users);
+            let maxNum = 0;
+            keys.forEach(key => { const num = parseInt(key); if (!isNaN(num) && num > maxNum) maxNum = num; });
+            const newId = String(maxNum + 1).padStart(4, '0');
+
+            const newUser = {
+                id: newId,
+                username: username,
+                email: email,
+                name: fullName,
+                phone: phone || '',
+                postal_code: postalCode || '',
+                whatsapp: whatsapp || '',
+                telegram: telegram || '',
+                password: password,
+                addresses: addresses.slice(),
+                created: new Date().toISOString(),
+                lastLogin: null,
+                cart: []
+            };
+
+            // ذخیره در localStorage
+            users[newId] = newUser;
+            users[username] = newUser;
+            localStorage.setItem('users_db', JSON.stringify(users));
+
+            // ===== ایجاد فایل‌های JSON در گیت‌هاب =====
+            let fileCreated = false;
+            try {
+                // ۱. info.json
+                const infoPath = `member/member${newId}/info.json`;
+                const existingInfo = await fetchFromGitHub(infoPath);
+                let infoSha = existingInfo ? existingInfo.sha : null;
+                await saveToGitHub(infoPath, newUser, infoSha);
+                console.log(`✅ info.json برای کاربر ${newId} ایجاد شد.`);
+
+                // ۲. orders.json
+                const orderPath = `member/member${newId}/orders.json`;
+                const emptyOrders = [];
+                const existingOrder = await fetchFromGitHub(orderPath);
+                let orderSha = existingOrder ? existingOrder.sha : null;
+                await saveToGitHub(orderPath, emptyOrders, orderSha);
+                console.log(`✅ orders.json برای کاربر ${newId} ایجاد شد.`);
+
+                fileCreated = true;
+            } catch (e) {
+                console.warn('⚠️ خطا در ایجاد فایل‌های JSON:', e);
+                fileCreated = false;
+            }
+
+            // نمایش پیام موفقیت
+            if (fileCreated) {
+                showSuccess('✅ ثبت‌نام با موفقیت انجام شد و فایل‌های JSON ساخته شدند.');
+            } else {
+                showSuccess('✅ ثبت‌نام در localStorage انجام شد، اما فایل‌های JSON ساخته نشدند (توکن موجود نیست).');
+            }
+
+            signupAttempts++;
+            document.getElementById('signupBtn').disabled = true;
+
+            // انتقال به صفحه ورود
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2500);
+        });
+
+        // ============================================================
+        // 0130 - بارگذاری اولیه
+        // ============================================================
+        renderAddresses();
+        updateSummary();
+
+        // بررسی نشست قبلی
+        const sessionId = sessionStorage.getItem('current_user_id');
+        if (sessionId) {
+            const users = JSON.parse(localStorage.getItem('users_db') || '{}');
+            let exists = false;
+            for (const [key, data] of Object.entries(users)) {
+                if (data.id === sessionId) { exists = true; break; }
+            }
+            if (exists) {
+                window.location.href = `memberpage.html?id=${sessionId}`;
+            } else {
+                sessionStorage.removeItem('current_user_id');
+                sessionStorage.removeItem('current_username');
+            }
+        }
+
+        console.log('✅ صفحه ثبت‌نام فوق‌حرفه‌ای (با مسیر orders.json اصلاح‌شده) بارگذاری شد.');
+    })();
+</script>
+
+</body>
+</html>

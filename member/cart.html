@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسویه حساب نهایی | مهندس ماهان ادهم قزوینی</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../common.css">
+    <style>
+        .payment-container { max-width: 600px; margin: 100px auto 40px; padding: 0 20px; direction: rtl; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 30px; padding-bottom: 16px; border-bottom: 2px solid var(--border-color); }
+        .page-header h1 { font-size: 1.8rem; display: flex; align-items: center; gap: 12px; }
+        .page-header h1 i { color: var(--primary-color); }
+        .page-header .back-link { color: var(--text-secondary); text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
+        .page-header .back-link:hover { color: var(--primary-color); }
+        .payment-card { background: var(--bg-secondary); border-radius: 16px; padding: 24px; border: 1px solid var(--border-color); }
+        .payment-card-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border-color); }
+        .payment-card-header h3 { font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .payment-card-header h3 i { color: var(--primary-color); }
+        .info-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+        .total-row { font-size: 1.2rem; font-weight: 700; padding: 12px 0; border-top: 2px solid var(--border-color); margin-top: 8px; }
+        .total-row span { color: var(--primary-color); }
+        .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; }
+        .field label { font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; color: var(--text-secondary); }
+        .field label i { color: var(--primary-color); }
+        .field input, .field textarea { padding: 10px 14px; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-primary); color: var(--text-primary); font-family: 'Vazirmatn', sans-serif; font-size: 0.9rem; transition: 0.3s; width: 100%; }
+        .field input:focus, .field textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+        .field textarea { min-height: 60px; resize: vertical; }
+        .btn { padding: 10px 28px; border: none; border-radius: 30px; font-family: 'Vazirmatn', sans-serif; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn:hover { transform: scale(1.03); }
+        .btn-primary { background: var(--primary-color); color: #fff; }
+        .btn-secondary { background: var(--secondary-color); color: #fff; }
+        .btn-outline { background: transparent; border: 2px solid var(--border-color); color: var(--text-secondary); }
+        .btn-lg { padding: 14px 40px; font-size: 1rem; }
+        .btn-block { width: 100%; justify-content: center; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+        .actions-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+        .loader-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s ease-in-out infinite; vertical-align: middle; margin-left: 8px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .toast { position: fixed; bottom: 30px; left: 30px; padding: 14px 24px; border-radius: 12px; font-weight: 600; z-index: 999; animation: slideUp 0.4s ease; box-shadow: 0 15px 50px rgba(0,0,0,0.5); background: var(--secondary-color); color: #fff; max-width: 90%; }
+        .toast.error { background: #ef4444; }
+        .toast.warning { background: #f59e0b; color: #0a0f1a; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .order-summary-loading { text-align: center; padding: 30px 0; color: var(--text-secondary); }
+        @media (max-width: 768px) { .page-header h1 { font-size: 1.4rem; } }
+    </style>
+</head>
+<body>
+
+    <!-- ===== هدر توسط load-menu.js بارگذاری می‌شود ===== -->
+
+    <div class="container payment-container">
+        <div class="page-header">
+            <h1><i class="fas fa-credit-card"></i> تسویه حساب نهایی</h1>
+            <a href="memberpage.html?tab=cart" class="back-link"><i class="fas fa-arrow-right"></i> بازگشت به سبد خرید</a>
+        </div>
+        <div class="payment-card">
+            <div class="payment-card-header">
+                <h3><i class="fas fa-clipboard-list"></i> خلاصه سفارش</h3>
+                <span style="font-size:0.8rem;color:var(--text-secondary);" id="orderCount">۰ محصول</span>
+            </div>
+
+            <!-- خلاصه سفارش -->
+            <div id="paymentSummary">
+                <div class="order-summary-loading">
+                    <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;"></i>
+                    <p>در حال بارگذاری سبد خرید...</p>
+                </div>
+            </div>
+
+            <!-- اطلاعات پرداخت -->
+            <div class="field">
+                <label><i class="fas fa-user"></i> نام کامل <span style="color:#ef4444;">*</span></label>
+                <input type="text" id="payerName" placeholder="نام و نام خانوادگی" required>
+            </div>
+            <div class="field">
+                <label><i class="fas fa-phone"></i> شماره تماس <span style="color:#ef4444;">*</span></label>
+                <input type="tel" id="payerPhone" placeholder="۰۹۹۰۲۲۷۹۷۰۲" required>
+            </div>
+            <div class="field">
+                <label><i class="fas fa-map-pin"></i> آدرس تحویل</label>
+                <input type="text" id="deliveryAddress" placeholder="آدرس کامل خود را وارد کنید">
+            </div>
+            <div class="field">
+                <label><i class="fas fa-comment"></i> یادداشت (اختیاری)</label>
+                <textarea id="paymentNotes" rows="2" placeholder="هر نکته اضافی..."></textarea>
+            </div>
+
+            <div class="actions-row">
+                <button class="btn btn-primary btn-lg btn-block" id="submitOrderBtn" onclick="finalizeOrder()">
+                    <i class="fas fa-check"></i> ثبت نهایی سفارش
+                </button>
+            </div>
+            <div id="paymentMsg" style="margin-top:12px;"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         اسکریپت‌ها
+         ============================================================ -->
+    <script src="../auth.js"></script>
+    <script src="../load-menu.js"></script>
+    <script src="../menu-loader.js"></script>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            // تنظیمات API Worker
+            // ============================================================
+            const WORKER_API = 'https://your-worker.workers.dev/api'; // 🔴 این را با آدرس واقعی Worker جایگزین کنید
+
+            // ============================================================
+            // متغیرها
+            // ============================================================
+            let cartItems = [];
+            let userInfo = null;
+            let userId = null;
+            let totalPrice = 0;
+
+            // ============================================================
+            // توابع کمکی
+            // ============================================================
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = 'toast ' + type;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s';
+                    setTimeout(() => toast.remove(), 400);
+                }, 4000);
+            }
+
+            function showError(msg) {
+                const el = document.getElementById('paymentMsg');
+                el.innerHTML = `<span style="color:#ef4444;">❌ ${msg}</span>`;
+            }
+
+            function showSuccess(msg) {
+                const el = document.getElementById('paymentMsg');
+                el.innerHTML = `<span style="color:#10b981;">✅ ${msg}</span>`;
+            }
+
+            function clearMessage() {
+                document.getElementById('paymentMsg').innerHTML = '';
+            }
+
+            // ============================================================
+            // بارگذاری اطلاعات کاربر و سبد خرید از API
+            // ============================================================
+            async function loadUserAndCart() {
+                // بررسی لاگین
+                userId = sessionStorage.getItem('current_user_id');
+                if (!userId) {
+                    // اگر کاربر لاگین نیست، به صفحه ورود هدایت کن
+                    showToast('لطفاً ابتدا وارد حساب کاربری شوید.', 'warning');
+                    setTimeout(() => {
+                        window.location.href = '../member/login.html';
+                    }, 1500);
+                    return;
+                }
+
+                try {
+                    // ۱. دریافت اطلاعات کاربر
+                    const infoRes = await fetch(`${WORKER_API}/user?userId=${userId}`);
+                    if (infoRes.ok) {
+                        userInfo = await infoRes.json();
+                        // پر کردن فیلدها
+                        document.getElementById('payerName').value = userInfo.name || '';
+                        document.getElementById('payerPhone').value = userInfo.phone || '';
+                        document.getElementById('deliveryAddress').value = (userInfo.addresses && userInfo.addresses.length > 0) ?
+                            userInfo.addresses[0] : '';
+                    } else {
+                        console.warn('⚠️ اطلاعات کاربر دریافت نشد.');
+                    }
+
+                    // ۲. دریافت سبد خرید
+                    const cartRes = await fetch(`${WORKER_API}/cart?userId=${userId}`);
+                    if (!cartRes.ok) throw new Error('خطا در دریافت سبد خرید');
+                    const cartData = await cartRes.json();
+                    cartItems = cartData.items || [];
+
+                    if (cartItems.length === 0) {
+                        document.getElementById('paymentSummary').innerHTML = `
+                            <div style="text-align:center;padding:40px 0;color:var(--text-secondary);">
+                                <i class="fas fa-shopping-cart" style="font-size:2.5rem;display:block;margin-bottom:12px;"></i>
+                                <p>سبد خرید شما خالی است.</p>
+                                <a href="../products.html" class="btn btn-primary" style="margin-top:12px;display:inline-block;">
+                                    <i class="fas fa-shopping-bag"></i> مشاهده محصولات
+                                </a>
+                            </div>
+                        `;
+                        document.getElementById('submitOrderBtn').disabled = true;
+                        return;
+                    }
+
+                    // ۳. رندر خلاصه سفارش
+                    renderSummary();
+
+                } catch (e) {
+                    console.error('❌ خطا:', e);
+                    document.getElementById('paymentSummary').innerHTML = `
+                        <div style="text-align:center;padding:30px 0;color:#ef4444;">
+                            <i class="fas fa-exclamation-circle" style="font-size:2rem;display:block;margin-bottom:8px;"></i>
+                            <p>خطا در بارگذاری اطلاعات: ${e.message}</p>
+                            <button class="btn btn-secondary" onclick="location.reload()" style="margin-top:12px;">
+                                <i class="fas fa-sync-alt"></i> تلاش مجدد
+                            </button>
+                        </div>
+                    `;
+                    document.getElementById('submitOrderBtn').disabled = true;
+                }
+            }
+
+            // ============================================================
+            // رندر خلاصه سفارش
+            // ============================================================
+            function renderSummary() {
+                const container = document.getElementById('paymentSummary');
+                if (!cartItems || cartItems.length === 0) {
+                    container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-secondary);">سبد خرید خالی است.</div>`;
+                    return;
+                }
+
+                // دریافت لیست محصولات برای قیمت‌ها (از محصولات واقعی)
+                // فعلاً از یک لیست نمونه استفاده می‌کنیم، اما بهتر است از products.json بخوانیم
+                const products = getProductList();
+
+                totalPrice = 0;
+                let html = '';
+                cartItems.forEach(item => {
+                    const product = products.find(p => p.id === item.productId);
+                    const price = product ? product.price : 0;
+                    const name = product ? product.name : item.productId;
+                    const itemTotal = price * item.quantity;
+                    totalPrice += itemTotal;
+                    html += `
+                        <div class="info-row">
+                            <span>${name} × ${item.quantity}</span>
+                            <span>${itemTotal.toLocaleString()} تومان</span>
+                        </div>
+                    `;
+                });
+
+                html += `
+                    <div class="total-row">
+                        <span>جمع کل</span>
+                        <span>${totalPrice.toLocaleString()} تومان</span>
+                    </div>
+                `;
+
+                container.innerHTML = html;
+                document.getElementById('orderCount').textContent = cartItems.length + ' محصول';
+                document.getElementById('submitOrderBtn').disabled = false;
+            }
+
+            // ============================================================
+            // دریافت لیست محصولات (موقت)
+            // ============================================================
+            function getProductList() {
+                // در حالت واقعی، این تابع باید از products.json یا API دریافت کند
+                // فعلاً یک لیست نمونه برمی‌گرداند
+                return [
+                    { id: 'PRD-0001', name: 'پایه موتور پرینتر', price: 0 },
+                    { id: 'PRD-0002', name: 'راهگاه فیلامنت', price: 50000 },
+                    { id: 'PRD-0003', name: 'پنل کنترل لمسی', price: 120000 },
+                    { id: 'PRD-0004', name: 'فایل STL گیربکس', price: 0 },
+                    { id: 'PRD-0005', name: 'نازل چندمنظوره', price: 75000 }
+                ];
+            }
+
+            // ============================================================
+            // ثبت نهایی سفارش
+            // ============================================================
+            window.finalizeOrder = async function() {
+                const btn = document.getElementById('submitOrderBtn');
+                if (btn.disabled) return;
+
+                const name = document.getElementById('payerName').value.trim();
+                const phone = document.getElementById('payerPhone').value.trim();
+                const address = document.getElementById('deliveryAddress').value.trim();
+                const notes = document.getElementById('paymentNotes').value.trim();
+
+                // اعتبارسنجی
+                if (!name || !phone) {
+                    showError('لطفاً نام و شماره تماس را وارد کنید.');
+                    return;
+                }
+
+                if (cartItems.length === 0) {
+                    showError('سبد خرید شما خالی است.');
+                    return;
+                }
+
+                // ساخت سفارش
+                const order = {
+                    id: 'ORD-' + Date.now().toString(36).toUpperCase(),
+                    date: new Date().toISOString(),
+                    userId: userId,
+                    userName: name,
+                    items: cartItems.map(item => ({
+                        productId: item.productId,
+                        productName: getProductList().find(p => p.id === item.productId)?.name || item.productId,
+                        quantity: item.quantity,
+                        price: getProductList().find(p => p.id === item.productId)?.price || 0
+                    })),
+                    total: totalPrice,
+                    address: address || userInfo?.addresses?.[0] || '---',
+                    shipping: 'پست پیشتاز', // روش ارسال پیش‌فرض
+                    notes: notes,
+                    status: 'pending',
+                    tracking: 'IR' + Date.now().toString(36).toUpperCase(),
+                    payerName: name,
+                    payerPhone: phone,
+                    createdAt: new Date().toISOString()
+                };
+
+                // غیرفعال کردن دکمه
+                btn.disabled = true;
+                btn.innerHTML = '<span class="loader-spinner"></span> در حال ثبت...';
+
+                try {
+                    // ۱. ارسال سفارش به Worker (ذخیره در D1 و گیت‌هاب)
+                    const response = await fetch(`${WORKER_API}/order`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(order)
+                    });
+
+                    if (!response.ok) {
+                        const errData = await response.json();
+                        throw new Error(errData.message || 'خطا در ثبت سفارش');
+                    }
+
+                    const result = await response.json();
+                    if (!result.success) throw new Error(result.message || 'خطا در ثبت سفارش');
+
+                    // ۲. خالی کردن سبد خرید در API
+                    await fetch(`${WORKER_API}/cart`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            userId: userId,
+                            action: 'clear'
+                        })
+                    });
+
+                    // ۳. نمایش پیام موفقیت
+                    document.getElementById('paymentSummary').innerHTML = `
+                        <div style="background:var(--secondary-color);color:#fff;padding:20px;border-radius:12px;text-align:center;">
+                            <i class="fas fa-check-circle" style="font-size:2.5rem;display:block;margin-bottom:10px;"></i>
+                            <strong style="font-size:1.2rem;">✅ سفارش شما با موفقیت ثبت شد!</strong>
+                            <br>
+                            کد پیگیری: <span style="font-weight:700;font-size:1.2rem;background:rgba(255,255,255,0.2);padding:2px 12px;border-radius:8px;">${order.id}</span>
+                            <br><small style="opacity:0.8;">ایمیل تأیید برای شما ارسال خواهد شد.</small>
+                        </div>
+                    `;
+                    document.getElementById('submitOrderBtn').style.display = 'none';
+                    document.querySelector('.payment-card-header .info-row')?.remove();
+
+                    showToast('✅ سفارش با موفقیت ثبت شد!', 'success');
+
+                    // ۴. هدایت به صفحه سفارشات بعد از ۳ ثانیه
+                    setTimeout(() => {
+                        window.location.href = `memberpage.html?tab=orders&id=${userId}`;
+                    }, 3000);
+
+                } catch (e) {
+                    console.error('❌ خطا:', e);
+                    showError(e.message || 'خطا در ثبت سفارش');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check"></i> ثبت نهایی سفارش';
+                }
+            };
+
+            // ============================================================
+            // بارگذاری اولیه
+            // ============================================================
+            document.addEventListener('DOMContentLoaded', function() {
+                loadUserAndCart();
+                console.log('✅ صفحه تسویه حساب با API Worker بارگذاری شد.');
+            });
+
+        })();
+    </script>
+
+</body>
+</html>

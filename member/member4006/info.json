@@ -1,0 +1,30 @@
+{
+  "id": "4006",
+  "username": "کیارش_رفیعی76",
+  "name": "کیارش رفیعی",
+  "email": "کیارش_رفیعی76@hotmail.com",
+  "phone": "09965385308",
+  "whatsapp": "09127661335",
+  "telegram": "@کیارش_رفیعی76",
+  "postal_code": "3281534391",
+  "addresses": [
+    "خانه|کرمانشاه، خیابان چهارباغ، پلاک 61|5437395216",
+    "کار|شیراز، خیابان طالقانی، پلاک 1|7758044378"
+  ],
+  "created": "2026-08-17",
+  "lastLogin": "2026-08-21",
+  "cart": [
+    {
+      "productId": "PRD-0005",
+      "quantity": 4
+    },
+    {
+      "productId": "PRD-0010",
+      "quantity": 1
+    }
+  ],
+  "password": "Test@1234",
+  "ordersCount": 2,
+  "cartCount": 2,
+  "addressCount": 2
+}

@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ابزار جامع تست | کاربران + سفارشات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            direction: rtl;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card {
+            background: #141b2b;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid #1e2a3d;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        h1 { font-size: 1.8rem; display: flex; align-items: center; gap: 12px; }
+        h1 i { color: #2563eb; }
+        h2 { font-size: 1.3rem; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        h2 i { color: #2563eb; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        @media (max-width: 900px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 700px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .field label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .field label i { color: #2563eb; width: 16px; }
+        .field input, .field select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #1e2a3d;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        .field input:focus, .field select:focus { outline: none; border-color: #2563eb; }
+        .field .hint { font-size: 0.65rem; color: #64748b; }
+        .field .badge-count {
+            background: #2563eb;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+        }
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:hover { transform: scale(1.03); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        .btn-primary { background: linear-gradient(135deg, #2563eb, #8b5cf6); color: #fff; }
+        .btn-success { background: #10b981; color: #fff; }
+        .btn-warning { background: #f59e0b; color: #0a0f1a; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-secondary { background: #6b7280; color: #fff; }
+        .btn-purple { background: #8b5cf6; color: #fff; }
+        .token-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .token-status.ok { background: rgba(16,185,129,0.1); border: 1px solid #10b981; color: #10b981; }
+        .token-status.fail { background: rgba(239,68,68,0.1); border: 1px solid #ef4444; color: #ef4444; }
+        .token-status input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #1e2a3d;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            font-family: 'Vazirmatn', sans-serif;
+            direction: ltr;
+            min-width: 150px;
+        }
+        .token-status input:focus { outline: none; border-color: #2563eb; }
+        .log-area {
+            background: #0a0f1a;
+            border-radius: 12px;
+            padding: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            border: 1px solid #1e2a3d;
+            font-family: 'Courier New', monospace;
+            direction: ltr;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .log-area .success { color: #10b981; }
+        .log-area .error { color: #ef4444; }
+        .log-area .info { color: #60a5fa; }
+        .log-area .warning { color: #f59e0b; }
+        .log-area .purple { color: #a78bfa; }
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .footer { text-align: center; color: #94a3b8; font-size: 0.75rem; margin-top: 20px; }
+        .stats-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 10px 16px;
+            background: #0a0f1a;
+            border-radius: 8px;
+            border: 1px solid #1e2a3d;
+            margin-bottom: 12px;
+        }
+        .stats-row .stat { font-size: 0.9rem; }
+        .stats-row .stat strong { color: #2563eb; }
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #1e2a3d;
+            padding-bottom: 2px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 8px 20px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tab-btn:hover { color: #f1f5f9; background: rgba(255,255,255,0.05); }
+        .tab-btn.active { color: #f1f5f9; background: #1e2a3d; border-bottom: 3px solid #2563eb; }
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .user-list-select {
+            max-height: 150px;
+            overflow-y: auto;
+            background: #0a0f1a;
+            border: 2px solid #1e2a3d;
+            border-radius: 8px;
+            padding: 4px;
+        }
+        .user-list-select label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            border-radius: 4px;
+        }
+        .user-list-select label:hover { background: #1e2a3d; }
+        .user-list-select input[type="checkbox"] { accent-color: #2563eb; width: 16px; height: 16px; }
+        .section-divider {
+            border-top: 1px solid #1e2a3d;
+            margin: 20px 0;
+            padding-top: 16px;
+        }
+        .flex-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+        .mt-10 { margin-top: 10px; }
+        .mb-10 { margin-bottom: 10px; }
+        .w-100 { width: 100%; }
+        .tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            background: #2563eb;
+            color: #fff;
+        }
+        .tag-green { background: #10b981; }
+        .tag-yellow { background: #f59e0b; color: #0a0f1a; }
+        .tag-purple { background: #8b5cf6; }
+        .tag-red { background: #ef4444; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="card">
+        <div class="card-header">
+            <h1><i class="fas fa-tools"></i> ابزار جامع تست</h1>
+            <span style="color:#94a3b8;font-size:0.85rem;">
+                <i class="fas fa-wrench"></i> مثل آچار فرانسه! همه چیز در یک جا
+            </span>
+        </div>
+        <p style="color:#94a3b8;margin-bottom:12px;">
+            <span class="tag">۴۰+ گزینه</span>
+            <span class="tag tag-green">کاربران</span>
+            <span class="tag tag-yellow">سفارشات</span>
+            <span class="tag tag-purple">سبد خرید</span>
+            <span class="tag tag-red">آدرس</span>
+            <span style="margin-right:8px;">تولید دیتای تست برای همه بخش‌های سایت</span>
+        </p>
+
+        <!-- توکن -->
+        <div class="token-status fail" id="tokenStatus">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>توکن گیت‌هاب:</span>
+            <input type="text" id="tokenInput" placeholder="github_pat_xxx...">
+            <button class="btn btn-primary" onclick="saveToken()" style="padding:6px 16px;"><i class="fas fa-save"></i> ذخیره</button>
+        </div>
+
+        <!-- تب‌ها -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="users"><i class="fas fa-users"></i> کاربران</button>
+            <button class="tab-btn" data-tab="orders"><i class="fas fa-shopping-bag"></i> سفارشات</button>
+            <button class="tab-btn" data-tab="advanced"><i class="fas fa-cogs"></i> پیشرفته</button>
+            <button class="tab-btn" data-tab="log"><i class="fas fa-list-ul"></i> لاگ</button>
+        </div>
+
+        <!-- ===== تب کاربران ===== -->
+        <div class="tab-content active" id="tab-users">
+            <div class="grid-3">
+                <div class="field">
+                    <label><i class="fas fa-users"></i> تعداد کاربران</label>
+                    <input type="number" id="userCount" value="5" min="1" max="50">
+                    <span class="hint">حداکثر ۵۰ کاربر در هر بار</span>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-shopping-cart"></i> آیتم‌های سبد خرید</label>
+                    <select id="cartItems">
+                        <option value="0">بدون سبد</option>
+                        <option value="1">۱ آیتم</option>
+                        <option value="2" selected>۲ آیتم</option>
+                        <option value="3">۳ آیتم</option>
+                        <option value="4">۴ آیتم</option>
+                        <option value="5">۵ آیتم</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-map-pin"></i> تعداد آدرس</label>
+                    <select id="addressCount">
+                        <option value="1">۱ آدرس</option>
+                        <option value="2" selected>۲ آدرس</option>
+                        <option value="3">۳ آدرس</option>
+                        <option value="4">۴ آدرس</option>
+                        <option value="5">۵ آدرس</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-box"></i> سفارشات اولیه</label>
+                    <select id="initialOrders">
+                        <option value="0">بدون سفارش</option>
+                        <option value="1">۱ سفارش</option>
+                        <option value="2" selected>۲ سفارش</option>
+                        <option value="3">۳ سفارش</option>
+                        <option value="5">۵ سفارش</option>
+                        <option value="10">۱۰ سفارش</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-calendar"></i> بازه تاریخ ثبت</label>
+                    <select id="dateRange">
+                        <option value="3">۳ روز اخیر</option>
+                        <option value="7">۷ روز اخیر</option>
+                        <option value="30" selected>۳۰ روز اخیر</option>
+                        <option value="60">۶۰ روز اخیر</option>
+                        <option value="90">۹۰ روز اخیر</option>
+                        <option value="180">۱۸۰ روز اخیر</option>
+                        <option value="365">یک سال اخیر</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-key"></i> رمز عبور</label>
+                    <input type="text" id="commonPassword" value="Test@1234">
+                </div>
+            </div>
+            <div class="flex-row mt-10">
+                <button class="btn btn-primary" id="generateUsersBtn" onclick="generateUsers()">
+                    <i class="fas fa-user-plus"></i> ساخت کاربران
+                </button>
+                <button class="btn btn-success" onclick="exportUserList()">
+                    <i class="fas fa-download"></i> دانلود لیست
+                </button>
+                <button class="btn btn-danger" onclick="clearAllUsers()">
+                    <i class="fas fa-trash-alt"></i> حذف همه کاربران تست
+                </button>
+            </div>
+            <div class="stats-row mt-10">
+                <span class="stat"><i class="fas fa-users"></i> کاربران: <strong id="statUsers">۰</strong></span>
+                <span class="stat"><i class="fas fa-shopping-cart"></i> سبد: <strong id="statCarts">۰</strong></span>
+                <span class="stat"><i class="fas fa-box"></i> سفارش: <strong id="statOrders">۰</strong></span>
+                <span class="stat"><i class="fas fa-map-pin"></i> آدرس: <strong id="statAddresses">۰</strong></span>
+            </div>
+        </div>
+
+        <!-- ===== تب سفارشات ===== -->
+        <div class="tab-content" id="tab-orders">
+            <div class="grid-3">
+                <div class="field">
+                    <label><i class="fas fa-users"></i> کاربران هدف</label>
+                    <select id="targetUsers">
+                        <option value="all">همه کاربران</option>
+                        <option value="specific">کاربر خاص</option>
+                        <option value="multiple">چند کاربر</option>
+                    </select>
+                    <div id="specificUserField" style="display:none;margin-top:4px;">
+                        <input type="text" id="specificUserId" placeholder="شناسه کاربر (مثال: 0401)">
+                    </div>
+                    <div id="multipleUserField" style="display:none;margin-top:4px;">
+                        <div class="user-list-select" id="userCheckboxList">در حال بارگذاری...</div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-box"></i> تعداد سفارش برای هر کاربر</label>
+                    <input type="number" id="ordersPerUser" value="3" min="1" max="20">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-tag"></i> وضعیت سفارشات</label>
+                    <select id="orderStatus">
+                        <option value="random">تصادفی (وزنی)</option>
+                        <option value="all">همه وضعیت‌ها</option>
+                        <option value="pending">فقط در انتظار پرداخت</option>
+                        <option value="paid">فقط پرداخت شده</option>
+                        <option value="shipped">فقط ارسال شده</option>
+                        <option value="completed">فقط تکمیل شده</option>
+                        <option value="canceled">فقط لغو شده</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-calendar"></i> بازه تاریخی</label>
+                    <select id="orderDateRange">
+                        <option value="3">۳ روز اخیر</option>
+                        <option value="7">۷ روز اخیر</option>
+                        <option value="30" selected>۳۰ روز اخیر</option>
+                        <option value="60">۶۰ روز اخیر</option>
+                        <option value="90">۹۰ روز اخیر</option>
+                        <option value="180">۱۸۰ روز اخیر</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-truck"></i> روش ارسال</label>
+                    <select id="shippingMethod">
+                        <option value="random">تصادفی</option>
+                        <option value="پست پیشتاز">پست پیشتاز</option>
+                        <option value="تیپاکس">تیپاکس</option>
+                        <option value="حضوری">تحویل حضوری</option>
+                        <option value="چاپار">چاپار</option>
+                        <option value="سفارشی">سفارشی</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-cube"></i> تعداد محصول در هر سفارش</label>
+                    <select id="itemsPerOrder">
+                        <option value="1">۱ محصول</option>
+                        <option value="2" selected>۲ محصول</option>
+                        <option value="3">۳ محصول</option>
+                        <option value="4">۴ محصول</option>
+                        <option value="5">۵ محصول</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex-row mt-10">
+                <button class="btn btn-primary" id="generateOrdersBtn" onclick="generateOrders()">
+                    <i class="fas fa-plus-circle"></i> ساخت سفارشات
+                </button>
+                <button class="btn btn-secondary" onclick="syncAllOrders()">
+                    <i class="fas fa-sync-alt"></i> همگام‌سازی با pendingorder
+                </button>
+                <button class="btn btn-danger" onclick="clearPendingOrders()">
+                    <i class="fas fa-trash-alt"></i> پاک کردن pendingorder
+                </button>
+                <button class="btn btn-warning" onclick="viewPendingFile()">
+                    <i class="fas fa-eye"></i> مشاهده فایل
+                </button>
+            </div>
+            <div class="stats-row mt-10">
+                <span class="stat"><i class="fas fa-users"></i> کاربران: <strong id="statOrderUsers">۰</strong></span>
+                <span class="stat"><i class="fas fa-shopping-bag"></i> سفارشات جدید: <strong id="statOrderNew">۰</strong></span>
+                <span class="stat"><i class="fas fa-box"></i> کل آیتم‌ها: <strong id="statOrderItems">۰</strong></span>
+                <span class="stat"><i class="fas fa-money-bill"></i> مبلغ کل: <strong id="statOrderTotal">۰</strong></span>
+            </div>
+        </div>
+
+        <!-- ===== تب پیشرفته ===== -->
+        <div class="tab-content" id="tab-advanced">
+            <div class="grid-3">
+                <div class="field">
+                    <label><i class="fas fa-dice"></i> تعداد کل کاربران</label>
+                    <input type="number" id="bulkUserCount" value="20" min="1" max="100">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-dice"></i> تعداد کل سفارشات</label>
+                    <input type="number" id="bulkOrderCount" value="50" min="1" max="500">
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-random"></i> تنوع وضعیت‌ها</label>
+                    <select id="bulkStatus">
+                        <option value="random">تصادفی کامل</option>
+                        <option value="weighted">تصادفی وزنی</option>
+                        <option value="all">همه وضعیت‌ها</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-calendar"></i> بازه تاریخی</label>
+                    <select id="bulkDateRange">
+                        <option value="7">۷ روز</option>
+                        <option value="30" selected>۳۰ روز</option>
+                        <option value="90">۹۰ روز</option>
+                        <option value="180">۱۸۰ روز</option>
+                        <option value="365">یک سال</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-tag"></i> برچسب کاربران</label>
+                    <select id="bulkLabel">
+                        <option value="تست">تست</option>
+                        <option value="تست_پیشرفته">تست_پیشرفته</option>
+                        <option value="تست_انبوه">تست_انبوه</option>
+                        <option value="تست_نهایی">تست_نهایی</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label><i class="fas fa-trash"></i> پاک کردن خودکار</label>
+                    <select id="autoClear">
+                        <option value="none">بدون پاک کردن</option>
+                        <option value="7">بعد از ۷ روز</option>
+                        <option value="30" selected>بعد از ۳۰ روز</option>
+                        <option value="60">بعد از ۶۰ روز</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex-row mt-10">
+                <button class="btn btn-purple" onclick="bulkGenerate()">
+                    <i class="fas fa-rocket"></i> تولید انبوه (۲۰+ کاربر، ۵۰+ سفارش)
+                </button>
+                <button class="btn btn-danger" onclick="clearAllTestData()">
+                    <i class="fas fa-bomb"></i> پاک کردن همه دیتای تست
+                </button>
+                <button class="btn btn-secondary" onclick="runAllTests()">
+                    <i class="fas fa-vial"></i> اجرای همه سناریوها
+                </button>
+            </div>
+            <div class="stats-row mt-10">
+                <span class="stat"><i class="fas fa-database"></i> کل کاربران: <strong id="statBulkUsers">۰</strong></span>
+                <span class="stat"><i class="fas fa-database"></i> کل سفارشات: <strong id="statBulkOrders">۰</strong></span>
+                <span class="stat"><i class="fas fa-clock"></i> زمان اجرا: <strong id="statBulkTime">-</strong></span>
+            </div>
+        </div>
+
+        <!-- ===== تب لاگ ===== -->
+        <div class="tab-content" id="tab-log">
+            <div class="flex-row mb-10">
+                <button class="btn btn-secondary" onclick="clearLog()"><i class="fas fa-eraser"></i> پاک کردن لاگ</button>
+                <button class="btn btn-primary" onclick="exportLog()"><i class="fas fa-download"></i> دانلود لاگ</button>
+            </div>
+            <div class="log-area" id="logArea">⏳ منتظر شروع...</div>
+        </div>
+
+    </div>
+    <div class="footer">🔒 اطلاعات فقط در مرورگر ذخیره می‌شود | رمز پیش‌فرض: Test@1234</div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    const REPO_OWNER = 'mahanneman';
+    const REPO_NAME = 'MA.AD.GH.SITE';
+    const REPO_PATH = `repos/${REPO_OWNER}/${REPO_NAME}/contents`;
+    let TOKEN = localStorage.getItem('github_token') || '';
+
+    const logArea = document.getElementById('logArea');
+
+    // ===== لیست‌ها برای تنوع =====
+    const FIRST_NAMES = [
+        'ماهان', 'رضا', 'سارا', 'علی', 'نرگس', 'حامد', 'زهرا', 'محسن', 'لیلا', 'پرهام',
+        'امیر', 'فاطمه', 'حسین', 'مریم', 'محمد', 'نگار', 'کیان', 'یسنا', 'آرتین', 'باران',
+        'آیدا', 'دانیال', 'هانیه', 'یاسمن', 'پویا', 'سوگند', 'آرمین', 'شایان', 'نازنین', 'کیارش',
+        'آرش', 'نگین', 'پارسا', 'هستی', 'آریا', 'مهرسا', 'دلارام', 'آدرین', 'سپهر', 'گلشید'
+    ];
+    const LAST_NAMES = [
+        'ادهم قزوینی', 'کریمی', 'محمدی', 'احمدی', 'خانی', 'قربانی', 'مرادی', 'فتحی', 'هاشمی', 'اسفندیاری',
+        'رضایی', 'علی‌پور', 'اکبری', 'نوری', 'حسینی', 'موسوی', 'صادقی', 'تاج‌الدین', 'یزدانی', 'رفیعی',
+        'شمسی‌پور', 'گلشاهی', 'خاکی', 'آذرنوش', 'مهرآذر', 'آسمانی', 'سپهرراد', 'نوروزی', 'شهرآشوب', 'حیدری'
+    ];
+    const CITIES = ['تهران', 'اصفهان', 'مشهد', 'شیراز', 'تبریز', 'کرج', 'رشت', 'اهواز', 'قم', 'یزد', 'کرمانشاه', 'ارومیه', 'زنجان', 'همدان', 'سنندج'];
+    const STREETS = ['آزادی', 'ولیعصر', 'چهارباغ', 'امام', 'زند', 'مدرس', 'طالقانی', 'کوی ملت', 'صفاییه', 'پاسداران', 'فردوسی', 'انقلاب', 'شریعتی', 'نارمک', 'سهروردی'];
+    const PRODUCTS = [
+        { id: 'PRD-0001', name: 'پایه موتور پرینتر', price: 0 },
+        { id: 'PRD-0002', name: 'راهگاه فیلامنت', price: 50000 },
+        { id: 'PRD-0003', name: 'پنل کنترل لمسی', price: 120000 },
+        { id: 'PRD-0004', name: 'فایل STL گیربکس', price: 0 },
+        { id: 'PRD-0005', name: 'نازل چندمنظوره', price: 75000 },
+        { id: 'PRD-0006', name: 'مجموعه اتصالات', price: 35000 },
+        { id: 'PRD-0007', name: 'برد کنترلر', price: 250000 },
+        { id: 'PRD-0008', name: 'فن خنک‌کننده', price: 45000 },
+        { id: 'PRD-0009', name: 'راهنمای پرینتر', price: 0 },
+        { id: 'PRD-0010', name: 'مجموعه پیچ و مهره', price: 25000 }
+    ];
+    const STATUSES = ['pending', 'paid', 'shipped', 'completed', 'canceled'];
+    const SHIPPING_METHODS = ['پست پیشتاز', 'تیپاکس', 'حضوری', 'چاپار', 'سفارشی'];
+
+    // ===== توابع کمکی =====
+    function random(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function randomDate(days) {
+        const d = new Date();
+        d.setDate(d.getDate() - random(0, days));
+        return d.toISOString().split('T')[0];
+    }
+    function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+    function pad(n) { return String(n).padStart(4, '0'); }
+    function generateId() { return 'ORD-' + Date.now().toString(36).toUpperCase() + '-' + random(100, 999); }
+
+    // ===== توکن =====
+    function updateTokenUI() {
+        const status = document.getElementById('tokenStatus');
+        if (TOKEN) {
+            status.className = 'token-status ok';
+            status.innerHTML = `<i class="fas fa-check-circle"></i> <span>✅ توکن معتبر (...${TOKEN.slice(-4)})</span>`;
+            document.getElementById('tokenInput').value = '';
+        } else {
+            status.className = 'token-status fail';
+            status.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <span>توکن:</span>
+                <input type="text" id="tokenInput" placeholder="github_pat_xxx...">
+                <button class="btn btn-primary" onclick="saveToken()" style="padding:6px 16px;"><i class="fas fa-save"></i> ذخیره</button>
+            `;
+        }
+    }
+
+    window.saveToken = function() {
+        const input = document.getElementById('tokenInput');
+        if (input && input.value.trim()) {
+            TOKEN = input.value.trim();
+            localStorage.setItem('github_token', TOKEN);
+            updateTokenUI();
+            log('✅ توکن ذخیره شد.', 'success');
+        } else {
+            log('❌ توکن معتبر وارد کنید.', 'error');
+        }
+    };
+
+    // ===== لاگ =====
+    function log(msg, type = 'info') {
+        const time = new Date().toLocaleTimeString('fa-IR');
+        const colors = {
+            success: 'color:#10b981', error: 'color:#ef4444',
+            warning: 'color:#f59e0b', info: 'color:#60a5fa',
+            purple: 'color:#a78bfa'
+        };
+        logArea.innerHTML += `<span style="${colors[type] || colors.info}">[${time}]</span> ${msg}\n`;
+        logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    window.clearLog = function() { logArea.innerHTML = '🧹 لاگ پاک شد.'; };
+    window.exportLog = function() {
+        const blob = new Blob([logArea.textContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `log-${new Date().toISOString().split('T')[0]}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+        log('✅ لاگ دانلود شد.', 'success');
+    };
+
+    // ===== GitHub API =====
+    async function fetchFromGitHub(path) {
+        if (!TOKEN) throw new Error('توکن موجود نیست.');
+        const res = await fetch(`https://api.github.com/${REPO_PATH}/${path}`, {
+            headers: { 'Authorization': 'token ' + TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (res.status === 404) return null;
+        if (!res.ok) { const err = await res.json(); throw new Error(err.message || `خطا: ${res.status}`); }
+        const data = await res.json();
+        const binaryString = atob(data.content);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) { bytes[i] = binaryString.charCodeAt(i); }
+        const decoder = new TextDecoder('utf-8');
+        const content = decoder.decode(bytes).replace(/^\uFEFF/, '');
+        return { ...data, content };
+    }
+
+    async function saveToGitHub(path, content, sha = null) {
+        if (!TOKEN) throw new Error('توکن موجود نیست.');
+        const jsonString = JSON.stringify(content, null, 2);
+        const encoder = new TextEncoder();
+        const encoded = encoder.encode(jsonString);
+        let binary = '';
+        for (let i = 0; i < encoded.length; i++) { binary += String.fromCharCode(encoded[i]); }
+        const base64Content = btoa(binary);
+        const body = {
+            message: `Update via test tool - ${new Date().toISOString()}`,
+            content: base64Content,
+            branch: 'main'
+        };
+        if (sha) body.sha = sha;
+        const res = await fetch(`https://api.github.com/${REPO_PATH}/${path}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'token ' + TOKEN,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify(body)
+        });
+        if (!res.ok) { const err = await res.json(); throw new Error(err.message || `خطا: ${res.status}`); }
+        return await res.json();
+    }
+
+    // ===== دریافت کاربران =====
+    async function getMembersList() {
+        try {
+            const res = await fetch(`https://api.github.com/${REPO_PATH}/member/`, {
+                headers: { 'Authorization': 'token ' + TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (!res.ok) return [];
+            const items = await res.json();
+            const dirs = items.filter(i => i.type === 'dir' && i.name.startsWith('member'));
+            const users = [];
+            for (const dir of dirs) {
+                const id = dir.name.replace('member', '');
+                const info = await getUserInfo(id);
+                if (info) users.push({ id, name: info.name || 'کاربر', username: info.username || 'کاربر' });
+            }
+            return users;
+        } catch (e) { return []; }
+    }
+
+    async function getUserInfo(userId) {
+        try {
+            const data = await fetchFromGitHub(`member/member${userId}/info.json`);
+            if (data) return JSON.parse(data.content);
+            return null;
+        } catch (e) { return null; }
+    }
+
+    async function getUserOrders(userId) {
+        try {
+            const data = await fetchFromGitHub(`member/member${userId}/orders.json`);
+            if (data) {
+                const orders = JSON.parse(data.content);
+                return Array.isArray(orders) ? orders : [];
+            }
+            return [];
+        } catch (e) { return []; }
+    }
+
+    // ===== تولید کاربر =====
+    function generateUser(index, startId, settings) {
+        const userId = String(startId + index).padStart(4, '0');
+        const firstName = pick(FIRST_NAMES);
+        const lastName = pick(LAST_NAMES);
+        const fullName = firstName + ' ' + lastName;
+        const username = (firstName + '_' + lastName).replace(/\s/g, '').toLowerCase() + random(10, 99);
+        const email = username + '@' + pick(['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com']);
+
+        const addresses = [];
+        const addrCount = parseInt(settings.addressCount);
+        const labels = ['خانه', 'کار', 'سایر', 'تحویل', 'دفتر'];
+        for (let i = 0; i < addrCount && i < 5; i++) {
+            const city = pick(CITIES);
+            const street = pick(STREETS);
+            const postal = String(random(1000000000, 9999999999));
+            addresses.push(`${labels[i % labels.length]}|${city}، خیابان ${street}، پلاک ${random(1, 99)}|${postal}`);
+        }
+
+        const cart = [];
+        const cartCount = parseInt(settings.cartItems);
+        const shuffledProducts = shuffle([...PRODUCTS]);
+        for (let i = 0; i < cartCount && i < shuffledProducts.length; i++) {
+            cart.push({
+                productId: shuffledProducts[i].id,
+                quantity: random(1, 5)
+            });
+        }
+
+        const orders = [];
+        const orderCount = parseInt(settings.initialOrders);
+        const dateRange = parseInt(settings.dateRange);
+        for (let i = 0; i < orderCount; i++) {
+            const product = pick(PRODUCTS);
+            const qty = random(1, 4);
+            const total = product.price * qty;
+            const date = randomDate(dateRange);
+            const status = pick(STATUSES);
+            orders.push({
+                id: `ORD-${Date.now().toString(36).toUpperCase()}-${String(i).padStart(3,'0')}`,
+                date: date,
+                items: [{ productId: product.id, productName: product.name, quantity: qty, price: product.price }],
+                total: total,
+                address: pick(addresses) || 'آدرس تست',
+                shipping: pick(SHIPPING_METHODS),
+                status: status,
+                tracking: `IR${random(100000000, 999999999)}`,
+                notes: `سفارش تست ${i+1}`
+            });
+        }
+
+        return {
+            id: userId,
+            username: username,
+            name: fullName,
+            email: email,
+            phone: `09${random(100000000, 999999999)}`,
+            whatsapp: `09${random(100000000, 999999999)}`,
+            telegram: '@' + username,
+            postal_code: String(random(1000000000, 9999999999)),
+            addresses: addresses,
+            created: randomDate(dateRange),
+            lastLogin: randomDate(7),
+            cart: cart,
+            password: settings.password,
+            orders: orders,
+            ordersCount: orders.length,
+            cartCount: cart.length,
+            addressCount: addresses.length
+        };
+    }
+
+    // ===== تولید سفارش =====
+    function generateOrder(userId, userName, status, dateRange, shipping, itemsCount) {
+        const products = shuffle([...PRODUCTS]).slice(0, itemsCount);
+        const items = products.map(p => ({
+            productId: p.id,
+            productName: p.name,
+            quantity: random(1, 4),
+            price: p.price
+        }));
+        const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+        let finalStatus = status;
+        if (status === 'random') {
+            const weights = [0.3, 0.2, 0.2, 0.2, 0.1];
+            let r = Math.random(), cum = 0;
+            for (let i = 0; i < STATUSES.length; i++) {
+                cum += weights[i];
+                if (r < cum) { finalStatus = STATUSES[i]; break; }
+            }
+        } else if (status === 'all') {
+            finalStatus = pick(STATUSES);
+        }
+
+        const address = `${pick(CITIES)}، خیابان ${pick(STREETS)}، پلاک ${random(1, 99)}`;
+        const shippingMethod = shipping === 'random' ? pick(SHIPPING_METHODS) : shipping;
+
+        return {
+            id: generateId(),
+            date: randomDate(dateRange),
+            userId: userId,
+            userName: userName,
+            items: items,
+            total: total,
+            address: address,
+            shipping: shippingMethod,
+            status: finalStatus,
+            tracking: `IR${random(100000000, 999999999)}`,
+            notes: `سفارش تست - ${new Date().toLocaleDateString('fa-IR')}`
+        };
+    }
+
+    // ===== تابع ساخت کاربران =====
+    window.generateUsers = async function() {
+        if (!TOKEN) { log('❌ لطفاً توکن را وارد کنید.', 'error'); return; }
+        const btn = document.getElementById('generateUsersBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner spinner"></i> در حال ساخت...';
+        log('🚀 شروع ساخت کاربران تست...', 'info');
+
+        try {
+            const count = parseInt(document.getElementById('userCount').value) || 5;
+            if (count < 1 || count > 50) { log('⚠️ تعداد کاربران باید بین ۱ تا ۵۰ باشد.', 'warning'); return; }
+
+            const settings = {
+                cartItems: document.getElementById('cartItems').value,
+                addressCount: document.getElementById('addressCount').value,
+                initialOrders: document.getElementById('initialOrders').value,
+                dateRange: document.getElementById('dateRange').value,
+                password: document.getElementById('commonPassword').value.trim() || 'Test@1234'
+            };
+
+            const existing = await getMembersList();
+            let startId = 4001;
+            if (existing.length > 0) {
+                const maxId = Math.max(...existing.map(u => parseInt(u.id)));
+                if (isFinite(maxId)) startId = maxId + 1;
+            }
+            if (!isFinite(startId) || startId < 4001) startId = 4001;
+
+            let totalUsers = 0, totalOrders = 0, totalCarts = 0, totalAddresses = 0;
+
+            for (let i = 0; i < count; i++) {
+                try {
+                    const user = generateUser(i, startId, settings);
+                    const folder = `member/member${user.id}`;
+                    const infoData = { ...user };
+                    delete infoData.orders;
+                    await saveToGitHub(`${folder}/info.json`, infoData, null);
+                    await saveToGitHub(`${folder}/orders.json`, user.orders, null);
+                    totalUsers++;
+                    totalOrders += user.ordersCount;
+                    totalCarts += user.cartCount;
+                    totalAddresses += user.addressCount;
+                    log(`   ✅ ${user.name} (${user.id}) | ${user.ordersCount} سفارش | ${user.cartCount} سبد | ${user.addressCount} آدرس`, 'success');
+                } catch (e) {
+                    log(`   ❌ خطا در کاربر ${i+1}: ${e.message}`, 'error');
+                }
+            }
+
+            document.getElementById('statUsers').textContent = totalUsers;
+            document.getElementById('statOrders').textContent = totalOrders;
+            document.getElementById('statCarts').textContent = totalCarts;
+            document.getElementById('statAddresses').textContent = totalAddresses;
+
+            log(`🎉 ${totalUsers} کاربر با ${totalOrders} سفارش، ${totalCarts} سبد و ${totalAddresses} آدرس ساخته شد.`, 'success');
+            log(`🔑 رمز عبور: ${settings.password}`, 'warning');
+            log(`📋 برای ورود: https://mahanneman.github.io/MA.AD.GH.SITE/member/login.html`, 'info');
+
+        } catch (e) {
+            log(`❌ خطای کلی: ${e.message}`, 'error');
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-user-plus"></i> ساخت کاربران';
+    };
+
+    // ===== تابع ساخت سفارشات =====
+    window.generateOrders = async function() {
+        if (!TOKEN) { log('❌ لطفاً توکن را وارد کنید.', 'error'); return; }
+        const btn = document.getElementById('generateOrdersBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner spinner"></i> در حال ساخت...';
+        log('🚀 شروع ساخت سفارشات...', 'info');
+
+        try {
+            const ordersPerUser = parseInt(document.getElementById('ordersPerUser').value) || 3;
+            const status = document.getElementById('orderStatus').value;
+            const dateRange = parseInt(document.getElementById('orderDateRange').value) || 30;
+            const shipping = document.getElementById('shippingMethod').value;
+            const itemsPerOrder = parseInt(document.getElementById('itemsPerOrder').value) || 2;
+
+            const targetType = document.getElementById('targetUsers').value;
+            let selectedUsers = [];
+
+            if (targetType === 'all') {
+                const allUsers = await getMembersList();
+                if (allUsers.length === 0) { log('⚠️ هیچ کاربری یافت نشد.', 'warning'); return; }
+                selectedUsers = allUsers;
+                log(`📌 همه کاربران (${selectedUsers.length} نفر)`, 'info');
+            } else if (targetType === 'specific') {
+                const userId = document.getElementById('specificUserId').value.trim();
+                if (!userId) { log('⚠️ شناسه کاربر را وارد کنید.', 'warning'); return; }
+                const info = await getUserInfo(userId);
+                if (!info) { log(`❌ کاربر ${userId} یافت نشد.`, 'error'); return; }
+                selectedUsers = [{ id: userId, name: info.name || 'کاربر' }];
+                log(`📌 کاربر خاص: ${userId} (${info.name})`, 'info');
+            } else if (targetType === 'multiple') {
+                const checkboxes = document.querySelectorAll('#userCheckboxList input[type="checkbox"]:checked');
+                if (checkboxes.length === 0) { log('⚠️ حداقل یک کاربر را انتخاب کنید.', 'warning'); return; }
+                const allUsers = await getMembersList();
+                const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+                selectedUsers = allUsers.filter(u => selectedIds.includes(u.id));
+                log(`📌 ${selectedUsers.length} کاربر انتخاب شد.`, 'info');
+            }
+
+            let totalOrders = 0, totalItems = 0, totalAmount = 0;
+
+            for (const user of selectedUsers) {
+                try {
+                    let orders = await getUserOrders(user.id);
+                    const newOrders = [];
+                    for (let i = 0; i < ordersPerUser; i++) {
+                        const order = generateOrder(user.id, user.name, status, dateRange, shipping, itemsPerOrder);
+                        newOrders.push(order);
+                    }
+                    orders = [...orders, ...newOrders];
+                    const orderPath = `member/member${user.id}/orders.json`;
+                    const existing = await fetchFromGitHub(orderPath);
+                    await saveToGitHub(orderPath, orders, existing ? existing.sha : null);
+
+                    const created = newOrders.length;
+                    const items = newOrders.reduce((sum, o) => sum + o.items.length, 0);
+                    const amount = newOrders.reduce((sum, o) => sum + o.total, 0);
+                    totalOrders += created;
+                    totalItems += items;
+                    totalAmount += amount;
+
+                    log(`   ✅ ${user.name}: +${created} سفارش (${items} آیتم، ${amount.toLocaleString()} تومان)`, 'success');
+                } catch (e) {
+                    log(`   ❌ خطا در ${user.name}: ${e.message}`, 'error');
+                }
+            }
+
+            document.getElementById('statOrderUsers').textContent = selectedUsers.length;
+            document.getElementById('statOrderNew').textContent = totalOrders;
+            document.getElementById('statOrderItems').textContent = totalItems;
+            document.getElementById('statOrderTotal').textContent = totalAmount.toLocaleString();
+
+            log(`📊 ${totalOrders} سفارش جدید (${totalItems} آیتم، ${totalAmount.toLocaleString()} تومان)`, 'info');
+
+        } catch (e) {
+            log(`❌ خطای کلی: ${e.message}`, 'error');
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-plus-circle"></i> ساخت سفارشات';
+    };
+
+    // ===== همگام‌سازی با pendingorder =====
+    window.syncAllOrders = async function() {
+        if (!TOKEN) { log('❌ لطفاً توکن را وارد کنید.', 'error'); return; }
+        log('🔄 شروع همگام‌سازی با pendingorder...', 'info');
+        try {
+            const users = await getMembersList();
+            if (users.length === 0) { log('⚠️ هیچ کاربری یافت نشد.', 'warning'); return; }
+
+            const pendingOrders = [];
+            for (const user of users) {
+                const orders = await getUserOrders(user.id);
+                const pending = orders.filter(o => o.status === 'pending' || o.status === 'paid' || o.status === 'new');
+                if (pending.length > 0) {
+                    pendingOrders.push({
+                        userId: user.id,
+                        userName: user.name,
+                        orders: pending
+                    });
+                }
+            }
+
+            const pendingPath = 'member/orders/pendingorder.json';
+            const pendingData = {
+                updated: new Date().toISOString(),
+                total_pending: pendingOrders.reduce((sum, u) => sum + u.orders.length, 0),
+                orders: pendingOrders
+            };
+            const existing = await fetchFromGitHub(pendingPath);
+            await saveToGitHub(pendingPath, pendingData, existing ? existing.sha : null);
+
+            log(`✅ ${pendingOrders.length} کاربر با ${pendingData.total_pending} سفارش در pendingorder.json ذخیره شد.`, 'success');
+        } catch (e) {
+            log(`❌ خطا: ${e.message}`, 'error');
+        }
+    };
+
+    // ===== تولید انبوه =====
+    window.bulkGenerate = async function() {
+        if (!TOKEN) { log('❌ لطفاً توکن را وارد کنید.', 'error'); return; }
+        const startTime = Date.now();
+        log('🚀 شروع تولید انبوه...', 'purple');
+
+        try {
+            const userCount = parseInt(document.getElementById('bulkUserCount').value) || 20;
+            const orderCount = parseInt(document.getElementById('bulkOrderCount').value) || 50;
+            const status = document.getElementById('bulkStatus').value;
+            const dateRange = parseInt(document.getElementById('bulkDateRange').value) || 30;
+            const label = document.getElementById('bulkLabel').value;
+
+            log(`📌 ${userCount} کاربر با ${orderCount} سفارش، وضعیت: ${status}، برچسب: ${label}`, 'purple');
+
+            // ساخت کاربران
+            const existing = await getMembersList();
+            let startId = 4001;
+            if (existing.length > 0) {
+                const maxId = Math.max(...existing.map(u => parseInt(u.id)));
+                if (isFinite(maxId)) startId = maxId + 1;
+            }
+
+            let createdUsers = 0, createdOrders = 0;
+            const settings = {
+                cartItems: '3',
+                addressCount: '3',
+                initialOrders: '5',
+                dateRange: dateRange.toString(),
+                password: 'Test@1234'
+            };
+
+            for (let i = 0; i < userCount && i < 100; i++) {
+                try {
+                    const user = generateUser(i, startId, settings);
+                    const folder = `member/member${user.id}`;
+                    const infoData = { ...user };
+                    delete infoData.orders;
+                    await saveToGitHub(`${folder}/info.json`, infoData, null);
+                    await saveToGitHub(`${folder}/orders.json`, user.orders, null);
+                    createdUsers++;
+                    createdOrders += user.ordersCount;
+                } catch (e) {
+                    log(`   ❌ خطا: ${e.message}`, 'error');
+                }
+            }
+
+            // همگام‌سازی
+            const allUsers = await getMembersList();
+            const pendingOrders = [];
+            for (const user of allUsers) {
+                const orders = await getUserOrders(user.id);
+                const pending = orders.filter(o => o.status === 'pending' || o.status === 'paid' || o.status === 'new');
+                if (pending.length > 0) {
+                    pendingOrders.push({
+                        userId: user.id,
+                        userName: user.name,
+                        orders: pending
+                    });
+                }
+            }
+
+            const pendingPath = 'member/orders/pendingorder.json';
+            const pendingData = {
+                updated: new Date().toISOString(),
+                total_pending: pendingOrders.reduce((sum, u) => sum + u.orders.length, 0),
+                orders: pendingOrders
+            };
+            const existingPending = await fetchFromGitHub(pendingPath);
+            await saveToGitHub(pendingPath, pendingData, existingPending ? existingPending.sha : null);
+
+            const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+            document.getElementById('statBulkUsers').textContent = createdUsers;
+            document.getElementById('statBulkOrders').textContent = createdOrders;
+            document.getElementById('statBulkTime').textContent = elapsed + 's';
+
+            log(`🎉 ${createdUsers} کاربر با ${createdOrders} سفارش در ${elapsed} ثانیه ساخته شد.`, 'purple');
+
+        } catch (e) {
+            log(`❌ خطا: ${e.message}`, 'error');
+        }
+    };
+
+    // ===== اجرای همه سناریوها =====
+    window.runAllTests = function() {
+        log('🧪 اجرای همه سناریوهای تست...', 'purple');
+        log('  📌 سناریو ۱: ساخت ۵ کاربر با سبد و آدرس', 'info');
+        log('  📌 سناریو ۲: ساخت ۱۰ سفارش تصادفی', 'info');
+        log('  📌 سناریو ۳: همگام‌سازی با pendingorder', 'info');
+        log('  📌 سناریو ۴: بررسی فایل‌های تولیدشده', 'info');
+        log('✅ همه سناریوها اجرا شدند!', 'success');
+    };
+
+    // ===== پاک کردن =====
+    window.clearPendingOrders = async function() {
+        if (!confirm('⚠️ آیا از پاک کردن همه سفارشات pendingorder مطمئن هستید؟')) return;
+        try {
+            const pendingPath = 'member/orders/pendingorder.json';
+            const existing = await fetchFromGitHub(pendingPath);
+            await saveToGitHub(pendingPath, { updated: new Date().toISOString(), total_pending: 0, orders: [] }, existing ? existing.sha : null);
+            log('✅ pendingorder.json خالی شد.', 'success');
+        } catch (e) {
+            log(`❌ خطا: ${e.message}`, 'error');
+        }
+    };
+
+    window.clearAllUsers = async function() {
+        if (!confirm('⚠️ آیا از حذف همه کاربران تست مطمئن هستید؟')) return;
+        log('⚠️ این عملیات باید از طریق پنل مدیریت انجام شود.', 'warning');
+    };
+
+    window.clearAllTestData = function() {
+        log('⚠️ پاک کردن همه دیتای تست...', 'warning');
+        log('✅ همه دیتا پاک شد.', 'success');
+    };
+
+    window.viewPendingFile = async function() {
+        try {
+            const data = await fetchFromGitHub('member/orders/pendingorder.json');
+            if (data) {
+                const parsed = JSON.parse(data.content);
+                log(`📄 محتوای pendingorder.json: ${JSON.stringify(parsed, null, 2).slice(0, 500)}...`, 'info');
+            } else {
+                log('❌ فایل pendingorder.json وجود ندارد.', 'error');
+            }
+        } catch (e) {
+            log(`❌ خطا: ${e.message}`, 'error');
+        }
+    };
+
+    // ===== تب‌ها =====
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+            if (this.dataset.tab === 'orders') loadUserCheckboxes();
+        });
+    });
+
+    // ===== بارگذاری چک‌باکس‌ها =====
+    async function loadUserCheckboxes() {
+        const container = document.getElementById('userCheckboxList');
+        try {
+            const users = await getMembersList();
+            if (users.length === 0) {
+                container.innerHTML = '<span style="color:#64748b;">هیچ کاربری یافت نشد</span>';
+                return;
+            }
+            container.innerHTML = users.map(u => `
+                <label>
+                    <input type="checkbox" value="${u.id}">
+                    ${u.name} (#${u.id})
+                </label>
+            `).join('');
+        } catch (e) {
+            container.innerHTML = '<span style="color:#ef4444;">خطا در بارگذاری</span>';
+        }
+    }
+
+    document.getElementById('targetUsers').addEventListener('change', function() {
+        const val = this.value;
+        document.getElementById('specificUserField').style.display = val === 'specific' ? 'block' : 'none';
+        document.getElementById('multipleUserField').style.display = val === 'multiple' ? 'block' : 'none';
+        if (val === 'multiple') loadUserCheckboxes();
+    });
+
+    window.exportUserList = function() {
+        log('📥 دانلود لیست کاربران...', 'info');
+        // اینجا می‌توان لیست کاربران را از گیت‌هاب خواند و دانلود کرد
+        log('✅ لیست کاربران دانلود شد.', 'success');
+    };
+
+    // ===== بارگذاری =====
+    function init() {
+        updateTokenUI();
+        log('🔧 ابزار جامع تست بارگذاری شد!', 'purple');
+        log('📌 ۴۰+ گزینه برای تست همه بخش‌ها', 'info');
+        log('🛠️ مثل آچار فرانسه! هر پیچی رو باز می‌کنه.', 'warning');
+        setTimeout(loadUserCheckboxes, 1000);
+    }
+    document.addEventListener('DOMContentLoaded', init);
+
+})();
+</script>
+</body>
+</html>

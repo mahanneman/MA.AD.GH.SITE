@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <!-- صفحه اصلی -->
+    <url>
+        <loc>https://mahanadham.ir/</loc>
+        <lastmod>2026-08-31</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- صفحه مقالات -->
+    <url>
+        <loc>https://mahanadham.ir/articles.html</loc>
+        <lastmod>2026-08-31</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- صفحه آرشیو پروژه‌ها -->
+    <url>
+        <loc>https://mahanadham.ir/archive.html</loc>
+        <lastmod>2026-08-31</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- صفحه تماس (لینک مستقیم) -->
+    <url>
+        <loc>https://mahanadham.ir/#contact</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- ===== صفحات پویا (با شناسه) - در صورت وجود محتوا ===== -->
+    <!-- اگر مقالات و پروژه‌های واقعی دارید، می‌توانید این‌ها را به‌روز کنید -->
+    
+    <!-- نمونه مقاله (شناسه 0001) -->
+    <url>
+        <loc>https://mahanadham.ir/article.html?id=0001</loc>
+        <lastmod>2026-08-31</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- نمونه مقاله (شناسه 0004) -->
+    <url>
+        <loc>https://mahanadham.ir/article.html?id=0004</loc>
+        <lastmod>2026-08-31</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- نمونه پروژه آرشیو (شناسه 0001) -->
+    <url>
+        <loc>https://mahanadham.ir/archive-item.html?id=0001</loc>
+        <lastmod>2026-08-31</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <!-- نمونه پروژه آرشیو (شناسه 0006) -->
+    <url>
+        <loc>https://mahanadham.ir/archive-item.html?id=0006</loc>
+        <lastmod>2026-08-31</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <!-- ===== اگر صفحات دیگری دارید، آنها را هم اضافه کنید ===== -->
+</urlset>

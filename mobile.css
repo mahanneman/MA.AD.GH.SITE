@@ -1,0 +1,377 @@
+/* ============================================================
+   mobile.css - بهینه‌سازی کامل برای موبایل و تبلت
+   ============================================================ */
+
+/* ===== تنظیمات پایه لمسی ===== */
+@media (max-width: 768px) {
+    /* افزایش اندازه آیکون‌ها */
+    .fas, .far, .fab, .fa-solid {
+        font-size: 1.1em !important;
+    }
+    
+    /* آیکون‌های بزرگ‌تر در هدر */
+    .main-header .logo .logo-icon i {
+        font-size: 1.4rem !important;
+    }
+    .main-header .header-actions i {
+        font-size: 1.3rem !important;
+    }
+    .menu-toggle i {
+        font-size: 1.4rem !important;
+    }
+
+    /* آیکون‌های هیرو */
+    .hero-text .hero-stats .stat-icon i {
+        font-size: 1.8rem !important;
+    }
+    .hero-text .hero-stats .stat-number {
+        font-size: 1.8rem !important;
+    }
+    .hero-tags-bottom .tag-item i {
+        font-size: 1.1rem !important;
+    }
+
+    /* آیکون‌های بخش‌ها */
+    .about-icon i, .edu-icon i, .certs-icon i,
+    .feature-icon i, .skill-icon i {
+        font-size: 1.8rem !important;
+    }
+    .contact-icon i, .resume-icon i, .form-icon i {
+        font-size: 1.6rem !important;
+    }
+
+    /* ===== دکمه‌های لمسی ===== */
+    .btn, .btn-primary, .btn-secondary, .btn-outline,
+    .btn-download, .btn-preview, .submit-btn,
+    .menu-toggle, .filter-btn, .member-btn {
+        min-height: 48px !important;
+        padding: 12px 20px !important;
+        font-size: 0.95rem !important;
+        border-radius: 12px !important;
+        touch-action: manipulation;
+    }
+    .btn i, .btn-primary i, .btn-secondary i {
+        font-size: 1.1rem !important;
+        margin-left: 8px;
+    }
+
+    /* ===== فونت‌های خوانا ===== */
+    body {
+        font-size: 16px !important;
+        line-height: 1.8 !important;
+    }
+    .hero-text .hero-title {
+        font-size: 2.2rem !important;
+    }
+    .hero-text .hero-subtitle {
+        font-size: 1.1rem !important;
+    }
+    .section-title {
+        font-size: 1.8rem !important;
+    }
+    .section-desc {
+        font-size: 1rem !important;
+    }
+    h1 { font-size: 2rem !important; }
+    h2 { font-size: 1.6rem !important; }
+    h3 { font-size: 1.3rem !important; }
+    h4 { font-size: 1.1rem !important; }
+
+    /* ===== فاصله‌ها و پدینگ‌ها ===== */
+    .container {
+        padding: 0 16px !important;
+    }
+    section {
+        padding: 3rem 0 !important;
+    }
+    .hero-text {
+        padding: 0 4px !important;
+    }
+    .hero-stats {
+        gap: 12px !important;
+    }
+    .hero-stats .stat-item {
+        padding: 12px 8px !important;
+    }
+    .hero-actions {
+        gap: 10px !important;
+    }
+    .hero-actions .btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    /* ===== کارت‌ها و باکس‌ها ===== */
+    .about-card, .edu-card, .certs-card,
+    .skill-item, .article-preview-card,
+    .contact-info-card, .resume-card,
+    .contact-form-card, .archive-item,
+    .article-item {
+        padding: 18px !important;
+        border-radius: 16px !important;
+        margin-bottom: 16px !important;
+    }
+
+    /* ===== گریدها ===== */
+    .about-grid,
+    .skills-grid,
+    .article-preview-grid,
+    .contact-grid,
+    .archive-grid,
+    .articles-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .about-card .about-features {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+    }
+
+    /* ===== فرم تماس ===== */
+    .contact-form-card form .grid-2 {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px !important;
+        padding: 14px 16px !important;
+        min-height: 50px !important;
+    }
+    .input-wrapper .input-icon,
+    .input-wrapper .textarea-icon {
+        font-size: 1.1rem !important;
+    }
+    .submit-btn {
+        min-height: 56px !important;
+        font-size: 1.05rem !important;
+    }
+    .form-footer {
+        flex-direction: column !important;
+        gap: 8px !important;
+        align-items: flex-start !important;
+    }
+
+    /* ===== مقالات و آرشیو ===== */
+    .article-item .cover,
+    .archive-item .cover {
+        height: 160px !important;
+    }
+    .article-item .body,
+    .archive-item .body {
+        padding: 14px 16px 16px !important;
+    }
+    .article-item .body h3,
+    .archive-item .body h3 {
+        font-size: 1.05rem !important;
+    }
+    .article-item .body .meta,
+    .archive-item .body .meta {
+        font-size: 0.75rem !important;
+        gap: 8px !important;
+    }
+    .filter-buttons {
+        gap: 6px !important;
+    }
+    .filter-btn {
+        padding: 8px 14px !important;
+        font-size: 0.85rem !important;
+        min-height: 40px !important;
+    }
+
+    /* ===== صفحه جزئیات مقاله و آرشیو ===== */
+    .article-page .article-card,
+    .archive-item-card {
+        padding: 20px !important;
+    }
+    .article-page .cover,
+    .archive-item-card .cover {
+        max-height: 250px !important;
+    }
+    .article-page .image-gallery,
+    .archive-item-card .image-gallery {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+    }
+    .article-page .image-gallery img,
+    .archive-item-card .image-gallery img {
+        height: 150px !important;
+    }
+    .article-page .download-grid {
+        flex-direction: column !important;
+    }
+    .article-page .download-item {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 10px 16px !important;
+    }
+
+    /* ===== منوی کشویی ===== */
+    .slide-menu-container {
+        width: 300px !important;
+        right: -320px !important;
+    }
+    .slide-menu-container.active {
+        right: 0 !important;
+    }
+    .slide-menu-link {
+        padding: 14px 18px !important;
+        font-size: 0.95rem !important;
+        min-height: 52px !important;
+    }
+    .slide-menu-link .menu-icon {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.1rem !important;
+    }
+    .slide-menu-profile-img {
+        width: 80px !important;
+        height: 80px !important;
+    }
+    .slide-menu-profile h3 {
+        font-size: 1.2rem !important;
+    }
+
+    /* ===== فوتر ===== */
+    .main-footer .footer-grid {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+    }
+    .main-footer .footer-wave {
+        height: 50px !important;
+    }
+    .main-footer .footer-bottom {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 12px !important;
+    }
+    .main-footer .footer-bottom .footer-badges {
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+    .main-footer .footer-bottom .footer-badges .badge {
+        font-size: 0.7rem !important;
+        padding: 4px 12px !important;
+    }
+    .social-items .social-item {
+        padding: 10px 14px !important;
+    }
+    .social-items .social-icon i {
+        font-size: 1.4rem !important;
+    }
+    .brand-actions {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    .brand-actions .btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    /* ===== هدر ===== */
+    .main-header .logo h1 {
+        font-size: 0.95rem !important;
+    }
+    .main-header .logo .logo-icon {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 1.2rem !important;
+    }
+    #themeToggle {
+        width: 42px !important;
+        height: 42px !important;
+        font-size: 1.1rem !important;
+    }
+    .header-cart-icon {
+        font-size: 1.3rem !important;
+    }
+    .header-cart-icon .cart-badge {
+        font-size: 0.65rem !important;
+        min-width: 20px !important;
+        min-height: 20px !important;
+        top: -6px !important;
+        left: -6px !important;
+    }
+    .menu-toggle {
+        padding: 6px 12px !important;
+        min-height: 42px !important;
+    }
+    .menu-toggle .bar {
+        width: 22px !important;
+        height: 2px !important;
+    }
+    .menu-toggle span:last-child {
+        font-size: 0.7rem !important;
+    }
+
+    /* ===== استیکر و برچسب‌ها ===== */
+    .badge-top, .badge-bottom {
+        font-size: 0.75rem !important;
+        padding: 4px 12px !important;
+    }
+    .hero-tags-bottom .tag-item {
+        font-size: 0.8rem !important;
+        padding: 6px 10px !important;
+    }
+    .section-badge {
+        font-size: 0.85rem !important;
+        padding: 4px 16px !important;
+    }
+}
+
+/* ===== بهبود برای صفحه‌های بسیار کوچک (زیر ۴۲۰px) ===== */
+@media (max-width: 420px) {
+    .hero-text .hero-title {
+        font-size: 1.8rem !important;
+    }
+    .hero-text .hero-subtitle {
+        font-size: 0.95rem !important;
+    }
+    .section-title {
+        font-size: 1.5rem !important;
+    }
+    .hero-stats {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+    }
+    .hero-stats .stat-item .stat-number {
+        font-size: 1.4rem !important;
+    }
+    .hero-stats .stat-item .stat-label {
+        font-size: 0.7rem !important;
+    }
+    .about-card .about-features {
+        grid-template-columns: 1fr !important;
+    }
+    .article-page .image-gallery,
+    .archive-item-card .image-gallery {
+        grid-template-columns: 1fr !important;
+    }
+    .article-page .image-gallery img,
+    .archive-item-card .image-gallery img {
+        height: 200px !important;
+    }
+    .slide-menu-container {
+        width: 280px !important;
+        right: -300px !important;
+    }
+    .main-header .logo h1 {
+        font-size: 0.8rem !important;
+    }
+}
+
+/* ===== بهبود لینک‌ها و المان‌های کلیکی ===== */
+@media (pointer: coarse) {
+    /* برای دستگاه‌های لمسی */
+    a, button, .btn, .clickable {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        cursor: pointer !important;
+    }
+    a i, button i {
+        pointer-events: none !important;
+    }
+}

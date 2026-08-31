@@ -1,0 +1,30 @@
+{
+  "id": "4004",
+  "username": "دلارام_رضایی45",
+  "name": "دلارام رضایی",
+  "email": "دلارام_رضایی45@outlook.com",
+  "phone": "09775416255",
+  "whatsapp": "09278767763",
+  "telegram": "@دلارام_رضایی45",
+  "postal_code": "3668502759",
+  "addresses": [
+    "خانه|رشت، خیابان چهارباغ، پلاک 14|4658479176",
+    "کار|سنندج، خیابان آزادی، پلاک 10|6196027503"
+  ],
+  "created": "2026-08-04",
+  "lastLogin": "2026-08-23",
+  "cart": [
+    {
+      "productId": "PRD-0010",
+      "quantity": 1
+    },
+    {
+      "productId": "PRD-0001",
+      "quantity": 2
+    }
+  ],
+  "password": "Test@1234",
+  "ordersCount": 2,
+  "cartCount": 2,
+  "addressCount": 2
+}

@@ -1,0 +1,30 @@
+{
+  "id": "4005",
+  "username": "پویا_یزدانی98",
+  "name": "پویا یزدانی",
+  "email": "پویا_یزدانی98@yahoo.com",
+  "phone": "09880066445",
+  "whatsapp": "09583315321",
+  "telegram": "@پویا_یزدانی98",
+  "postal_code": "4658411394",
+  "addresses": [
+    "خانه|سنندج، خیابان پاسداران، پلاک 86|6194606212",
+    "کار|یزد، خیابان چهارباغ، پلاک 49|5733718721"
+  ],
+  "created": "2026-08-07",
+  "lastLogin": "2026-08-22",
+  "cart": [
+    {
+      "productId": "PRD-0005",
+      "quantity": 3
+    },
+    {
+      "productId": "PRD-0002",
+      "quantity": 1
+    }
+  ],
+  "password": "Test@1234",
+  "ordersCount": 2,
+  "cartCount": 2,
+  "addressCount": 2
+}

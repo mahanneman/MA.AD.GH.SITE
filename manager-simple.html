@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تست ساده ارسال سفارش</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            direction: rtl;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 700px; margin: 0 auto; }
+        .card {
+            background: #141b2b;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid #1e2a3d;
+            margin-bottom: 20px;
+        }
+        h1 { font-size: 1.6rem; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        h1 i { color: #2563eb; }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 2px solid #1e2a3d;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #2563eb;
+            outline: none;
+        }
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-success { background: #10b981; color: #fff; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-secondary { background: #6b7280; color: #fff; }
+        .btn:hover { transform: scale(1.03); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .log-area {
+            background: #0a0f1a;
+            border-radius: 12px;
+            padding: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            border: 1px solid #1e2a3d;
+            font-family: 'Courier New', monospace;
+            direction: ltr;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .log-area .success { color: #10b981; }
+        .log-area .error { color: #ef4444; }
+        .log-area .info { color: #60a5fa; }
+        .log-area .warning { color: #f59e0b; }
+        .token-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            background: #0a0f1a;
+            border: 1px solid #1e2a3d;
+        }
+        .token-status.ok { border-color: #10b981; color: #10b981; }
+        .token-status.fail { border-color: #ef4444; color: #ef4444; }
+        .token-status input {
+            flex: 1;
+            min-width: 200px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #1e2a3d;
+            background: #0a0f1a;
+            color: #f1f5f9;
+            font-family: 'Vazirmatn', sans-serif;
+            direction: ltr;
+        }
+        .token-status input:focus { border-color: #2563eb; outline: none; }
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            margin-top: 20px;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            z-index: 9999;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            font-family: 'Vazirmatn', sans-serif;
+            direction: rtl;
+            animation: slideIn 0.3s ease;
+        }
+        .toast-success { background: #10b981; }
+        .toast-error { background: #ef4444; }
+        .toast-warning { background: #f59e0b; color: #0a0f1a; }
+        @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="card">
+        <h1><i class="fas fa-paper-plane"></i> تست ارسال سفارش</h1>
+        <p style="color:#94a3b8;margin-bottom:16px;">این صفحه فقط برای تست دستی ارسال سفارش به تلگرام است.</p>
+
+        <!-- توکن گیت‌هاب -->
+        <div class="token-status fail" id="tokenStatus">
+            <i class="fas fa-key"></i>
+            <span>توکن گیت‌هاب:</span>
+            <input type="text" id="githubToken" placeholder="ghp_xxxxx...">
+            <button class="btn btn-primary" onclick="saveToken()"><i class="fas fa-save"></i> ذخیره</button>
+            <span id="tokenStatusText" style="font-size:0.8rem;">⚠️ وارد نشده</span>
+        </div>
+
+        <!-- فرم سفارش -->
+        <form id="orderForm">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> شناسه کاربر</label>
+                    <input type="text" id="userId" placeholder="مثال: 4012" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user-tag"></i> نام کاربر</label>
+                    <input type="text" id="userName" placeholder="مثال: هستی شمسی‌پور" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-box"></i> محصولات (JSON)</label>
+                <textarea id="items" rows="3" placeholder='[{"productName":"پایه موتور","quantity":2,"price":0},{"productName":"نازل چندمنظوره","quantity":1,"price":75000}]'></textarea>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label><i class="fas fa-money-bill"></i> مبلغ کل</label>
+                    <input type="number" id="total" placeholder="975000" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> وضعیت</label>
+                    <select id="status">
+                        <option value="pending">در انتظار</option>
+                        <option value="paid">پرداخت شده</option>
+                        <option value="shipped">ارسال شده</option>
+                        <option value="completed">تکمیل شده</option>
+                        <option value="canceled">لغو شده</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-map-pin"></i> آدرس</label>
+                <input type="text" id="address" placeholder="شیراز، خیابان آزادی، پلاک 7">
+            </div>
+
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;">
+                <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> ایجاد سفارش و افزودن به صف</button>
+                <button type="button" class="btn btn-secondary" onclick="clearLog()"><i class="fas fa-eraser"></i> پاک‌کردن لاگ</button>
+                <button type="button" class="btn btn-primary" onclick="checkQueue()"><i class="fas fa-eye"></i> بررسی صف</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- لاگ -->
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+            <span style="font-weight:600;"><i class="fas fa-terminal"></i> لاگ</span>
+        </div>
+        <div class="log-area" id="logArea">⏳ منتظر شروع...\nتوکن را وارد کرده و روی "ذخیره" کلیک کنید.</div>
+    </div>
+
+    <!-- وضعیت صف -->
+    <div class="card" id="queueStatusCard">
+        <h4><i class="fas fa-queue"></i> وضعیت صف</h4>
+        <div id="queueStatusContent" style="font-size:0.9rem;color:#94a3b8;">
+            <span>در انتظار: <strong id="queuePending">0</strong></span>
+            <span style="margin-right:16px;">ارسال‌شده: <strong id="queueSent">0</strong></span>
+        </div>
+        <div id="queueList" style="max-height:200px;overflow-y:auto;margin-top:8px;font-size:0.85rem;"></div>
+    </div>
+
+    <div class="footer">🔒 تست دستی – فقط برای عیب‌یابی</div>
+</div>
+
+<script>
+// ============================================================
+// تنظیمات
+// ============================================================
+const REPO_OWNER = 'mahanneman';
+const REPO_NAME = 'MA.AD.GH.SITE';
+const REPO_PATH = `repos/${REPO_OWNER}/${REPO_NAME}/contents`;
+const QUEUE_FILE = 'member/orders/orders-queue.json';
+
+let GITHUB_TOKEN = localStorage.getItem('github_token_enc') ? atob(localStorage.getItem('github_token_enc')) : '';
+
+// ============================================================
+// لاگ
+// ============================================================
+function log(msg, type = 'info') {
+    const el = document.getElementById('logArea');
+    const time = new Date().toLocaleTimeString('fa-IR');
+    const colors = {
+        success: 'color:#10b981',
+        error: 'color:#ef4444',
+        warning: 'color:#f59e0b',
+        info: 'color:#60a5fa'
+    };
+    el.innerHTML += `<span style="${colors[type] || colors.info}">[${time}]</span> ${msg}\n`;
+    el.scrollTop = el.scrollHeight;
+}
+
+function clearLog() {
+    document.getElementById('logArea').innerHTML = '🧹 لاگ پاک شد.\n';
+}
+
+function showToast(msg, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.5s';
+        setTimeout(() => toast.remove(), 500);
+    }, 4000);
+}
+
+// ============================================================
+// توکن
+// ============================================================
+function saveToken() {
+    const input = document.getElementById('githubToken');
+    const token = input.value.trim();
+    if (!token) {
+        log('❌ توکن را وارد کنید.', 'error');
+        return;
+    }
+    try {
+        const encoded = btoa(token);
+        localStorage.setItem('github_token_enc', encoded);
+        GITHUB_TOKEN = token;
+        document.getElementById('tokenStatusText').textContent = '✅ ذخیره شد';
+        document.getElementById('tokenStatus').className = 'token-status ok';
+        log('✅ توکن ذخیره شد.', 'success');
+        showToast('توکن ذخیره شد', 'success');
+        testConnection();
+    } catch(e) {
+        log(`❌ خطا: ${e.message}`, 'error');
+        showToast('خطا در ذخیره توکن', 'error');
+    }
+}
+
+function getToken() { return GITHUB_TOKEN; }
+
+// ============================================================
+// تست اتصال
+// ============================================================
+async function testConnection() {
+    const token = getToken();
+    if (!token) {
+        log('⚠️ توکن وارد نشده.', 'warning');
+        return;
+    }
+    log('🔄 تست اتصال به گیت‌هاب...', 'info');
+    try {
+        const url = `https://api.github.com/${REPO_PATH}/member/`;
+        const res = await fetch(url, {
+            headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (res.status === 200) {
+            log('✅ اتصال برقرار است!', 'success');
+            showToast('اتصال موفق', 'success');
+            await checkQueue();
+        } else if (res.status === 401) {
+            log('❌ توکن نامعتبر (401).', 'error');
+            showToast('توکن نامعتبر', 'error');
+        } else if (res.status === 403) {
+            log('❌ دسترسی محدود (403). نیاز به دسترسی repo.', 'error');
+            showToast('دسترسی کافی نیست', 'error');
+        } else if (res.status === 404) {
+            log('⚠️ پوشه member یافت نشد.', 'warning');
+        } else {
+            log(`❌ خطای ${res.status}`, 'error');
+        }
+    } catch(e) {
+        log(`❌ خطا: ${e.message}`, 'error');
+    }
+}
+
+// ============================================================
+// عملیات گیت‌هاب
+// ============================================================
+async function fetchFromGitHub(path) {
+    const token = getToken();
+    if (!token) throw new Error('توکن موجود نیست.');
+    const url = `https://api.github.com/${REPO_PATH}/${path}`;
+    const res = await fetch(url, {
+        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`خطا: ${res.status} - ${res.statusText}`);
+    const data = await res.json();
+    const binaryString = atob(data.content);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+    const decoder = new TextDecoder('utf-8');
+    const content = decoder.decode(bytes).replace(/^\uFEFF/, '');
+    return { ...data, content };
+}
+
+async function saveToGitHub(path, content, sha = null) {
+    const token = getToken();
+    if (!token) throw new Error('توکن موجود نیست.');
+    const jsonString = JSON.stringify(content, null, 2);
+    const encoder = new TextEncoder();
+    const encoded = encoder.encode(jsonString);
+    let binary = '';
+    for (let i = 0; i < encoded.length; i++) binary += String.fromCharCode(encoded[i]);
+    const base64Content = btoa(binary);
+    const body = {
+        message: `Update ${path} via simple test`,
+        content: base64Content,
+        branch: 'main'
+    };
+    if (sha) body.sha = sha;
+    const url = `https://api.github.com/${REPO_PATH}/${path}`;
+    const res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `token ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+        },
+        body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || `خطا: ${res.status}`);
+    }
+    return await res.json();
+}
+
+// ============================================================
+// بررسی صف
+// ============================================================
+async function checkQueue() {
+    try {
+        log('🔍 بررسی فایل صف...', 'info');
+        const data = await fetchFromGitHub(QUEUE_FILE);
+        if (!data) {
+            log('⚠️ فایل صف وجود ندارد. ایجاد می‌شود...', 'warning');
+            await saveToGitHub(QUEUE_FILE, { pending: [], sent: [] }, null);
+            document.getElementById('queuePending').textContent = '0';
+            document.getElementById('queueSent').textContent = '0';
+            document.getElementById('queueList').innerHTML = '<div style="color:#94a3b8;">صف خالی است.</div>';
+            return;
+        }
+        const queue = JSON.parse(data.content);
+        document.getElementById('queuePending').textContent = queue.pending?.length || 0;
+        document.getElementById('queueSent').textContent = queue.sent?.length || 0;
+        const list = document.getElementById('queueList');
+        if (queue.pending?.length === 0) {
+            list.innerHTML = '<div style="color:#94a3b8;">✅ صف خالی است.</div>';
+        } else {
+            list.innerHTML = queue.pending.map((o, i) =>
+                `<div style="padding:6px 10px;border-bottom:1px solid #1e2a3d;display:flex;justify-content:space-between;flex-wrap:wrap;">
+                    <span><strong>${o.id || '---'}</strong> - ${o.userName || 'ناشناس'}</span>
+                    <span>${(o.total || 0).toLocaleString()} تومان</span>
+                </div>`
+            ).join('');
+        }
+        log(`✅ وضعیت صف: ${queue.pending?.length || 0} در انتظار، ${queue.sent?.length || 0} ارسال‌شده`, 'success');
+        showToast('صف به‌روز شد', 'success');
+    } catch(e) {
+        log(`❌ خطا در بررسی صف: ${e.message}`, 'error');
+        showToast('خطا در بررسی صف', 'error');
+    }
+}
+
+// ============================================================
+// ایجاد سفارش و افزودن به صف
+// ============================================================
+document.getElementById('orderForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const token = getToken();
+    if (!token) {
+        log('⚠️ ابتدا توکن را وارد و ذخیره کنید.', 'warning');
+        showToast('توکن وارد نشده', 'warning');
+        return;
+    }
+
+    // گرفتن مقادیر
+    const userId = document.getElementById('userId').value.trim();
+    const userName = document.getElementById('userName').value.trim();
+    const total = parseFloat(document.getElementById('total').value) || 0;
+    const status = document.getElementById('status').value;
+    const address = document.getElementById('address').value.trim() || '---';
+    let items = [];
+    try {
+        items = JSON.parse(document.getElementById('items').value || '[]');
+        if (!Array.isArray(items)) items = [];
+    } catch {
+        items = [];
+        log('⚠️ فرمت JSON محصولات نامعتبر، از آرایه خالی استفاده شد.', 'warning');
+    }
+
+    if (!userId || !userName) {
+        log('❌ شناسه و نام کاربر الزامی است.', 'error');
+        showToast('شناسه و نام کاربر را وارد کنید', 'error');
+        return;
+    }
+
+    // ساخت سفارش
+    const order = {
+        id: `ORD-${Date.now().toString(36).toUpperCase()}-${String(Math.floor(Math.random()*1000)).padStart(3,'0')}`,
+        userId: userId,
+        userName: userName,
+        date: new Date().toISOString().split('T')[0],
+        total: total,
+        status: status,
+        address: address,
+        items: items,
+        notes: `سفارش تست - ${new Date().toLocaleString('fa-IR')}`,
+        tracking: `IR${Date.now().toString(36).toUpperCase()}`
+    };
+
+    log(`📦 ایجاد سفارش: ${order.id} برای ${userName}`, 'info');
+
+    try {
+        // خواندن فایل صف
+        const existing = await fetchFromGitHub(QUEUE_FILE);
+        let queue = existing ? JSON.parse(existing.content) : { pending: [], sent: [] };
+        if (!queue.pending) queue.pending = [];
+        if (!queue.sent) queue.sent = [];
+
+        // اضافه کردن سفارش
+        queue.pending.push(order);
+        await saveToGitHub(QUEUE_FILE, queue, existing ? existing.sha : null);
+
+        log(`✅ سفارش ${order.id} با موفقیت به صف اضافه شد.`, 'success');
+        showToast(`سفارش ${order.id} به صف اضافه شد`, 'success');
+
+        // به‌روزرسانی وضعیت صف
+        await checkQueue();
+
+        // پاک کردن فرم
+        document.getElementById('userId').value = '';
+        document.getElementById('userName').value = '';
+        document.getElementById('total').value = '';
+        document.getElementById('address').value = '';
+
+    } catch(e) {
+        log(`❌ خطا در ذخیره سفارش: ${e.message}`, 'error');
+        showToast('خطا در ذخیره سفارش', 'error');
+    }
+});
+
+// ============================================================
+// بارگذاری اولیه
+// ============================================================
+window.onload = function() {
+    if (GITHUB_TOKEN) {
+        document.getElementById('githubToken').value = GITHUB_TOKEN;
+        document.getElementById('tokenStatusText').textContent = '✅ ذخیره شده';
+        document.getElementById('tokenStatus').className = 'token-status ok';
+        log('🔑 توکن از localStorage بازیابی شد.', 'info');
+        setTimeout(testConnection, 500);
+        setTimeout(checkQueue, 1000);
+    } else {
+        log('ℹ️ توکنی ذخیره نشده است. لطفاً توکن گیت‌هاب را وارد کنید.', 'warning');
+    }
+};
+</script>
+</body>
+</html>

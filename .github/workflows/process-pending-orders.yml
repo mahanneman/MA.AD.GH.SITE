@@ -1,0 +1,51 @@
+name: Process Pending Orders
+
+on:
+  # ===== اجرا بعد از اتمام موفق Sync All Users & Orders to Sender =====
+  workflow_run:
+    workflows: ["Sync All Users & Orders to Sender"]
+    types:
+      - completed
+    branches:
+      - main
+
+  # ===== اجرای دستی در صورت نیاز =====
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  process:
+    # فقط اگر workflow قبلی با موفقیت تمام شده باشد
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 📦 Install requests
+        run: pip install requests
+
+      - name: 🚀 Run sender processor
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/send_pending_order_to_telegram.py   # ← مسیر جدید
+
+      - name: 💾 Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config.user.email "github-actions[bot]@users.noreply.github.com"
+          git add member/orders/pendingorder-sender.json member/orders/pendingorder.json member/orders/pendingorder-history.json
+          git commit -m "🔄 Process pending orders (after sync)" || echo "No changes"
+          git pull --rebase origin main || echo "Pull failed"
+          git push origin main || echo "Push failed"

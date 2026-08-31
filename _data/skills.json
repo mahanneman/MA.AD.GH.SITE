@@ -1,0 +1,62 @@
+{
+  "title": "مهارت‌های تخصصی",
+  "desc": "تسلط بر جدیدترین نرم‌افزارها و تکنولوژی‌های مهندسی مکانیک",
+  "items": [
+    {
+      "name": "CATIA",
+      "icon": "fa-drafting-compass",
+      "level": "پیشرفته",
+      "desc": "طراحی سطح، مونتاژ و نقشه‌کشی صنعتی",
+      "progress": 80,
+      "color": "#2563eb"
+    },
+    {
+      "name": "SOLIDWORKS",
+      "icon": "fa-cube",
+      "level": "پیشرفته",
+      "desc": "مدل‌سازی سه‌بعدی و طراحی ماشین‌آلات",
+      "progress": 85,
+      "color": "#10b981"
+    },
+    {
+      "name": "AutoCAD",
+      "icon": "fa-draw-polygon",
+      "level": "حرفه‌ای",
+      "desc": "نقشه‌کشی دو بعدی و نقشه‌های اجرایی",
+      "progress": 60,
+      "color": "#f59e0b"
+    },
+    {
+      "name": "ANSYS Fluent",
+      "icon": "fa-water",
+      "level": "پیشرفته",
+      "desc": "تحلیل جریان سیالات و انتقال حرارت",
+      "progress": 80,
+      "color": "#8b5cf6"
+    },
+    {
+      "name": "ANSYS Mechanical",
+      "icon": "fa-bolt",
+      "level": "پیشرفته",
+      "desc": "تحلیل تنش و ارتعاشات سازه‌ای",
+      "progress": 75,
+      "color": "#ef4444"
+    },
+    {
+      "name": "COMSOL",
+      "icon": "fa-atom",
+      "level": "متوسط",
+      "desc": "شبیه‌سازی چندفیزیکی و PDE",
+      "progress": 40,
+      "color": "#ec4899"
+    },
+    {
+      "name": "python",
+      "icon": "",
+      "level": "متوسط",
+      "desc": "",
+      "progress": 40,
+      "color": "#2563eb"
+    }
+  ]
+}

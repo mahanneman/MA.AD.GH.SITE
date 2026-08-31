@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "name": "تلگرام",
+      "url": "https://t.me/mahanenman",
+      "icon": "fa-telegram",
+      "color": "#0088cc",
+      "active": true,
+      "priority": 1
+    },
+    {
+      "name": "اینستاگرام",
+      "url": "https://www.instagram.com/mahantheloner",
+      "icon": "fa-instagram",
+      "color": "#e4405f",
+      "active": true,
+      "priority": 2
+    },
+    {
+      "name": "ایمیل",
+      "url": "mailto:mahan.neman2020@gmail.com",
+      "icon": "fa-envelope",
+      "color": "#ea4335",
+      "active": true,
+      "priority": 3
+    }
+  ]
+}

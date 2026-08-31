@@ -1,0 +1,51 @@
+{
+  "title": "سوابق تحصیلی و دوره‌ها",
+  "layout": "timeline",
+  "items": [
+    {
+      "id": 1,
+      "title": "کارشناسی مهندسی مکانیک",
+      "org": "دانشگاه آزاد اسلامی واحد تهران مرکز",
+      "date": "۱۳۹۹ - ۱۴۰۴",
+      "badge": "فارغ‌التحصیل",
+      "badgeColor": "#10b981",
+      "icon": "fa-graduation-cap",
+      "status": "completed",
+      "details": [
+        "گرایش: سیالات و حرارت",
+        "معدل: ۱۵.۷۲",
+        "تعداد واحد: ۱۴۰"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "گواهی نامه تخصصی CATIA",
+      "org": "مجتمع فنی تهران",
+      "date": "۱۴۰۴",
+      "badge": "پیشرفته",
+      "badgeColor": "#8b5cf6",
+      "icon": "fa-certificate",
+      "status": "completed",
+      "details": [
+        "طراحی سطح، مونتاژ، نقشه‌کشی",
+        "مدت: ۱۲۰ ساعت",
+        "نمره: ۱۸.۵ از ۲۰"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "تحلیل CFD با Ansys Fluent",
+      "org": "آموزش آزاد CFD",
+      "date": "۱۴۰۳",
+      "badge": "تخصصی",
+      "badgeColor": "#f59e0b",
+      "icon": "fa-water",
+      "status": "completed",
+      "details": [
+        "تحلیل جریان سیالات",
+        "انتقال حرارت و توربولانس",
+        "مدت: ۸۰ ساعت"
+      ]
+    }
+  ]
+}

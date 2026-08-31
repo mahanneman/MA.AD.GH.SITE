@@ -1,0 +1,22 @@
+{
+  "appearance": {
+    "colorPrimary": "#2563eb",
+    "colorSecondary": "#10b981",
+    "colorBg": "#0a0f1a",
+    "colorText": "#f1f5f9",
+    "colorTextSec": "#94a3b8",
+    "colorCard": "#141b2b",
+    "colorBorder": "#1e2a3d",
+    "fontFamily": "Vazirmatn",
+    "fontSize": 16,
+    "fontSizeHeading": 26,
+    "lineHeight": 1.8,
+    "bgImage": ""
+  },
+  "index_customization": {
+    "menu_style": "minimal",
+    "hero_image": null,
+    "about_image": null,
+    "custom_css": ""
+  }
+}

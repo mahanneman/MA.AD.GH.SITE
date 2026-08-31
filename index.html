@@ -1209,13 +1209,6 @@ function initContactForm() {
             return;
         }
 
-        // ===== گرفتن توکن گیت‌هاب =====
-        const token = localStorage.getItem('github_token');
-        if (!token) {
-            alert('❌ لطفاً ابتدا در پنل مدیریت وارد شوید و توکن گیت‌هاب را تنظیم کنید.');
-            return;
-        }
-
         // ===== ساخت پیام جدید =====
         const newMessage = {
             id: 'MSG-' + Date.now().toString(36).toUpperCase(),

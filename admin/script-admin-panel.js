@@ -1,13 +1,13 @@
 // ============================================================
 // script-admin-panel.js - پنل مدیریت کامل (هماهنگ با admin-panel.html)
-// نسخه نهایی - بدون داده‌های پیش‌فرض الکی
+// نسخه اصلاح‌شده - رفع خطاهای 401 و undefined
 // ============================================================
 
 (function() {
     'use strict';
 
     // ============================================================
-    // 0500 - احراز هویت (Authentication)
+    // 0500 - احراز هویت (Authentication) - با بررسی وجود المان‌ها
     // ============================================================
     function utf8ToBase64(str) {
         const encoder = new TextEncoder();
@@ -43,6 +43,22 @@
     ensureAdminExists();
 
     function checkLogin() {
+        // اگر المان‌های لاگین وجود نداشتند، خطا نده و پنل رو نشون بده
+        if (!loginPage || !adminPanel) {
+            // اگر پنل وجود داره، اون رو نشون بده
+            if (adminPanel) adminPanel.style.display = 'block';
+            if (loginPage) loginPage.style.display = 'none';
+            const username = sessionStorage.getItem('admin_username') || 'ادمین';
+            const nameEl = document.getElementById('proAdminName');
+            if (nameEl) nameEl.textContent = username;
+            const infoEl = document.getElementById('proInfoUsername');
+            if (infoEl) infoEl.textContent = username;
+            if (typeof loadAllData === 'function') {
+                loadAllData();
+            }
+            return;
+        }
+
         if (sessionStorage.getItem('admin_logged_in') === 'true') {
             loginPage.style.display = 'none';
             adminPanel.style.display = 'block';
@@ -126,12 +142,15 @@
     // 0502 - توکن گیت‌هاب
     // ============================================================
     if (PRO_TOKEN) {
-        document.getElementById('proToken').value = PRO_TOKEN;
+        const tokenInput = document.getElementById('proToken');
+        if (tokenInput) tokenInput.value = PRO_TOKEN;
         updateTokenStatus(true);
     } else { updateTokenStatus(false); }
 
     function proSaveToken() {
-        const token = document.getElementById('proToken').value.trim();
+        const tokenInput = document.getElementById('proToken');
+        if (!tokenInput) { showMsg('❌ المان توکن پیدا نشد.', 'error'); return; }
+        const token = tokenInput.value.trim();
         if (!token) { showMsg('لطفاً توکن را وارد کنید.', 'error'); return; }
         PRO_TOKEN = token;
         localStorage.setItem('github_token', token);
@@ -141,6 +160,7 @@
     }
     function updateTokenStatus(valid) {
         const el = document.getElementById('proTokenStatus');
+        if (!el) return;
         if (valid) { el.textContent = '✅ توکن معتبر'; el.className = 'token-status valid'; } else { el.textContent = '⚠️ توکن ذخیره نشده'; el.className = 'token-status invalid'; }
     }
     function getToken() { return PRO_TOKEN; }
@@ -150,18 +170,21 @@
     // ============================================================
     function showMsg(msg, type = 'success') {
         const el = document.getElementById('proMsg');
+        if (!el) return;
         el.textContent = msg;
         el.className = 'pro-msg ' + type;
         setTimeout(() => { el.className = 'pro-msg'; }, 6000);
     }
     function showToast(msg, type = 'success') {
         const el = document.getElementById('proToast');
+        if (!el) return;
         el.textContent = msg;
         el.className = 'pro-toast ' + type;
         setTimeout(() => { el.className = 'pro-toast'; }, 4000);
     }
     function logActivity(message) {
         const log = document.getElementById('proActivityLog');
+        if (!log) return;
         const time = new Date().toLocaleString('fa-IR');
         const item = document.createElement('div');
         item.className = 'item';
@@ -176,6 +199,7 @@
     function loadActivity() {
         const history = JSON.parse(localStorage.getItem('pro_activity') || '[]');
         const log = document.getElementById('proActivityLog');
+        if (!log) return;
         log.innerHTML = history.map(item =>
             `<div class="item"><span>${item.message}</span><span class="time">${item.time}</span></div>`
         ).join('');
@@ -379,6 +403,7 @@
     let articlesFiltered = [];
     async function loadArticles() {
         const list = document.getElementById('proArticlesList');
+        if (!list) return;
         if (!getToken()) {
             list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
             return;
@@ -401,6 +426,7 @@
     }
     function renderArticles(items) {
         const list = document.getElementById('proArticlesList');
+        if (!list) return;
         if (items.length === 0) {
             list.innerHTML = '<div class="pro-empty"><i class="fas fa-newspaper"></i>هیچ مقاله‌ای یافت نشد.</div>';
         } else {
@@ -429,8 +455,10 @@
                 `;
             }).join('');
         }
-        document.getElementById('proArticlesCount').textContent = allArticles.length;
-        document.getElementById('proArticlesSub').textContent = allArticles.length + ' مقاله';
+        const countEl = document.getElementById('proArticlesCount');
+        if (countEl) countEl.textContent = allArticles.length;
+        const subEl = document.getElementById('proArticlesSub');
+        if (subEl) subEl.textContent = allArticles.length + ' مقاله';
         updateDashboard();
         updateCounts();
     }
@@ -479,6 +507,7 @@
     let productsFiltered = [];
     async function loadProducts() {
         const list = document.getElementById('proProductsList');
+        if (!list) return;
         if (!getToken()) {
             list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
             return;
@@ -501,6 +530,7 @@
     }
     function renderProducts(items) {
         const list = document.getElementById('proProductsList');
+        if (!list) return;
         if (items.length === 0) {
             list.innerHTML = '<div class="pro-empty"><i class="fas fa-cube"></i>هیچ محصولی یافت نشد.</div>';
         } else {
@@ -528,8 +558,10 @@
                 `;
             }).join('');
         }
-        document.getElementById('proProductsCount').textContent = allProducts.length;
-        document.getElementById('proProductsSub').textContent = allProducts.length + ' محصول';
+        const countEl = document.getElementById('proProductsCount');
+        if (countEl) countEl.textContent = allProducts.length;
+        const subEl = document.getElementById('proProductsSub');
+        if (subEl) subEl.textContent = allProducts.length + ' محصول';
         updateDashboard();
         updateCounts();
     }
@@ -578,6 +610,7 @@
     let archiveFiltered = [];
     async function loadArchive() {
         const list = document.getElementById('proArchiveList');
+        if (!list) return;
         if (!getToken()) {
             list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
             return;
@@ -600,6 +633,7 @@
     }
     function renderArchive(items) {
         const list = document.getElementById('proArchiveList');
+        if (!list) return;
         const typeLabels = { cfd: 'تحلیل CFD', structure: 'تحلیل سازه', design: 'طراحی مکانیکی', electro: 'تحلیل الکترومغناطیس', university: 'پروژه دانشگاهی', fabrication: 'ساخت و نمونه‌سازی', other: 'سایر' };
         const typeBadgeClass = { cfd: 'badge-cfd', structure: 'badge-structure', design: 'badge-design', electro: 'badge-electro', university: 'badge-university', fabrication: 'badge-fabrication', other: 'badge-other' };
         if (items.length === 0) {
@@ -632,8 +666,10 @@
                 `;
             }).join('');
         }
-        document.getElementById('proArchiveCount').textContent = allArchive.length;
-        document.getElementById('proArchiveSub').textContent = allArchive.length + ' آیتم';
+        const countEl = document.getElementById('proArchiveCount');
+        if (countEl) countEl.textContent = allArchive.length;
+        const subEl = document.getElementById('proArchiveSub');
+        if (subEl) subEl.textContent = allArchive.length + ' آیتم';
         updateDashboard();
         updateCounts();
     }
@@ -1573,16 +1609,24 @@
         products.forEach(p => { if (p.files) fileCount += p.files.length; });
         archive.forEach(a => { if (a.files) fileCount += a.files.length; });
 
-        document.getElementById('dashArticles').textContent = articles.length;
-        document.getElementById('dashProducts').textContent = products.length;
-        document.getElementById('dashArchive').textContent = archive.length;
-        document.getElementById('dashFiles').textContent = fileCount;
-        document.getElementById('proLastUpdate').textContent = new Date().toLocaleString('fa-IR');
+        const dashArticles = document.getElementById('dashArticles');
+        if (dashArticles) dashArticles.textContent = articles.length;
+        const dashProducts = document.getElementById('dashProducts');
+        if (dashProducts) dashProducts.textContent = products.length;
+        const dashArchive = document.getElementById('dashArchive');
+        if (dashArchive) dashArchive.textContent = archive.length;
+        const dashFiles = document.getElementById('dashFiles');
+        if (dashFiles) dashFiles.textContent = fileCount;
+        const lastUpdate = document.getElementById('proLastUpdate');
+        if (lastUpdate) lastUpdate.textContent = new Date().toLocaleString('fa-IR');
     }
     function updateCounts() {
-        document.getElementById('proArticlesCount').textContent = Object.values(articlesData).length;
-        document.getElementById('proProductsCount').textContent = Object.values(productsData).length;
-        document.getElementById('proArchiveCount').textContent = Object.values(archiveData).length;
+        const a = document.getElementById('proArticlesCount');
+        if (a) a.textContent = Object.values(articlesData).length;
+        const p = document.getElementById('proProductsCount');
+        if (p) p.textContent = Object.values(productsData).length;
+        const ar = document.getElementById('proArchiveCount');
+        if (ar) ar.textContent = Object.values(archiveData).length;
     }
 
     // ============================================================
@@ -1600,18 +1644,24 @@
             if (data) {
                 const settings = JSON.parse(data.content);
                 const app = settings.appearance || {};
-                document.getElementById('appColorPrimary').value = app.colorPrimary || '#2563eb';
-                document.getElementById('appColorSecondary').value = app.colorSecondary || '#10b981';
-                document.getElementById('appColorBg').value = app.colorBg || '#0a0f1a';
-                document.getElementById('appColorText').value = app.colorText || '#f1f5f9';
-                document.getElementById('appColorTextSec').value = app.colorTextSec || '#94a3b8';
-                document.getElementById('appColorCard').value = app.colorCard || '#141b2b';
-                document.getElementById('appColorBorder').value = app.colorBorder || '#1e2a3d';
-                document.getElementById('appFontFamily').value = app.fontFamily || 'Vazirmatn';
-                document.getElementById('appFontSize').value = app.fontSize || 16;
-                document.getElementById('appFontSizeHeading').value = app.fontSizeHeading || 36;
-                document.getElementById('appLineHeight').value = app.lineHeight || 1.8;
-                document.getElementById('appBgImage').value = app.bgImage || '';
+                const fields = {
+                    appColorPrimary: app.colorPrimary || '#2563eb',
+                    appColorSecondary: app.colorSecondary || '#10b981',
+                    appColorBg: app.colorBg || '#0a0f1a',
+                    appColorText: app.colorText || '#f1f5f9',
+                    appColorTextSec: app.colorTextSec || '#94a3b8',
+                    appColorCard: app.colorCard || '#141b2b',
+                    appColorBorder: app.colorBorder || '#1e2a3d',
+                    appFontFamily: app.fontFamily || 'Vazirmatn',
+                    appFontSize: app.fontSize || 16,
+                    appFontSizeHeading: app.fontSizeHeading || 36,
+                    appLineHeight: app.lineHeight || 1.8,
+                    appBgImage: app.bgImage || ''
+                };
+                Object.keys(fields).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = fields[id];
+                });
                 updateColorHexes();
                 applyAppearanceToPreview(app);
                 applyToPanel(app);
@@ -1654,13 +1704,20 @@
         localStorage.setItem('appearance_preview', JSON.stringify(app));
     }
     function updateColorHexes() {
-        document.getElementById('appColorPrimaryHex').textContent = document.getElementById('appColorPrimary').value;
-        document.getElementById('appColorSecondaryHex').textContent = document.getElementById('appColorSecondary').value;
-        document.getElementById('appColorBgHex').textContent = document.getElementById('appColorBg').value;
-        document.getElementById('appColorTextHex').textContent = document.getElementById('appColorText').value;
-        document.getElementById('appColorTextSecHex').textContent = document.getElementById('appColorTextSec').value;
-        document.getElementById('appColorCardHex').textContent = document.getElementById('appColorCard').value;
-        document.getElementById('appColorBorderHex').textContent = document.getElementById('appColorBorder').value;
+        const map = {
+            appColorPrimaryHex: 'appColorPrimary',
+            appColorSecondaryHex: 'appColorSecondary',
+            appColorBgHex: 'appColorBg',
+            appColorTextHex: 'appColorText',
+            appColorTextSecHex: 'appColorTextSec',
+            appColorCardHex: 'appColorCard',
+            appColorBorderHex: 'appColorBorder'
+        };
+        Object.keys(map).forEach(hexId => {
+            const el = document.getElementById(hexId);
+            const source = document.getElementById(map[hexId]);
+            if (el && source) el.textContent = source.value;
+        });
     }
     document.querySelectorAll('#appearanceForm input[type="color"]').forEach(inp => {
         inp.addEventListener('input', function() {
@@ -2019,23 +2076,33 @@
         });
     }
     function fillSectionsForm() {
-        document.getElementById('secHeroTitle').value = sectionsData.hero?.title || '';
-        document.getElementById('secHeroSubtitle').value = sectionsData.hero?.subtitle || '';
-        document.getElementById('secHeroDesc').value = sectionsData.hero?.desc || '';
-        document.getElementById('secHeroImage').value = sectionsData.hero?.image || '';
-        document.getElementById('secHeroTags').value = sectionsData.hero?.tags || '';
-        document.getElementById('secAboutText').value = sectionsData.about?.text || '';
-        document.getElementById('secAboutImage').value = sectionsData.about?.image || '';
-        document.getElementById('secSkillsTitle').value = sectionsData.skills?.title || '';
-        document.getElementById('secSkillsDesc').value = sectionsData.skills?.desc || '';
-        document.getElementById('secEduTitle').value = sectionsData.education?.title || '';
-        document.getElementById('secEduLayout').value = sectionsData.education?.layout || 'timeline';
-        document.getElementById('secProjectsTitle').value = sectionsData.projects?.title || '';
-        document.getElementById('secProjectsDesc').value = sectionsData.projects?.desc || '';
-        document.getElementById('secContactTitle').value = sectionsData.contact?.title || '';
-        document.getElementById('secContactDesc').value = sectionsData.contact?.desc || '';
-        document.getElementById('secContactPhone').value = sectionsData.contact?.phone || '';
-        document.getElementById('secContactEmail').value = sectionsData.contact?.email || '';
+        const map = {
+            secHeroTitle: 'hero.title',
+            secHeroSubtitle: 'hero.subtitle',
+            secHeroDesc: 'hero.desc',
+            secHeroImage: 'hero.image',
+            secHeroTags: 'hero.tags',
+            secAboutText: 'about.text',
+            secAboutImage: 'about.image',
+            secSkillsTitle: 'skills.title',
+            secSkillsDesc: 'skills.desc',
+            secEduTitle: 'education.title',
+            secEduLayout: 'education.layout',
+            secProjectsTitle: 'projects.title',
+            secProjectsDesc: 'projects.desc',
+            secContactTitle: 'contact.title',
+            secContactDesc: 'contact.desc',
+            secContactPhone: 'contact.phone',
+            secContactEmail: 'contact.email'
+        };
+        Object.keys(map).forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const parts = map[id].split('.');
+            let val = sectionsData;
+            parts.forEach(p => { val = val && val[p]; });
+            el.value = val || '';
+        });
     }
     async function saveSections() {
         const data = {
@@ -2140,7 +2207,8 @@
     // 0525 - بارگذاری اولیه (Initial Load)
     // ============================================================
     checkLogin();
-    if (sessionStorage.getItem('admin_logged_in') === 'true') {
+    if (sessionStorage.getItem('admin_logged_in') === 'true' || !document.getElementById('loginPage')) {
+        // اگر لاگین فعال است یا المان لاگین وجود ندارد، پنل رو نشون بده
         if (getToken()) {
             loadAllData();
             setInterval(() => {
@@ -2149,9 +2217,12 @@
                 if (document.querySelector('.pro-tab-content.active#tab-archive')) loadArchive();
             }, 30000);
         } else {
-            document.getElementById('proArticlesList').innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
-            document.getElementById('proProductsList').innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
-            document.getElementById('proArchiveList').innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
+            const articlesList = document.getElementById('proArticlesList');
+            if (articlesList) articlesList.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
+            const productsList = document.getElementById('proProductsList');
+            if (productsList) productsList.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
+            const archiveList = document.getElementById('proArchiveList');
+            if (archiveList) archiveList.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
         }
         console.log('✅ پنل مدیریت فوق‌حرفه‌ای با موفقیت بارگذاری شد.');
         loadAppearanceSettings();
@@ -2986,6 +3057,7 @@
 
     async function loadMembers() {
         const list = document.getElementById('membersList');
+        if (!list) return;
         if (!getToken()) {
             list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
             document.getElementById('proMembersCount').textContent = '0';
@@ -3121,30 +3193,40 @@
     async function viewMemberDetail(memberId) {
         currentMemberId = memberId;
         const card = document.getElementById('memberDetailCard');
-        card.style.display = 'block';
+        if (card) card.style.display = 'block';
         const member = membersData.find(m => m.id === memberId);
         if (!member) { showMsg('❌ کاربر یافت نشد.', 'error'); return; }
-        document.getElementById('memberDetailName').textContent = member.name || 'بدون نام';
-        document.getElementById('memberDetailId').textContent = member.id;
-        document.getElementById('memberDetailPhone').textContent = member.phone || '---';
-        document.getElementById('memberDetailWhatsapp').textContent = member.whatsapp || '---';
-        document.getElementById('memberDetailTelegram').textContent = member.telegram || '---';
-        document.getElementById('memberDetailEmail').textContent = member.email || '---';
-        document.getElementById('memberDetailCreated').textContent = member.created ? new Date(member.created).toLocaleDateString('fa-IR') : '---';
+        const nameEl = document.getElementById('memberDetailName');
+        if (nameEl) nameEl.textContent = member.name || 'بدون نام';
+        const idEl = document.getElementById('memberDetailId');
+        if (idEl) idEl.textContent = member.id;
+        const phoneEl = document.getElementById('memberDetailPhone');
+        if (phoneEl) phoneEl.textContent = member.phone || '---';
+        const whatsappEl = document.getElementById('memberDetailWhatsapp');
+        if (whatsappEl) whatsappEl.textContent = member.whatsapp || '---';
+        const telegramEl = document.getElementById('memberDetailTelegram');
+        if (telegramEl) telegramEl.textContent = member.telegram || '---';
+        const emailEl = document.getElementById('memberDetailEmail');
+        if (emailEl) emailEl.textContent = member.email || '---';
+        const createdEl = document.getElementById('memberDetailCreated');
+        if (createdEl) createdEl.textContent = member.created ? new Date(member.created).toLocaleDateString('fa-IR') : '---';
         const addrContainer = document.getElementById('memberAddresses');
-        if (member.addresses && member.addresses.length > 0) {
-            addrContainer.innerHTML = member.addresses.map(addr =>
-                `<div style="padding:4px 8px;background:var(--pro-bg);border-radius:6px;margin-bottom:4px;border:1px solid var(--pro-border);font-size:0.85rem;">${addr}</div>`
-            ).join('');
-        } else {
-            addrContainer.innerHTML = '<span style="color:var(--pro-text-secondary);">هیچ آدرسی ثبت نشده است.</span>';
+        if (addrContainer) {
+            if (member.addresses && member.addresses.length > 0) {
+                addrContainer.innerHTML = member.addresses.map(addr =>
+                    `<div style="padding:4px 8px;background:var(--pro-bg);border-radius:6px;margin-bottom:4px;border:1px solid var(--pro-border);font-size:0.85rem;">${addr}</div>`
+                ).join('');
+            } else {
+                addrContainer.innerHTML = '<span style="color:var(--pro-text-secondary);">هیچ آدرسی ثبت نشده است.</span>';
+            }
         }
         await loadMemberOrders(memberId);
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     async function loadMemberOrders(memberId) {
         const container = document.getElementById('memberOrdersList');
+        if (!container) return;
         container.innerHTML = '<div class="pro-empty"><i class="fas fa-spinner fa-spin"></i> در حال بارگذاری سفارشات...</div>';
         try {
             const path = `member/member${memberId}/order${memberId}.json`;
@@ -3166,6 +3248,7 @@
 
     function renderMemberOrders(orders) {
         const container = document.getElementById('memberOrdersList');
+        if (!container) return;
         if (!orders || orders.length === 0) {
             container.innerHTML = '<div class="pro-empty"><i class="fas fa-box"></i>هیچ سفارشی ثبت نشده است.</div>';
             return;
@@ -3477,19 +3560,28 @@
         if (!memberId) { showMsg('❌ کاربری انتخاب نشده است.', 'error'); return; }
         const member = membersData.find(m => m.id === memberId);
         if (!member) { showMsg('❌ کاربر یافت نشد.', 'error'); return; }
-        document.getElementById('editMemberId').value = memberId;
-        document.getElementById('editMemberName').value = member.name || '';
-        document.getElementById('editMemberUsername').value = member.username || '';
-        document.getElementById('editMemberEmail').value = member.email || '';
-        document.getElementById('editMemberPhone').value = member.phone || '';
-        document.getElementById('editMemberWhatsapp').value = member.whatsapp || '';
-        document.getElementById('editMemberTelegram').value = member.telegram || '';
-        document.getElementById('editMemberAddresses').value = (member.addresses || []).join('\n');
-        document.getElementById('editMemberModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
+        const idEl = document.getElementById('editMemberId');
+        if (idEl) idEl.value = memberId;
+        const nameEl = document.getElementById('editMemberName');
+        if (nameEl) nameEl.value = member.name || '';
+        const userEl = document.getElementById('editMemberUsername');
+        if (userEl) userEl.value = member.username || '';
+        const emailEl = document.getElementById('editMemberEmail');
+        if (emailEl) emailEl.value = member.email || '';
+        const phoneEl = document.getElementById('editMemberPhone');
+        if (phoneEl) phoneEl.value = member.phone || '';
+        const wappEl = document.getElementById('editMemberWhatsapp');
+        if (wappEl) wappEl.value = member.whatsapp || '';
+        const telEl = document.getElementById('editMemberTelegram');
+        if (telEl) telEl.value = member.telegram || '';
+        const addrEl = document.getElementById('editMemberAddresses');
+        if (addrEl) addrEl.value = (member.addresses || []).join('\n');
+        const modal = document.getElementById('editMemberModal');
+        if (modal) { modal.classList.add('active'); document.body.style.overflow = 'hidden'; }
     }
     function closeEditMemberModal() {
-        document.getElementById('editMemberModal').classList.remove('active');
+        const modal = document.getElementById('editMemberModal');
+        if (modal) modal.classList.remove('active');
         document.body.style.overflow = '';
     }
     document.getElementById('editMemberForm')?.addEventListener('submit', async function(e) {
@@ -3529,7 +3621,11 @@
             closeEditMemberModal();
         } catch (e) { showMsg('❌ خطا در ذخیره اطلاعات: ' + e.message, 'error'); }
     });
-    function closeMemberDetail() { document.getElementById('memberDetailCard').style.display = 'none'; currentMemberId = null; }
+    function closeMemberDetail() { 
+        const card = document.getElementById('memberDetailCard');
+        if (card) card.style.display = 'none';
+        currentMemberId = null; 
+    }
     function refreshMemberOrders() { if (currentMemberId) loadMemberOrders(currentMemberId); }
     async function refreshMembers() { await loadMembers(); showMsg('✅ لیست کاربران به‌روز شد.', 'success'); }
     function exportMembersData() {
@@ -3776,14 +3872,22 @@
         const completed = orders.filter(o => o.status === 'completed').length;
         const canceled = orders.filter(o => o.status === 'canceled').length;
 
-        document.getElementById('orderStatTotal').textContent = total;
-        document.getElementById('orderStatPending').textContent = pending;
-        document.getElementById('orderStatPaid').textContent = paid;
-        document.getElementById('orderStatShipped').textContent = shipped;
-        document.getElementById('orderStatCompleted').textContent = completed;
-        document.getElementById('orderStatCanceled').textContent = canceled;
-        document.getElementById('proOrdersCount').textContent = total;
-        document.getElementById('proOrdersSub').textContent = total + ' سفارش';
+        const statTotal = document.getElementById('orderStatTotal');
+        if (statTotal) statTotal.textContent = total;
+        const statPending = document.getElementById('orderStatPending');
+        if (statPending) statPending.textContent = pending;
+        const statPaid = document.getElementById('orderStatPaid');
+        if (statPaid) statPaid.textContent = paid;
+        const statShipped = document.getElementById('orderStatShipped');
+        if (statShipped) statShipped.textContent = shipped;
+        const statCompleted = document.getElementById('orderStatCompleted');
+        if (statCompleted) statCompleted.textContent = completed;
+        const statCanceled = document.getElementById('orderStatCanceled');
+        if (statCanceled) statCanceled.textContent = canceled;
+        const countEl = document.getElementById('proOrdersCount');
+        if (countEl) countEl.textContent = total;
+        const subEl = document.getElementById('proOrdersSub');
+        if (subEl) subEl.textContent = total + ' سفارش';
     }
 
     function filterOrders() {
@@ -3860,7 +3964,7 @@
     console.log('✅ بخش‌های ۰۵۲۸ و ۰۵۲۹ با ساختار جدید سفارشات بارگذاری شدند.');
 
     // ============================================================
-    // 0530 - بروزرسانی توابع اصلی (Override)
+    // 0530 - بروزرسانی توابع اصلی (Override) و اتصال به window
     // ============================================================
     const originalSwitchTab = switchTab;
     switchTab = function(tabId) {
@@ -3872,7 +3976,8 @@
     const originalUpdateDashboard = updateDashboard;
     updateDashboard = function() {
         originalUpdateDashboard();
-        document.getElementById('dashMembers').textContent = membersData.length || 0;
+        const dashMembers = document.getElementById('dashMembers');
+        if (dashMembers) dashMembers.textContent = membersData.length || 0;
     };
     const originalExportData = exportData;
     exportData = function() {
@@ -3896,7 +4001,115 @@
     };
 
     // ============================================================
-    // 0531 - بارگذاری خودکار در DOMContentLoaded
+    // 0531 - اتصال توابع به window برای استفاده در onclick
+    // ============================================================
+    window.proSaveToken = proSaveToken;
+    window.saveAppearance = saveAppearance;
+    window.resetAppearanceForm = resetAppearanceForm;
+    window.addMenuItem = addMenuItem;
+    window.saveMenus = saveMenus;
+    window.resetMenusToDefault = resetMenusToDefault;
+    window.saveSections = saveSections;
+    window.toggleAccordion = toggleAccordion;
+    window.addEducationItem = addEducationItem;
+    window.saveEducation = saveEducation;
+    window.addCertificateItem = addCertificateItem;
+    window.saveCertificates = saveCertificates;
+    window.addSkillItem = addSkillItem;
+    window.saveSkills = saveSkills;
+    window.addSocialItem = addSocialItem;
+    window.saveSocial = saveSocial;
+    window.addServiceItem = addServiceItem;
+    window.saveServices = saveServices;
+    window.addTestimonialItem = addTestimonialItem;
+    window.saveTestimonials = saveTestimonials;
+    window.addAwardItem = addAwardItem;
+    window.saveAwards = saveAwards;
+    window.addLinkItem = addLinkItem;
+    window.saveLinks = saveLinks;
+    window.exportData = exportData;
+    window.clearAllData = clearAllData;
+    window.proLogout = proLogout;
+    window.changePassword = changePassword;
+    window.openEditModal = openEditModal;
+    window.closeEditModal = closeEditModal;
+    window.toggleFocusMode = toggleFocusMode;
+    window.removeEditCover = removeEditCover;
+    window.removeEditImage = removeEditImage;
+    window.removeEditFile = removeEditFile;
+    window.execCmd = execCmd;
+    window.insertLink = insertLink;
+    window.insertImagePlaceholder = insertImagePlaceholder;
+    window.copyId = copyId;
+    window.copyIdFromText = copyIdFromText;
+    window.removeFileFromList = removeFileFromList;
+    window.filterArticles = filterArticles;
+    window.filterProducts = filterProducts;
+    window.filterArchive = filterArchive;
+    window.moveArticle = moveArticle;
+    window.moveProduct = moveProduct;
+    window.moveArchive = moveArchive;
+    window.deleteArticle = deleteArticle;
+    window.deleteProduct = deleteProduct;
+    window.deleteArchive = deleteArchive;
+    window.switchTab = switchTab;
+    window.loadMembers = loadMembers;
+    window.refreshMembers = refreshMembers;
+    window.refreshMemberOrders = refreshMemberOrders;
+    window.viewMemberDetail = viewMemberDetail;
+    window.closeMemberDetail = closeMemberDetail;
+    window.openEditMemberModal = openEditMemberModal;
+    window.closeEditMemberModal = closeEditMemberModal;
+    window.deleteMember = deleteMember;
+    window.syncAllOrdersToGlobal = syncAllOrdersToGlobal;
+    window.refreshOrders = refreshOrders;
+    window.filterOrders = filterOrders;
+    window.exportMembersCSV = exportMembersCSV;
+    window.exportOrdersCSV = exportOrdersCSV;
+    window.exportMembersData = exportMembersData;
+    window.exportCSV = exportCSV;
+    window.exportOrderHistory = exportOrderHistory;
+    window.openBulkStatusModal = openBulkStatusModal;
+    window.viewOrderDetail = viewOrderDetail;
+    window.deleteOrder = deleteOrder;
+    window.openEditOrderModal = openEditOrderModal;
+    window.closeEditOrderModal = function() {
+        const modal = document.getElementById('editOrderModal');
+        if (modal) modal.classList.remove('active');
+    };
+    window.updateOrderStatus = async function(userId, orderIdx, newStatus) {
+        if (!userId) { showMsg('❌ شناسه کاربر نامعتبر است.', 'error'); return; }
+        try {
+            const path = `member/member${userId}/orders.json`;
+            const existing = await fetchFromGitHub(path);
+            if (!existing) { showMsg('❌ فایل سفارشات یافت نشد.', 'error'); return; }
+            let orders = JSON.parse(existing.content);
+            if (!Array.isArray(orders) || orderIdx >= orders.length) {
+                showMsg('❌ سفارش یافت نشد.', 'error');
+                return;
+            }
+            orders[orderIdx].status = newStatus;
+            orders[orderIdx].updated = new Date().toISOString();
+            await saveToGitHub(path, orders, existing.sha);
+            let history = JSON.parse(localStorage.getItem('order_status_history') || '[]');
+            history.unshift({
+                orderId: orders[orderIdx].id,
+                userId: userId,
+                status: newStatus,
+                time: new Date().toISOString()
+            });
+            if (history.length > 100) history = history.slice(0, 100);
+            localStorage.setItem('order_status_history', JSON.stringify(history));
+            showMsg('✅ وضعیت سفارش به‌روز شد.', 'success');
+            await loadGlobalOrders();
+            if (currentMemberId) loadMemberOrders(currentMemberId);
+        } catch (e) {
+            showMsg('❌ خطا: ' + e.message, 'error');
+        }
+    };
+
+    // ============================================================
+    // 0532 - بارگذاری خودکار در DOMContentLoaded
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
         if (document.getElementById('tab-index-content')?.classList.contains('active')) loadAllIndexContent();

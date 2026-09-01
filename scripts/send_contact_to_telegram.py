@@ -6,12 +6,20 @@ import os
 import requests
 from datetime import datetime
 
+# تنظیمات تلگرام
 BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
-MAIN_FILE = 'notify/notify.json'
-HISTORY_FILE = 'notify/historynotify.json'
+
+# مسیر فایل‌ها (نسبت به محل اجرای اسکریپت)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MAIN_FILE = os.path.join(BASE_DIR, '../notify/notify.json')
+HISTORY_FILE = os.path.join(BASE_DIR, '../notify/historynotify.json')
 
 def send_telegram_message(message):
+    if not BOT_TOKEN or not CHAT_ID:
+        print("❌ توکن یا چت آیدی تلگرام تنظیم نشده است.")
+        return False
+    
     url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
     payload = {
         'chat_id': CHAT_ID,
@@ -19,21 +27,28 @@ def send_telegram_message(message):
         'parse_mode': 'Markdown',
         'disable_web_page_preview': True
     }
-    headers = {'Content-Type': 'application/json; charset=utf-8'}
     try:
-        response = requests.post(url, json=payload, headers=headers)
-        return response.ok
+        response = requests.post(url, json=payload, timeout=10)
+        if response.ok:
+            return True
+        else:
+            print(f"❌ خطا در ارسال: {response.status_code} - {response.text}")
+            return False
     except Exception as e:
-        print(f"Error sending message: {e}")
+        print(f"❌ خطا: {e}")
         return False
 
 def get_new_messages():
+    if not os.path.exists(MAIN_FILE):
+        print(f"⚠️ فایل {MAIN_FILE} وجود ندارد.")
+        return []
+    
     try:
         with open(MAIN_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
         return [msg for msg in data if msg.get('status') == 'new']
     except Exception as e:
-        print(f"Error reading file: {e}")
+        print(f"❌ خطا در خواندن فایل: {e}")
         return []
 
 def move_to_history(messages):
@@ -41,25 +56,19 @@ def move_to_history(messages):
         return
     
     try:
-        # خواندن تاریخچه فعلی
         history = []
-        try:
+        if os.path.exists(HISTORY_FILE):
             with open(HISTORY_FILE, 'r', encoding='utf-8') as f:
                 history = json.load(f)
-        except:
-            history = []
         
-        # اضافه کردن پیام‌ها با تاریخ ارسال
         for msg in messages:
             msg['sent_date'] = datetime.now().isoformat()
             msg['status'] = 'sent'
         history.extend(messages)
         
-        # ذخیره تاریخچه
         with open(HISTORY_FILE, 'w', encoding='utf-8') as f:
             json.dump(history, f, ensure_ascii=False, indent=2)
         
-        # حذف پیام‌های ارسال‌شده از فایل اصلی
         with open(MAIN_FILE, 'r', encoding='utf-8') as f:
             main_data = json.load(f)
         
@@ -69,10 +78,10 @@ def move_to_history(messages):
         with open(MAIN_FILE, 'w', encoding='utf-8') as f:
             json.dump(main_data, f, ensure_ascii=False, indent=2)
         
-        print(f"✅ {len(messages)} message(s) moved to history.")
+        print(f"✅ {len(messages)} پیام به تاریخچه منتقل شد.")
         return True
     except Exception as e:
-        print(f"Error moving to history: {e}")
+        print(f"❌ خطا در انتقال به تاریخچه: {e}")
         return False
 
 def format_message(msg):
@@ -94,30 +103,29 @@ def format_message(msg):
     """.strip()
 
 def main():
-    print("🔍 Checking for new messages...")
+    print("🔍 در حال بررسی پیام‌های جدید...")
     new_msgs = get_new_messages()
     
     if not new_msgs:
-        print("✅ No new messages to send.")
+        print("✅ پیام جدیدی برای ارسال وجود ندارد.")
         return
     
-    print(f"📨 {len(new_msgs)} new message(s) found.")
+    print(f"📨 {len(new_msgs)} پیام جدید پیدا شد.")
     sent_count = 0
     
     for msg in new_msgs:
         message = format_message(msg)
         if send_telegram_message(message):
             sent_count += 1
-            print(f"✅ Message {msg.get('id')} sent.")
+            print(f"✅ پیام {msg.get('id')} ارسال شد.")
         else:
-            print(f"❌ Failed to send {msg.get('id')}")
+            print(f"❌ ارسال پیام {msg.get('id')} ناموفق بود.")
     
     if sent_count > 0:
-        # انتقال فوری به تاریخچه
         move_to_history(new_msgs)
-        print(f"✅ {sent_count} message(s) sent and moved to history.")
+        print(f"✅ {sent_count} پیام ارسال و به تاریخچه منتقل شد.")
     else:
-        print("❌ No messages were sent.")
+        print("❌ هیچ پیامی ارسال نشد.")
 
 if __name__ == "__main__":
     main()

@@ -30,40 +30,126 @@
 
     <!-- ===== 219 - استایل‌های اضافی برای منو و ریسپانسیو ===== -->
     <style>
-        /* همان استایل‌های قبلی شما - بدون تغییر */
+        /* همه استایل‌های قبلی مانند فایل ارسالی شما (بدون تغییر) */
+        /* ============================================================
+           219.1 - مخفی کردن منوی هدر در موبایل
+           ============================================================ */
         @media (max-width: 768px) {
-            .main-header .nav-list { display: none !important; }
-            .main-header .header-actions .btn-outline { display: none !important; }
-            .main-header .logo h1 { font-size: 0.9rem; }
-            .main-header .logo .logo-icon { width: 32px; height: 32px; font-size: 1rem; }
-            #themeToggle { width: 36px; height: 36px; font-size: 0.8rem; }
-            .menu-toggle { padding: 0.3rem 0.8rem; font-size: 0.75rem; }
-            .menu-toggle .bar { width: 18px; height: 1.5px; }
-            .menu-toggle span:last-child { font-size: 0.65rem; }
-            .header-cart-icon { font-size: 1rem; }
-            .header-user-info a { font-size: 0.7rem !important; }
-            .slide-menu-container { width: 280px; right: -300px; }
-            .slide-menu-profile-img { width: 70px; height: 70px; }
-            .slide-menu-profile h3 { font-size: 1.1rem; }
-            .slide-menu-link { padding: 12px 16px; font-size: 0.85rem; }
-            .slide-menu-link .menu-icon { width: 32px; height: 32px; font-size: 0.8rem; }
-            .slide-menu-actions .btn { padding: 10px 16px; font-size: 0.8rem; }
-            .hero-text .hero-title { font-size: 2rem; }
-            .hero-text .hero-subtitle { font-size: 1rem; }
-            .hero-stats { grid-template-columns: repeat(2, 1fr); }
-            .hero-actions { grid-template-columns: 1fr; }
-            .about-grid { grid-template-columns: 1fr; }
-            .skills-grid { grid-template-columns: 1fr; }
-            .article-preview-grid { grid-template-columns: 1fr; }
-            .contact-grid { grid-template-columns: 1fr; }
-            .section-title { font-size: 1.6rem; }
-            .container { padding: 0 12px; }
-            main { padding-top: 60px !important; }
+            .main-header .nav-list {
+                display: none !important;
+            }
+            .main-header .header-actions .btn-outline {
+                display: none !important;
+            }
+            .main-header .logo h1 {
+                font-size: 0.9rem;
+            }
+            .main-header .logo .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+            #themeToggle {
+                width: 36px;
+                height: 36px;
+                font-size: 0.8rem;
+            }
+            .menu-toggle {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.75rem;
+            }
+            .menu-toggle .bar {
+                width: 18px;
+                height: 1.5px;
+            }
+            .menu-toggle span:last-child {
+                font-size: 0.65rem;
+            }
+            .header-cart-icon {
+                font-size: 1rem;
+            }
+            .header-user-info a {
+                font-size: 0.7rem !important;
+            }
+            .slide-menu-container {
+                width: 280px;
+                right: -300px;
+            }
+            .slide-menu-profile-img {
+                width: 70px;
+                height: 70px;
+            }
+            .slide-menu-profile h3 {
+                font-size: 1.1rem;
+            }
+            .slide-menu-link {
+                padding: 12px 16px;
+                font-size: 0.85rem;
+            }
+            .slide-menu-link .menu-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+            .slide-menu-actions .btn {
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
+            .hero-text .hero-title {
+                font-size: 2rem;
+            }
+            .hero-text .hero-subtitle {
+                font-size: 1rem;
+            }
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .hero-actions {
+                grid-template-columns: 1fr;
+            }
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            .article-preview-grid {
+                grid-template-columns: 1fr;
+            }
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            .section-title {
+                font-size: 1.6rem;
+            }
+            .container {
+                padding: 0 12px;
+            }
+            main {
+                padding-top: 60px !important;
+            }
         }
-        .slide-menu-container { transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .slide-menu-container.active { right: 0; }
-        .menu-overlay { transition: opacity 0.3s ease; }
-        .menu-overlay.active { opacity: 1; visibility: visible; }
+
+        /* ============================================================
+           219.2 - تنظیمات منوی کشویی برای نمایش بهتر
+           ============================================================ */
+        .slide-menu-container {
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide-menu-container.active {
+            right: 0;
+        }
+        .menu-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ============================================================
+           219.3 - استایل سبد خرید دراپ‌داون
+           ============================================================ */
         #cartDropdown {
             display: none;
             position: absolute;
@@ -80,8 +166,17 @@
             margin-top: 8px;
             padding: 4px 0;
         }
-        @media (max-width: 480px) { #cartDropdown { min-width: 240px; left: -20px; right: auto; } }
-        .header-cart-icon { position: relative; cursor: pointer; }
+        @media (max-width: 480px) {
+            #cartDropdown {
+                min-width: 240px;
+                left: -20px;
+                right: auto;
+            }
+        }
+        .header-cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
         .header-cart-icon .cart-badge {
             position: absolute;
             top: -8px;
@@ -98,7 +193,14 @@
             align-items: center;
             justify-content: center;
         }
-        .user-dropdown-wrapper { position: relative; display: inline-block; }
+
+        /* ============================================================
+           219.4 - منوی کاربر (دراپ‌داون)
+           ============================================================ */
+        .user-dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
         .user-trigger {
             display: flex;
             align-items: center;
@@ -112,7 +214,9 @@
             background: var(--bg-tertiary);
             border: 1px solid var(--border-color);
         }
-        .user-trigger:hover { border-color: var(--primary-color); }
+        .user-trigger:hover {
+            border-color: var(--primary-color);
+        }
         .user-dropdown-menu {
             display: none;
             position: absolute;
@@ -127,7 +231,8 @@
             z-index: 1000;
             margin-top: 4px;
         }
-        .user-dropdown-menu a, .user-dropdown-menu button {
+        .user-dropdown-menu a,
+        .user-dropdown-menu button {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -144,35 +249,101 @@
             cursor: pointer;
             font-family: 'Vazirmatn', sans-serif;
         }
-        .user-dropdown-menu a:hover, .user-dropdown-menu button:hover { background: var(--bg-tertiary); }
-        .user-dropdown-menu button { color: #ef4444; }
-        .user-dropdown-menu button:hover { background: rgba(239, 68, 68, 0.1); }
+        .user-dropdown-menu a:hover,
+        .user-dropdown-menu button:hover {
+            background: var(--bg-tertiary);
+        }
+        .user-dropdown-menu button {
+            color: #ef4444;
+        }
+        .user-dropdown-menu button:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
 
+        /* ============================================================
+           219.5 - ریسپانسیو برای فوتر و سایر بخش‌ها
+           ============================================================ */
         @media (max-width: 768px) {
-            .main-footer .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-            .main-footer .footer-wave { height: 60px; }
-            .main-footer .footer-bottom { flex-direction: column; text-align: center; }
-            .main-footer .footer-bottom .footer-badges { justify-content: center; }
-            .education-timeline .edu-item { padding-right: 1.2rem; }
-            .education-timeline .edu-item .edu-content { padding: 1rem; }
-            .education-timeline .edu-item .edu-content .edu-header { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
-            .contact-form-card { position: static; }
-            .contact-form-card form .grid-2 { grid-template-columns: 1fr; }
-            .resume-card .resume-file { flex-direction: column; align-items: center; text-align: center; }
-            .resume-card .resume-actions { flex-direction: column; }
+            .main-footer .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .main-footer .footer-wave {
+                height: 60px;
+            }
+            .main-footer .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+            .main-footer .footer-bottom .footer-badges {
+                justify-content: center;
+            }
+            .education-timeline .edu-item {
+                padding-right: 1.2rem;
+            }
+            .education-timeline .edu-item .edu-content {
+                padding: 1rem;
+            }
+            .education-timeline .edu-item .edu-content .edu-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+            .contact-form-card {
+                position: static;
+            }
+            .contact-form-card form .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .resume-card .resume-file {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .resume-card .resume-actions {
+                flex-direction: column;
+            }
         }
         @media (max-width: 480px) {
-            .hero-text .hero-title { font-size: 1.6rem; }
-            .hero-stats { grid-template-columns: 1fr 1fr; }
-            .hero-stats .stat-item .stat-number { font-size: 1.2rem; }
-            .about-card .about-features { grid-template-columns: 1fr 1fr; }
-            .about-card .about-features .feature-item .feature-icon { width: 40px; height: 40px; font-size: 1rem; }
-            .article-preview-card .meta { flex-direction: column; gap: 4px; }
-            .products-grid { grid-template-columns: 1fr; }
-            .articles-grid { grid-template-columns: 1fr; }
-            .archive-grid { grid-template-columns: 1fr; }
-            .slide-menu-container { width: 260px; right: -280px; }
+            .hero-text .hero-title {
+                font-size: 1.6rem;
+            }
+            .hero-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            .hero-stats .stat-item .stat-number {
+                font-size: 1.2rem;
+            }
+            .about-card .about-features {
+                grid-template-columns: 1fr 1fr;
+            }
+            .about-card .about-features .feature-item .feature-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            .article-preview-card .meta {
+                flex-direction: column;
+                gap: 4px;
+            }
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+            .archive-grid {
+                grid-template-columns: 1fr;
+            }
+            .slide-menu-container {
+                width: 260px;
+                right: -280px;
+            }
         }
+
+        /* ============================================================
+           219.6 - بهبودهای ظاهری حرفه‌ای (اضافه شده)
+           ============================================================ */
         .hero-image .image-box img {
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.4);
@@ -193,7 +364,10 @@
             box-shadow: 0 12px 40px rgba(0,0,0,0.15);
             transform: translateY(-4px);
         }
-        .stat-number { display: inline-block; transition: all 0.3s ease; }
+        .stat-number {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
         .btn-primary, .btn-secondary, .btn-outline, .submit-btn {
             transition: all 0.3s ease;
             position: relative;
@@ -216,9 +390,15 @@
             height: 300px;
         }
         @media (max-width: 768px) {
-            .hero-text .hero-title { font-size: 1.8rem; }
-            .hero-text .hero-subtitle { font-size: 0.95rem; }
-            .section-title { font-size: 1.4rem; }
+            .hero-text .hero-title {
+                font-size: 1.8rem;
+            }
+            .hero-text .hero-subtitle {
+                font-size: 0.95rem;
+            }
+            .section-title {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
@@ -228,6 +408,7 @@
          201 - هدر و منوی کشویی (بارگذاری توسط menu.js)
          ============================================================ -->
     <!-- هدر و منوی کشویی از فایل member-menu.html بارگذاری می‌شوند -->
+    <!-- هیچ کد هدر و منویی در اینجا نوشته نشده است -->
 
     <!-- ============================================================
          203 - محتوای اصلی (Main)
@@ -244,6 +425,7 @@
             </div>
             <div class="container">
                 <div class="hero-grid">
+                    <!-- متن هیرو -->
                     <div class="hero-text">
                         <div style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--bg-tertiary);padding:0.3rem 1rem;border-radius:30px;font-size:0.85rem;margin-bottom:1.5rem;">
                             <i class="fas fa-hand-wave" style="color:var(--primary-color);"></i>
@@ -287,6 +469,7 @@
                             <a href="articles.html" class="btn btn-outline"><i class="fas fa-eye"></i> مشاهده مقالات</a>
                         </div>
                     </div>
+                    <!-- تصویر هیرو -->
                     <div class="hero-image">
                         <div class="image-wrapper">
                             <div class="image-box">
@@ -581,7 +764,7 @@
         </section>
 
         <!-- ============================================================
-         204 - ظرف فوتر
+         204 - ظرف فوتر (اضافه شد تا fetch بتواند آن را پر کند)
          ============================================================ -->
         <div id="footerContainer"></div>
 
@@ -614,7 +797,7 @@
         })();
     </script>
 
-    <!-- 221.3 - اسکریپت‌های اصلی صفحه -->
+    <!-- 221.3 - اسکریپت‌های اصلی صفحه (بهبود یافته) -->
     <script>
         // ============================================================
         // 221.3.1 - بارگذاری تنظیمات ظاهری
@@ -940,7 +1123,7 @@
         }
 
         // ============================================================
-        // 221.3.11 - فرم تماس (نسخه اصلاح‌شده - بدون نیاز به توکن)
+        // 221.3.11 - فرم تماس (ذخیره در گیت‌هاب با توکن ثابت)
         // ============================================================
         function initContactForm() {
             const form = document.getElementById('contactForm');
@@ -948,6 +1131,7 @@
                 console.error('❌ فرم تماس پیدا نشد!');
                 return;
             }
+
             console.log('✅ فرم تماس پیدا شد');
 
             const messageInput = document.getElementById('message');
@@ -962,6 +1146,10 @@
                     charCount.textContent = len;
                 });
             }
+
+            // ===== توکن گیت‌هاب خود را اینجا قرار دهید =====
+            // این توکن باید دسترسی repo داشته باشد.
+            const GITHUB_TOKEN = 'YOUR_GITHUB_TOKEN_HERE'; // <-- توکن خود را جایگزین کنید
 
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -985,11 +1173,11 @@
                 const newMessage = {
                     id: 'MSG-' + Date.now().toString(36).toUpperCase(),
                     source: 'فرم تماس سایت',
-                    name: name,
-                    email: email,
+                    name,
+                    email,
                     phone: phone || '---',
-                    subject: subject,
-                    message: message,
+                    subject,
+                    message,
                     date: new Date().toISOString(),
                     datePersian: new Date().toLocaleString('fa-IR'),
                     status: 'new'
@@ -1004,54 +1192,52 @@
                 }
                 if (submitBtn) submitBtn.disabled = true;
 
-                // ===== ارسال به Webhook (بدون نیاز به توکن) =====
-                // از سرویس ntfy.sh برای ارسال به تلگرام استفاده می‌کنیم
-                // می‌توانید این URL را با Webhook خودتان جایگزین کنید
-                const webhookUrl = 'https://ntfy.sh/mahan-cfd'; // این را به Webhook خود تغییر دهید
+                // ===== ذخیره در گیت‌هاب =====
+                const repoOwner = 'mahanneman';
+                const repoName = 'MA.AD.GH.SITE';
+                const filePath = 'notify/notify.json';
+                const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
 
-                const payload = {
-                    topic: 'mahan-cfd',
-                    title: '📩 پیام جدید از فرم تماس',
-                    message: `
-📩 **پیام جدید از فرم تماس**
-
-🆔 ID: ${newMessage.id}
-👤 نام: ${name}
-📧 ایمیل: ${email}
-📱 تلفن: ${phone || '---'}
-📌 موضوع: ${subject}
-
-📝 پیام:
-${message}
-
-📅 تاریخ: ${newMessage.datePersian}
-                    `,
-                    tags: ['email', 'inbox'],
-                    priority: 5,
-                    click: 'https://github.com/mahanneman/MA.AD.GH.SITE'
-                };
-
-                fetch(webhookUrl, {
-                    method: 'POST',
+                // ابتدا فایل فعلی را می‌خوانیم
+                fetch(url, {
                     headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
+                        'Authorization': 'token ' + GITHUB_TOKEN,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
                 })
-                .then(response => {
-                    if (!response.ok) throw new Error('خطا در ارسال به Webhook');
-                    return response.json();
+                .then(res => {
+                    if (!res.ok) throw new Error('خطا در خواندن فایل از گیت‌هاب');
+                    return res.json();
+                })
+                .then(data => {
+                    const content = atob(data.content);
+                    let messages = [];
+                    try { messages = JSON.parse(content); } catch (e) { messages = []; }
+                    messages.push(newMessage);
+                    const updatedContent = JSON.stringify(messages, null, 2);
+                    const encoded = btoa(unescape(encodeURIComponent(updatedContent)));
+
+                    // بروزرسانی فایل
+                    return fetch(url, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': 'token ' + GITHUB_TOKEN,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify({
+                            message: `Add contact message from ${name}`,
+                            content: encoded,
+                            sha: data.sha
+                        })
+                    });
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('خطا در ذخیره در گیت‌هاب');
+                    return res.json();
                 })
                 .then(() => {
-                    // ===== ذخیره در localStorage (پشتیبان) =====
-                    try {
-                        let localMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
-                        localMessages.push(newMessage);
-                        localStorage.setItem('contact_messages', JSON.stringify(localMessages));
-                    } catch (e) {
-                        console.warn('خطا در ذخیره محلی:', e);
-                    }
-
+                    // موفقیت
                     document.getElementById('contactForm').style.display = 'none';
                     const successDiv = document.getElementById('formSuccess');
                     if (successDiv) {
@@ -1061,19 +1247,11 @@ ${message}
                     document.getElementById('formError').style.display = 'none';
                     form.reset();
                     if (charCount) charCount.textContent = '0';
-                    console.log('✅ پیام با موفقیت ارسال شد!');
+                    console.log('✅ پیام با موفقیت در گیت‌هاب ذخیره شد!');
                 })
                 .catch(error => {
-                    console.error('❌ خطا در ارسال:', error);
-                    // اگر Webhook کار نکرد، حداقل در localStorage ذخیره شود
-                    try {
-                        let localMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
-                        localMessages.push(newMessage);
-                        localStorage.setItem('contact_messages', JSON.stringify(localMessages));
-                        showError('پیام به صورت محلی ذخیره شد. در صورت ادامه مشکل، مستقیماً ایمیل بزنید.');
-                    } catch (e) {
-                        showError('متأسفانه پیام ارسال نشد. لطفاً بعداً تلاش کنید یا مستقیماً ایمیل بزنید.');
-                    }
+                    console.error('❌ خطا:', error);
+                    showError('متأسفانه پیام ذخیره نشد. لطفاً بعداً تلاش کنید یا مستقیماً ایمیل بزنید.');
                 })
                 .finally(() => {
                     if (btnText && btnLoader) {
@@ -1106,7 +1284,7 @@ ${message}
                 });
             }
 
-            console.log('✅ فرم تماس با قابلیت ارسال به Webhook آماده است!');
+            console.log('✅ فرم تماس با قابلیت ذخیره در گیت‌هاب (با توکن ثابت) آماده است!');
         }
 
         // ============================================================
@@ -1196,38 +1374,6 @@ ${message}
                 yearEl.innerHTML = yearEl.innerHTML.replace('۱۴۰۳', persianYear);
             }
         });
-    </script>
-
-    <!-- 221.4 - تابع renderSkillsSection برای رفع خطا -->
-    <script>
-        function renderSkillsSection(skillsData) {
-            const container = document.getElementById('skills-section');
-            if (!container) return;
-            if (!skillsData || !skillsData.items || skillsData.items.length === 0) {
-                container.innerHTML = '<p>هیچ مهارتی ثبت نشده است.</p>';
-                return;
-            }
-            let html = `<h2>${skillsData.title || 'مهارت‌های تخصصی'}</h2>`;
-            if (skillsData.desc) html += `<p>${skillsData.desc}</p>`;
-            html += `<div class="skills-grid">`;
-            skillsData.items.forEach(item => {
-                html += `
-                    <div class="skill-item">
-                        <div class="skill-header">
-                            ${item.icon ? `<i class="fas ${item.icon}"></i>` : ''}
-                            <span>${item.name}</span>
-                            <span class="skill-level">${item.level || 'متوسط'}</span>
-                        </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width:${item.progress || 0}%;background:${item.color || 'var(--primary)'};"></div>
-                        </div>
-                        ${item.desc ? `<p class="skill-desc">${item.desc}</p>` : ''}
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            container.innerHTML = html;
-        }
     </script>
 
 </body>

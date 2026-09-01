@@ -41,7 +41,6 @@ def move_to_history(messages):
         return
     
     try:
-        # خواندن تاریخچه فعلی
         history = []
         try:
             with open(HISTORY_FILE, 'r', encoding='utf-8') as f:
@@ -49,17 +48,14 @@ def move_to_history(messages):
         except:
             history = []
         
-        # اضافه کردن پیام‌ها با تاریخ ارسال
         for msg in messages:
             msg['sent_date'] = datetime.now().isoformat()
             msg['status'] = 'sent'
         history.extend(messages)
         
-        # ذخیره تاریخچه
         with open(HISTORY_FILE, 'w', encoding='utf-8') as f:
             json.dump(history, f, ensure_ascii=False, indent=2)
         
-        # حذف پیام‌های ارسال‌شده از فایل اصلی
         with open(MAIN_FILE, 'r', encoding='utf-8') as f:
             main_data = json.load(f)
         
@@ -113,7 +109,6 @@ def main():
             print(f"❌ Failed to send {msg.get('id')}")
     
     if sent_count > 0:
-        # انتقال فوری به تاریخچه
         move_to_history(new_msgs)
         print(f"✅ {sent_count} message(s) sent and moved to history.")
     else:

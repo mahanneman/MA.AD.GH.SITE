@@ -1,5 +1,5 @@
 /**
- * auth-utils.js - نسخه کامل با پشتیبانی از utf8ToBase64
+ * auth-utils.js - نسخه کامل با پشتیبانی از utf8ToBase64 و کاربر پیش‌فرض
  * توابع امنیتی برای احراز هویت، هش، 2FA، قفل، لاگ و ...
  * فقط برای پنل مدیریت استفاده می‌شود
  */
@@ -13,18 +13,58 @@
     const TWOFA_KEY = 'admin_2fa_code';
 
     // ============================================================
-    // 1. مدیریت کاربران
+    // 1. مدیریت کاربران + ایجاد کاربر پیش‌فرض در اولین بار
     // ============================================================
     function getUsers() {
+        let users = {};
         const data = localStorage.getItem(STORAGE_KEY);
         if (data) {
-            try { return JSON.parse(data); } catch (e) { return {}; }
+            try { users = JSON.parse(data); } catch (e) { users = {}; }
         }
-        return {};
+
+        // اگر هیچ کاربری وجود ندارد، یک کاربر پیش‌فرض بساز
+        if (Object.keys(users).length === 0) {
+            createDefaultUser();
+            // دوباره بخوان
+            const newData = localStorage.getItem(STORAGE_KEY);
+            if (newData) {
+                try { users = JSON.parse(newData); } catch (e) { users = {}; }
+            }
+        }
+        return users;
     }
 
     function saveUsers(users) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+    }
+
+    // ایجاد کاربر پیش‌فرض (admin)
+    async function createDefaultUser() {
+        const defaultUsername = 'admin';
+        const defaultPassword = 'Admin@1234';
+        const defaultQuestion = 'رنگ مورد علاقه؟';
+        const defaultAnswer = 'آبی';
+
+        const salt = generateSalt();
+        const hashed = await hashPassword(defaultPassword, salt);
+
+        const users = {};
+        users[defaultUsername] = {
+            password: hashed,
+            salt: salt,
+            created: new Date().toISOString(),
+            twofaEnabled: false,
+            securityQuestion: defaultQuestion,
+            securityAnswer: defaultAnswer,
+            lastLogin: null,
+            lastIP: null
+        };
+        saveUsers(users);
+        console.log('✅ کاربر پیش‌فرض با مشخصات زیر ساخته شد:');
+        console.log(`   نام کاربری: ${defaultUsername}`);
+        console.log(`   رمز عبور: ${defaultPassword}`);
+        console.log(`   سوال امنیتی: ${defaultQuestion}`);
+        console.log(`   پاسخ: ${defaultAnswer}`);
     }
 
     // ============================================================
@@ -204,7 +244,7 @@
         getLogs,
         changePassword,
         toggle2FA,
-        utf8ToBase64   // اضافه شده برای سازگاری
+        utf8ToBase64
     };
 
     console.log('✅ auth-utils.js بارگذاری شد.');

@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- ===== 202 - استایل‌های جدا شده در index.css ===== -->
+    <!-- ===== 202 - استایل‌های جدا شده در common.css ===== -->
     <link rel="stylesheet" href="common.css">
 
     <!-- ===== 219 - استایل‌های اضافی برای منو و ریسپانسیو ===== -->
@@ -340,6 +340,77 @@
                 right: -280px;
             }
         }
+
+        /* ============================================================
+           219.6 - بهبودهای ظاهری حرفه‌ای (اضافه شده)
+           ============================================================ */
+        /* افکت ملایم برای عکس هیرو */
+        .hero-image .image-box img {
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .hero-image .image-box img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.5);
+        }
+
+        /* گرادیان نرم برای پس‌زمینه بخش‌ها */
+        .hero-section .bg-layer .radial {
+            background: radial-gradient(circle at 30% 50%, rgba(37,99,235,0.08) 0%, transparent 60%);
+        }
+
+        /* سایه‌های نرم برای کارت‌ها */
+        .about-card, .edu-card, .certs-card, .skill-item, .article-preview-card, .contact-info-card, .resume-card, .contact-form-card {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .about-card:hover, .edu-card:hover, .certs-card:hover, .skill-item:hover, .article-preview-card:hover {
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            transform: translateY(-4px);
+        }
+
+        /* انیمیشن ملایم برای شمارنده‌ها */
+        .stat-number {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        /* دکمه‌ها با افکت شفافیت */
+        .btn-primary, .btn-secondary, .btn-outline, .submit-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary::after, .btn-secondary::after, .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        .btn-primary:active::after, .btn-secondary:active::after, .submit-btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* فاصله‌گذاری بهتر در موبایل */
+        @media (max-width: 768px) {
+            .hero-text .hero-title {
+                font-size: 1.8rem;
+            }
+            .hero-text .hero-subtitle {
+                font-size: 0.95rem;
+            }
+            .section-title {
+                font-size: 1.4rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -554,156 +625,170 @@
                 </div>
             </div>
         </section>
-<!-- ============================================================
-     203.6 - بخش تماس (Contact) با پیام تایید
-     ============================================================ -->
-<section id="contact" style="padding:4rem 0;background:var(--bg-secondary);">
-    <div class="container">
-        <div style="text-align:center;margin-bottom:3rem;">
-            <span class="section-badge"><i class="fas fa-envelope"></i> ارتباط</span>
-            <h2 class="section-title">در تماس باشید</h2>
-            <div class="section-divider">
-                <div class="line"></div>
-                <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
-                <div class="line"></div>
-            </div>
-            <p class="section-desc">برای همکاری، مشاوره یا دریافت اطلاعات بیشتر</p>
-        </div>
-        <div class="contact-grid">
-            <!-- اطلاعات تماس -->
-            <div>
-                <div class="contact-info-card">
-                    <div class="contact-header">
-                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <h3>اطلاعات تماس</h3>
-                    </div>
-                    <div class="contact-items" id="contactInfo"></div>
-                </div>
-                <div class="resume-card">
-                    <div class="resume-header">
-                        <div class="resume-icon"><i class="fas fa-download"></i></div>
-                        <h3>رزومه کامل</h3>
-                    </div>
-                    <div class="resume-file">
-                        <div class="file-icon"><i class="fas fa-file-pdf"></i></div>
-                        <div class="file-info">
-                            <h4>رزومه ماهان ادهم قزوینی.pdf</h4>
-                            <div class="file-meta">
-                                <span><i class="fas fa-weight"></i> حجم: ~2MB</span>
-                                <span><i class="fas fa-calendar"></i> به‌روزرسانی: ۱۴۰۳/۰۱/۱۵</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="resume-actions">
-                        <a href="resume.pdf" download class="btn btn-download"><i class="fas fa-download"></i> دانلود PDF</a>
-                        <a href="#" class="btn btn-preview"><i class="fas fa-eye"></i> پیش‌نمایش</a>
-                    </div>
-                </div>
-            </div>
 
-            <!-- فرم تماس -->
-            <div>
-                <div class="contact-form-card">
-                    <div class="form-header">
-                        <div class="form-icon"><i class="fas fa-paper-plane"></i></div>
-                        <div>
-                            <h3 class="form-title">ارسال پیام سریع</h3>
-                            <p class="form-subtitle">پیام خود را ارسال کنید، در اولین فرصت پاسخ می‌دهم</p>
-                        </div>
+        <!-- ============================================================
+             203.6 - بخش تماس (Contact) با پیام تایید
+             ============================================================ -->
+        <section id="contact" style="padding:4rem 0;background:var(--bg-secondary);">
+            <div class="container">
+                <div style="text-align:center;margin-bottom:3rem;">
+                    <span class="section-badge"><i class="fas fa-envelope"></i> ارتباط</span>
+                    <h2 class="section-title">در تماس باشید</h2>
+                    <div class="section-divider">
+                        <div class="line"></div>
+                        <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
+                        <div class="line"></div>
                     </div>
-
-                    <!-- ===== فرم ===== -->
-                    <form id="contactForm">
-                        <div class="form-group">
-                            <label for="name"><i class="fas fa-user" style="color:var(--primary-color);"></i> نام کامل <span style="color:red;">*</span></label>
-                            <div class="input-wrapper">
-                                <input type="text" id="name" name="name" placeholder="ماهان ادهم قزوینی" required>
-                                <span class="input-icon"><i class="fas fa-user-check"></i></span>
+                    <p class="section-desc">برای همکاری، مشاوره یا دریافت اطلاعات بیشتر</p>
+                </div>
+                <div class="contact-grid">
+                    <!-- اطلاعات تماس -->
+                    <div>
+                        <div class="contact-info-card">
+                            <div class="contact-header">
+                                <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                <h3>اطلاعات تماس</h3>
                             </div>
+                            <div class="contact-items" id="contactInfo"></div>
                         </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-                            <div class="form-group">
-                                <label for="email"><i class="fas fa-envelope" style="color:var(--primary-color);"></i> ایمیل <span style="color:red;">*</span></label>
-                                <div class="input-wrapper">
-                                    <input type="email" id="email" name="email" placeholder="mahan.neman2020@gmail.com" required>
-                                    <span class="input-icon"><i class="fas fa-at"></i></span>
+                        <div class="resume-card">
+                            <div class="resume-header">
+                                <div class="resume-icon"><i class="fas fa-download"></i></div>
+                                <h3>رزومه کامل</h3>
+                            </div>
+                            <div class="resume-file">
+                                <div class="file-icon"><i class="fas fa-file-pdf"></i></div>
+                                <div class="file-info">
+                                    <h4>رزومه ماهان ادهم قزوینی.pdf</h4>
+                                    <div class="file-meta">
+                                        <span><i class="fas fa-weight"></i> حجم: ~2MB</span>
+                                        <span><i class="fas fa-calendar"></i> به‌روزرسانی: ۱۴۰۳/۰۱/۱۵</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="phone"><i class="fas fa-phone" style="color:var(--primary-color);"></i> شماره تماس</label>
-                                <div class="input-wrapper">
-                                    <input type="tel" id="phone" name="phone" placeholder="۰۹۹۰۲۲۷۹۷۰۲">
-                                    <span class="input-icon"><i class="fas fa-mobile-alt"></i></span>
-                                </div>
+                            <div class="resume-actions">
+                                <a href="resume.pdf" download class="btn btn-download"><i class="fas fa-download"></i> دانلود PDF</a>
+                                <a href="#" class="btn btn-preview"><i class="fas fa-eye"></i> پیش‌نمایش</a>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="subject"><i class="fas fa-tag" style="color:var(--primary-color);"></i> موضوع <span style="color:red;">*</span></label>
-                            <div class="input-wrapper">
-                                <select id="subject" name="subject" required>
-                                    <option value="">انتخاب موضوع</option>
-                                    <option value="همکاری">پیشنهاد همکاری</option>
-                                    <option value="مشاوره">مشاوره فنی</option>
-                                    <option value="پروژه">درخواست پروژه</option>
-                                    <option value="سوال">سوال تخصصی</option>
-                                    <option value="سایر">سایر</option>
-                                </select>
-                                <span class="input-icon"><i class="fas fa-chevron-down"></i></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="message"><i class="fas fa-comment" style="color:var(--primary-color);"></i> پیام شما <span style="color:red;">*</span></label>
-                            <div class="input-wrapper">
-                                <textarea id="message" name="message" rows="5" placeholder="پیام خود را اینجا بنویسید..." required></textarea>
-                                <span class="textarea-icon"><i class="fas fa-pen"></i></span>
-                            </div>
-                            <div class="char-counter">
-                                <span><span class="count" id="charCount">0</span> / 500 کاراکتر</span>
-                            </div>
-                        </div>
-                        <button type="submit" class="submit-btn" id="submitBtn">
-                            <span class="btn-text"><i class="fas fa-paper-plane"></i> ارسال پیام</span>
-                            <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i> در حال ارسال...</span>
-                        </button>
-                        <div class="form-footer">
-                            <div class="footer-item"><i class="fas fa-shield-alt"></i><small>اطلاعات شما محرمانه می‌ماند</small></div>
-                            <div class="footer-item"><i class="fas fa-bolt"></i><small>پاسخ در کمتر از ۲۴ ساعت</small></div>
-                        </div>
-                    </form>
-
-                    <!-- ===== پیام موفقیت (تایید ارسال) ===== -->
-                    <div class="form-success" id="formSuccess" style="display:none;">
-                        <div class="success-icon"><i class="fas fa-check-circle"></i></div>
-                        <h4 class="success-title">✅ پیام شما با موفقیت ارسال شد!</h4>
-                        <p class="success-text">در کمتر از ۲۴ ساعت کاری پاسخ خواهم داد.</p>
-                        <p class="success-email" style="font-size:0.85rem;color:var(--text-secondary);">
-                            <i class="fas fa-envelope" style="color:var(--primary-color);"></i> 
-                            کپی پیام برای شما ارسال شد
-                        </p>
-                        <button class="close-success" id="closeSuccess">
-                            <i class="fas fa-times"></i> بستن
-                        </button>
                     </div>
 
-                    <!-- ===== پیام خطا ===== -->
-                    <div class="form-error" id="formError" style="display:none;text-align:center;padding:20px;">
-                        <div style="font-size:3rem;color:#ef4444;margin-bottom:10px;">
-                            <i class="fas fa-exclamation-circle"></i>
+                    <!-- فرم تماس -->
+                    <div>
+                        <div class="contact-form-card">
+                            <div class="form-header">
+                                <div class="form-icon"><i class="fas fa-paper-plane"></i></div>
+                                <div>
+                                    <h3 class="form-title">ارسال پیام سریع</h3>
+                                    <p class="form-subtitle">پیام خود را ارسال کنید، در اولین فرصت پاسخ می‌دهم</p>
+                                </div>
+                            </div>
+
+                            <!-- ===== فرم ===== -->
+                            <form id="contactForm">
+                                <div class="form-group">
+                                    <label for="name"><i class="fas fa-user" style="color:var(--primary-color);"></i> نام کامل <span style="color:red;">*</span></label>
+                                    <div class="input-wrapper">
+                                        <input type="text" id="name" name="name" placeholder="ماهان ادهم قزوینی" required>
+                                        <span class="input-icon"><i class="fas fa-user-check"></i></span>
+                                    </div>
+                                </div>
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                                    <div class="form-group">
+                                        <label for="email"><i class="fas fa-envelope" style="color:var(--primary-color);"></i> ایمیل <span style="color:red;">*</span></label>
+                                        <div class="input-wrapper">
+                                            <input type="email" id="email" name="email" placeholder="mahan.neman2020@gmail.com" required>
+                                            <span class="input-icon"><i class="fas fa-at"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone"><i class="fas fa-phone" style="color:var(--primary-color);"></i> شماره تماس</label>
+                                        <div class="input-wrapper">
+                                            <input type="tel" id="phone" name="phone" placeholder="۰۹۹۰۲۲۷۹۷۰۲">
+                                            <span class="input-icon"><i class="fas fa-mobile-alt"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="subject"><i class="fas fa-tag" style="color:var(--primary-color);"></i> موضوع <span style="color:red;">*</span></label>
+                                    <div class="input-wrapper">
+                                        <select id="subject" name="subject" required>
+                                            <option value="">انتخاب موضوع</option>
+                                            <option value="همکاری">پیشنهاد همکاری</option>
+                                            <option value="مشاوره">مشاوره فنی</option>
+                                            <option value="پروژه">درخواست پروژه</option>
+                                            <option value="سوال">سوال تخصصی</option>
+                                            <option value="سایر">سایر</option>
+                                        </select>
+                                        <span class="input-icon"><i class="fas fa-chevron-down"></i></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="message"><i class="fas fa-comment" style="color:var(--primary-color);"></i> پیام شما <span style="color:red;">*</span></label>
+                                    <div class="input-wrapper">
+                                        <textarea id="message" name="message" rows="5" placeholder="پیام خود را اینجا بنویسید..." required></textarea>
+                                        <span class="textarea-icon"><i class="fas fa-pen"></i></span>
+                                    </div>
+                                    <div class="char-counter">
+                                        <span><span class="count" id="charCount">0</span> / 500 کاراکتر</span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="submit-btn" id="submitBtn">
+                                    <span class="btn-text"><i class="fas fa-paper-plane"></i> ارسال پیام</span>
+                                    <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i> در حال ارسال...</span>
+                                </button>
+                                <div class="form-footer">
+                                    <div class="footer-item"><i class="fas fa-shield-alt"></i><small>اطلاعات شما محرمانه می‌ماند</small></div>
+                                    <div class="footer-item"><i class="fas fa-bolt"></i><small>پاسخ در کمتر از ۲۴ ساعت</small></div>
+                                </div>
+                            </form>
+
+                            <!-- ===== پیام موفقیت (تایید ارسال) ===== -->
+                            <div class="form-success" id="formSuccess" style="display:none;">
+                                <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+                                <h4 class="success-title">✅ پیام شما با موفقیت ارسال شد!</h4>
+                                <p class="success-text">در کمتر از ۲۴ ساعت کاری پاسخ خواهم داد.</p>
+                                <p class="success-email" style="font-size:0.85rem;color:var(--text-secondary);">
+                                    <i class="fas fa-envelope" style="color:var(--primary-color);"></i> 
+                                    کپی پیام برای شما ارسال شد
+                                </p>
+                                <button class="close-success" id="closeSuccess">
+                                    <i class="fas fa-times"></i> بستن
+                                </button>
+                            </div>
+
+                            <!-- ===== پیام خطا ===== -->
+                            <div class="form-error" id="formError" style="display:none;text-align:center;padding:20px;">
+                                <div style="font-size:3rem;color:#ef4444;margin-bottom:10px;">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                                <h4 style="color:#ef4444;">❌ خطا در ارسال پیام</h4>
+                                <p style="color:var(--text-secondary);" id="errorMessage">لطفاً مجدداً تلاش کنید.</p>
+                                <button class="member-btn member-btn-primary" onclick="document.getElementById('formError').style.display='none';document.getElementById('contactForm').style.display='flex';" style="margin-top:12px;">
+                                    <i class="fas fa-redo"></i> تلاش مجدد
+                                </button>
+                            </div>
                         </div>
-                        <h4 style="color:#ef4444;">❌ خطا در ارسال پیام</h4>
-                        <p style="color:var(--text-secondary);" id="errorMessage">لطفاً مجدداً تلاش کنید.</p>
-                        <button class="member-btn member-btn-primary" onclick="document.getElementById('formError').style.display='none';document.getElementById('contactForm').style.display='flex';" style="margin-top:12px;">
-                            <i class="fas fa-redo"></i> تلاش مجدد
-                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-        <!--
-   اسکریپت بارگذاری فوتر از فایل footer.html
+        </section>
+
+        <!-- ============================================================
+         204 - ظرف فوتر (اضافه شد تا fetch بتواند آن را پر کند)
          ============================================================ -->
+        <div id="footerContainer"></div>
+
+    </main>
+
+    <!-- ============================================================
+         221 - اسکریپت‌ها (JavaScript)
+         ============================================================ -->
+
+    <!-- 221.1 - بارگذاری هدر و منوی کشویی از member-menu.html -->
+    <script src="menu.js"></script>
+
+    <!-- 221.2 - اسکریپت بارگذاری فوتر از فایل footer.html -->
     <script>
         (function loadFooter() {
             fetch('footer.html')
@@ -712,10 +797,7 @@
                     return res.text();
                 })
                 .then(html => {
-                    // محتوای فوتر را داخل ظرف قرار بده
                     document.getElementById('footerContainer').innerHTML = html;
-
-                    // (اختیاری) به‌روزرسانی خودکار سال شمسی در فوتر
                     const yearEl = document.querySelector('#footerContainer .copyright p:first-child');
                     if (yearEl) {
                         const persianYear = new Date().getFullYear() - 621;
@@ -726,19 +808,7 @@
         })();
     </script>
 
-    <!-- ============================================================
-         221 - اسکریپت‌ها (JavaScript)
-         ============================================================ -->
-
-    <!-- 221.1 - بارگذاری هدر و منوی کشویی از member-menu.html -->
-            <script src="menu.js"></script>
-
-  <!--  <script src="load-menu.js"></script>
-
-    <!-- 221.2 - مدیریت منو، وضعیت کاربر و سبد خرید -->
-  <!--  <script src="menu-loader.js"></script>
-
-    <!-- 221.3 - اسکریپت‌های اصلی صفحه -->
+    <!-- 221.3 - اسکریپت‌های اصلی صفحه (بهبود یافته) -->
     <script>
         // ============================================================
         // 221.3.1 - بارگذاری تنظیمات ظاهری
@@ -746,104 +816,106 @@
         async function loadAppearanceSettings() {
             try {
                 const res = await fetch('_data/settings.json?t=' + Date.now());
-                if (res.ok) {
-                    const data = await res.json();
-                    const appearance = data.appearance || {};
-                    if (appearance.colorPrimary) {
-                        document.documentElement.style.setProperty('--primary-color', appearance.colorPrimary);
-                        document.documentElement.style.setProperty('--pro-primary', appearance.colorPrimary);
-                    }
-                    if (appearance.colorSecondary) {
-                        document.documentElement.style.setProperty('--secondary-color', appearance.colorSecondary);
-                        document.documentElement.style.setProperty('--pro-secondary', appearance.colorSecondary);
-                    }
-                    if (appearance.colorBg) {
-                        document.documentElement.style.setProperty('--bg-primary', appearance.colorBg);
-                        document.documentElement.style.setProperty('--pro-bg', appearance.colorBg);
-                    }
-                    if (appearance.colorText) {
-                        document.documentElement.style.setProperty('--text-primary', appearance.colorText);
-                        document.documentElement.style.setProperty('--pro-text', appearance.colorText);
-                    }
-                    if (appearance.colorTextSec) {
-                        document.documentElement.style.setProperty('--text-secondary', appearance.colorTextSec);
-                        document.documentElement.style.setProperty('--pro-text-secondary', appearance.colorTextSec);
-                    }
-                    if (appearance.colorCard) {
-                        document.documentElement.style.setProperty('--bg-secondary', appearance.colorCard);
-                        document.documentElement.style.setProperty('--pro-card', appearance.colorCard);
-                    }
-                    if (appearance.colorBorder) {
-                        document.documentElement.style.setProperty('--border-color', appearance.colorBorder);
-                        document.documentElement.style.setProperty('--pro-border', appearance.colorBorder);
-                    }
-                    if (appearance.fontFamily) {
-                        document.body.style.fontFamily = appearance.fontFamily + ', sans-serif';
-                    }
-                    if (appearance.fontSize) {
-                        document.body.style.fontSize = appearance.fontSize + 'px';
-                    }
-                    if (appearance.fontSizeHeading) {
-                        document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(el => {
-                            el.style.fontSize = appearance.fontSizeHeading + 'px';
-                        });
-                    }
-                    if (appearance.lineHeight) {
-                        document.body.style.lineHeight = appearance.lineHeight;
-                    }
-                    if (appearance.bgImage) {
-                        document.body.style.backgroundImage = 'url(' + appearance.bgImage + ')';
-                        document.body.style.backgroundSize = 'cover';
-                        document.body.style.backgroundAttachment = 'fixed';
-                    }
+                if (!res.ok) return;
+                const data = await res.json();
+                const appearance = data.appearance || {};
+                const root = document.documentElement.style;
+                if (appearance.colorPrimary) {
+                    root.setProperty('--primary-color', appearance.colorPrimary);
+                    root.setProperty('--pro-primary', appearance.colorPrimary);
+                }
+                if (appearance.colorSecondary) {
+                    root.setProperty('--secondary-color', appearance.colorSecondary);
+                    root.setProperty('--pro-secondary', appearance.colorSecondary);
+                }
+                if (appearance.colorBg) {
+                    root.setProperty('--bg-primary', appearance.colorBg);
+                    root.setProperty('--pro-bg', appearance.colorBg);
+                }
+                if (appearance.colorText) {
+                    root.setProperty('--text-primary', appearance.colorText);
+                    root.setProperty('--pro-text', appearance.colorText);
+                }
+                if (appearance.colorTextSec) {
+                    root.setProperty('--text-secondary', appearance.colorTextSec);
+                    root.setProperty('--pro-text-secondary', appearance.colorTextSec);
+                }
+                if (appearance.colorCard) {
+                    root.setProperty('--bg-secondary', appearance.colorCard);
+                    root.setProperty('--pro-card', appearance.colorCard);
+                }
+                if (appearance.colorBorder) {
+                    root.setProperty('--border-color', appearance.colorBorder);
+                    root.setProperty('--pro-border', appearance.colorBorder);
+                }
+                if (appearance.fontFamily) {
+                    document.body.style.fontFamily = appearance.fontFamily + ', sans-serif';
+                }
+                if (appearance.fontSize) {
+                    document.body.style.fontSize = appearance.fontSize + 'px';
+                }
+                if (appearance.fontSizeHeading) {
+                    document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(el => {
+                        el.style.fontSize = appearance.fontSizeHeading + 'px';
+                    });
+                }
+                if (appearance.lineHeight) {
+                    document.body.style.lineHeight = appearance.lineHeight;
+                }
+                if (appearance.bgImage) {
+                    document.body.style.backgroundImage = 'url(' + appearance.bgImage + ')';
+                    document.body.style.backgroundSize = 'cover';
+                    document.body.style.backgroundAttachment = 'fixed';
                 }
             } catch (e) {
                 console.error('خطا در بارگذاری تنظیمات ظاهر:', e);
             }
         }
-// ============================================================
-// 221.3.2 - بارگذاری داده‌های بخش‌ها
-// ============================================================
-let sectionsData = {};
 
-async function loadSectionsData() {
-    try {
-        const res = await fetch('_data/sections.json?t=' + Date.now());
-        if (res.ok) {
-            sectionsData = await res.json();
-            console.log('✅ بخش‌ها بارگذاری شدند:', sectionsData);
-        } else {
-            console.warn('⚠️ فایل sections.json پیدا نشد، استفاده از داده‌های پیش‌فرض');
-            sectionsData = {
-                hero: {
-                    title: 'مهندس ماهان ادهم قزوینی',
-                    subtitle: 'مهندس مکانیک گرایش سیالات, تحلیل‌گر CFD, طراح قطعات پرینتر سه بعدی',
-                    desc: 'تحلیل‌گر CFD با بیش از ۵ سال تجربه در شبیه‌سازی جریان‌های سیالاتی و انتقال حرارت. طراح قطعات صنعتی با نرم‌افزارهای CATIA و SolidWorks.',
-                    image: 'mahanphoto.png',
-                    tags: 'تحلیل CFD, طراحی مکانیکی, پرینتر سه‌بعدی',
-                    btnText: 'درخواست همکاری',
-                    btnLink: '#contact'
-                },
-                about: {
-                    title: 'درباره مهندس ماهان ادهم قزوینی',
-                    text: 'مهندس ماهان ادهم قزوینی، فارغ‌التحصیل کارشناسی مهندسی مکانیک از دانشگاه آزاد اسلامی واحد تهران مرکز با گرایش سیالات و حرارت. با گذراندن دوره‌های تخصصی و کسب گواهی‌نامه‌های معتبر در زمینه نرم‌افزارهای مهندسی، همواره در حال گسترش دانش و مهارت‌های فنی هستم.',
-                    image: 'mahanphoto.png'
-                },
-                skills: { title: 'مهارت‌های تخصصی', desc: 'تسلط بر جدیدترین نرم‌افزارها و تکنولوژی‌های مهندسی مکانیک', layout: 'grid' },
-                education: { title: 'سوابق تحصیلی و دوره‌ها', layout: 'timeline', desc: '' },
-                projects: { title: 'پروژه‌های منتخب', desc: 'نمونه‌ای از پروژه‌های موفق انجام شده در حوزه مهندسی مکانیک', count: 6 },
-                contact: { title: 'در تماس باشید', desc: 'برای همکاری، مشاوره یا دریافت اطلاعات بیشتر', phone: '۰۹۹۰۲۲۷۹۷۰۲', email: 'mahan.neman2020@gmail.com', btnText: 'ارسال پیام' }
-            };
+        // ============================================================
+        // 221.3.2 - بارگذاری داده‌های بخش‌ها
+        // ============================================================
+        let sectionsData = {};
+
+        async function loadSectionsData() {
+            try {
+                const res = await fetch('_data/sections.json?t=' + Date.now());
+                if (res.ok) {
+                    sectionsData = await res.json();
+                    console.log('✅ بخش‌ها بارگذاری شدند:', sectionsData);
+                } else {
+                    console.warn('⚠️ فایل sections.json پیدا نشد، استفاده از داده‌های پیش‌فرض');
+                    sectionsData = {
+                        hero: {
+                            title: 'مهندس ماهان ادهم قزوینی',
+                            subtitle: 'مهندس مکانیک گرایش سیالات, تحلیل‌گر CFD, طراح قطعات پرینتر سه بعدی',
+                            desc: 'تحلیل‌گر CFD با بیش از ۵ سال تجربه در شبیه‌سازی جریان‌های سیالاتی و انتقال حرارت. طراح قطعات صنعتی با نرم‌افزارهای CATIA و SolidWorks.',
+                            image: 'mahanphoto.png',
+                            tags: 'تحلیل CFD, طراحی مکانیکی, پرینتر سه‌بعدی',
+                            btnText: 'درخواست همکاری',
+                            btnLink: '#contact'
+                        },
+                        about: {
+                            title: 'درباره مهندس ماهان ادهم قزوینی',
+                            text: 'مهندس ماهان ادهم قزوینی، فارغ‌التحصیل کارشناسی مهندسی مکانیک از دانشگاه آزاد اسلامی واحد تهران مرکز با گرایش سیالات و حرارت. با گذراندن دوره‌های تخصصی و کسب گواهی‌نامه‌های معتبر در زمینه نرم‌افزارهای مهندسی، همواره در حال گسترش دانش و مهارت‌های فنی هستم.',
+                            image: 'mahanphoto.png'
+                        },
+                        skills: { title: 'مهارت‌های تخصصی', desc: 'تسلط بر جدیدترین نرم‌افزارها و تکنولوژی‌های مهندسی مکانیک', layout: 'grid' },
+                        education: { title: 'سوابق تحصیلی و دوره‌ها', layout: 'timeline', desc: '' },
+                        projects: { title: 'پروژه‌های منتخب', desc: 'نمونه‌ای از پروژه‌های موفق انجام شده در حوزه مهندسی مکانیک', count: 6 },
+                        contact: { title: 'در تماس باشید', desc: 'برای همکاری، مشاوره یا دریافت اطلاعات بیشتر', phone: '۰۹۹۰۲۲۷۹۷۰۲', email: 'mahan.neman2020@gmail.com', btnText: 'ارسال پیام' }
+                    };
+                }
+                renderHeroSection();
+                renderAboutSection();
+                renderSkillsSection();
+                renderEducationSection();
+                renderContactInfo();
+            } catch (e) {
+                console.error('❌ خطا در بارگذاری بخش‌ها:', e);
+            }
         }
-        renderHeroSection();
-        renderAboutSection();
-        renderSkillsSection();
-        renderEducationSection();
-        renderContactInfo();
-    } catch (e) {
-        console.error('❌ خطا در بارگذاری بخش‌ها:', e);
-    }
-}
+
         // ============================================================
         // 221.3.3 - رندر بخش هیرو
         // ============================================================
@@ -1060,387 +1132,199 @@ async function loadSectionsData() {
             const heroStats = document.querySelector('.hero-stats');
             if (heroStats) observer.observe(heroStats);
         }
-// ============================================================
-// 221.3.11 - فرم تماس (ذخیره در JSON + ارسال به تلگرام)
-// ============================================================
-// ============================================================
-// 221.3.11 - فرم تماس (ذخیره در localStorage + تلاش برای گیت‌هاب)
-// ============================================================
-function initContactForm() {
-    const form = document.getElementById('contactForm');
-    if (!form) {
-        console.error('❌ فرم تماس پیدا نشد!');
-        return;
-    }
 
-    console.log('✅ فرم تماس پیدا شد');
-
-    // شمارش کاراکترها
-    const messageInput = document.getElementById('message');
-    const charCount = document.getElementById('charCount');
-    if (messageInput && charCount) {
-        messageInput.addEventListener('input', function() {
-            const len = this.value.length;
-            charCount.textContent = len;
-            if (len > 500) {
-                this.value = this.value.substring(0, 500);
-                charCount.textContent = 500;
+        // ============================================================
+        // 221.3.11 - فرم تماس (ذخیره در localStorage + تلاش برای گیت‌هاب)
+        // ============================================================
+        function initContactForm() {
+            const form = document.getElementById('contactForm');
+            if (!form) {
+                console.error('❌ فرم تماس پیدا نشد!');
+                return;
             }
-        });
-    }
 
-    // ===== ارسال فرم =====
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        console.log('📤 دکمه ارسال کلیک شد!');
+            console.log('✅ فرم تماس پیدا شد');
 
-        // دریافت مقادیر
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const subject = document.getElementById('subject').value;
-        const message = document.getElementById('message').value.trim();
-
-        // اعتبارسنجی
-        if (!name || !email || !subject || !message) {
-            alert('❌ لطفاً تمام فیلدهای ضروری را پر کنید.');
-            return;
-        }
-        if (!email.includes('@')) {
-            alert('❌ لطفاً یک ایمیل معتبر وارد کنید.');
-            return;
-        }
-
-        // ===== ساخت پیام جدید =====
-        const newMessage = {
-            id: 'MSG-' + Date.now().toString(36).toUpperCase(),
-            source: 'فرم تماس سایت',
-            name: name,
-            email: email,
-            phone: phone || '---',
-            subject: subject,
-            message: message,
-            date: new Date().toISOString(),
-            datePersian: new Date().toLocaleString('fa-IR'),
-            status: 'new'
-        };
-
-        // تغییر دکمه به حالت در حال ارسال
-        const submitBtn = document.getElementById('submitBtn');
-        const btnText = submitBtn?.querySelector('.btn-text');
-        const btnLoader = submitBtn?.querySelector('.btn-loader');
-        if (btnText && btnLoader) {
-            btnText.style.opacity = '0';
-            btnLoader.style.opacity = '1';
-        }
-        if (submitBtn) submitBtn.disabled = true;
-
-        // ===== تلاش برای ذخیره در گیت‌هاب (اگر توکن موجود باشد) =====
-        const token = localStorage.getItem('github_token');
-        let savePromise;
-
-        if (token) {
-            // ذخیره در گیت‌هاب
-            savePromise = fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
-                headers: {
-                    'Authorization': 'token ' + token,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            })
-            .then(res => {
-                if (!res.ok) throw new Error('خطا در خواندن فایل از گیت‌هاب');
-                return res.json();
-            })
-            .then(data => {
-                const content = atob(data.content);
-                let messages = [];
-                try {
-                    messages = JSON.parse(content);
-                } catch (e) {
-                    messages = [];
-                }
-                messages.push(newMessage);
-                const updatedContent = JSON.stringify(messages, null, 2);
-                const encoded = btoa(unescape(encodeURIComponent(updatedContent)));
-                return fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': 'token ' + token,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/vnd.github.v3+json'
-                    },
-                    body: JSON.stringify({
-                        message: `Add contact message from ${name}`,
-                        content: encoded,
-                        sha: data.sha
-                    })
-                });
-            })
-            .then(res => {
-                if (!res.ok) throw new Error('خطا در ذخیره در گیت‌هاب');
-                return res.json();
-            });
-        } else {
-            // اگر توکن نبود، در localStorage ذخیره کن
-            savePromise = new Promise((resolve, reject) => {
-                try {
-                    let localMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
-                    localMessages.push(newMessage);
-                    localStorage.setItem('contact_messages', JSON.stringify(localMessages));
-                    resolve({ success: true, source: 'localStorage' });
-                } catch (e) {
-                    reject(new Error('خطا در ذخیره محلی'));
-                }
-            });
-        }
-
-        // ===== اجرای عملیات ذخیره‌سازی =====
-        savePromise
-            .then(() => {
-                // ✅ نمایش پیام موفقیت
-                document.getElementById('contactForm').style.display = 'none';
-                const successDiv = document.getElementById('formSuccess');
-                if (successDiv) {
-                    successDiv.style.display = 'flex';
-                    successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-                const errorDiv = document.getElementById('formError');
-                if (errorDiv) errorDiv.style.display = 'none';
-                form.reset();
-                if (charCount) charCount.textContent = '0';
-                console.log('✅ پیام با موفقیت ذخیره شد!');
-            })
-            .catch(error => {
-                console.error('❌ خطا:', error);
-                // اگر خطا بود، باز هم پیام را در localStorage ذخیره می‌کنیم (تلاش مجدد)
-                try {
-                    let localMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
-                    localMessages.push(newMessage);
-                    localStorage.setItem('contact_messages', JSON.stringify(localMessages));
-                    // نمایش موفقیت با ذکر اینکه به‌صورت محلی ذخیره شد
-                    document.getElementById('contactForm').style.display = 'none';
-                    const successDiv = document.getElementById('formSuccess');
-                    if (successDiv) {
-                        successDiv.style.display = 'flex';
-                        successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        // تغییر متن پیام موفقیت برای نشان دادن ذخیره محلی
-                        const successText = successDiv.querySelector('.success-text');
-                        if (successText) {
-                            successText.textContent = 'پیام شما به‌صورت محلی ذخیره شد. در اولین فرصت بررسی می‌شود.';
-                        }
+            const messageInput = document.getElementById('message');
+            const charCount = document.getElementById('charCount');
+            if (messageInput && charCount) {
+                messageInput.addEventListener('input', function() {
+                    let len = this.value.length;
+                    if (len > 500) {
+                        this.value = this.value.substring(0, 500);
+                        len = 500;
                     }
-                    form.reset();
-                    if (charCount) charCount.textContent = '0';
-                    console.log('✅ پیام به‌صورت محلی ذخیره شد (به‌دلیل خطا در گیت‌هاب)');
-                } catch (e2) {
-                    // اگر حتی localStorage هم کار نکرد، خطا نمایش بده
-                    showError('متأسفانه پیام ذخیره نشد. لطفاً بعداً تلاش کنید یا مستقیماً ایمیل بزنید.');
+                    charCount.textContent = len;
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('📤 دکمه ارسال کلیک شد!');
+
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value.trim();
+
+                if (!name || !email || !subject || !message) {
+                    alert('❌ لطفاً تمام فیلدهای ضروری را پر کنید.');
+                    return;
                 }
-            })
-            .finally(() => {
+                if (!email.includes('@')) {
+                    alert('❌ لطفاً یک ایمیل معتبر وارد کنید.');
+                    return;
+                }
+
+                const newMessage = {
+                    id: 'MSG-' + Date.now().toString(36).toUpperCase(),
+                    source: 'فرم تماس سایت',
+                    name,
+                    email,
+                    phone: phone || '---',
+                    subject,
+                    message,
+                    date: new Date().toISOString(),
+                    datePersian: new Date().toLocaleString('fa-IR'),
+                    status: 'new'
+                };
+
+                const submitBtn = document.getElementById('submitBtn');
+                const btnText = submitBtn?.querySelector('.btn-text');
+                const btnLoader = submitBtn?.querySelector('.btn-loader');
                 if (btnText && btnLoader) {
-                    btnText.style.opacity = '1';
-                    btnLoader.style.opacity = '0';
+                    btnText.style.opacity = '0';
+                    btnLoader.style.opacity = '1';
                 }
-                if (submitBtn) submitBtn.disabled = false;
+                if (submitBtn) submitBtn.disabled = true;
+
+                const token = localStorage.getItem('github_token');
+                let savePromise;
+
+                if (token) {
+                    savePromise = fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
+                        headers: {
+                            'Authorization': 'token ' + token,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    })
+                    .then(res => {
+                        if (!res.ok) throw new Error('خطا در خواندن فایل از گیت‌هاب');
+                        return res.json();
+                    })
+                    .then(data => {
+                        const content = atob(data.content);
+                        let messages = [];
+                        try { messages = JSON.parse(content); } catch (e) { messages = []; }
+                        messages.push(newMessage);
+                        const updatedContent = JSON.stringify(messages, null, 2);
+                        const encoded = btoa(unescape(encodeURIComponent(updatedContent)));
+                        return fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': 'token ' + token,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/vnd.github.v3+json'
+                            },
+                            body: JSON.stringify({
+                                message: `Add contact message from ${name}`,
+                                content: encoded,
+                                sha: data.sha
+                            })
+                        });
+                    })
+                    .then(res => {
+                        if (!res.ok) throw new Error('خطا در ذخیره در گیت‌هاب');
+                        return res.json();
+                    });
+                } else {
+                    savePromise = new Promise((resolve) => {
+                        try {
+                            let localMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
+                            localMessages.push(newMessage);
+                            localStorage.setItem('contact_messages', JSON.stringify(localMessages));
+                            resolve({ success: true, source: 'localStorage' });
+                        } catch (e) {
+                            throw new Error('خطا در ذخیره محلی');
+                        }
+                    });
+                }
+
+                savePromise
+                    .then(() => {
+                        document.getElementById('contactForm').style.display = 'none';
+                        const successDiv = document.getElementById('formSuccess');
+                        if (successDiv) {
+                            successDiv.style.display = 'flex';
+                            successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                        document.getElementById('formError').style.display = 'none';
+                        form.reset();
+                        if (charCount) charCount.textContent = '0';
+                        console.log('✅ پیام با موفقیت ذخیره شد!');
+                    })
+                    .catch(error => {
+                        console.error('❌ خطا:', error);
+                        try {
+                            let localMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
+                            localMessages.push(newMessage);
+                            localStorage.setItem('contact_messages', JSON.stringify(localMessages));
+                            document.getElementById('contactForm').style.display = 'none';
+                            const successDiv = document.getElementById('formSuccess');
+                            if (successDiv) {
+                                successDiv.style.display = 'flex';
+                                successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                const successText = successDiv.querySelector('.success-text');
+                                if (successText) {
+                                    successText.textContent = 'پیام شما به‌صورت محلی ذخیره شد. در اولین فرصت بررسی می‌شود.';
+                                }
+                            }
+                            form.reset();
+                            if (charCount) charCount.textContent = '0';
+                            console.log('✅ پیام به‌صورت محلی ذخیره شد (به‌دلیل خطا در گیت‌هاب)');
+                        } catch (e2) {
+                            showError('متأسفانه پیام ذخیره نشد. لطفاً بعداً تلاش کنید یا مستقیماً ایمیل بزنید.');
+                        }
+                    })
+                    .finally(() => {
+                        if (btnText && btnLoader) {
+                            btnText.style.opacity = '1';
+                            btnLoader.style.opacity = '0';
+                        }
+                        if (submitBtn) submitBtn.disabled = false;
+                    });
             });
-    });
 
-    // ===== نمایش خطا =====
-    function showError(msg) {
-        console.error('❌ خطا:', msg);
-        const errorDiv = document.getElementById('formError');
-        const errorMsg = document.getElementById('errorMessage');
-        if (errorDiv && errorMsg) {
-            errorMsg.textContent = msg;
-            errorDiv.style.display = 'block';
-            document.getElementById('contactForm').style.display = 'none';
-            const successDiv = document.getElementById('formSuccess');
-            if (successDiv) successDiv.style.display = 'none';
-        } else {
-            alert('❌ ' + msg);
-        }
-    }
-
-    // ===== بستن پیام موفقیت =====
-    const closeSuccess = document.getElementById('closeSuccess');
-    if (closeSuccess) {
-        closeSuccess.addEventListener('click', function() {
-            const successDiv = document.getElementById('formSuccess');
-            if (successDiv) successDiv.style.display = 'none';
-            document.getElementById('contactForm').style.display = 'flex';
-        });
-    }
-
-    console.log('✅ فرم تماس با قابلیت ذخیره محلی و گیت‌هاب آماده است!');
-}
-    // ===== شمارش کاراکترها =====
-    const messageInput = document.getElementById('message');
-    const charCount = document.getElementById('charCount');
-    if (messageInput && charCount) {
-        messageInput.addEventListener('input', function() {
-            const len = this.value.length;
-            charCount.textContent = len;
-            if (len > 500) {
-                this.value = this.value.substring(0, 500);
-                charCount.textContent = 500;
+            function showError(msg) {
+                console.error('❌ خطا:', msg);
+                const errorDiv = document.getElementById('formError');
+                const errorMsg = document.getElementById('errorMessage');
+                if (errorDiv && errorMsg) {
+                    errorMsg.textContent = msg;
+                    errorDiv.style.display = 'block';
+                    document.getElementById('contactForm').style.display = 'none';
+                    document.getElementById('formSuccess').style.display = 'none';
+                } else {
+                    alert('❌ ' + msg);
+                }
             }
-        });
-    }
 
-    // ===== ارسال فرم =====
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        console.log('📤 دکمه ارسال کلیک شد!');
+            const closeSuccess = document.getElementById('closeSuccess');
+            if (closeSuccess) {
+                closeSuccess.addEventListener('click', function() {
+                    document.getElementById('formSuccess').style.display = 'none';
+                    document.getElementById('contactForm').style.display = 'flex';
+                });
+            }
 
-        // دریافت مقادیر
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const subject = document.getElementById('subject').value;
-        const message = document.getElementById('message').value.trim();
-
-        // اعتبارسنجی
-        if (!name || !email || !subject || !message) {
-            alert('❌ لطفاً تمام فیلدهای ضروری را پر کنید.');
-            return;
-        }
-        if (!email.includes('@')) {
-            alert('❌ لطفاً یک ایمیل معتبر وارد کنید.');
-            return;
+            console.log('✅ فرم تماس با قابلیت ذخیره محلی و گیت‌هاب آماده است!');
         }
 
-        // ===== ساخت پیام جدید =====
-        const newMessage = {
-            id: 'MSG-' + Date.now().toString(36).toUpperCase(),
-            source: 'فرم تماس سایت',
-            name: name,
-            email: email,
-            phone: phone || '---',
-            subject: subject,
-            message: message,
-            date: new Date().toISOString(),
-            datePersian: new Date().toLocaleString('fa-IR'),
-            status: 'new'
-        };
-
-        // تغییر دکمه به حالت در حال ارسال
-        const submitBtn = document.getElementById('submitBtn');
-        const btnText = submitBtn?.querySelector('.btn-text');
-        const btnLoader = submitBtn?.querySelector('.btn-loader');
-        if (btnText && btnLoader) {
-            btnText.style.opacity = '0';
-            btnLoader.style.opacity = '1';
-        }
-        if (submitBtn) submitBtn.disabled = true;
-
-        // ===== خواندن فایل JSON فعلی =====
-        fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
-            headers: {
-                'Authorization': 'token ' + token,
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        })
-        .then(res => {
-            if (!res.ok) throw new Error('خطا در خواندن فایل');
-            return res.json();
-        })
-        .then(data => {
-            // دیکود کردن محتوای Base64
-            const content = atob(data.content);
-            let messages = [];
-            try {
-                messages = JSON.parse(content);
-            } catch (e) {
-                messages = [];
-            }
-            
-            // اضافه کردن پیام جدید
-            messages.push(newMessage);
-            
-            // تبدیل به Base64
-            const updatedContent = JSON.stringify(messages, null, 2);
-            const encoded = btoa(unescape(encodeURIComponent(updatedContent)));
-            
-            // ذخیره در گیت‌هاب
-            return fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'token ' + token,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/vnd.github.v3+json'
-                },
-                body: JSON.stringify({
-                    message: `Add contact message from ${name}`,
-                    content: encoded,
-                    sha: data.sha
-                })
-            });
-        })
-        .then(res => {
-            if (!res.ok) throw new Error('خطا در ذخیره فایل');
-            return res.json();
-        })
-        .then(() => {
-            // ✅ نمایش پیام موفقیت
-            document.getElementById('contactForm').style.display = 'none';
-            const successDiv = document.getElementById('formSuccess');
-            if (successDiv) {
-                successDiv.style.display = 'flex';
-                successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-            const errorDiv = document.getElementById('formError');
-            if (errorDiv) errorDiv.style.display = 'none';
-            form.reset();
-            if (charCount) charCount.textContent = '0';
-            console.log('✅ پیام با موفقیت ذخیره شد!');
-        })
-        .catch(error => {
-            console.error('❌ خطا:', error);
-            showError(error.message || 'خطا در ارسال پیام. لطفاً مجدداً تلاش کنید.');
-        })
-        .finally(() => {
-            if (btnText && btnLoader) {
-                btnText.style.opacity = '1';
-                btnLoader.style.opacity = '0';
-            }
-            if (submitBtn) submitBtn.disabled = false;
-        });
-    });
-
-    // ===== نمایش خطا =====
-    function showError(msg) {
-        console.error('❌ خطا:', msg);
-        const errorDiv = document.getElementById('formError');
-        const errorMsg = document.getElementById('errorMessage');
-        if (errorDiv && errorMsg) {
-            errorMsg.textContent = msg;
-            errorDiv.style.display = 'block';
-            document.getElementById('contactForm').style.display = 'none';
-            const successDiv = document.getElementById('formSuccess');
-            if (successDiv) successDiv.style.display = 'none';
-        } else {
-            alert('❌ ' + msg);
-        }
-    }
-
-    // ===== بستن پیام موفقیت =====
-    const closeSuccess = document.getElementById('closeSuccess');
-    if (closeSuccess) {
-        closeSuccess.addEventListener('click', function() {
-            const successDiv = document.getElementById('formSuccess');
-            if (successDiv) successDiv.style.display = 'none';
-            document.getElementById('contactForm').style.display = 'flex';
-        });
-    }
-
-    console.log('✅ فرم تماس با ذخیره در JSON آماده است!');
-}
         // ============================================================
         // 221.3.12 - منوی کشویی و تم تاریک/روشن
         // ============================================================
         (function() {
-            // منوی کشویی
             const menuToggle = document.getElementById('menuToggle');
             const slideMenu = document.getElementById('slideMenu');
             const slideMenuClose = document.getElementById('slideMenuClose');
@@ -1468,11 +1352,12 @@ function initContactForm() {
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && slideMenu.classList.contains('active')) closeSlideMenu();
             });
-               slideMenu.querySelectorAll('.slide-menu-link').forEach(link => {
-                link.addEventListener('click', closeSlideMenu);
-            });
+            if (slideMenu) {
+                slideMenu.querySelectorAll('.slide-menu-link').forEach(link => {
+                    link.addEventListener('click', closeSlideMenu);
+                });
+            }
 
-            // تم تاریک/روشن
             const themeToggle = document.getElementById('themeToggle');
             const currentTheme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', currentTheme);
@@ -1502,7 +1387,7 @@ function initContactForm() {
                     }
                 });
             }
-        });
+        })();
 
         // ============================================================
         // 221.3.13 - بارگذاری اولیه
@@ -1516,7 +1401,8 @@ function initContactForm() {
             loadCertificates();
             initCounters();
             initContactForm();
-            // به‌روزرسانی سال در فوتر
+
+            // به‌روزرسانی سال در فوتر (اگر قبلاً بارگذاری شده باشد)
             const yearEl = document.querySelector('.copyright p:first-child');
             if (yearEl) {
                 const persianYear = new Date().getFullYear() - 621;
@@ -1524,10 +1410,12 @@ function initContactForm() {
             }
         });
     </script>
-<!-- ===== اسکریپت‌ها (در انتهای body) ===== -->
-<!--<script src="auth.js"></script>
-<!--<script src="load-menu.js"></script>
-<!--<script src="menu-loader.js"></script>
-<!-- اسکریپت‌های اختصاصی صفحه -->
+
+    <!-- ===== اسکریپت‌های کمکی (در انتهای body) ===== -->
+    <!-- این اسکریپت‌ها اگر وجود داشته باشند، بدون تغییر می‌مانند -->
+    <!-- <script src="auth.js"></script> -->
+    <!-- <script src="load-menu.js"></script> -->
+    <!-- <script src="menu-loader.js"></script> -->
+
 </body>
 </html>

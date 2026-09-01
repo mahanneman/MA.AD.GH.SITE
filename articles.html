@@ -429,9 +429,72 @@
     <!-- ۳. بارگذاری منوها (رندر منو بر اساس JSON و وضعیت کاربر) -->
     <script src="menu-loader.js"></script>
 
-    <!-- ۴. اسکریپت اختصاصی مقالات -->
+    <!-- ۴. اسکریپت اختصاصی مقالات + بارگذاری تنظیمات ظاهری -->
     <script>
+        // ===== بارگذاری تنظیمات ظاهری از settings.json =====
+        async function loadAppearanceSettings() {
+            try {
+                const res = await fetch('_data/settings.json?t=' + Date.now());
+                if (!res.ok) return;
+                const data = await res.json();
+                const appearance = data.appearance || {};
+                const root = document.documentElement.style;
+                if (appearance.colorPrimary) {
+                    root.setProperty('--primary-color', appearance.colorPrimary);
+                    root.setProperty('--pro-primary', appearance.colorPrimary);
+                }
+                if (appearance.colorSecondary) {
+                    root.setProperty('--secondary-color', appearance.colorSecondary);
+                    root.setProperty('--pro-secondary', appearance.colorSecondary);
+                }
+                if (appearance.colorBg) {
+                    root.setProperty('--bg-primary', appearance.colorBg);
+                    root.setProperty('--pro-bg', appearance.colorBg);
+                }
+                if (appearance.colorText) {
+                    root.setProperty('--text-primary', appearance.colorText);
+                    root.setProperty('--pro-text', appearance.colorText);
+                }
+                if (appearance.colorTextSec) {
+                    root.setProperty('--text-secondary', appearance.colorTextSec);
+                    root.setProperty('--pro-text-secondary', appearance.colorTextSec);
+                }
+                if (appearance.colorCard) {
+                    root.setProperty('--bg-secondary', appearance.colorCard);
+                    root.setProperty('--pro-card', appearance.colorCard);
+                }
+                if (appearance.colorBorder) {
+                    root.setProperty('--border-color', appearance.colorBorder);
+                    root.setProperty('--pro-border', appearance.colorBorder);
+                }
+                if (appearance.fontFamily) {
+                    document.body.style.fontFamily = appearance.fontFamily + ', sans-serif';
+                }
+                if (appearance.fontSize) {
+                    document.body.style.fontSize = appearance.fontSize + 'px';
+                }
+                if (appearance.fontSizeHeading) {
+                    document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(el => {
+                        el.style.fontSize = appearance.fontSizeHeading + 'px';
+                    });
+                }
+                if (appearance.lineHeight) {
+                    document.body.style.lineHeight = appearance.lineHeight;
+                }
+                if (appearance.bgImage) {
+                    document.body.style.backgroundImage = 'url(' + appearance.bgImage + ')';
+                    document.body.style.backgroundSize = 'cover';
+                    document.body.style.backgroundAttachment = 'fixed';
+                }
+            } catch (e) {
+                console.error('خطا در بارگذاری تنظیمات ظاهر:', e);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+
+            // ===== بارگذاری تنظیمات ظاهری =====
+            loadAppearanceSettings();
 
             // ===== بارگذاری مقالات =====
             let allItems = [];

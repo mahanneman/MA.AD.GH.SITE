@@ -110,6 +110,23 @@ let testimonialsData = { title: 'نظرات مشتریان', items: [] };
 let awardsData = { title: 'جوایز و افتخارات', items: [] };
 let linksData = { title: 'لینک‌های مفید', items: [] };
 
+// منوی پیش‌فرض برای مواقعی که گیت‌هاب در دسترس نیست
+const defaultMenu = {
+    header: [
+        { title: 'خانه', link: 'index.html' },
+        { title: 'مقالات', link: 'articles.html' },
+        { title: 'محصولات', link: 'products.html' },
+        { title: 'آرشیو', link: 'archive.html' },
+        { title: 'تماس', link: 'index.html#contact' }
+    ],
+    slide: [
+        { title: 'درباره من', link: 'index.html#about' },
+        { title: 'مهارت‌ها', link: 'index.html#skills' },
+        { title: 'تحصیلات', link: 'index.html#education' },
+        { title: 'پروژه‌ها', link: 'index.html#projects' }
+    ]
+};
+
 const REPO_OWNER = 'mahanneman';
 const REPO_NAME = 'MA.AD.GH.SITE';
 const REPO_PATH = `repos/${REPO_OWNER}/${REPO_NAME}/contents`;
@@ -367,9 +384,10 @@ async function loadAllData() {
 }
 
 // ============================================================
-// 0508 - مقالات (Articles)
+// 0508 - مقالات (Articles) - اصلاح شده با داده‌های نمونه
 // ============================================================
-  async function loadArticles() {
+let articlesFiltered = [];
+async function loadArticles() {
     const list = document.getElementById('proArticlesList');
     if (!getToken()) {
         list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
@@ -381,7 +399,7 @@ async function loadAllData() {
             articlesData = JSON.parse(data.content);
             articlesSha = data.sha;
         } else {
-            // اگر فایل وجود نداشت یا ۴۰۱ آمد، از داده‌های نمونه استفاده کن
+            // داده‌های نمونه (mock) برای مواقعی که گیت‌هاب خطا می‌دهد
             articlesData = {
                 '0001': { title: 'تحلیل جریان آشفته در لوله‌ها', excerpt: 'بررسی عددی جریان آشفته با مدل‌های توربولانس', date: '۱۴۰۳/۰۲/۱۰', tags: ['CFD', 'توربولانس'], type: 'article' },
                 '0002': { title: 'طراحی سیستم تهویه مطبوع', excerpt: 'طراحی و شبیه‌سازی سیستم HVAC', date: '۱۴۰۳/۰۱/۲۵', tags: ['HVAC', 'طراحی'], type: 'project' },
@@ -393,7 +411,7 @@ async function loadAllData() {
         articlesFiltered = [...allArticles];
         renderArticles(articlesFiltered);
     } catch (e) {
-        // در صورت هر خطای دیگری، باز هم داده‌های نمونه رو نشون بده
+        // در صورت هر خطایی، داده‌های نمونه را نمایش بده
         articlesData = {
             '0001': { title: 'تحلیل جریان آشفته در لوله‌ها', excerpt: 'بررسی عددی جریان آشفته با مدل‌های توربولانس', date: '۱۴۰۳/۰۲/۱۰', tags: ['CFD', 'توربولانس'], type: 'article' },
             '0002': { title: 'طراحی سیستم تهویه مطبوع', excerpt: 'طراحی و شبیه‌سازی سیستم HVAC', date: '۱۴۰۳/۰۱/۲۵', tags: ['HVAC', 'طراحی'], type: 'project' },
@@ -404,9 +422,84 @@ async function loadAllData() {
         showMsg('⚠️ از داده‌های نمونه برای مقالات استفاده شد (خطا در ارتباط با گیت‌هاب).', 'info');
     }
 }
+function renderArticles(items) {
+    const list = document.getElementById('proArticlesList');
+    if (items.length === 0) {
+        list.innerHTML = '<div class="pro-empty"><i class="fas fa-newspaper"></i>هیچ مقاله‌ای یافت نشد.</div>';
+    } else {
+        list.innerHTML = items.map((item, idx) => {
+            const key = item.key;
+            return `
+                <div class="pro-item">
+                    <div class="info">
+                        <div class="title">${item.title || 'بدون عنوان'} <span style="color:var(--pro-text-secondary);font-size:0.7rem;">#<span onclick="copyIdFromText('${key}')" style="cursor:pointer;color:var(--pro-primary);">${String(key).padStart(4,'0')}</span></span></div>
+                        <div class="meta">
+                            <span><i class="fas fa-tag"></i> ${item.type || 'article'}</span>
+                            <span><i class="fas fa-calendar"></i> ${item.date || '---'}</span>
+                            <span><i class="fas fa-clock"></i> ${item.readTime || '?'} دقیقه</span>
+                            ${item.files && item.files.length ? `<span><i class="fas fa-paperclip"></i> ${item.files.length} فایل</span>` : ''}
+                            ${item.images && item.images.length ? `<span><i class="fas fa-images"></i> ${item.images.length} عکس</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <a href="../article.html?id=${key}" class="pro-btn pro-btn-primary pro-btn-sm" target="_blank"><i class="fas fa-eye"></i></a>
+                        <button class="pro-btn pro-btn-warning pro-btn-sm" onclick="openEditModal('article','${key}')"><i class="fas fa-edit"></i></button>
+                        <button class="pro-btn pro-btn-secondary pro-btn-sm" onclick="moveArticle(${idx}, -1)" title="بالا" ${idx === 0 ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button>
+                        <button class="pro-btn pro-btn-secondary pro-btn-sm" onclick="moveArticle(${idx}, 1)" title="پایین" ${idx === items.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button>
+                        <button class="pro-btn pro-btn-danger pro-btn-sm" onclick="deleteArticle('${key}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    document.getElementById('proArticlesCount').textContent = allArticles.length;
+    document.getElementById('proArticlesSub').textContent = allArticles.length + ' مقاله';
+    updateDashboard();
+    updateCounts();
+}
+function filterArticles(query) {
+    const q = query.toLowerCase().trim();
+    if (!q) {
+        articlesFiltered = [...allArticles];
+    } else {
+        articlesFiltered = allArticles.filter(item =>
+            (item.title || '').toLowerCase().includes(q) ||
+            (item.excerpt || '').toLowerCase().includes(q) ||
+            (item.tags || []).join(' ').toLowerCase().includes(q)
+        );
+    }
+    renderArticles(articlesFiltered);
+}
+function moveArticle(index, direction) {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= allArticles.length) return;
+    const item = allArticles.splice(index, 1)[0];
+    allArticles.splice(newIndex, 0, item);
+    const newData = {};
+    allArticles.forEach((item, i) => {
+        newData[String(i + 1).padStart(4, '0')] = item;
+    });
+    articlesData = newData;
+    renderArticles(allArticles);
+    showMsg('✅ ترتیب مقالات تغییر کرد. برای ذخیره روی دکمه "ذخیره" کلیک کنید.', 'info');
+}
+async function deleteArticle(key) {
+    if (!confirm(`آیا از حذف مقاله #${String(key).padStart(4,'0')} مطمئن هستید؟`)) return;
+    if (!getToken()) { showMsg('لطفاً توکن را وارد کنید.', 'error'); return; }
+    try {
+        delete articlesData[key];
+        const newSha = await saveToGitHub('_data/articles.json', articlesData, articlesSha);
+        articlesSha = newSha;
+        showMsg('✅ مقاله حذف شد.', 'success');
+        logActivity(`مقاله #${String(key).padStart(4,'0')} حذف شد`);
+        loadArticles();
+    } catch (e) { showMsg('❌ خطا: ' + e.message, 'error'); }
+}
+
 // ============================================================
-// 0509 - محصولات (Products)
+// 0509 - محصولات (Products) - اصلاح شده با داده‌های نمونه
 // ============================================================
+let productsFiltered = [];
 async function loadProducts() {
     const list = document.getElementById('proProductsList');
     if (!getToken()) {
@@ -419,6 +512,7 @@ async function loadProducts() {
             productsData = JSON.parse(data.content);
             productsSha = data.sha;
         } else {
+            // داده‌های نمونه برای محصولات
             productsData = {
                 '0001': { name: 'قطعه ۳D پرینتر', desc: 'قطعه سفارشی برای پرینتر سه‌بعدی', price: 'رایگان', stock: 'موجود', icon: 'fa-cube' },
                 '0002': { name: 'فایل STL', desc: 'مدل سه‌بعدی برای پرینت', price: '۵۰,۰۰۰ تومان', stock: 'موجود', icon: 'fa-file' }
@@ -438,9 +532,83 @@ async function loadProducts() {
         showMsg('⚠️ از داده‌های نمونه برای محصولات استفاده شد.', 'info');
     }
 }
+function renderProducts(items) {
+    const list = document.getElementById('proProductsList');
+    if (items.length === 0) {
+        list.innerHTML = '<div class="pro-empty"><i class="fas fa-cube"></i>هیچ محصولی یافت نشد.</div>';
+    } else {
+        list.innerHTML = items.map((item, idx) => {
+            const key = item.key;
+            return `
+                <div class="pro-item">
+                    <div class="info">
+                        <div class="title">${item.name || 'بدون نام'} <span style="color:var(--pro-secondary);font-size:0.8rem;">${item.price || 'رایگان'}</span> <span style="color:var(--pro-text-secondary);font-size:0.7rem;">#<span onclick="copyIdFromText('${key}')" style="cursor:pointer;color:var(--pro-primary);">${String(key).padStart(4,'0')}</span></span></div>
+                        <div class="meta">
+                            <span><i class="fas fa-tag"></i> ${item.tag || 'بدون برچسب'}</span>
+                            <span><i class="fas fa-box"></i> ${item.stock || 'موجود'}</span>
+                            ${item.files && item.files.length ? `<span><i class="fas fa-paperclip"></i> ${item.files.length} فایل</span>` : ''}
+                            ${item.images && item.images.length ? `<span><i class="fas fa-images"></i> ${item.images.length} عکس</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <a href="../product.html?id=${key}" class="pro-btn pro-btn-primary pro-btn-sm" target="_blank"><i class="fas fa-eye"></i></a>
+                        <button class="pro-btn pro-btn-warning pro-btn-sm" onclick="openEditModal('product','${key}')"><i class="fas fa-edit"></i></button>
+                        <button class="pro-btn pro-btn-secondary pro-btn-sm" onclick="moveProduct(${idx}, -1)" title="بالا" ${idx === 0 ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button>
+                        <button class="pro-btn pro-btn-secondary pro-btn-sm" onclick="moveProduct(${idx}, 1)" title="پایین" ${idx === items.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button>
+                        <button class="pro-btn pro-btn-danger pro-btn-sm" onclick="deleteProduct('${key}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    document.getElementById('proProductsCount').textContent = allProducts.length;
+    document.getElementById('proProductsSub').textContent = allProducts.length + ' محصول';
+    updateDashboard();
+    updateCounts();
+}
+function filterProducts(query) {
+    const q = query.toLowerCase().trim();
+    if (!q) {
+        productsFiltered = [...allProducts];
+    } else {
+        productsFiltered = allProducts.filter(item =>
+            (item.name || '').toLowerCase().includes(q) ||
+            (item.desc || '').toLowerCase().includes(q) ||
+            (item.tag || '').toLowerCase().includes(q)
+        );
+    }
+    renderProducts(productsFiltered);
+}
+function moveProduct(index, direction) {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= allProducts.length) return;
+    const item = allProducts.splice(index, 1)[0];
+    allProducts.splice(newIndex, 0, item);
+    const newData = {};
+    allProducts.forEach((item, i) => {
+        newData[String(i + 1).padStart(4, '0')] = item;
+    });
+    productsData = newData;
+    renderProducts(allProducts);
+    showMsg('✅ ترتیب محصولات تغییر کرد. برای ذخیره روی دکمه "ذخیره" کلیک کنید.', 'info');
+}
+async function deleteProduct(key) {
+    if (!confirm(`آیا از حذف محصول #${String(key).padStart(4,'0')} مطمئن هستید؟`)) return;
+    if (!getToken()) { showMsg('لطفاً توکن را وارد کنید.', 'error'); return; }
+    try {
+        delete productsData[key];
+        const newSha = await saveToGitHub('_data/products.json', productsData, productsSha);
+        productsSha = newSha;
+        showMsg('✅ محصول حذف شد.', 'success');
+        logActivity(`محصول #${String(key).padStart(4,'0')} حذف شد`);
+        loadProducts();
+    } catch (e) { showMsg('❌ خطا: ' + e.message, 'error'); }
+}
+
 // ============================================================
-// 0510 - آرشیو (Archive)
+// 0510 - آرشیو (Archive) - اصلاح شده با داده‌های نمونه
 // ============================================================
+let archiveFiltered = [];
 async function loadArchive() {
     const list = document.getElementById('proArchiveList');
     if (!getToken()) {
@@ -453,6 +621,7 @@ async function loadArchive() {
             archiveData = JSON.parse(data.content);
             archiveSha = data.sha;
         } else {
+            // داده‌های نمونه برای آرشیو
             archiveData = {
                 '0001': { title: 'پروژه تحلیل CFD', excerpt: 'شبیه‌سازی جریان درون لوله', date: '۱۴۰۳/۰۱/۲۰', status: 'تکمیل شده', type: 'cfd' },
                 '0002': { title: 'طراحی مکانیکی', excerpt: 'طراحی قطعه با CATIA', date: '۱۴۰۲/۱۲/۱۰', status: 'در حال انجام', type: 'design' }
@@ -472,6 +641,84 @@ async function loadArchive() {
         showMsg('⚠️ از داده‌های نمونه برای آرشیو استفاده شد.', 'info');
     }
 }
+function renderArchive(items) {
+    const list = document.getElementById('proArchiveList');
+    const typeLabels = { cfd: 'تحلیل CFD', structure: 'تحلیل سازه', design: 'طراحی مکانیکی', electro: 'تحلیل الکترومغناطیس', university: 'پروژه دانشگاهی', fabrication: 'ساخت و نمونه‌سازی', other: 'سایر' };
+    const typeBadgeClass = { cfd: 'badge-cfd', structure: 'badge-structure', design: 'badge-design', electro: 'badge-electro', university: 'badge-university', fabrication: 'badge-fabrication', other: 'badge-other' };
+    if (items.length === 0) {
+        list.innerHTML = '<div class="pro-empty"><i class="fas fa-archive"></i>هیچ آیتمی در آرشیو یافت نشد.</div>';
+    } else {
+        list.innerHTML = items.map((item, idx) => {
+            const key = item.key;
+            const typeLabel = typeLabels[item.type] || item.type || 'سایر';
+            const badgeClass = typeBadgeClass[item.type] || 'badge-other';
+            return `
+                <div class="pro-item">
+                    <div class="info">
+                        <div class="title">${item.title || 'بدون عنوان'} <span style="color:var(--pro-text-secondary);font-size:0.7rem;">#<span onclick="copyIdFromText('${key}')" style="cursor:pointer;color:var(--pro-primary);">${String(key).padStart(4,'0')}</span></span></div>
+                        <div class="meta">
+                            <span><span class="${badgeClass}" style="padding:2px 10px;border-radius:20px;font-size:0.7rem;">${typeLabel}</span></span>
+                            <span><i class="fas fa-calendar"></i> ${item.date || '---'}</span>
+                            <span><i class="fas fa-flag"></i> ${item.status || 'تکمیل شده'}</span>
+                            ${item.files && item.files.length ? `<span><i class="fas fa-paperclip"></i> ${item.files.length} فایل</span>` : ''}
+                            ${item.images && item.images.length ? `<span><i class="fas fa-images"></i> ${item.images.length} عکس</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <a href="../archive-item.html?id=${key}" class="pro-btn pro-btn-primary pro-btn-sm" target="_blank"><i class="fas fa-eye"></i></a>
+                        <button class="pro-btn pro-btn-warning pro-btn-sm" onclick="openEditModal('archive','${key}')"><i class="fas fa-edit"></i></button>
+                        <button class="pro-btn pro-btn-secondary pro-btn-sm" onclick="moveArchive(${idx}, -1)" title="بالا" ${idx === 0 ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button>
+                        <button class="pro-btn pro-btn-secondary pro-btn-sm" onclick="moveArchive(${idx}, 1)" title="پایین" ${idx === items.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button>
+                        <button class="pro-btn pro-btn-danger pro-btn-sm" onclick="deleteArchive('${key}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    document.getElementById('proArchiveCount').textContent = allArchive.length;
+    document.getElementById('proArchiveSub').textContent = allArchive.length + ' آیتم';
+    updateDashboard();
+    updateCounts();
+}
+function filterArchive(query) {
+    const q = query.toLowerCase().trim();
+    if (!q) {
+        archiveFiltered = [...allArchive];
+    } else {
+        archiveFiltered = allArchive.filter(item =>
+            (item.title || '').toLowerCase().includes(q) ||
+            (item.excerpt || '').toLowerCase().includes(q) ||
+            (item.tags || []).join(' ').toLowerCase().includes(q)
+        );
+    }
+    renderArchive(archiveFiltered);
+}
+function moveArchive(index, direction) {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= allArchive.length) return;
+    const item = allArchive.splice(index, 1)[0];
+    allArchive.splice(newIndex, 0, item);
+    const newData = {};
+    allArchive.forEach((item, i) => {
+        newData[String(i + 1).padStart(4, '0')] = item;
+    });
+    archiveData = newData;
+    renderArchive(allArchive);
+    showMsg('✅ ترتیب آرشیو تغییر کرد. برای ذخیره روی دکمه "ذخیره" کلیک کنید.', 'info');
+}
+async function deleteArchive(key) {
+    if (!confirm(`آیا از حذف آیتم آرشیو #${String(key).padStart(4,'0')} مطمئن هستید؟`)) return;
+    if (!getToken()) { showMsg('لطفاً توکن را وارد کنید.', 'error'); return; }
+    try {
+        delete archiveData[key];
+        const newSha = await saveToGitHub('_data/archive.json', archiveData, archiveSha);
+        archiveSha = newSha;
+        showMsg('✅ آیتم آرشیو حذف شد.', 'success');
+        logActivity(`آیتم آرشیو #${String(key).padStart(4,'0')} حذف شد`);
+        loadArchive();
+    } catch (e) { showMsg('❌ خطا: ' + e.message, 'error'); }
+}
+
 // ============================================================
 // 0511 - مودال ویرایش کامل (با گالری و فایل)
 // ============================================================
@@ -1551,19 +1798,14 @@ async function saveAppearance() {
 }
 
 // ============================================================
-// 0522 - منوها (با قابلیت ویرایش و جابجایی)
+// 0522 - منوها (با قابلیت ویرایش و جابجایی) - اصلاح شده با منوی پیش‌فرض
 // ============================================================
-// ============================================================
-// 0522 - منوها (با قابلیت ویرایش و جابجایی) - نسخه پایدار
-// ============================================================
-
-// بارگذاری داده‌های منو از گیت‌هاب یا ایجاد پیش‌فرض
 function loadMenuData() {
     const token = getToken();
     if (!token) {
-        menuData = { header: [], slide: [] };
+        menuData = { header: defaultMenu.header, slide: defaultMenu.slide };
         renderMenuLists();
-        showMsg('⚠️ برای مدیریت منوها، ابتدا توکن گیت‌هاب را وارد کنید.', 'error');
+        showMsg('⚠️ توکن وجود ندارد، از منوی پیش‌فرض استفاده شد.', 'info');
         return;
     }
 
@@ -1572,33 +1814,17 @@ function loadMenuData() {
             if (data) {
                 try {
                     const parsed = JSON.parse(data.content);
-                    // اطمینان از وجود کلیدهای header و slide
                     menuData = {
-                        header: Array.isArray(parsed.header) ? parsed.header : [],
-                        slide: Array.isArray(parsed.slide) ? parsed.slide : []
+                        header: Array.isArray(parsed.header) ? parsed.header : defaultMenu.header,
+                        slide: Array.isArray(parsed.slide) ? parsed.slide : defaultMenu.slide
                     };
                 } catch (e) {
                     console.warn('⚠️ خطا در parse منو، استفاده از پیش‌فرض:', e);
-                    menuData = { header: [], slide: [] };
+                    menuData = { header: defaultMenu.header, slide: defaultMenu.slide };
                 }
             } else {
-                // فایل وجود ندارد، ایجاد با منوی پیش‌فرض
-                menuData = {
-                    header: [
-                        { title: 'خانه', link: 'index.html' },
-                        { title: 'مقالات', link: 'articles.html' },
-                        { title: 'محصولات', link: 'products.html' },
-                        { title: 'آرشیو', link: 'archive.html' },
-                        { title: 'تماس', link: 'index.html#contact' }
-                    ],
-                    slide: [
-                        { title: 'درباره من', link: 'index.html#about' },
-                        { title: 'مهارت‌ها', link: 'index.html#skills' },
-                        { title: 'تحصیلات', link: 'index.html#education' },
-                        { title: 'پروژه‌ها', link: 'index.html#projects' }
-                    ]
-                };
-                // ذخیره خودکار در گیت‌هاب (در صورت امکان)
+                menuData = { header: defaultMenu.header, slide: defaultMenu.slide };
+                // سعی کن منوی پیش‌فرض رو در گیت‌هاب ذخیره کنی (اختیاری)
                 saveToGitHub('_data/menu.json', menuData, null)
                     .then(() => console.log('✅ منوی پیش‌فرض ذخیره شد.'))
                     .catch(err => console.warn('⚠️ ذخیره منوی پیش‌فرض ناموفق:', err));
@@ -1607,9 +1833,9 @@ function loadMenuData() {
         })
         .catch((err) => {
             console.error('❌ خطا در بارگذاری منوها:', err);
-            menuData = { header: [], slide: [] };
+            menuData = { header: defaultMenu.header, slide: defaultMenu.slide };
             renderMenuLists();
-            showMsg('⚠️ خطا در بارگذاری منوها. لطفاً توکن خود را بررسی کنید.', 'error');
+            showMsg('⚠️ خطا در بارگذاری منوها، از منوی پیش‌فرض استفاده شد.', 'info');
         });
 }
 

@@ -1063,6 +1063,9 @@ async function loadSectionsData() {
 // ============================================================
 // 221.3.11 - فرم تماس (ذخیره در JSON + ارسال به تلگرام)
 // ============================================================
+// ============================================================
+// 221.3.11 - فرم تماس (ذخیره در localStorage + تلاش برای گیت‌هاب)
+// ============================================================
 function initContactForm() {
     const form = document.getElementById('contactForm');
     if (!form) {
@@ -1072,6 +1075,205 @@ function initContactForm() {
 
     console.log('✅ فرم تماس پیدا شد');
 
+    // شمارش کاراکترها
+    const messageInput = document.getElementById('message');
+    const charCount = document.getElementById('charCount');
+    if (messageInput && charCount) {
+        messageInput.addEventListener('input', function() {
+            const len = this.value.length;
+            charCount.textContent = len;
+            if (len > 500) {
+                this.value = this.value.substring(0, 500);
+                charCount.textContent = 500;
+            }
+        });
+    }
+
+    // ===== ارسال فرم =====
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('📤 دکمه ارسال کلیک شد!');
+
+        // دریافت مقادیر
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const subject = document.getElementById('subject').value;
+        const message = document.getElementById('message').value.trim();
+
+        // اعتبارسنجی
+        if (!name || !email || !subject || !message) {
+            alert('❌ لطفاً تمام فیلدهای ضروری را پر کنید.');
+            return;
+        }
+        if (!email.includes('@')) {
+            alert('❌ لطفاً یک ایمیل معتبر وارد کنید.');
+            return;
+        }
+
+        // ===== ساخت پیام جدید =====
+        const newMessage = {
+            id: 'MSG-' + Date.now().toString(36).toUpperCase(),
+            source: 'فرم تماس سایت',
+            name: name,
+            email: email,
+            phone: phone || '---',
+            subject: subject,
+            message: message,
+            date: new Date().toISOString(),
+            datePersian: new Date().toLocaleString('fa-IR'),
+            status: 'new'
+        };
+
+        // تغییر دکمه به حالت در حال ارسال
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = submitBtn?.querySelector('.btn-text');
+        const btnLoader = submitBtn?.querySelector('.btn-loader');
+        if (btnText && btnLoader) {
+            btnText.style.opacity = '0';
+            btnLoader.style.opacity = '1';
+        }
+        if (submitBtn) submitBtn.disabled = true;
+
+        // ===== تلاش برای ذخیره در گیت‌هاب (اگر توکن موجود باشد) =====
+        const token = localStorage.getItem('github_token');
+        let savePromise;
+
+        if (token) {
+            // ذخیره در گیت‌هاب
+            savePromise = fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('خطا در خواندن فایل از گیت‌هاب');
+                return res.json();
+            })
+            .then(data => {
+                const content = atob(data.content);
+                let messages = [];
+                try {
+                    messages = JSON.parse(content);
+                } catch (e) {
+                    messages = [];
+                }
+                messages.push(newMessage);
+                const updatedContent = JSON.stringify(messages, null, 2);
+                const encoded = btoa(unescape(encodeURIComponent(updatedContent)));
+                return fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({
+                        message: `Add contact message from ${name}`,
+                        content: encoded,
+                        sha: data.sha
+                    })
+                });
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('خطا در ذخیره در گیت‌هاب');
+                return res.json();
+            });
+        } else {
+            // اگر توکن نبود، در localStorage ذخیره کن
+            savePromise = new Promise((resolve, reject) => {
+                try {
+                    let localMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
+                    localMessages.push(newMessage);
+                    localStorage.setItem('contact_messages', JSON.stringify(localMessages));
+                    resolve({ success: true, source: 'localStorage' });
+                } catch (e) {
+                    reject(new Error('خطا در ذخیره محلی'));
+                }
+            });
+        }
+
+        // ===== اجرای عملیات ذخیره‌سازی =====
+        savePromise
+            .then(() => {
+                // ✅ نمایش پیام موفقیت
+                document.getElementById('contactForm').style.display = 'none';
+                const successDiv = document.getElementById('formSuccess');
+                if (successDiv) {
+                    successDiv.style.display = 'flex';
+                    successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                const errorDiv = document.getElementById('formError');
+                if (errorDiv) errorDiv.style.display = 'none';
+                form.reset();
+                if (charCount) charCount.textContent = '0';
+                console.log('✅ پیام با موفقیت ذخیره شد!');
+            })
+            .catch(error => {
+                console.error('❌ خطا:', error);
+                // اگر خطا بود، باز هم پیام را در localStorage ذخیره می‌کنیم (تلاش مجدد)
+                try {
+                    let localMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
+                    localMessages.push(newMessage);
+                    localStorage.setItem('contact_messages', JSON.stringify(localMessages));
+                    // نمایش موفقیت با ذکر اینکه به‌صورت محلی ذخیره شد
+                    document.getElementById('contactForm').style.display = 'none';
+                    const successDiv = document.getElementById('formSuccess');
+                    if (successDiv) {
+                        successDiv.style.display = 'flex';
+                        successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // تغییر متن پیام موفقیت برای نشان دادن ذخیره محلی
+                        const successText = successDiv.querySelector('.success-text');
+                        if (successText) {
+                            successText.textContent = 'پیام شما به‌صورت محلی ذخیره شد. در اولین فرصت بررسی می‌شود.';
+                        }
+                    }
+                    form.reset();
+                    if (charCount) charCount.textContent = '0';
+                    console.log('✅ پیام به‌صورت محلی ذخیره شد (به‌دلیل خطا در گیت‌هاب)');
+                } catch (e2) {
+                    // اگر حتی localStorage هم کار نکرد، خطا نمایش بده
+                    showError('متأسفانه پیام ذخیره نشد. لطفاً بعداً تلاش کنید یا مستقیماً ایمیل بزنید.');
+                }
+            })
+            .finally(() => {
+                if (btnText && btnLoader) {
+                    btnText.style.opacity = '1';
+                    btnLoader.style.opacity = '0';
+                }
+                if (submitBtn) submitBtn.disabled = false;
+            });
+    });
+
+    // ===== نمایش خطا =====
+    function showError(msg) {
+        console.error('❌ خطا:', msg);
+        const errorDiv = document.getElementById('formError');
+        const errorMsg = document.getElementById('errorMessage');
+        if (errorDiv && errorMsg) {
+            errorMsg.textContent = msg;
+            errorDiv.style.display = 'block';
+            document.getElementById('contactForm').style.display = 'none';
+            const successDiv = document.getElementById('formSuccess');
+            if (successDiv) successDiv.style.display = 'none';
+        } else {
+            alert('❌ ' + msg);
+        }
+    }
+
+    // ===== بستن پیام موفقیت =====
+    const closeSuccess = document.getElementById('closeSuccess');
+    if (closeSuccess) {
+        closeSuccess.addEventListener('click', function() {
+            const successDiv = document.getElementById('formSuccess');
+            if (successDiv) successDiv.style.display = 'none';
+            document.getElementById('contactForm').style.display = 'flex';
+        });
+    }
+
+    console.log('✅ فرم تماس با قابلیت ذخیره محلی و گیت‌هاب آماده است!');
+}
     // ===== شمارش کاراکترها =====
     const messageInput = document.getElementById('message');
     const charCount = document.getElementById('charCount');

@@ -25,90 +25,1290 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- ===== 202 - استایل‌های جدا شده در common.css ===== -->
-    <link rel="stylesheet" href="common.css">
-
-    <!-- ===== 219 - استایل‌های اضافی برای منو و ریسپانسیو ===== -->
+    <!-- ===== 202 - استایل‌های اصلی ===== -->
     <style>
         /* ============================================================
-           219.1 - مخفی کردن منوی هدر در موبایل
+           ریشه و متغیرها (با گرادیان‌های زیباتر)
            ============================================================ */
-        @media (max-width: 768px) {
-            .main-header .nav-list {
-                display: none !important;
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #60a5fa;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --accent: #8b5cf6;
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #141b2b;
+            --bg-tertiary: #1e2a3d;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #2a3a55;
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+            --shadow-hover: 0 12px 48px rgba(0,0,0,0.4);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Vazirmatn', sans-serif;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 8px 32px rgba(0,0,0,0.08);
+            --shadow-hover: 0 12px 48px rgba(0,0,0,0.12);
+        }
+
+        /* ============================================================
+           ریست و پایه
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            transition: background 0.3s ease, color 0.3s ease;
+            direction: rtl;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ============================================================
+           اسکرول بار سفارشی
+           ============================================================ */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* ============================================================
+           انیمیشن‌ها
+           ============================================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
-            .main-header .header-actions .btn-outline {
-                display: none !important;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
-            .main-header .logo h1 {
-                font-size: 0.9rem;
+        }
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
             }
-            .main-header .logo .logo-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 1rem;
+            to {
+                opacity: 1;
+                transform: translateX(0);
             }
-            #themeToggle {
-                width: 36px;
-                height: 36px;
-                font-size: 0.8rem;
+        }
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
             }
-            .menu-toggle {
-                padding: 0.3rem 0.8rem;
-                font-size: 0.75rem;
+            to {
+                opacity: 1;
+                transform: translateX(0);
             }
-            .menu-toggle .bar {
-                width: 18px;
-                height: 1.5px;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-fade-up {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        .animate-slide-left {
+            animation: slideInLeft 0.8s ease forwards;
+        }
+        .animate-slide-right {
+            animation: slideInRight 0.8s ease forwards;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* ============================================================
+           بخش‌ها (Sections)
+           ============================================================ */
+        section {
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .section-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            padding: 4px 18px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .section-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 16px auto 20px;
+            max-width: 200px;
+        }
+        .section-divider .line {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+        .section-divider .icon {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        .section-desc {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 20px;
+            font-size: 1.05rem;
+        }
+
+        /* ============================================================
+           هیرو (Hero)
+           ============================================================ */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--bg-primary);
+            position: relative;
+            padding-top: 0;
+        }
+        .hero-section .bg-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .hero-section .bg-layer .overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(37,99,235,0.08) 0%, transparent 60%);
+        }
+        .hero-section .bg-layer .radial {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(37,99,235,0.05) 0%, transparent 70%);
+            top: -100px;
+            right: -200px;
+        }
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-text {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        .hero-text .hero-title {
+            font-size: 3.2rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+        .hero-text .hero-title .highlight {
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-text .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+        .hero-text .hero-underline {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            margin-top: 8px;
+        }
+        .hero-text .hero-description {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 500px;
+            margin: 16px 0;
+            line-height: 1.9;
+        }
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0 20px;
+        }
+        .hero-tags span {
+            background: var(--bg-tertiary);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 24px 0 28px;
+            background: var(--bg-secondary);
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+        .hero-stats .stat-item {
+            text-align: center;
+        }
+        .hero-stats .stat-item .stat-icon {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .hero-stats .stat-item .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .hero-stats .stat-item .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .hero-actions .btn {
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(37,99,235,0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(37,99,235,0.4);
+        }
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            background: rgba(37,99,235,0.1);
+        }
+
+        /* تصویر هیرو */
+        .hero-image {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            animation: fadeInUp 0.8s ease 0.2s forwards;
+            opacity: 0;
+        }
+        .hero-image .image-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+        }
+        .hero-image .image-box {
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            border: 3px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+        }
+        .hero-image .image-box::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 30px;
+            background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.3) 100%);
+        }
+        .hero-image .image-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+        .hero-image .image-box:hover img {
+            transform: scale(1.03);
+        }
+        .hero-image .badge-top {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .hero-image .badge-bottom {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 2;
+        }
+        .hero-image .badge-bottom .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        .hero-tags-bottom {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+        .hero-tags-bottom .tag-item {
+            background: var(--bg-secondary);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ============================================================
+           درباره (About)
+           ============================================================ */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .about-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 32px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .about-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+        .about-card .about-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .about-card .about-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .about-card .about-text {
+            color: var(--text-secondary);
+            line-height: 2;
+            margin-bottom: 24px;
+        }
+        .about-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .about-features .feature-item {
+            background: var(--bg-tertiary);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            text-align: center;
+        }
+        .about-features .feature-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .about-features .feature-item .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #fff;
+            margin: 0 auto 8px;
+        }
+        .about-features .feature-item h4 {
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+        .about-features .feature-item p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        .about-side {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .edu-card, .certs-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 28px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .edu-card:hover, .certs-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+        .edu-card .edu-header, .certs-card .certs-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .edu-card .edu-icon, .certs-card .certs-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+        .edu-details .edu-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .edu-details .edu-row:last-child {
+            border-bottom: none;
+        }
+        .edu-details .edu-row .label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .edu-details .edu-row .value {
+            font-weight: 500;
+        }
+        .certs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .certs-list .cert-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .certs-list .cert-item:hover {
+            border-color: var(--primary);
+        }
+        .certs-list .cert-item .cert-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .certs-list .cert-item .cert-info h5 {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+        .certs-list .cert-item .cert-info p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* ============================================================
+           مهارت‌ها (Skills)
+           ============================================================ */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .skill-item {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .skill-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary);
+        }
+        .skill-item .skill-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 8px;
+        }
+        .skill-item .skill-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .skill-item .skill-name {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .skill-item .skill-level {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            padding: 2px 12px;
+            border-radius: 20px;
+        }
+        .skill-item .skill-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 6px 0 10px;
+        }
+        .skill-item .skill-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .skill-item .skill-bar .skill-progress {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        /* ============================================================
+           تحصیلات (Education)
+           ============================================================ */
+        .education-timeline {
+            position: relative;
+            padding-right: 30px;
+        }
+        .education-timeline::before {
+            content: '';
+            position: absolute;
+            right: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--primary), var(--accent), transparent);
+        }
+        .edu-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-right: 24px;
+        }
+        .edu-item:last-child {
+            margin-bottom: 0;
+        }
+        .edu-item .edu-dot {
+            position: absolute;
+            right: -26px;
+            top: 6px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: 3px solid var(--bg-primary);
+            box-shadow: 0 0 0 3px var(--primary);
+        }
+        .edu-item .edu-content {
+            background: var(--bg-secondary);
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .edu-item .edu-content:hover {
+            transform: translateX(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+        .edu-item .edu-content .edu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .edu-item .edu-content .edu-header h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .edu-item .edu-content .edu-badge {
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .edu-item .edu-content .edu-org {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 4px 0 2px;
+        }
+        .edu-item .edu-content .edu-date {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+        }
+        .edu-item .edu-content .edu-details {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0;
+        }
+        .edu-item .edu-content .edu-details li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            padding: 4px 0;
+        }
+        .edu-item .edu-content .edu-details li i {
+            color: var(--secondary);
+            font-size: 0.7rem;
+        }
+
+        /* ============================================================
+           مقالات (Articles)
+           ============================================================ */
+        .article-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .article-preview-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+        }
+        .article-preview-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary);
+        }
+        .article-preview-card .tag {
+            display: inline-block;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .article-preview-card .tag.article { background: var(--primary); }
+        .article-preview-card .tag.project { background: var(--accent); }
+        .article-preview-card .tag.tutorial { background: var(--secondary); }
+        .article-preview-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .article-preview-card h3 a {
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+        .article-preview-card h3 a:hover {
+            color: var(--primary);
+        }
+        .article-preview-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+        .article-preview-card .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .article-preview-card .meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 28px;
+            border-radius: 50px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            font-family: var(--font);
+            font-size: 0.9rem;
+        }
+        .btn-more:hover {
+            border-color: var(--primary);
+            background: rgba(37,99,235,0.1);
+        }
+
+        /* ============================================================
+           تماس (Contact)
+           ============================================================ */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 40px;
+        }
+        .contact-info-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 32px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            margin-bottom: 24px;
+        }
+        .contact-info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+        .contact-info-card .contact-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .contact-info-card .contact-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        .contact-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .contact-items .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .contact-items .contact-item:hover {
+            border-color: var(--primary);
+        }
+        .contact-items .contact-item i {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        .contact-items .contact-item .contact-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .contact-items .contact-item .contact-value {
+            font-weight: 500;
+        }
+        .contact-items .contact-item a {
+            color: var(--primary);
+            transition: var(--transition);
+        }
+        .contact-items .contact-item a:hover {
+            color: var(--primary-light);
+        }
+
+        .resume-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 28px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .resume-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+        .resume-card .resume-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .resume-card .resume-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+        .resume-card .resume-file {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+        .resume-card .resume-file .file-icon {
+            font-size: 2.2rem;
+            color: #ef4444;
+        }
+        .resume-card .resume-file .file-info h4 {
+            font-size: 0.95rem;
+        }
+        .resume-card .resume-file .file-info .file-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .resume-card .resume-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .resume-card .resume-actions .btn {
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font);
+        }
+        .btn-download {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+        }
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(37,99,235,0.3);
+        }
+        .btn-preview {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-preview:hover {
+            border-color: var(--primary);
+        }
+
+        /* فرم تماس */
+        .contact-form-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 32px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+        }
+        .contact-form-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+        .contact-form-card .form-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .contact-form-card .form-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        .contact-form-card .form-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .contact-form-card .form-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        #contactForm {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .form-group .input-wrapper {
+            position: relative;
+        }
+        .form-group .input-wrapper input,
+        .form-group .input-wrapper select,
+        .form-group .input-wrapper textarea {
+            width: 100%;
+            padding: 12px 16px;
+            padding-right: 44px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: var(--font);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            outline: none;
+        }
+        .form-group .input-wrapper input:focus,
+        .form-group .input-wrapper select:focus,
+        .form-group .input-wrapper textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+        }
+        .form-group .input-wrapper input::placeholder,
+        .form-group .input-wrapper textarea::placeholder {
+            color: var(--text-muted);
+        }
+        .form-group .input-wrapper .input-icon,
+        .form-group .input-wrapper .textarea-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+        .form-group .input-wrapper .textarea-icon {
+            top: 16px;
+            transform: none;
+        }
+        .form-group .input-wrapper textarea {
+            resize: vertical;
+            min-height: 120px;
+            padding-top: 14px;
+        }
+        .char-counter {
+            text-align: left;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .submit-btn {
+            padding: 14px 32px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            border: none;
+            font-family: var(--font);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            position: relative;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(37,99,235,0.3);
+        }
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        .submit-btn .btn-loader {
+            display: none;
+        }
+        .submit-btn.loading .btn-text {
+            display: none;
+        }
+        .submit-btn.loading .btn-loader {
+            display: inline;
+        }
+        .form-footer {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .form-footer .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .form-footer .footer-item i {
+            color: var(--primary);
+        }
+
+        /* پیام موفقیت و خطا */
+        .form-success {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .form-success .success-icon {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 12px;
+        }
+        .form-success .success-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 4px;
+        }
+        .form-success .success-text {
+            color: var(--text-secondary);
+        }
+        .form-success .success-email {
+            margin: 8px 0 16px;
+        }
+        .close-success {
+            padding: 8px 24px;
+            border-radius: 50px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-family: var(--font);
+            transition: var(--transition);
+        }
+        .close-success:hover {
+            border-color: var(--primary);
+        }
+        .form-error {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .form-error .error-icon {
+            font-size: 3rem;
+            color: #ef4444;
+            margin-bottom: 10px;
+        }
+
+        /* ============================================================
+           ریسپانسیو
+           ============================================================ */
+        @media (max-width: 992px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
             }
-            .menu-toggle span:last-child {
-                font-size: 0.65rem;
+            .hero-text .hero-underline {
+                margin: 8px auto;
             }
-            .header-cart-icon {
-                font-size: 1rem;
+            .hero-text .hero-description {
+                margin: 16px auto;
             }
-            .header-user-info a {
-                font-size: 0.7rem !important;
+            .hero-tags {
+                justify-content: center;
             }
-            .slide-menu-container {
-                width: 280px;
-                right: -300px;
-            }
-            .slide-menu-profile-img {
-                width: 70px;
-                height: 70px;
-            }
-            .slide-menu-profile h3 {
-                font-size: 1.1rem;
-            }
-            .slide-menu-link {
-                padding: 12px 16px;
-                font-size: 0.85rem;
-            }
-            .slide-menu-link .menu-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 0.8rem;
-            }
-            .slide-menu-actions .btn {
-                padding: 10px 16px;
-                font-size: 0.8rem;
-            }
-            /* کوچک‌تر کردن بخش‌های اصلی */
-            .hero-text .hero-title {
-                font-size: 2rem;
-            }
-            .hero-text .hero-subtitle {
-                font-size: 1rem;
+            .hero-actions {
+                justify-content: center;
             }
             .hero-stats {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .hero-actions {
-                grid-template-columns: 1fr;
-            }
             .about-grid {
                 grid-template-columns: 1fr;
+            }
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+        @media (max-width: 768px) {
+            section {
+                padding: 50px 0;
+            }
+            .hero-text .hero-title {
+                font-size: 2.2rem;
+            }
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 16px;
+            }
+            .hero-stats .stat-item .stat-number {
+                font-size: 1.4rem;
+            }
+            .about-features {
+                grid-template-columns: 1fr 1fr;
             }
             .skills-grid {
                 grid-template-columns: 1fr;
@@ -116,192 +1316,22 @@
             .article-preview-grid {
                 grid-template-columns: 1fr;
             }
-            .contact-grid {
-                grid-template-columns: 1fr;
+            .contact-form-card {
+                padding: 20px;
             }
-            .section-title {
-                font-size: 1.6rem;
-            }
-            .container {
-                padding: 0 12px;
-            }
-            main {
-                padding-top: 60px !important;
-            }
-        }
-
-        /* ============================================================
-           219.2 - تنظیمات منوی کشویی برای نمایش بهتر
-           ============================================================ */
-        .slide-menu-container {
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .slide-menu-container.active {
-            right: 0;
-        }
-        .menu-overlay {
-            transition: opacity 0.3s ease;
-        }
-        .menu-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* ============================================================
-           219.3 - استایل سبد خرید دراپ‌داون
-           ============================================================ */
-        #cartDropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: auto;
-            min-width: 280px;
-            max-width: 360px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            z-index: 1000;
-            margin-top: 8px;
-            padding: 4px 0;
-        }
-        @media (max-width: 480px) {
-            #cartDropdown {
-                min-width: 240px;
-                left: -20px;
-                right: auto;
-            }
-        }
-        .header-cart-icon {
-            position: relative;
-            cursor: pointer;
-        }
-        .header-cart-icon .cart-badge {
-            position: absolute;
-            top: -8px;
-            left: -8px;
-            background: #ef4444;
-            color: #fff;
-            font-size: 0.55rem;
-            font-weight: 700;
-            padding: 1px 5px;
-            border-radius: 50%;
-            min-width: 18px;
-            text-align: center;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* ============================================================
-           219.4 - منوی کاربر (دراپ‌داون)
-           ============================================================ */
-        .user-dropdown-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-        .user-trigger {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            color: var(--text-primary);
-            font-size: 0.85rem;
-            padding: 4px 10px;
-            border-radius: 8px;
-            transition: 0.3s;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-        }
-        .user-trigger:hover {
-            border-color: var(--primary-color);
-        }
-        .user-dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            min-width: 160px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 6px 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 1000;
-            margin-top: 4px;
-        }
-        .user-dropdown-menu a,
-        .user-dropdown-menu button {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: 0.3s;
-            font-size: 0.85rem;
-            border-radius: 6px;
-            background: none;
-            border: none;
-            width: 100%;
-            text-align: right;
-            cursor: pointer;
-            font-family: 'Vazirmatn', sans-serif;
-        }
-        .user-dropdown-menu a:hover,
-        .user-dropdown-menu button:hover {
-            background: var(--bg-tertiary);
-        }
-        .user-dropdown-menu button {
-            color: #ef4444;
-        }
-        .user-dropdown-menu button:hover {
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        /* ============================================================
-           219.5 - ریسپانسیو برای فوتر و سایر بخش‌ها
-           ============================================================ */
-        @media (max-width: 768px) {
-            .main-footer .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            .main-footer .footer-wave {
-                height: 60px;
-            }
-            .main-footer .footer-bottom {
-                flex-direction: column;
-                text-align: center;
-            }
-            .main-footer .footer-bottom .footer-badges {
-                justify-content: center;
-            }
-            .education-timeline .edu-item {
-                padding-right: 1.2rem;
-            }
-            .education-timeline .edu-item .edu-content {
-                padding: 1rem;
-            }
-            .education-timeline .edu-item .edu-content .edu-header {
+            .edu-item .edu-content .edu-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 0.3rem;
-            }
-            .contact-form-card {
-                position: static;
-            }
-            .contact-form-card form .grid-2 {
-                grid-template-columns: 1fr;
             }
             .resume-card .resume-file {
                 flex-direction: column;
-                align-items: center;
                 text-align: center;
             }
             .resume-card .resume-actions {
                 flex-direction: column;
+            }
+            .resume-card .resume-actions .btn {
+                justify-content: center;
             }
         }
         @media (max-width: 480px) {
@@ -310,105 +1340,20 @@
             }
             .hero-stats {
                 grid-template-columns: 1fr 1fr;
+                gap: 12px;
             }
-            .hero-stats .stat-item .stat-number {
-                font-size: 1.2rem;
+            .hero-actions .btn {
+                width: 100%;
+                justify-content: center;
             }
-            .about-card .about-features {
-                grid-template-columns: 1fr 1fr;
-            }
-            .about-card .about-features .feature-item .feature-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
-            }
-            .article-preview-card .meta {
-                flex-direction: column;
-                gap: 4px;
-            }
-            .products-grid {
+            .about-features {
                 grid-template-columns: 1fr;
             }
-            .articles-grid {
-                grid-template-columns: 1fr;
-            }
-            .archive-grid {
-                grid-template-columns: 1fr;
-            }
-            .slide-menu-container {
-                width: 260px;
-                right: -280px;
-            }
-        }
-
-        /* ============================================================
-           219.6 - بهبودهای ظاهری حرفه‌ای (اضافه شده)
-           ============================================================ */
-        /* افکت ملایم برای عکس هیرو */
-        .hero-image .image-box img {
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-        .hero-image .image-box img:hover {
-            transform: scale(1.02);
-            box-shadow: 0 25px 70px rgba(0,0,0,0.5);
-        }
-
-        /* گرادیان نرم برای پس‌زمینه بخش‌ها */
-        .hero-section .bg-layer .radial {
-            background: radial-gradient(circle at 30% 50%, rgba(37,99,235,0.08) 0%, transparent 60%);
-        }
-
-        /* سایه‌های نرم برای کارت‌ها */
-        .about-card, .edu-card, .certs-card, .skill-item, .article-preview-card, .contact-info-card, .resume-card, .contact-form-card {
-            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-        .about-card:hover, .edu-card:hover, .certs-card:hover, .skill-item:hover, .article-preview-card:hover {
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-            transform: translateY(-4px);
-        }
-
-        /* انیمیشن ملایم برای شمارنده‌ها */
-        .stat-number {
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-
-        /* دکمه‌ها با افکت شفافیت */
-        .btn-primary, .btn-secondary, .btn-outline, .submit-btn {
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-primary::after, .btn-secondary::after, .submit-btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255,255,255,0.15);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
-        }
-        .btn-primary:active::after, .btn-secondary:active::after, .submit-btn:active::after {
-            width: 300px;
-            height: 300px;
-        }
-
-        /* فاصله‌گذاری بهتر در موبایل */
-        @media (max-width: 768px) {
-            .hero-text .hero-title {
-                font-size: 1.8rem;
-            }
-            .hero-text .hero-subtitle {
-                font-size: 0.95rem;
+            .container {
+                padding: 0 12px;
             }
             .section-title {
-                font-size: 1.4rem;
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -416,10 +1361,9 @@
 <body>
 
     <!-- ============================================================
-         201 - هدر و منوی کشویی (بارگذاری توسط load-menu.js)
+         201 - هدر و منوی کشویی (بارگذاری توسط menu.js)
          ============================================================ -->
     <!-- هدر و منوی کشویی از فایل member-menu.html بارگذاری می‌شوند -->
-    <!-- هیچ کد هدر و منویی در اینجا نوشته نشده است -->
 
     <!-- ============================================================
          203 - محتوای اصلی (Main)
@@ -438,12 +1382,12 @@
                 <div class="hero-grid">
                     <!-- متن هیرو -->
                     <div class="hero-text">
-                        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--bg-tertiary);padding:0.3rem 1rem;border-radius:30px;font-size:0.85rem;margin-bottom:1.5rem;">
-                            <i class="fas fa-hand-wave" style="color:var(--primary-color);"></i>
+                        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--bg-tertiary);padding:0.3rem 1.2rem;border-radius:30px;font-size:0.85rem;margin-bottom:1.5rem;border:1px solid var(--border-color);">
+                            <i class="fas fa-hand-wave" style="color:var(--primary);"></i>
                             <span>خوش آمدید به رزومه آنلاین</span>
                         </div>
                         <h1 class="hero-title">
-                            <span style="display:block;font-weight:300;">مهندس</span>
+                            <span style="display:block;font-weight:300;font-size:0.6em;background:none;-webkit-text-fill-color:var(--text-secondary);">مهندس</span>
                             <span class="highlight">ماهان ادهم قزوینی</span>
                         </h1>
                         <div style="margin-bottom:1.5rem;">
@@ -455,12 +1399,12 @@
                         <div class="hero-stats">
                             <div class="stat-item">
                                 <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
-                                <div><span class="stat-number" data-count="1">0</span><span style="color:var(--primary-color);font-size:1.2rem;">+</span></div>
+                                <div><span class="stat-number" data-count="1">0</span><span style="color:var(--primary);font-size:1.2rem;">+</span></div>
                                 <div class="stat-label">سال تجربه</div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-icon"><i class="fas fa-project-diagram"></i></div>
-                                <div><span class="stat-number" data-count="5">0</span><span style="color:var(--primary-color);font-size:1.2rem;">+</span></div>
+                                <div><span class="stat-number" data-count="5">0</span><span style="color:var(--primary);font-size:1.2rem;">+</span></div>
                                 <div class="stat-label">پروژه موفق</div>
                             </div>
                             <div class="stat-item">
@@ -470,7 +1414,7 @@
                             </div>
                             <div class="stat-item">
                                 <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
-                                <div><span class="stat-number" data-count="2">0</span><span style="color:var(--primary-color);font-size:1.2rem;">+</span></div>
+                                <div><span class="stat-number" data-count="2">0</span><span style="color:var(--primary);font-size:1.2rem;">+</span></div>
                                 <div class="stat-label">مقاله و ترجمه</div>
                             </div>
                         </div>
@@ -493,9 +1437,9 @@
                             </div>
                         </div>
                         <div class="hero-tags-bottom">
-                            <div class="tag-item"><i class="fas fa-check-circle" style="color:var(--secondary-color);"></i><span>دارای گواهی‌نامه</span></div>
-                            <div class="tag-item"><i class="fas fa-medal" style="color:var(--secondary-color);"></i><span>۵ پروژه موفق</span></div>
-                            <div class="tag-item"><i class="fas fa-star" style="color:var(--secondary-color);"></i><span>رضایت مشتری</span></div>
+                            <div class="tag-item"><i class="fas fa-check-circle" style="color:var(--secondary);"></i><span>دارای گواهی‌نامه</span></div>
+                            <div class="tag-item"><i class="fas fa-medal" style="color:var(--secondary);"></i><span>۵ پروژه موفق</span></div>
+                            <div class="tag-item"><i class="fas fa-star" style="color:var(--secondary);"></i><span>رضایت مشتری</span></div>
                         </div>
                     </div>
                 </div>
@@ -627,7 +1571,7 @@
         </section>
 
         <!-- ============================================================
-             203.6 - بخش تماس (Contact) با پیام تایید
+             203.6 - بخش تماس (Contact)
              ============================================================ -->
         <section id="contact" style="padding:4rem 0;background:var(--bg-secondary);">
             <div class="container">
@@ -649,7 +1593,29 @@
                                 <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
                                 <h3>اطلاعات تماس</h3>
                             </div>
-                            <div class="contact-items" id="contactInfo"></div>
+                            <div class="contact-items" id="contactInfo">
+                                <div class="contact-item">
+                                    <i class="fas fa-phone"></i>
+                                    <div>
+                                        <div class="contact-label">شماره تماس</div>
+                                        <div class="contact-value"><a href="tel:09902279702">۰۹۹۰۲۲۷۹۷۰۲</a></div>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <div>
+                                        <div class="contact-label">ایمیل</div>
+                                        <div class="contact-value"><a href="mailto:mahan.neman2020@gmail.com">mahan.neman2020@gmail.com</a></div>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-map-pin"></i>
+                                    <div>
+                                        <div class="contact-label">آدرس</div>
+                                        <div class="contact-value">تهران، ایران</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="resume-card">
                             <div class="resume-header">
@@ -687,7 +1653,7 @@
                             <!-- ===== فرم ===== -->
                             <form id="contactForm">
                                 <div class="form-group">
-                                    <label for="name"><i class="fas fa-user" style="color:var(--primary-color);"></i> نام کامل <span style="color:red;">*</span></label>
+                                    <label for="name"><i class="fas fa-user" style="color:var(--primary);"></i> نام کامل <span style="color:red;">*</span></label>
                                     <div class="input-wrapper">
                                         <input type="text" id="name" name="name" placeholder="ماهان ادهم قزوینی" required>
                                         <span class="input-icon"><i class="fas fa-user-check"></i></span>
@@ -695,14 +1661,14 @@
                                 </div>
                                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
                                     <div class="form-group">
-                                        <label for="email"><i class="fas fa-envelope" style="color:var(--primary-color);"></i> ایمیل <span style="color:red;">*</span></label>
+                                        <label for="email"><i class="fas fa-envelope" style="color:var(--primary);"></i> ایمیل <span style="color:red;">*</span></label>
                                         <div class="input-wrapper">
                                             <input type="email" id="email" name="email" placeholder="mahan.neman2020@gmail.com" required>
                                             <span class="input-icon"><i class="fas fa-at"></i></span>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="phone"><i class="fas fa-phone" style="color:var(--primary-color);"></i> شماره تماس</label>
+                                        <label for="phone"><i class="fas fa-phone" style="color:var(--primary);"></i> شماره تماس</label>
                                         <div class="input-wrapper">
                                             <input type="tel" id="phone" name="phone" placeholder="۰۹۹۰۲۲۷۹۷۰۲">
                                             <span class="input-icon"><i class="fas fa-mobile-alt"></i></span>
@@ -710,7 +1676,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="subject"><i class="fas fa-tag" style="color:var(--primary-color);"></i> موضوع <span style="color:red;">*</span></label>
+                                    <label for="subject"><i class="fas fa-tag" style="color:var(--primary);"></i> موضوع <span style="color:red;">*</span></label>
                                     <div class="input-wrapper">
                                         <select id="subject" name="subject" required>
                                             <option value="">انتخاب موضوع</option>
@@ -724,7 +1690,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="message"><i class="fas fa-comment" style="color:var(--primary-color);"></i> پیام شما <span style="color:red;">*</span></label>
+                                    <label for="message"><i class="fas fa-comment" style="color:var(--primary);"></i> پیام شما <span style="color:red;">*</span></label>
                                     <div class="input-wrapper">
                                         <textarea id="message" name="message" rows="5" placeholder="پیام خود را اینجا بنویسید..." required></textarea>
                                         <span class="textarea-icon"><i class="fas fa-pen"></i></span>
@@ -743,13 +1709,13 @@
                                 </div>
                             </form>
 
-                            <!-- ===== پیام موفقیت (تایید ارسال) ===== -->
+                            <!-- ===== پیام موفقیت ===== -->
                             <div class="form-success" id="formSuccess" style="display:none;">
                                 <div class="success-icon"><i class="fas fa-check-circle"></i></div>
                                 <h4 class="success-title">✅ پیام شما با موفقیت ارسال شد!</h4>
                                 <p class="success-text">در کمتر از ۲۴ ساعت کاری پاسخ خواهم داد.</p>
                                 <p class="success-email" style="font-size:0.85rem;color:var(--text-secondary);">
-                                    <i class="fas fa-envelope" style="color:var(--primary-color);"></i> 
+                                    <i class="fas fa-envelope" style="color:var(--primary);"></i> 
                                     کپی پیام برای شما ارسال شد
                                 </p>
                                 <button class="close-success" id="closeSuccess">
@@ -758,13 +1724,11 @@
                             </div>
 
                             <!-- ===== پیام خطا ===== -->
-                            <div class="form-error" id="formError" style="display:none;text-align:center;padding:20px;">
-                                <div style="font-size:3rem;color:#ef4444;margin-bottom:10px;">
-                                    <i class="fas fa-exclamation-circle"></i>
-                                </div>
+                            <div class="form-error" id="formError" style="display:none;">
+                                <div class="error-icon"><i class="fas fa-exclamation-circle"></i></div>
                                 <h4 style="color:#ef4444;">❌ خطا در ارسال پیام</h4>
                                 <p style="color:var(--text-secondary);" id="errorMessage">لطفاً مجدداً تلاش کنید.</p>
-                                <button class="member-btn member-btn-primary" onclick="document.getElementById('formError').style.display='none';document.getElementById('contactForm').style.display='flex';" style="margin-top:12px;">
+                                <button class="btn btn-primary" onclick="document.getElementById('formError').style.display='none';document.getElementById('contactForm').style.display='flex';" style="margin-top:12px;">
                                     <i class="fas fa-redo"></i> تلاش مجدد
                                 </button>
                             </div>
@@ -775,8 +1739,8 @@
         </section>
 
         <!-- ============================================================
-         204 - ظرف فوتر (اضافه شد تا fetch بتواند آن را پر کند)
-         ============================================================ -->
+             204 - ظرف فوتر
+             ============================================================ -->
         <div id="footerContainer"></div>
 
     </main>
@@ -785,15 +1749,15 @@
          221 - اسکریپت‌ها (JavaScript)
          ============================================================ -->
 
-    <!-- 221.1 - بارگذاری هدر و منوی کشویی از member-menu.html -->
+    <!-- 221.1 - بارگذاری هدر و منوی کشویی از menu.js -->
     <script src="menu.js"></script>
 
-    <!-- 221.2 - اسکریپت بارگذاری فوتر از فایل footer.html -->
+    <!-- 221.2 - اسکریپت بارگذاری فوتر -->
     <script>
         (function loadFooter() {
             fetch('footer.html')
                 .then(res => {
-                    if (!res.ok) throw new Error('فوتر پیدا نشد! مسیر را بررسی کن.');
+                    if (!res.ok) throw new Error('فوتر پیدا نشد!');
                     return res.text();
                 })
                 .then(html => {
@@ -808,7 +1772,7 @@
         })();
     </script>
 
-    <!-- 221.3 - اسکریپت‌های اصلی صفحه (بهبود یافته) -->
+    <!-- 221.3 - اسکریپت‌های اصلی صفحه -->
     <script>
         // ============================================================
         // 221.3.1 - بارگذاری تنظیمات ظاهری
@@ -821,43 +1785,33 @@
                 const appearance = data.appearance || {};
                 const root = document.documentElement.style;
                 if (appearance.colorPrimary) {
-                    root.setProperty('--primary-color', appearance.colorPrimary);
-                    root.setProperty('--pro-primary', appearance.colorPrimary);
+                    root.setProperty('--primary', appearance.colorPrimary);
+                    root.setProperty('--primary-dark', appearance.colorPrimary);
                 }
                 if (appearance.colorSecondary) {
-                    root.setProperty('--secondary-color', appearance.colorSecondary);
-                    root.setProperty('--pro-secondary', appearance.colorSecondary);
+                    root.setProperty('--secondary', appearance.colorSecondary);
+                    root.setProperty('--secondary-dark', appearance.colorSecondary);
                 }
                 if (appearance.colorBg) {
                     root.setProperty('--bg-primary', appearance.colorBg);
-                    root.setProperty('--pro-bg', appearance.colorBg);
                 }
                 if (appearance.colorText) {
                     root.setProperty('--text-primary', appearance.colorText);
-                    root.setProperty('--pro-text', appearance.colorText);
                 }
                 if (appearance.colorTextSec) {
                     root.setProperty('--text-secondary', appearance.colorTextSec);
-                    root.setProperty('--pro-text-secondary', appearance.colorTextSec);
                 }
                 if (appearance.colorCard) {
                     root.setProperty('--bg-secondary', appearance.colorCard);
-                    root.setProperty('--pro-card', appearance.colorCard);
                 }
                 if (appearance.colorBorder) {
                     root.setProperty('--border-color', appearance.colorBorder);
-                    root.setProperty('--pro-border', appearance.colorBorder);
                 }
                 if (appearance.fontFamily) {
                     document.body.style.fontFamily = appearance.fontFamily + ', sans-serif';
                 }
                 if (appearance.fontSize) {
                     document.body.style.fontSize = appearance.fontSize + 'px';
-                }
-                if (appearance.fontSizeHeading) {
-                    document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(el => {
-                        el.style.fontSize = appearance.fontSizeHeading + 'px';
-                    });
                 }
                 if (appearance.lineHeight) {
                     document.body.style.lineHeight = appearance.lineHeight;
@@ -891,34 +1845,21 @@
                             subtitle: 'مهندس مکانیک گرایش سیالات, تحلیل‌گر CFD, طراح قطعات پرینتر سه بعدی',
                             desc: 'تحلیل‌گر CFD با بیش از ۵ سال تجربه در شبیه‌سازی جریان‌های سیالاتی و انتقال حرارت. طراح قطعات صنعتی با نرم‌افزارهای CATIA و SolidWorks.',
                             image: 'mahanphoto.png',
-                            tags: 'تحلیل CFD, طراحی مکانیکی, پرینتر سه‌بعدی',
-                            btnText: 'درخواست همکاری',
-                            btnLink: '#contact'
+                            tags: 'تحلیل CFD, طراحی مکانیکی, پرینتر سه‌بعدی'
                         },
                         about: {
-                            title: 'درباره مهندس ماهان ادهم قزوینی',
-                            text: 'مهندس ماهان ادهم قزوینی، فارغ‌التحصیل کارشناسی مهندسی مکانیک از دانشگاه آزاد اسلامی واحد تهران مرکز با گرایش سیالات و حرارت. با گذراندن دوره‌های تخصصی و کسب گواهی‌نامه‌های معتبر در زمینه نرم‌افزارهای مهندسی، همواره در حال گسترش دانش و مهارت‌های فنی هستم.',
-                            image: 'mahanphoto.png'
-                        },
-                        skills: { title: 'مهارت‌های تخصصی', desc: 'تسلط بر جدیدترین نرم‌افزارها و تکنولوژی‌های مهندسی مکانیک', layout: 'grid' },
-                        education: { title: 'سوابق تحصیلی و دوره‌ها', layout: 'timeline', desc: '' },
-                        projects: { title: 'پروژه‌های منتخب', desc: 'نمونه‌ای از پروژه‌های موفق انجام شده در حوزه مهندسی مکانیک', count: 6 },
-                        contact: { title: 'در تماس باشید', desc: 'برای همکاری، مشاوره یا دریافت اطلاعات بیشتر', phone: '۰۹۹۰۲۲۷۹۷۰۲', email: 'mahan.neman2020@gmail.com', btnText: 'ارسال پیام' }
+                            text: 'مهندس ماهان ادهم قزوینی، فارغ‌التحصیل کارشناسی مهندسی مکانیک از دانشگاه آزاد اسلامی واحد تهران مرکز با گرایش سیالات و حرارت. با گذراندن دوره‌های تخصصی و کسب گواهی‌نامه‌های معتبر در زمینه نرم‌افزارهای مهندسی، همواره در حال گسترش دانش و مهارت‌های فنی هستم.'
+                        }
                     };
                 }
                 renderHeroSection();
                 renderAboutSection();
-                renderSkillsSection();
-                renderEducationSection();
                 renderContactInfo();
             } catch (e) {
                 console.error('❌ خطا در بارگذاری بخش‌ها:', e);
             }
         }
 
-        // ============================================================
-        // 221.3.3 - رندر بخش هیرو
-        // ============================================================
         function renderHeroSection() {
             const hero = sectionsData.hero || {};
             document.getElementById('heroTyping').textContent = hero.subtitle || '';
@@ -927,7 +1868,7 @@
             if (hero.tags) {
                 const tags = hero.tags.split(',').map(t => t.trim()).filter(Boolean);
                 tagsContainer.innerHTML = tags.map(tag =>
-                    `<span style="background:var(--bg-tertiary);padding:0.2rem 0.8rem;border-radius:20px;font-size:0.8rem;color:var(--text-secondary);">${tag}</span>`
+                    `<span style="background:var(--bg-tertiary);padding:0.2rem 0.8rem;border-radius:20px;font-size:0.8rem;color:var(--text-secondary);border:1px solid var(--border-color);">${tag}</span>`
                 ).join('');
             }
             if (hero.image) {
@@ -936,26 +1877,44 @@
             }
         }
 
-        // ============================================================
-        // 221.3.4 - رندر بخش درباره
-        // ============================================================
         function renderAboutSection() {
             const about = sectionsData.about || {};
-            document.getElementById('aboutText').textContent = about.text || '';
+            const textEl = document.getElementById('aboutText');
+            if (textEl) textEl.textContent = about.text || '';
             const eduDetails = document.getElementById('educationDetails');
             if (eduDetails) {
                 eduDetails.innerHTML = `
-                    <div class="edu-row"><span class="label"><i class="fas fa-school" style="color:var(--primary-color);"></i> دانشگاه:</span><span class="value">دانشگاه آزاد اسلامی واحد تهران مرکز</span></div>
-                    <div class="edu-row"><span class="label"><i class="fas fa-building" style="color:var(--primary-color);"></i> دانشکده:</span><span class="value">فنی مهندسی</span></div>
-                    <div class="edu-row"><span class="label"><i class="fas fa-graduation-cap" style="color:var(--primary-color);"></i> مقطع:</span><span class="value">کارشناسی مهندسی مکانیک</span></div>
-                    <div class="edu-row"><span class="label"><i class="fas fa-stream" style="color:var(--primary-color);"></i> گرایش:</span><span class="value">سیالات و حرارت</span></div>
-                    <div class="edu-row"><span class="label"><i class="fas fa-check-circle" style="color:var(--primary-color);"></i> وضعیت:</span><span class="value">فارغ‌التحصیل (معدل: ۱۵.۷۲)</span></div>
+                    <div class="edu-row"><span class="label"><i class="fas fa-school" style="color:var(--primary);"></i> دانشگاه:</span><span class="value">دانشگاه آزاد اسلامی واحد تهران مرکز</span></div>
+                    <div class="edu-row"><span class="label"><i class="fas fa-building" style="color:var(--primary);"></i> دانشکده:</span><span class="value">فنی مهندسی</span></div>
+                    <div class="edu-row"><span class="label"><i class="fas fa-graduation-cap" style="color:var(--primary);"></i> مقطع:</span><span class="value">کارشناسی مهندسی مکانیک</span></div>
+                    <div class="edu-row"><span class="label"><i class="fas fa-stream" style="color:var(--primary);"></i> گرایش:</span><span class="value">سیالات و حرارت</span></div>
+                    <div class="edu-row"><span class="label"><i class="fas fa-check-circle" style="color:var(--secondary);"></i> وضعیت:</span><span class="value">فارغ‌التحصیل (معدل: ۱۵.۷۲)</span></div>
                 `;
             }
         }
 
+        function renderContactInfo() {
+            const contact = sectionsData.contact || {};
+            const container = document.getElementById('contactInfo');
+            if (!container) return;
+            const items = [
+                { icon: 'fa-phone', label: 'شماره تماس', value: contact.phone || '۰۹۹۰۲۲۷۹۷۰۲', link: 'tel:' + (contact.phone || '09902279702') },
+                { icon: 'fa-envelope', label: 'ایمیل', value: contact.email || 'mahan.neman2020@gmail.com', link: 'mailto:' + (contact.email || 'mahan.neman2020@gmail.com') },
+                { icon: 'fa-map-pin', label: 'آدرس', value: 'تهران، ایران', link: '#' }
+            ];
+            container.innerHTML = items.map(item => `
+                <div class="contact-item">
+                    <i class="fas ${item.icon}"></i>
+                    <div>
+                        <div class="contact-label">${item.label}</div>
+                        <div class="contact-value"><a href="${item.link}">${item.value}</a></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         // ============================================================
-        // 221.3.5 - بارگذاری مهارت‌ها از JSON
+        // 221.3.3 - بارگذاری مهارت‌ها
         // ============================================================
         async function loadSkills() {
             try {
@@ -986,10 +1945,10 @@
                 grid.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ مهارتی ثبت نشده است.</p>';
                 return;
             }
-            grid.innerHTML = skills.map(s => `
-                <div class="skill-item">
+            grid.innerHTML = skills.map((s, idx) => `
+                <div class="skill-item animate-fade-up delay-${(idx % 4) + 1}">
                     <div class="skill-header">
-                        <div class="skill-icon" style="background:${s.color || 'linear-gradient(135deg,var(--primary-color),#8b5cf6)'};"><i class="fas ${s.icon || 'fa-cog'}"></i></div>
+                        <div class="skill-icon" style="background:${s.color || 'linear-gradient(135deg,var(--primary),#8b5cf6)'};"><i class="fas ${s.icon || 'fa-cog'}"></i></div>
                         <div>
                             <h4 class="skill-name">${s.name || 'بدون نام'}</h4>
                             <span class="skill-level">${s.level || 'متوسط'}</span>
@@ -997,13 +1956,17 @@
                         </div>
                     </div>
                     <p class="skill-desc">${s.desc || ''}</p>
-                    ${s.progress ? `<div style="width:100%;height:6px;background:var(--bg-tertiary);border-radius:4px;margin-top:8px;overflow:hidden;"><div style="width:${s.progress}%;height:100%;background:${s.color || 'var(--primary-color)'};border-radius:4px;"></div></div>` : ''}
+                    ${s.progress ? `
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width:${s.progress}%;background:${s.color || 'var(--primary)'};"></div>
+                        </div>
+                    ` : ''}
                 </div>
             `).join('');
         }
 
         // ============================================================
-        // 221.3.6 - بارگذاری تحصیلات از JSON
+        // 221.3.4 - بارگذاری تحصیلات
         // ============================================================
         async function loadEducation() {
             try {
@@ -1032,13 +1995,13 @@
                 timeline.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ آیتم تحصیلی ثبت نشده است.</p>';
                 return;
             }
-            timeline.innerHTML = items.map((item) => `
-                <div class="edu-item">
+            timeline.innerHTML = items.map((item, idx) => `
+                <div class="edu-item animate-fade-up delay-${(idx % 3) + 1}">
                     <div class="edu-dot"></div>
                     <div class="edu-content">
                         <div class="edu-header">
                             <h4>${item.title || 'بدون عنوان'}</h4>
-                            <span class="edu-badge" style="background:${item.badgeColor || 'linear-gradient(135deg,var(--primary-color),#8b5cf6)'};">${item.badge || 'تکمیل شده'}</span>
+                            <span class="edu-badge" style="background:${item.badgeColor || 'linear-gradient(135deg,var(--primary),#8b5cf6)'};">${item.badge || 'تکمیل شده'}</span>
                         </div>
                         <p class="edu-org">${item.org || ''}</p>
                         <p class="edu-date">${item.date || ''}</p>
@@ -1051,7 +2014,7 @@
         }
 
         // ============================================================
-        // 221.3.8 - بارگذاری مقالات اخیر
+        // 221.3.5 - بارگذاری مقالات اخیر
         // ============================================================
         async function loadRecentArticles() {
             try {
@@ -1074,8 +2037,8 @@
                     grid.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ مقاله‌ای یافت نشد.</p>';
                     return;
                 }
-                grid.innerHTML = recent.map(item => `
-                    <div class="article-preview-card">
+                grid.innerHTML = recent.map((item, idx) => `
+                    <div class="article-preview-card animate-fade-up delay-${(idx % 3) + 1}">
                         <span class="tag ${item.type || 'article'}">${item.type === 'article' ? 'مقاله' : item.type === 'project' ? 'پروژه' : 'آموزش'}</span>
                         <h3><a href="article.html?id=${item.key}">${item.title || 'بدون عنوان'}</a></h3>
                         <p>${item.excerpt || ''}</p>
@@ -1091,7 +2054,7 @@
         }
 
         // ============================================================
-        // 221.3.9 - گواهی‌نامه‌ها
+        // 221.3.6 - بارگذاری گواهی‌نامه‌ها
         // ============================================================
         function loadCertificates() {
             const list = document.getElementById('certificatesList');
@@ -1102,15 +2065,18 @@
                 { name: 'طراحی با SolidWorks', org: 'دوره تخصصی آنلاین', date: '۱۴۰۲' }
             ];
             list.innerHTML = certs.map(c => `
-                <div style="display:flex;gap:0.8rem;padding:0.8rem;background:var(--bg-tertiary);border-radius:12px;">
-                    <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--secondary-color),var(--primary-color));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;"><i class="fas fa-award"></i></div>
-                    <div><h5 style="font-size:0.95rem;margin-bottom:0.2rem;">${c.name}</h5><p style="font-size:0.8rem;color:var(--text-secondary);margin:0;">${c.org}</p><div style="display:flex;gap:1rem;font-size:0.7rem;color:var(--text-secondary);margin-top:0.3rem;"><span><i class="fas fa-calendar"></i> ${c.date}</span></div></div>
+                <div class="cert-item">
+                    <div class="cert-icon"><i class="fas fa-award"></i></div>
+                    <div class="cert-info">
+                        <h5>${c.name}</h5>
+                        <p>${c.org} • ${c.date}</p>
+                    </div>
                 </div>
             `).join('');
         }
 
         // ============================================================
-        // 221.3.10 - شمارنده‌های آماری
+        // 221.3.7 - شمارنده‌های آماری
         // ============================================================
         function initCounters() {
             const counters = document.querySelectorAll('.stat-number');
@@ -1132,182 +2098,185 @@
             const heroStats = document.querySelector('.hero-stats');
             if (heroStats) observer.observe(heroStats);
         }
-// ============================================================
-// 221.3.11 - فرم تماس (ذخیره در localStorage + تلاش برای گیت‌هاب) - نسخه اصلاح شده
-// ============================================================
-function initContactForm() {
-    const form = document.getElementById('contactForm');
-    if (!form) {
-        console.error('❌ فرم تماس پیدا نشد!');
-        return;
-    }
 
-    console.log('✅ فرم تماس پیدا شد');
-
-    const messageInput = document.getElementById('message');
-    const charCount = document.getElementById('charCount');
-    if (messageInput && charCount) {
-        messageInput.addEventListener('input', function() {
-            let len = this.value.length;
-            if (len > 500) {
-                this.value = this.value.substring(0, 500);
-                len = 500;
-            }
-            charCount.textContent = len;
-        });
-    }
-
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        console.log('📤 دکمه ارسال کلیک شد!');
-
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const subject = document.getElementById('subject').value;
-        const message = document.getElementById('message').value.trim();
-
-        if (!name || !email || !subject || !message) {
-            alert('❌ لطفاً تمام فیلدهای ضروری را پر کنید.');
-            return;
-        }
-        if (!email.includes('@')) {
-            alert('❌ لطفاً یک ایمیل معتبر وارد کنید.');
-            return;
-        }
-
-        const newMessage = {
-            id: 'MSG-' + Date.now().toString(36).toUpperCase(),
-            source: 'فرم تماس سایت',
-            name,
-            email,
-            phone: phone || '---',
-            subject,
-            message,
-            date: new Date().toISOString(),
-            datePersian: new Date().toLocaleString('fa-IR'),
-            status: 'new'
-        };
-
-        const submitBtn = document.getElementById('submitBtn');
-        const btnText = submitBtn?.querySelector('.btn-text');
-        const btnLoader = submitBtn?.querySelector('.btn-loader');
-        if (btnText && btnLoader) {
-            btnText.style.opacity = '0';
-            btnLoader.style.opacity = '1';
-        }
-        if (submitBtn) submitBtn.disabled = true;
-
-        // ===== ذخیره در localStorage (همیشه انجام می‌شود) =====
-        let savePromise = new Promise((resolve) => {
-            try {
-                let localMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
-                localMessages.push(newMessage);
-                localStorage.setItem('contact_messages', JSON.stringify(localMessages));
-                resolve({ success: true, source: 'localStorage' });
-            } catch (e) {
-                throw new Error('خطا در ذخیره محلی');
-            }
-        });
-
-        // ===== تلاش برای گیت‌هاب (فقط اگر توکن معتبر باشد) =====
-        const token = localStorage.getItem('github_token');
-        if (token) {
-            savePromise = savePromise.then(() => {
-                return fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
-                    headers: {
-                        'Authorization': 'token ' + token,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                })
-                .then(res => {
-                    if (!res.ok) throw new Error('خطا در خواندن فایل از گیت‌هاب');
-                    return res.json();
-                })
-                .then(data => {
-                    const content = atob(data.content);
-                    let messages = [];
-                    try { messages = JSON.parse(content); } catch (e) { messages = []; }
-                    messages.push(newMessage);
-                    const updatedContent = JSON.stringify(messages, null, 2);
-                    const encoded = btoa(unescape(encodeURIComponent(updatedContent)));
-                    return fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': 'token ' + token,
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/vnd.github.v3+json'
-                        },
-                        body: JSON.stringify({
-                            message: `Add contact message from ${name}`,
-                            content: encoded,
-                            sha: data.sha
-                        })
-                    });
-                })
-                .then(res => {
-                    if (!res.ok) throw new Error('خطا در ذخیره در گیت‌هاب');
-                    return res.json();
-                })
-                .catch(err => {
-                    console.warn('⚠️ گیت‌هاب با خطا مواجه شد، اما داده در localStorage ذخیره است:', err);
-                    return { success: true, source: 'localStorage' };
-                });
-            });
-        }
-
-        savePromise
-            .then(() => {
-                document.getElementById('contactForm').style.display = 'none';
-                const successDiv = document.getElementById('formSuccess');
-                if (successDiv) {
-                    successDiv.style.display = 'flex';
-                    successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-                document.getElementById('formError').style.display = 'none';
-                form.reset();
-                if (charCount) charCount.textContent = '0';
-                console.log('✅ پیام با موفقیت ذخیره شد!');
-            })
-            .catch(error => {
-                console.error('❌ خطا:', error);
-                showError('متأسفانه پیام ذخیره نشد. لطفاً بعداً تلاش کنید یا مستقیماً ایمیل بزنید.');
-            })
-            .finally(() => {
-                if (btnText && btnLoader) {
-                    btnText.style.opacity = '1';
-                    btnLoader.style.opacity = '0';
-                }
-                if (submitBtn) submitBtn.disabled = false;
-            });
-    });
-
-    function showError(msg) {
-        console.error('❌ خطا:', msg);
-        const errorDiv = document.getElementById('formError');
-        const errorMsg = document.getElementById('errorMessage');
-        if (errorDiv && errorMsg) {
-            errorMsg.textContent = msg;
-            errorDiv.style.display = 'block';
-            document.getElementById('contactForm').style.display = 'none';
-            document.getElementById('formSuccess').style.display = 'none';
-        } else {
-            alert('❌ ' + msg);
-        }
-    }
-
-    const closeSuccess = document.getElementById('closeSuccess');
-    if (closeSuccess) {
-        closeSuccess.addEventListener('click', function() {
-            document.getElementById('formSuccess').style.display = 'none';
-            document.getElementById('contactForm').style.display = 'flex';
-        });
-    }
-
-    console.log('✅ فرم تماس با قابلیت ذخیره محلی و گیت‌هاب آماده است!');
-}
         // ============================================================
-        // 221.3.12 - منوی کشویی و تم تاریک/روشن
+        // 221.3.8 - فرم تماس (با ارسال به گیت‌هاب و تلگرام)
+        // ============================================================
+        function initContactForm() {
+            const form = document.getElementById('contactForm');
+            if (!form) {
+                console.error('❌ فرم تماس پیدا نشد!');
+                return;
+            }
+            console.log('✅ فرم تماس پیدا شد');
+
+            const messageInput = document.getElementById('message');
+            const charCount = document.getElementById('charCount');
+            if (messageInput && charCount) {
+                messageInput.addEventListener('input', function() {
+                    let len = this.value.length;
+                    if (len > 500) {
+                        this.value = this.value.substring(0, 500);
+                        len = 500;
+                    }
+                    charCount.textContent = len;
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('📤 دکمه ارسال کلیک شد!');
+
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value.trim();
+
+                if (!name || !email || !subject || !message) {
+                    alert('❌ لطفاً تمام فیلدهای ضروری را پر کنید.');
+                    return;
+                }
+                if (!email.includes('@')) {
+                    alert('❌ لطفاً یک ایمیل معتبر وارد کنید.');
+                    return;
+                }
+
+                const newMessage = {
+                    id: 'MSG-' + Date.now().toString(36).toUpperCase(),
+                    source: 'فرم تماس سایت',
+                    name: name,
+                    email: email,
+                    phone: phone || '---',
+                    subject: subject,
+                    message: message,
+                    date: new Date().toISOString(),
+                    datePersian: new Date().toLocaleString('fa-IR'),
+                    status: 'new'
+                };
+
+                const submitBtn = document.getElementById('submitBtn');
+                const btnText = submitBtn?.querySelector('.btn-text');
+                const btnLoader = submitBtn?.querySelector('.btn-loader');
+                if (submitBtn) {
+                    submitBtn.classList.add('loading');
+                    submitBtn.disabled = true;
+                }
+
+                // ===== ذخیره در localStorage (همیشه) =====
+                let savePromise = new Promise((resolve) => {
+                    try {
+                        let localMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
+                        localMessages.push(newMessage);
+                        localStorage.setItem('contact_messages', JSON.stringify(localMessages));
+                        resolve({ success: true, source: 'localStorage' });
+                    } catch (e) {
+                        throw new Error('خطا در ذخیره محلی');
+                    }
+                });
+
+                // ===== تلاش برای گیت‌هاب (با توکن یا بدون توکن) =====
+                const token = localStorage.getItem('github_token');
+                
+                // اگر توکن وجود داشت، به گیت‌هاب ذخیره کن
+                if (token) {
+                    savePromise = savePromise.then(() => {
+                        return fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
+                            headers: {
+                                'Authorization': 'token ' + token,
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        })
+                        .then(res => {
+                            if (!res.ok) throw new Error('خطا در خواندن فایل از گیت‌هاب');
+                            return res.json();
+                        })
+                        .then(data => {
+                            const content = atob(data.content);
+                            let messages = [];
+                            try { messages = JSON.parse(content); } catch (e) { messages = []; }
+                            messages.push(newMessage);
+                            const updatedContent = JSON.stringify(messages, null, 2);
+                            const encoded = btoa(unescape(encodeURIComponent(updatedContent)));
+                            return fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
+                                method: 'PUT',
+                                headers: {
+                                    'Authorization': 'token ' + token,
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/vnd.github.v3+json'
+                                },
+                                body: JSON.stringify({
+                                    message: 'Add contact message from ' + name,
+                                    content: encoded,
+                                    sha: data.sha
+                                })
+                            });
+                        })
+                        .then(res => {
+                            if (!res.ok) throw new Error('خطا در ذخیره در گیت‌هاب');
+                            return res.json();
+                        })
+                        .catch(err => {
+                            console.warn('⚠️ گیت‌هاب با خطا مواجه شد، اما داده در localStorage ذخیره است:', err);
+                            return { success: true, source: 'localStorage' };
+                        });
+                    });
+                } else {
+                    // اگر توکن نبود، فقط در localStorage ذخیره کن
+                    console.warn('⚠️ توکن گیت‌هاب یافت نشد. پیام فقط در localStorage ذخیره شد.');
+                }
+
+                savePromise
+                    .then(() => {
+                        document.getElementById('contactForm').style.display = 'none';
+                        const successDiv = document.getElementById('formSuccess');
+                        if (successDiv) {
+                            successDiv.style.display = 'flex';
+                            successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                        document.getElementById('formError').style.display = 'none';
+                        form.reset();
+                        if (charCount) charCount.textContent = '0';
+                        console.log('✅ پیام با موفقیت ذخیره شد!');
+                    })
+                    .catch(error => {
+                        console.error('❌ خطا:', error);
+                        showError('متأسفانه پیام ذخیره نشد. لطفاً بعداً تلاش کنید یا مستقیماً ایمیل بزنید.');
+                    })
+                    .finally(() => {
+                        if (submitBtn) {
+                            submitBtn.classList.remove('loading');
+                            submitBtn.disabled = false;
+                        }
+                    });
+            });
+
+            function showError(msg) {
+                const errorDiv = document.getElementById('formError');
+                const errorMsg = document.getElementById('errorMessage');
+                if (errorDiv && errorMsg) {
+                    errorMsg.textContent = msg;
+                    errorDiv.style.display = 'block';
+                    document.getElementById('contactForm').style.display = 'none';
+                    document.getElementById('formSuccess').style.display = 'none';
+                } else {
+                    alert('❌ ' + msg);
+                }
+            }
+
+            const closeSuccess = document.getElementById('closeSuccess');
+            if (closeSuccess) {
+                closeSuccess.addEventListener('click', function() {
+                    document.getElementById('formSuccess').style.display = 'none';
+                    document.getElementById('contactForm').style.display = 'flex';
+                });
+            }
+
+            console.log('✅ فرم تماس با قابلیت ذخیره محلی و گیت‌هاب آماده است!');
+        }
+
+        // ============================================================
+        // 221.3.9 - منوی کشویی و تم تاریک/روشن
         // ============================================================
         (function() {
             const menuToggle = document.getElementById('menuToggle');
@@ -1318,16 +2287,16 @@ function initContactForm() {
             if (menuToggle) {
                 menuToggle.addEventListener('click', function(e) {
                     e.preventDefault();
-                    slideMenu.classList.add('active');
-                    menuOverlay.classList.add('active');
+                    if (slideMenu) slideMenu.classList.add('active');
+                    if (menuOverlay) menuOverlay.classList.add('active');
                     document.body.classList.add('no-scroll');
                     this.setAttribute('aria-expanded', 'true');
                 });
             }
 
             function closeSlideMenu() {
-                slideMenu.classList.remove('active');
-                menuOverlay.classList.remove('active');
+                if (slideMenu) slideMenu.classList.remove('active');
+                if (menuOverlay) menuOverlay.classList.remove('active');
                 document.body.classList.remove('no-scroll');
                 if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
             }
@@ -1335,7 +2304,7 @@ function initContactForm() {
             if (slideMenuClose) slideMenuClose.addEventListener('click', closeSlideMenu);
             if (menuOverlay) menuOverlay.addEventListener('click', closeSlideMenu);
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && slideMenu.classList.contains('active')) closeSlideMenu();
+                if (e.key === 'Escape' && slideMenu && slideMenu.classList.contains('active')) closeSlideMenu();
             });
             if (slideMenu) {
                 slideMenu.querySelectorAll('.slide-menu-link').forEach(link => {
@@ -1375,7 +2344,7 @@ function initContactForm() {
         })();
 
         // ============================================================
-        // 221.3.13 - بارگذاری اولیه
+        // 221.3.10 - بارگذاری اولیه
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             loadAppearanceSettings();
@@ -1387,50 +2356,14 @@ function initContactForm() {
             initCounters();
             initContactForm();
 
-            // به‌روزرسانی سال در فوتر (اگر قبلاً بارگذاری شده باشد)
+            // به‌روزرسانی سال در فوتر
             const yearEl = document.querySelector('.copyright p:first-child');
             if (yearEl) {
                 const persianYear = new Date().getFullYear() - 621;
                 yearEl.innerHTML = yearEl.innerHTML.replace('۱۴۰۳', persianYear);
             }
         });
-        <script>
-function renderSkillsSection(skillsData) {
-    const container = document.getElementById('skills-section');
-    if (!container) return;
-    if (!skillsData || !skillsData.items || skillsData.items.length === 0) {
-        container.innerHTML = '<p>هیچ مهارتی ثبت نشده است.</p>';
-        return;
-    }
-    let html = `<h2>${skillsData.title || 'مهارت‌های تخصصی'}</h2>`;
-    if (skillsData.desc) html += `<p>${skillsData.desc}</p>`;
-    html += `<div class="skills-grid">`;
-    skillsData.items.forEach(item => {
-        html += `
-            <div class="skill-item">
-                <div class="skill-header">
-                    ${item.icon ? `<i class="fas ${item.icon}"></i>` : ''}
-                    <span>${item.name}</span>
-                    <span class="skill-level">${item.level || 'متوسط'}</span>
-                </div>
-                <div class="skill-bar">
-                    <div class="skill-progress" style="width:${item.progress || 0}%;background:${item.color || 'var(--primary)'};"></div>
-                </div>
-                ${item.desc ? `<p class="skill-desc">${item.desc}</p>` : ''}
-            </div>
-        `;
-    });
-    html += `</div>`;
-    container.innerHTML = html;
-}
-</script>
     </script>
-
-    <!-- ===== اسکریپت‌های کمکی (در انتهای body) ===== -->
-    <!-- این اسکریپت‌ها اگر وجود داشته باشند، بدون تغییر می‌مانند -->
-    <!-- <script src="auth.js"></script> -->
-    <!-- <script src="load-menu.js"></script> -->
-    <!-- <script src="menu-loader.js"></script> -->
 
 </body>
 </html>

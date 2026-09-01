@@ -1394,6 +1394,36 @@ function initContactForm() {
                 yearEl.innerHTML = yearEl.innerHTML.replace('۱۴۰۳', persianYear);
             }
         });
+        <script>
+function renderSkillsSection(skillsData) {
+    const container = document.getElementById('skills-section');
+    if (!container) return;
+    if (!skillsData || !skillsData.items || skillsData.items.length === 0) {
+        container.innerHTML = '<p>هیچ مهارتی ثبت نشده است.</p>';
+        return;
+    }
+    let html = `<h2>${skillsData.title || 'مهارت‌های تخصصی'}</h2>`;
+    if (skillsData.desc) html += `<p>${skillsData.desc}</p>`;
+    html += `<div class="skills-grid">`;
+    skillsData.items.forEach(item => {
+        html += `
+            <div class="skill-item">
+                <div class="skill-header">
+                    ${item.icon ? `<i class="fas ${item.icon}"></i>` : ''}
+                    <span>${item.name}</span>
+                    <span class="skill-level">${item.level || 'متوسط'}</span>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-progress" style="width:${item.progress || 0}%;background:${item.color || 'var(--primary)'};"></div>
+                </div>
+                ${item.desc ? `<p class="skill-desc">${item.desc}</p>` : ''}
+            </div>
+        `;
+    });
+    html += `</div>`;
+    container.innerHTML = html;
+}
+</script>
     </script>
 
     <!-- ===== اسکریپت‌های کمکی (در انتهای body) ===== -->

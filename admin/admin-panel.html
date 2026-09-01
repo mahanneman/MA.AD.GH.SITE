@@ -72,34 +72,9 @@
 <body>
 
     <!-- ============================================================
-    0002 - صفحه لاگین
-    ============================================================ 
-    <div id="loginPage" style="display:none;">
-        <div class="login-container">
-            <div class="login-box">
-                <div class="logo"><i class="fas fa-cogs"></i></div>
-                <h2>ورود به پنل مدیریت</h2>
-                <p>برای مدیریت محتوای سایت وارد شوید</p>
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label for="loginUsername">نام کاربری</label>
-                        <input type="text" id="loginUsername" placeholder="نام کاربری خود را وارد کنید" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPassword">رمز عبور</label>
-                        <input type="password" id="loginPassword" placeholder="رمز عبور خود را وارد کنید" required>
-                    </div>
-                    <button type="submit" class="btn-login"><i class="fas fa-sign-in-alt"></i> ورود</button>
-                    <div id="loginError" class="error-msg"><i class="fas fa-exclamation-circle"></i> نام کاربری یا رمز عبور اشتباه است.</div>
-                </form>
-            </div>
-        </div>
-    </div>
--->
-    <!-- ============================================================
-    0003 - پنل مدیریت (شروع)
+    0003 - پنل مدیریت (نمایش مستقیم)
     ============================================================ -->
-    <div id="adminPanel" style="display:none;">
+    <div id="adminPanel" style="display:block;">
 
         <!-- ============================================================
         0004 - هدر پنل
@@ -114,9 +89,9 @@
                 </span>
             </div>
             <div class="user-area">
-                <span class="name"><i class="fas fa-user"></i> <span id="proAdminName">ادمین</span></span>
+                <span class="name"><i class="fas fa-user"></i> <span id="proAdminName">مدیر</span></span>
                 <span class="pro-key-hint">Ctrl+S</span>
-                <button class="btn-logout" onclick="proLogout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
+                <!-- دکمه خروج حذف شد تا خطا نده -->
             </div>
         </header>
 
@@ -145,26 +120,18 @@
         ============================================================ -->
         <div class="pro-tabs" id="proTabs">
             <button class="tab-btn active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> داشبورد</button>
-            
             <button class="tab-btn" data-tab="appearance"><i class="fas fa-palette"></i> ظاهر</button>
-            
             <button class="tab-btn" data-tab="menus"><i class="fas fa-bars"></i> منوها</button>
-            
             <button class="tab-btn" data-tab="sections"><i class="fas fa-layer-group"></i> بخش‌ها</button>
-            
             <button class="tab-btn" data-tab="index-content"><i class="fas fa-file-alt"></i> ایندکس</button>
-            
             <button class="tab-btn" data-tab="articles"><i class="fas fa-newspaper"></i> مقالات <span class="badge" id="proArticlesCount">0</span></button>
-                        <button class="tab-btn" data-tab="add-article"><i class="fas fa-plus-circle"></i> افزودن مقاله</button>
+            <button class="tab-btn" data-tab="add-article"><i class="fas fa-plus-circle"></i> افزودن مقاله</button>
             <button class="tab-btn" data-tab="products"><i class="fas fa-cube"></i> محصولات <span class="badge" id="proProductsCount">0</span></button>
-                     <button class="tab-btn" data-tab="add-product"><i class="fas fa-plus-circle"></i> افزودن محصول</button>
+            <button class="tab-btn" data-tab="add-product"><i class="fas fa-plus-circle"></i> افزودن محصول</button>
             <button class="tab-btn" data-tab="archive"><i class="fas fa-archive"></i> آرشیو <span class="badge" id="proArchiveCount">0</span></button>
-               
             <button class="tab-btn" data-tab="add-archive"><i class="fas fa-plus-circle"></i> افزودن آرشیو</button>
             <button class="tab-btn" data-tab="members"><i class="fas fa-users"></i> کاربران <span class="badge" id="proMembersCount">0</span></button>
-
             <button class="tab-btn" data-tab="orders"><i class="fas fa-shopping-bag"></i> سفارشات <span class="badge" id="proOrdersCount">0</span></button>
-
             <button class="tab-btn" data-tab="settings"><i class="fas fa-cog"></i> تنظیمات</button>
         </div>
 
@@ -226,7 +193,7 @@
         </div>
 
         <!-- ============================================================
-        0010 - منوها (با ویرایش و جابجایی)
+        0010 - منوها
         ============================================================ -->
         <div class="pro-tab-content" id="tab-menus">
             <div class="pro-card">
@@ -255,7 +222,7 @@
         </div>
 
         <!-- ============================================================
-        0011 - بخش‌ها (Sections)
+        0011 - بخش‌ها
         ============================================================ -->
         <div class="pro-tab-content" id="tab-sections">
             <div class="pro-card">
@@ -273,10 +240,9 @@
         </div>
 
         <!-- ============================================================
-        0021 - محتوای ایندکس (به اختصار)
+        0021 - محتوای ایندکس
         ============================================================ -->
         <div class="pro-tab-content" id="tab-index-content">
-            <!-- ۸ بخش محتوای ایندکس (کامل) -->
             <div class="pro-card" id="sectionEducation"><div class="pro-card-header"><h3><i class="fas fa-graduation-cap"></i> سوابق تحصیلی</h3><span class="sub">ویرایش، جابجایی، حذف</span></div><div class="pro-fields"><div class="pro-field"><label>عنوان بخش</label><input type="text" id="eduSectionTitle" value="سوابق تحصیلی" placeholder="عنوان بخش"></div></div><div id="educationList" class="pro-items"></div><div class="pro-grid" style="margin-top:12px;"><div class="pro-field"><input type="text" id="newEduOrg" placeholder="نام مؤسسه"></div><div class="pro-field"><input type="text" id="newEduTitle" placeholder="عنوان تحصیلی"></div><div class="pro-field"><input type="text" id="newEduDate" placeholder="تاریخ"></div><div class="pro-field"><input type="text" id="newEduGpa" placeholder="معدل"></div><div class="pro-field"><input type="text" id="newEduDesc" placeholder="توضیحات"></div><div class="pro-field"><input type="text" id="newEduIcon" placeholder="آیکون"></div><div class="pro-field"><input type="text" id="newEduSource" placeholder="لینک منبع"></div><div class="pro-field"><input type="text" id="newEduCert" placeholder="لینک مدرک"></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"><button class="pro-btn pro-btn-success" onclick="addEducationItem()"><i class="fas fa-plus"></i> افزودن</button><button class="pro-btn pro-btn-primary" onclick="saveEducation()"><i class="fas fa-save"></i> ذخیره</button></div></div>
 
             <div class="pro-card" id="sectionCertificates"><div class="pro-card-header"><h3><i class="fas fa-certificate"></i> گواهی‌نامه‌ها</h3><span class="sub">ویرایش، جابجایی، حذف</span></div><div class="pro-fields"><div class="pro-field"><label>عنوان بخش</label><input type="text" id="certsSectionTitle" value="گواهی‌نامه‌ها" placeholder="عنوان بخش"></div></div><div id="certificatesList" class="pro-items"></div><div class="pro-grid" style="margin-top:12px;"><div class="pro-field"><input type="text" id="newCertName" placeholder="نام گواهی‌نامه"></div><div class="pro-field"><input type="text" id="newCertOrg" placeholder="موسسه"></div><div class="pro-field"><input type="text" id="newCertDate" placeholder="تاریخ"></div><div class="pro-field"><input type="text" id="newCertLink" placeholder="لینک مدرک"></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"><button class="pro-btn pro-btn-success" onclick="addCertificateItem()"><i class="fas fa-plus"></i> افزودن</button><button class="pro-btn pro-btn-primary" onclick="saveCertificates()"><i class="fas fa-save"></i> ذخیره</button></div></div>
@@ -295,7 +261,7 @@
         </div>
 
         <!-- ============================================================
-        0012 - مقالات (مدیریت)
+        0012 - مقالات
         ============================================================ -->
         <div class="pro-tab-content" id="tab-articles">
             <div class="pro-card">
@@ -315,7 +281,7 @@
         </div>
 
         <!-- ============================================================
-        0013 - محصولات (مدیریت)
+        0013 - محصولات
         ============================================================ -->
         <div class="pro-tab-content" id="tab-products">
             <div class="pro-card">
@@ -332,7 +298,7 @@
         </div>
 
         <!-- ============================================================
-        0014 - آرشیو (مدیریت)
+        0014 - آرشیو
         ============================================================ -->
         <div class="pro-tab-content" id="tab-archive">
             <div class="pro-card">
@@ -347,7 +313,7 @@
         </div>
 
         <!-- ============================================================
-        0022 - مدیریت کاربران (Members) - نسخه کامل
+        0022 - مدیریت کاربران
         ============================================================ -->
         <div class="pro-tab-content" id="tab-members">
             <div class="pro-card">
@@ -359,8 +325,6 @@
                         <button class="pro-btn pro-btn-sm pro-btn-purple" onclick="exportMembersData()"><i class="fas fa-file-export"></i> خروجی</button>
                     </div>
                 </div>
-
-                <!-- فیلتر و جستجو -->
                 <div class="pro-advanced-filter">
                     <select id="orderStatusFilter" onchange="filterOrders()">
                         <option value="all">همه وضعیت‌ها</option>
@@ -380,8 +344,6 @@
                     <input type="text" id="ordersSearch" placeholder="جستجو (شناسه، کاربر، محصول...)" oninput="filterOrders()">
                     <button class="pro-btn pro-btn-sm pro-btn-primary" onclick="filterOrders()"><i class="fas fa-search"></i></button>
                 </div>
-
-                <!-- دکمه‌های عملیاتی -->
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
                     <button class="pro-btn pro-btn-secondary" onclick="syncAllOrdersToGlobal()"><i class="fas fa-sync"></i> همگام‌سازی گلوبال</button>
                     <button class="pro-btn pro-btn-warning" id="bulkActionBtn" onclick="openBulkStatusModal()" disabled><i class="fas fa-layer-group"></i> تغییر وضعیت گروهی</button>
@@ -391,13 +353,9 @@
                     <button class="pro-btn pro-btn-danger" onclick="cleanOldUserOrders(30)"><i class="fas fa-broom"></i> پاک‌سازی قدیمی</button>
                     <button class="pro-btn pro-btn-primary" onclick="refreshOrders()"><i class="fas fa-sync"></i> رفرش</button>
                 </div>
-
-                <!-- لیست کاربران -->
                 <div id="membersList" class="pro-items">
                     <div class="pro-empty"><i class="fas fa-users"></i>در حال بارگذاری کاربران...</div>
                 </div>
-
-                <!-- دکمه‌های عملیاتی اضافی -->
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
                     <button class="pro-btn pro-btn-secondary" onclick="syncAllMembers()"><i class="fas fa-sync"></i> همگام‌سازی با گیت‌هاب</button>
                     <button class="pro-export-csv" onclick="exportMembersCSV()"><i class="fas fa-file-csv"></i> خروجی CSV کاربران</button>
@@ -405,8 +363,6 @@
                     <button class="pro-export-csv" onclick="exportOrdersCSV()"><i class="fas fa-file-csv"></i> خروجی سفارشات (CSV)</button>
                 </div>
             </div>
-
-            <!-- جزئیات کاربر -->
             <div class="pro-card" id="memberDetailCard" style="display:none;">
                 <div class="pro-card-header">
                     <h3><i class="fas fa-user-circle"></i> <span id="memberDetailName">کاربر</span> <span style="font-size:0.8rem;color:var(--pro-text-secondary);">#<span id="memberDetailId">---</span></span></h3>
@@ -435,7 +391,7 @@
         </div>
 
         <!-- ============================================================
-        0022.5 - مدیریت سفارشات (تب مجزا)
+        0022.5 - مدیریت سفارشات
         ============================================================ -->
         <div class="pro-tab-content" id="tab-orders">
             <div class="pro-card">
@@ -448,8 +404,6 @@
                         <button class="pro-btn pro-btn-sm pro-btn-outline" onclick="exportAllOrders()"><i class="fas fa-file-export"></i> JSON</button>
                     </div>
                 </div>
-
-                <!-- فیلتر، جستجو و مرتب‌سازی -->
                 <div class="pro-advanced-filter">
                     <select id="orderStatusFilter" onchange="filterOrders()">
                         <option value="all">همه وضعیت‌ها</option>
@@ -469,13 +423,9 @@
                     <input type="text" id="ordersSearch" placeholder="جستجو (شناسه، کاربر، محصول...)" oninput="filterOrders()">
                     <button class="pro-btn pro-btn-sm pro-btn-primary" onclick="filterOrders()"><i class="fas fa-search"></i></button>
                 </div>
-
-                <!-- لیست سفارشات -->
                 <div id="ordersListContainer" class="pro-items" style="display:block;">
                     <div class="pro-empty"><i class="fas fa-shopping-bag"></i>در حال بارگذاری سفارشات...</div>
                 </div>
-
-                <!-- دکمه‌های عملیاتی کامل -->
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
                     <button class="pro-btn pro-btn-secondary" onclick="syncAllOrdersToGlobal()"><i class="fas fa-sync"></i> همگام‌سازی گلوبال</button>
                     <button class="pro-btn pro-btn-warning" id="bulkActionBtn" onclick="openBulkStatusModal()" disabled><i class="fas fa-layer-group"></i> تغییر وضعیت گروهی</button>
@@ -486,8 +436,6 @@
                     <button class="pro-btn pro-btn-outline" onclick="exportAllOrders()"><i class="fas fa-file-export"></i> خروجی JSON</button>
                     <button class="pro-btn pro-btn-primary" onclick="refreshOrders()"><i class="fas fa-sync-alt"></i> رفرش</button>
                 </div>
-
-                <!-- آمار لحظه‌ای -->
                 <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;padding:12px;background:var(--pro-bg);border-radius:var(--pro-radius);border:1px solid var(--pro-border);">
                     <span><strong>مجموع:</strong> <span id="orderStatTotal">۰</span></span>
                     <span style="color:var(--pro-yellow);"><strong>در انتظار:</strong> <span id="orderStatPending">۰</span></span>
@@ -731,5 +679,19 @@
     0028 - اسکریپت‌ها (لینک به فایل JS)
     ============================================================ -->
     <script src="script-admin-panel.js"></script>
+    <script>
+        // فقط یک تغییر کوچک: غیرفعال کردن تابع خروج تا خطا نده
+        if (typeof proLogout !== 'undefined') {
+            window.proLogout = function() {
+                console.log('خروج غیرفعال شده است (پنل بدون لاگین)');
+                // هیچ کاری نمی‌کند
+            };
+        }
+        // همچنین نام ادمین رو هم تنظیم می‌کنیم
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameEl = document.getElementById('proAdminName');
+            if (nameEl) nameEl.textContent = 'مدیر';
+        });
+    </script>
 </body>
 </html>

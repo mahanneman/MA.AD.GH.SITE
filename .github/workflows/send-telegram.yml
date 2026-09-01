@@ -1,4 +1,4 @@
-name: Send Telegram Messages
+name: Send to Telegram
 
 on:
   push:
@@ -38,6 +38,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add notify/notify.json notify/historynotify.json 2>/dev/null || echo "No files"
-          git commit -m "📤 Move sent messages to history" || echo "No changes"
+          git add notify/notify.json notify/historynotify.json notify/last_state.json 2>/dev/null || echo "No files"
+          git commit -m "📤 Update notify status" || echo "No changes"
           git push origin main || echo "Push failed"

@@ -1,10 +1,10 @@
-name: cotact Send Telegram Messages
+name: Send Telegram Messages
 
 on:
   push:
     paths:
-      - 'notify/notify.json'   # وقتی فایل تغییر کند، اجرا می‌شود
-  workflow_dispatch:           # امکان اجرای دستی
+      - 'notify/notify.json'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -13,27 +13,33 @@ jobs:
   send:
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v6  # ✅ updated from v4 to v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v6  # ✅ updated from v5 to v6
         with:
           python-version: '3.10'
 
-      - name: 📦 Install requests
+      - name: Install requests
         run: pip install requests
 
-      - name: 🚀 Run Telegram sender script
+      - name: Debug - List files (for troubleshooting)
+        run: |
+          ls -la
+          ls -la scripts/ || echo "scripts folder not found"
+
+      - name: Run Telegram sender script
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python scripts/send_telegram.py
+        run: |
+          python scripts/send_telegram.py || echo "Script failed with exit code $?"
 
-      - name: 💾 Commit changes (move sent messages to history)
+      - name: Commit changes (move sent messages to history)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

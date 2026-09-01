@@ -81,9 +81,9 @@
     // ============================================================
     // ۳. بارگذاری منوها از JSON (در صورت وجود)
     // ============================================================
-    async function loadMenusFromJson() {
-        try {
-            const res = await fetch('_data/menu.json?t=' + Date.now());
+  async function loadMenusFromJson() {
+    try {
+        const res = await fetch(getBasePath() + '_data/menu.json?t=' + Date.now());
             if (!res.ok) throw new Error('فایل منو پیدا نشد');
             const data = await res.json();
             const menuData = data.guest || data;

@@ -25,235 +25,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- ===== 202 - استایل‌های جدا شده در common.css ===== -->
+    <!-- ===== 202 - استایل‌های جدا شده در common.css (نسخه جدید شما) ===== -->
     <link rel="stylesheet" href="common.css">
 
-    <!-- ===== 219 - استایل‌های اضافی برای منو و ریسپانسیو ===== -->
+    <!-- ===== 219 - استایل‌های اضافی برای منو و ریسپانسیو (برای اطمینان) ===== -->
     <style>
-        /* ============================================================
-           219.1 - مخفی کردن منوی هدر در موبایل
-           ============================================================ */
-        @media (max-width: 768px) {
-            .main-header .nav-list { display: none !important; }
-            .main-header .header-actions .btn-outline { display: none !important; }
-            .main-header .logo h1 { font-size: 0.9rem; }
-            .main-header .logo .logo-icon { width: 32px; height: 32px; font-size: 1rem; }
-            #themeToggle { width: 36px; height: 36px; font-size: 0.8rem; }
-            .menu-toggle { padding: 0.3rem 0.8rem; font-size: 0.75rem; }
-            .menu-toggle .bar { width: 18px; height: 1.5px; }
-            .menu-toggle span:last-child { font-size: 0.65rem; }
-            .header-cart-icon { font-size: 1rem; }
-            .header-user-info a { font-size: 0.7rem !important; }
-            .slide-menu-container { width: 280px; right: -300px; }
-            .slide-menu-profile-img { width: 70px; height: 70px; }
-            .slide-menu-profile h3 { font-size: 1.1rem; }
-            .slide-menu-link { padding: 12px 16px; font-size: 0.85rem; }
-            .slide-menu-link .menu-icon { width: 32px; height: 32px; font-size: 0.8rem; }
-            .slide-menu-actions .btn { padding: 10px 16px; font-size: 0.8rem; }
-            .hero-text .hero-title { font-size: 2rem; }
-            .hero-text .hero-subtitle { font-size: 1rem; }
-            .hero-stats { grid-template-columns: repeat(2, 1fr); }
-            .hero-actions { grid-template-columns: 1fr; }
-            .about-grid { grid-template-columns: 1fr; }
-            .skills-grid { grid-template-columns: 1fr; }
-            .article-preview-grid { grid-template-columns: 1fr; }
-            .contact-grid { grid-template-columns: 1fr; }
-            .section-title { font-size: 1.6rem; }
-            .container { padding: 0 12px; }
-            main { padding-top: 60px !important; }
+        /* این استایل‌ها قبلاً در common.css شما وجود دارند، اما برای اطمینان اضافه می‌شوند */
+        .hero-underline {
+            width: 100px;
+            height: 3px;
+            background: var(--gradient-main);
+            border-radius: 4px;
+            margin-top: 0.3rem;
         }
-
-        /* ============================================================
-           219.2 - تنظیمات منوی کشویی برای نمایش بهتر
-           ============================================================ */
-        .slide-menu-container { transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .slide-menu-container.active { right: 0; }
-        .menu-overlay { transition: opacity 0.3s ease; }
-        .menu-overlay.active { opacity: 1; visibility: visible; }
-
-        /* ============================================================
-           219.3 - استایل سبد خرید دراپ‌داون
-           ============================================================ */
-        #cartDropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: auto;
-            min-width: 280px;
-            max-width: 360px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            z-index: 1000;
-            margin-top: 8px;
-            padding: 4px 0;
-        }
-        @media (max-width: 480px) {
-            #cartDropdown { min-width: 240px; left: -20px; right: auto; }
-        }
-        .header-cart-icon {
-            position: relative;
-            cursor: pointer;
-        }
-        .header-cart-icon .cart-badge {
-            position: absolute;
-            top: -8px;
-            left: -8px;
-            background: #ef4444;
-            color: #fff;
-            font-size: 0.55rem;
-            font-weight: 700;
-            padding: 1px 5px;
-            border-radius: 50%;
-            min-width: 18px;
-            text-align: center;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* ============================================================
-           219.4 - منوی کاربر (دراپ‌داون)
-           ============================================================ */
-        .user-dropdown-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-        .user-trigger {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            color: var(--text-primary);
-            font-size: 0.85rem;
-            padding: 4px 10px;
-            border-radius: 8px;
-            transition: 0.3s;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-        }
-        .user-trigger:hover { border-color: var(--primary-color); }
-        .user-dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            min-width: 160px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 6px 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 1000;
-            margin-top: 4px;
-        }
-        .user-dropdown-menu a,
-        .user-dropdown-menu button {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: 0.3s;
-            font-size: 0.85rem;
-            border-radius: 6px;
-            background: none;
-            border: none;
-            width: 100%;
-            text-align: right;
-            cursor: pointer;
-            font-family: 'Vazirmatn', sans-serif;
-        }
-        .user-dropdown-menu a:hover,
-        .user-dropdown-menu button:hover { background: var(--bg-tertiary); }
-        .user-dropdown-menu button { color: #ef4444; }
-        .user-dropdown-menu button:hover { background: rgba(239, 68, 68, 0.1); }
-
-        /* ============================================================
-           219.5 - ریسپانسیو برای فوتر و سایر بخش‌ها
-           ============================================================ */
-        @media (max-width: 768px) {
-            .main-footer .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-            .main-footer .footer-wave { height: 60px; }
-            .main-footer .footer-bottom { flex-direction: column; text-align: center; }
-            .main-footer .footer-bottom .footer-badges { justify-content: center; }
-            .education-timeline .edu-item { padding-right: 1.2rem; }
-            .education-timeline .edu-item .edu-content { padding: 1rem; }
-            .education-timeline .edu-item .edu-content .edu-header { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
-            .contact-form-card { position: static; }
-            .contact-form-card form .grid-2 { grid-template-columns: 1fr; }
-            .resume-card .resume-file { flex-direction: column; align-items: center; text-align: center; }
-            .resume-card .resume-actions { flex-direction: column; }
-        }
-        @media (max-width: 480px) {
-            .hero-text .hero-title { font-size: 1.6rem; }
-            .hero-stats { grid-template-columns: 1fr 1fr; }
-            .hero-stats .stat-item .stat-number { font-size: 1.2rem; }
-            .about-card .about-features { grid-template-columns: 1fr 1fr; }
-            .about-card .about-features .feature-item .feature-icon { width: 40px; height: 40px; font-size: 1rem; }
-            .article-preview-card .meta { flex-direction: column; gap: 4px; }
-            .products-grid { grid-template-columns: 1fr; }
-            .articles-grid { grid-template-columns: 1fr; }
-            .archive-grid { grid-template-columns: 1fr; }
-            .slide-menu-container { width: 260px; right: -280px; }
-        }
-
-        /* ============================================================
-           219.6 - بهبودهای ظاهری حرفه‌ای (اضافه شده)
-           ============================================================ */
-        .hero-image .image-box img {
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-        .hero-image .image-box img:hover {
-            transform: scale(1.02);
-            box-shadow: 0 25px 70px rgba(0,0,0,0.5);
-        }
-        .hero-section .bg-layer .radial {
-            background: radial-gradient(circle at 30% 50%, rgba(37,99,235,0.08) 0%, transparent 60%);
-        }
-        .about-card, .edu-card, .certs-card, .skill-item, .article-preview-card, .contact-info-card, .resume-card, .contact-form-card {
-            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-        .about-card:hover, .edu-card:hover, .certs-card:hover, .skill-item:hover, .article-preview-card:hover {
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-            transform: translateY(-4px);
-        }
-        .stat-number {
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-        .btn-primary, .btn-secondary, .btn-outline, .submit-btn {
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-primary::after, .btn-secondary::after, .submit-btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255,255,255,0.15);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
-        }
-        .btn-primary:active::after, .btn-secondary:active::after, .submit-btn:active::after {
-            width: 300px;
-            height: 300px;
-        }
-        @media (max-width: 768px) {
-            .hero-text .hero-title { font-size: 1.8rem; }
-            .hero-text .hero-subtitle { font-size: 0.95rem; }
-            .section-title { font-size: 1.4rem; }
-        }
+        /* کوچک‌ترین تنظیمات در صورت نیاز */
     </style>
 </head>
 <body>
@@ -267,7 +52,7 @@
     <!-- ============================================================
          203 - محتوای اصلی (Main)
          ============================================================ -->
-    <main style="padding-top:70px;">
+    <main style="padding-top:72px;">
 
         <!-- ============================================================
              203.1 - بخش هیرو (Hero)
@@ -281,7 +66,7 @@
                 <div class="hero-grid">
                     <!-- متن هیرو -->
                     <div class="hero-text">
-                        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--bg-tertiary);padding:0.3rem 1rem;border-radius:30px;font-size:0.85rem;margin-bottom:1.5rem;">
+                        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--bg-tertiary);padding:0.3rem 1.2rem;border-radius:var(--radius-full);font-size:0.85rem;margin-bottom:1.5rem;border:1px solid var(--border-color);">
                             <i class="fas fa-hand-wave" style="color:var(--primary-color);"></i>
                             <span>خوش آمدید به رزومه آنلاین</span>
                         </div>
@@ -751,8 +536,8 @@
                 }
                 renderHeroSection();
                 renderAboutSection();
-                renderSkillsSection();
-                renderEducation(); // ← جایگزین renderEducationSection
+                renderSkillsSection();   // <-- اینجا تابع renderSkillsSection فراخوانی می‌شود
+                renderEducationSection(); // <-- اینجا تابع renderEducationSection فراخوانی می‌شود
                 renderContactInfo();
             } catch (e) {
                 console.error('❌ خطا در بارگذاری بخش‌ها:', e);
@@ -770,7 +555,7 @@
             if (hero.tags) {
                 const tags = hero.tags.split(',').map(t => t.trim()).filter(Boolean);
                 tagsContainer.innerHTML = tags.map(tag =>
-                    `<span style="background:var(--bg-tertiary);padding:0.2rem 0.8rem;border-radius:20px;font-size:0.8rem;color:var(--text-secondary);">${tag}</span>`
+                    `<span style="background:var(--bg-tertiary);padding:0.2rem 0.8rem;border-radius:var(--radius-full);font-size:0.8rem;color:var(--text-secondary);border:1px solid var(--border-color);">${tag}</span>`
                 ).join('');
             }
             if (hero.image) {
@@ -798,41 +583,24 @@
         }
 
         // ============================================================
-        // 221.3.5 - بارگذاری مهارت‌ها از JSON
+        // 221.3.5 - رندر مهارت‌ها (تعریف تابع renderSkillsSection)
         // ============================================================
-        async function loadSkills() {
-            try {
-                const res = await fetch('_data/skills.json?t=' + Date.now());
-                if (!res.ok) throw new Error('فایل مهارت‌ها پیدا نشد');
-                const data = await res.json();
-                renderSkills(data);
-            } catch (e) {
-                console.error('خطا در بارگذاری مهارت‌ها:', e);
-                renderSkills({
-                    title: 'مهارت‌های تخصصی',
-                    desc: 'تسلط بر جدیدترین نرم‌افزارها و تکنولوژی‌ها',
-                    items: [
-                        { name: 'CATIA', icon: 'fa-drafting-compass', level: 'پیشرفته', desc: 'طراحی سطح، مونتاژ', progress: 90, color: '#2563eb' },
-                        { name: 'SOLIDWORKS', icon: 'fa-cube', level: 'پیشرفته', desc: 'مدل‌سازی سه‌بعدی', progress: 85, color: '#10b981' },
-                        { name: 'AutoCAD', icon: 'fa-draw-polygon', level: 'حرفه‌ای', desc: 'نقشه‌کشی دو بعدی', progress: 95, color: '#f59e0b' },
-                        { name: 'ANSYS Fluent', icon: 'fa-water', level: 'پیشرفته', desc: 'تحلیل جریان سیالات', progress: 80, color: '#8b5cf6' }
-                    ]
-                });
-            }
-        }
-
-        function renderSkills(data) {
-            const grid = document.getElementById('skillsGrid');
-            if (!grid) return;
-            const skills = data.items || [];
-            if (skills.length === 0) {
-                grid.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ مهارتی ثبت نشده است.</p>';
+        function renderSkillsSection() {
+            const container = document.getElementById('skillsGrid');
+            if (!container) {
+                console.warn('⚠️ المنت skillsGrid پیدا نشد!');
                 return;
             }
-            grid.innerHTML = skills.map(s => `
+            // از sectionsData.skills استفاده می‌کنیم
+            const skillsData = sectionsData.skills || { items: [] };
+            if (!skillsData.items || skillsData.items.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ مهارتی ثبت نشده است.</p>';
+                return;
+            }
+            container.innerHTML = skillsData.items.map(s => `
                 <div class="skill-item">
                     <div class="skill-header">
-                        <div class="skill-icon" style="background:${s.color || 'linear-gradient(135deg,var(--primary-color),#8b5cf6)'};"><i class="fas ${s.icon || 'fa-cog'}"></i></div>
+                        <div class="skill-icon" style="background:${s.color || 'var(--gradient-main)'};"><i class="fas ${s.icon || 'fa-cog'}"></i></div>
                         <div>
                             <h4 class="skill-name">${s.name || 'بدون نام'}</h4>
                             <span class="skill-level">${s.level || 'متوسط'}</span>
@@ -846,42 +614,26 @@
         }
 
         // ============================================================
-        // 221.3.6 - بارگذاری تحصیلات از JSON
+        // 221.3.6 - رندر تحصیلات (تعریف تابع renderEducationSection)
         // ============================================================
-        async function loadEducation() {
-            try {
-                const res = await fetch('_data/education.json?t=' + Date.now());
-                if (!res.ok) throw new Error('فایل تحصیلات پیدا نشد');
-                const data = await res.json();
-                renderEducation(data);
-            } catch (e) {
-                console.error('خطا در بارگذاری تحصیلات:', e);
-                renderEducation({
-                    title: 'سوابق تحصیلی و دوره‌ها',
-                    layout: 'timeline',
-                    items: [
-                        { id: 1, title: 'کارشناسی مهندسی مکانیک', org: 'دانشگاه آزاد اسلامی واحد تهران مرکز', date: '۱۳۹۹ - ۱۴۰۴', badge: 'فارغ‌التحصیل', badgeColor: '#10b981', details: ['گرایش: سیالات و حرارت', 'معدل: ۱۵.۷۲'] },
-                        { id: 2, title: 'گواهی نامه تخصصی CATIA', org: 'مجتمع فنی تهران', date: '۱۴۰۴', badge: 'پیشرفته', badgeColor: '#8b5cf6', details: ['طراحی سطح، مونتاژ، نقشه‌کشی', 'مدت: ۱۲۰ ساعت'] }
-                    ]
-                });
-            }
-        }
-
-        function renderEducation(data) {
-            const timeline = document.getElementById('educationTimeline');
-            if (!timeline) return;
-            const items = data.items || [];
-            if (items.length === 0) {
-                timeline.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ آیتم تحصیلی ثبت نشده است.</p>';
+        function renderEducationSection() {
+            const container = document.getElementById('educationTimeline');
+            if (!container) {
+                console.warn('⚠️ المنت educationTimeline پیدا نشد!');
                 return;
             }
-            timeline.innerHTML = items.map((item) => `
+            const eduData = sectionsData.education || { items: [] };
+            if (!eduData.items || eduData.items.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ آیتم تحصیلی ثبت نشده است.</p>';
+                return;
+            }
+            container.innerHTML = eduData.items.map(item => `
                 <div class="edu-item">
                     <div class="edu-dot"></div>
                     <div class="edu-content">
                         <div class="edu-header">
                             <h4>${item.title || 'بدون عنوان'}</h4>
-                            <span class="edu-badge" style="background:${item.badgeColor || 'linear-gradient(135deg,var(--primary-color),#8b5cf6)'};">${item.badge || 'تکمیل شده'}</span>
+                            <span class="edu-badge" style="background:${item.badgeColor || 'var(--gradient-main)'};">${item.badge || 'تکمیل شده'}</span>
                         </div>
                         <p class="edu-org">${item.org || ''}</p>
                         <p class="edu-date">${item.date || ''}</p>
@@ -894,7 +646,40 @@
         }
 
         // ============================================================
-        // 221.3.8 - بارگذاری مقالات اخیر
+        // 221.3.7 - بارگذاری مهارت‌ها از JSON (برای داده‌های واقعی)
+        // ============================================================
+        async function loadSkills() {
+            try {
+                const res = await fetch('_data/skills.json?t=' + Date.now());
+                if (!res.ok) throw new Error('فایل مهارت‌ها پیدا نشد');
+                const data = await res.json();
+                // به‌روزرسانی sectionsData.skills با داده‌های واقعی
+                sectionsData.skills = data;
+                renderSkillsSection(); // رندر مجدد
+            } catch (e) {
+                console.error('خطا در بارگذاری مهارت‌ها:', e);
+                // در صورت خطا، از داده‌های پیش‌فرض استفاده می‌شود (که قبلاً در sectionsData تنظیم شده)
+            }
+        }
+
+        // ============================================================
+        // 221.3.8 - بارگذاری تحصیلات از JSON
+        // ============================================================
+        async function loadEducation() {
+            try {
+                const res = await fetch('_data/education.json?t=' + Date.now());
+                if (!res.ok) throw new Error('فایل تحصیلات پیدا نشد');
+                const data = await res.json();
+                sectionsData.education = data;
+                renderEducationSection(); // رندر مجدد
+            } catch (e) {
+                console.error('خطا در بارگذاری تحصیلات:', e);
+                // در صورت خطا، از داده‌های پیش‌فرض استفاده می‌شود
+            }
+        }
+
+        // ============================================================
+        // 221.3.9 - بارگذاری مقالات اخیر
         // ============================================================
         async function loadRecentArticles() {
             try {
@@ -934,7 +719,7 @@
         }
 
         // ============================================================
-        // 221.3.9 - گواهی‌نامه‌ها
+        // 221.3.10 - گواهی‌نامه‌ها
         // ============================================================
         function loadCertificates() {
             const list = document.getElementById('certificatesList');
@@ -945,15 +730,15 @@
                 { name: 'طراحی با SolidWorks', org: 'دوره تخصصی آنلاین', date: '۱۴۰۲' }
             ];
             list.innerHTML = certs.map(c => `
-                <div style="display:flex;gap:0.8rem;padding:0.8rem;background:var(--bg-tertiary);border-radius:12px;">
-                    <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--secondary-color),var(--primary-color));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;"><i class="fas fa-award"></i></div>
+                <div style="display:flex;gap:0.8rem;padding:0.8rem;background:var(--bg-tertiary);border-radius:var(--radius-sm);">
+                    <div style="width:40px;height:40px;background:var(--gradient-main);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;"><i class="fas fa-award"></i></div>
                     <div><h5 style="font-size:0.95rem;margin-bottom:0.2rem;">${c.name}</h5><p style="font-size:0.8rem;color:var(--text-secondary);margin:0;">${c.org}</p><div style="display:flex;gap:1rem;font-size:0.7rem;color:var(--text-secondary);margin-top:0.3rem;"><span><i class="fas fa-calendar"></i> ${c.date}</span></div></div>
                 </div>
             `).join('');
         }
 
         // ============================================================
-        // 221.3.10 - شمارنده‌های آماری
+        // 221.3.11 - شمارنده‌های آماری
         // ============================================================
         function initCounters() {
             const counters = document.querySelectorAll('.stat-number');
@@ -977,7 +762,7 @@
         }
 
         // ============================================================
-        // 221.3.11 - فرم تماس (نسخه نهایی با توکن ثابت و پشتیبان localStorage)
+        // 221.3.12 - فرم تماس (نسخه نهایی با توکن ثابت و پشتیبان localStorage)
         // ============================================================
         function initContactForm() {
             const form = document.getElementById('contactForm');
@@ -1159,7 +944,7 @@
         }
 
         // ============================================================
-        // 221.3.12 - منوی کشویی و تم تاریک/روشن
+        // 221.3.13 - منوی کشویی و تم تاریک/روشن
         // ============================================================
         (function() {
             const menuToggle = document.getElementById('menuToggle');
@@ -1227,13 +1012,45 @@
         })();
 
         // ============================================================
-        // 221.3.13 - بارگذاری اولیه
+        // 221.3.14 - رندر اطلاعات تماس
+        // ============================================================
+        function renderContactInfo() {
+            const contact = sectionsData.contact || {};
+            const container = document.getElementById('contactInfo');
+            if (!container) return;
+            container.innerHTML = `
+                <div class="contact-item">
+                    <div class="contact-item-icon"><i class="fas fa-phone"></i></div>
+                    <div class="contact-item-content">
+                        <h4>شماره تماس</h4>
+                        <a href="tel:${contact.phone || '۰۹۹۰۲۲۷۹۷۰۲'}">${contact.phone || '۰۹۹۰۲۲۷۹۷۰۲'}</a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-item-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="contact-item-content">
+                        <h4>ایمیل</h4>
+                        <a href="mailto:${contact.email || 'mahan.neman2020@gmail.com'}">${contact.email || 'mahan.neman2020@gmail.com'}</a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-item-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="contact-item-content">
+                        <h4>موقعیت</h4>
+                        <span>تهران، ایران</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============================================================
+        // 221.3.15 - بارگذاری اولیه
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             loadAppearanceSettings();
-            loadSectionsData();
-            loadSkills();
-            loadEducation();
+            loadSectionsData();   // این تابع renderSkillsSection و renderEducationSection را صدا می‌زند
+            loadSkills();        // بارگذاری مهارت‌های واقعی از JSON
+            loadEducation();     // بارگذاری تحصیلات واقعی از JSON
             loadRecentArticles();
             loadCertificates();
             initCounters();
@@ -1246,36 +1063,6 @@
                 yearEl.innerHTML = yearEl.innerHTML.replace('۱۴۰۳', persianYear);
             }
         });
-
-        // تابع کمکی برای رندر مهارت‌ها (برای سازگاری با نسخه قبلی)
-        function renderSkillsSection(skillsData) {
-            const container = document.getElementById('skills-section');
-            if (!container) return;
-            if (!skillsData || !skillsData.items || skillsData.items.length === 0) {
-                container.innerHTML = '<p>هیچ مهارتی ثبت نشده است.</p>';
-                return;
-            }
-            let html = `<h2>${skillsData.title || 'مهارت‌های تخصصی'}</h2>`;
-            if (skillsData.desc) html += `<p>${skillsData.desc}</p>`;
-            html += `<div class="skills-grid">`;
-            skillsData.items.forEach(item => {
-                html += `
-                    <div class="skill-item">
-                        <div class="skill-header">
-                            ${item.icon ? `<i class="fas ${item.icon}"></i>` : ''}
-                            <span>${item.name}</span>
-                            <span class="skill-level">${item.level || 'متوسط'}</span>
-                        </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width:${item.progress || 0}%;background:${item.color || 'var(--primary)'};"></div>
-                        </div>
-                        ${item.desc ? `<p class="skill-desc">${item.desc}</p>` : ''}
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            container.innerHTML = html;
-        }
     </script>
 
 </body>

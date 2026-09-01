@@ -163,8 +163,13 @@
         if (!el) return;
         if (valid) { el.textContent = '✅ توکن معتبر'; el.className = 'token-status valid'; } else { el.textContent = '⚠️ توکن ذخیره نشده'; el.className = 'token-status invalid'; }
     }
-    function getToken() { return PRO_TOKEN; }
-
+function getToken() {
+    const token = localStorage.getItem('github_token');
+    if (token) {
+        return token.trim();
+    }
+    return '';
+}
     // ============================================================
     // 0503 - پیام‌ها و لاگ
     // ============================================================

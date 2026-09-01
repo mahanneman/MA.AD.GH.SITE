@@ -701,17 +701,21 @@
         </div>
     </div>
 </section>
-<!-- ===== اسکریپت بارگذاری فوتر ===== -->
+        <!--
+   اسکریپت بارگذاری فوتر از فایل footer.html
+         ============================================================ -->
     <script>
         (function loadFooter() {
             fetch('footer.html')
                 .then(res => {
-                    if (!res.ok) throw new Error('خطا در بارگذاری فوتر');
+                    if (!res.ok) throw new Error('فوتر پیدا نشد! مسیر را بررسی کن.');
                     return res.text();
                 })
                 .then(html => {
+                    // محتوای فوتر را داخل ظرف قرار بده
                     document.getElementById('footerContainer').innerHTML = html;
-                    // به‌روزرسانی سال در فوتر
+
+                    // (اختیاری) به‌روزرسانی خودکار سال شمسی در فوتر
                     const yearEl = document.querySelector('#footerContainer .copyright p:first-child');
                     if (yearEl) {
                         const persianYear = new Date().getFullYear() - 621;

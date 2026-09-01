@@ -27,62 +27,17 @@ jobs:
       - name: 📦 Install requests
         run: pip install requests
 
-      - name: 🔍 DEBUG - Show everything
-        run: |
-          echo "📂 Checking files:"
-          ls -la
-          echo ""
-          echo "📂 Checking scripts folder:"
-          ls -la scripts/ || echo "❌ scripts folder not found!"
-          echo ""
-          echo "📄 notify.json content:"
-          cat notify/notify.json 2>/dev/null || echo "❌ notify.json not found or empty!"
-          echo ""
-          echo "📄 Checking script content (first 20 lines):"
-          head -20 scripts/send_contact_to_telegram.py 2>/dev/null || echo "❌ Script not found!"
-          echo ""
-          echo "🔑 Token (first 10 chars): ${TELEGRAM_BOT_TOKEN:0:10}..."
-          echo "📱 Chat ID: ${TELEGRAM_CHAT_ID}"
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-
-      - name: 🧪 Direct Telegram test with curl
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        run: |
-          echo "📤 Sending test message via curl..."
-          RESPONSE=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-            -d "chat_id=5484310778" \
-            -d "text=✅ Test message from GitHub Actions at $(date)")
-          echo "Response: $RESPONSE"
-          if echo "$RESPONSE" | grep -q '"ok":true'; then
-            echo "✅ Test message sent successfully!"
-          else
-            echo "❌ Test message FAILED!"
-            echo "Check your token: ${TELEGRAM_BOT_TOKEN:0:10}..."
-          fi
-
-      - name: 🚀 Run Python sender
+      - name: 🚀 Run Telegram sender
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          echo "📤 Running Python script..."
           python scripts/send_contact_to_telegram.py
-          EXIT_CODE=$?
-          echo "Exit code: $EXIT_CODE"
-          if [ $EXIT_CODE -ne 0 ]; then
-            echo "❌ Script failed with exit code $EXIT_CODE"
-            exit 1
-          fi
-          echo "✅ Script completed successfully"
 
       - name: 💾 Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add notify/notify.json notify/historynotify.json 2>/dev/null || echo "No files to add"
-          git status
-          git commit -m "📤 Move sent messages to history" || echo "No changes to commit"
+          git add notify/notify.json notify/historynotify.json 2>/dev/null || echo "No files"
+          git commit -m "📤 Move sent messages to history" || echo "No changes"
           git push origin main || echo "Push failed"

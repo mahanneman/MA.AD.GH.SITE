@@ -1,104 +1,18 @@
-1111{
-  "guest": {
-    "header": [
-      {
-        "title": "خانه",
-        "link": "index.html",
-        "icon": "fa-home"
-      },
-      {
-        "title": "مقالات",
-        "link": "articles.html",
-        "icon": "fa-newspaper"
-      },
-      {
-        "title": "آرشیو",
-        "link": "archive.html",
-        "icon": "fa-archive"
-      },
-      {
-        "title": "تماس",
-        "link": "index.html#contact",
-        "icon": "fa-envelope"
-      }
-    ],
-    "slide": [
-      {
-        "title": "خانه",
-        "link": "index.html",
-        "icon": "fa-home"
-      },
-      {
-        "title": "مقالات",
-        "link": "articles.html",
-        "icon": "fa-newspaper"
-      },
-      {
-        "title": "آرشیو",
-        "link": "archive.html",
-        "icon": "fa-archive"
-      },
-      {
-        "title": "تماس",
-        "link": "index.html#contact",
-        "icon": "fa-envelope"
-      }
-    ]
-  },
-  "user": {
-    "header": [
-      {
-        "title": "خانه",
-        "link": "index.html",
-        "icon": "fa-home"
-      },
-      {
-        "title": "مقالات",
-        "link": "articles.html",
-        "icon": "fa-newspaper"
-      },
-
-      {
-        "title": "آرشیو",
-        "link": "archive.html",
-        "icon": "fa-archive"
-      },
-      {
-        "title": "تماس",
-        "link": "index.html#contact",
-        "icon": "fa-envelope"
-      },
-
-    ],
-    "slide": [
-      {
-        "title": "خانه",
-        "link": "index.html",
-        "icon": "fa-home"
-      },
-      {
-        "title": "مقالات",
-        "link": "articles.html",
-        "icon": "fa-newspaper"
-      },
-
-      {
-        "title": "آرشیو",
-        "link": "archive.html",
-        "icon": "fa-archive"
-      },
-      {
-        "title": "تماس",
-        "link": "index.html#contact",
-        "icon": "fa-envelope"
-              }  ,
-
-            {
-        "title": "پنل ادمین",
-        "link": "admin/admin-login.html",
-      "icon": "fa-user-shield"
-      }
- 
-    ]
-  }
+{
+  "header": [
+    { "title": "خانه", "link": "index.html", "icon": "fa-home" },
+    { "title": "مقالات", "link": "articles.html", "icon": "fa-newspaper" },
+    { "title": "محصولات", "link": "products.html", "icon": "fa-cube" },
+    { "title": "آرشیو", "link": "archive.html", "icon": "fa-archive" },
+    { "title": "تماس", "link": "index.html#contact", "icon": "fa-envelope" },
+    { "title": "پنل ادمین", "link": "admin/admin-login.html", "icon": "fa-user-shield" }
+  ],
+  "slide": [
+    { "title": "خانه", "link": "index.html", "icon": "fa-home" },
+    { "title": "مقالات", "link": "articles.html", "icon": "fa-newspaper" },
+    { "title": "محصولات", "link": "products.html", "icon": "fa-cube" },
+    { "title": "آرشیو", "link": "archive.html", "icon": "fa-archive" },
+    { "title": "تماس", "link": "index.html#contact", "icon": "fa-envelope" },
+    { "title": "پنل ادمین", "link": "admin/admin-login.html", "icon": "fa-user-shield" }
+  ]
 }

@@ -1,12 +1,12 @@
 {
   "appearance": {
-    "colorPrimary": "#30df44",
+    "colorPrimary": "#66118d",
     "colorSecondary": "#10b981",
     "colorBg": "#0a0f1a",
     "colorText": "#96a26d",
     "colorTextSec": "#94a3b8",
     "colorCard": "#141b2b",
-    "colorBorder": "#1e2a3d",
+    "colorBorder": "#19866a",
     "fontFamily": "Vazirmatn",
     "fontSize": 16,
     "fontSizeHeading": 26,

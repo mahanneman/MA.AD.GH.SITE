@@ -1,0 +1,25 @@
+name: Test Chat ID
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send test message
+        env:
+          TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          echo "📤 Sending to chat: $CHAT"
+          RESPONSE=$(curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
+            -d chat_id="${CHAT}" \
+            -d text="✅ Test from GitHub")
+          echo "Response: $RESPONSE"
+          if echo "$RESPONSE" | grep -q '"ok":true'; then
+            echo "✅✅✅ SUCCESS! Chat ID is correct!"
+          else
+            echo "❌❌❌ FAILED! Chat ID is WRONG!"
+            echo "Please get your correct chat ID from @userinfobot"
+          fi

@@ -180,4 +180,767 @@
             .product-page .cart-section { flex-direction: column; align-items: stretch; }
             .product-page .cart-section .btn-add-cart { justify-content: center; }
             .product-page .related-grid { grid-template-columns: 1fr 1fr; }
-            .product-page .lightbox-overlay .nav-lightbox { width: 36px; height:
+            .product-page .lightbox-overlay .nav-lightbox { width: 36px; height: 36px; font-size: 1rem; }
+        }
+        @media (max-width: 480px) {
+            .product-page .related-grid { grid-template-columns: 1fr; }
+            .product-page .price-row .price { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== هدر و منوی کشویی توسط load-menu.js بارگذاری می‌شوند ===== -->
+    <!-- هیچ کد هدر و منوی دستی در اینجا وجود ندارد -->
+
+    <!-- ===== محتوای اصلی ===== -->
+    <div class="product-page">
+        <a href="products.html" class="back-link"><i class="fas fa-arrow-right"></i> بازگشت به محصولات</a>
+        <div id="productContent">
+            <div class="loading"><i class="fas fa-spinner fa-pulse"></i><p style="color:var(--text-secondary);">در حال بارگذاری...</p></div>
+        </div>
+    </div>
+
+    <!-- ===== فوتر ===== -->
+    <footer class="main-footer">
+        <div class="footer-wave">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
+            </svg>
+        </div>
+        <div class="container">
+            <div class="footer-grid">
+                <!-- فوتر (بدون تغییر) -->
+                <div class="footer-brand">
+                    <div class="brand-info">
+                        <div class="brand-icon"><i class="fas fa-cogs"></i></div>
+                        <div>
+                            <h3 class="brand-title">مهندس ماهان ادهم قزوینی</h3>
+                            <p class="brand-sub">متخصص مکانیک سیالات و تحلیل CFD</p>
+                        </div>
+                    </div>
+                    <p class="brand-desc">مهندس مکانیک با تخصص در تحلیل سیالات محاسباتی، طراحی سیستم‌های مکانیکی و توسعه قطعات پرینتر سه‌بعدی. متعهد به ارائه راه‌حل‌های نوآورانه در حوزه مهندسی.</p>
+                    <div class="brand-actions">
+                        <a href="resume.pdf" download class="btn btn-outline"><i class="fas fa-download"></i> دانلود رزومه</a>
+                        <a href="index.html#contact" class="btn btn-primary"><i class="fas fa-envelope"></i> تماس با من</a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>لینک‌های سریع</h4>
+                    <ul>
+                        <li><a href="index.html"><i class="fas fa-chevron-left" style="font-size:0.7rem;color:var(--primary-color);"></i> خانه</a></li>
+                        <li><a href="articles.html"><i class="fas fa-chevron-left" style="font-size:0.7rem;color:var(--primary-color);"></i> مقالات</a></li>
+                        <li><a href="archive.html"><i class="fas fa-chevron-left" style="font-size:0.7rem;color:var(--primary-color);"></i> آرشیو</a></li>
+                        <li><a href="products.html"><i class="fas fa-chevron-left" style="font-size:0.7rem;color:var(--primary-color);"></i> محصولات</a></li>
+                        <li><a href="index.html#contact"><i class="fas fa-chevron-left" style="font-size:0.7rem;color:var(--primary-color);"></i> تماس</a></li>
+                    </ul>
+                </div>
+                <div class="footer-services">
+                    <h4>خدمات تخصصی</h4>
+                    <ul>
+                        <li><i class="fas fa-check-circle" style="color:var(--secondary-color);margin-top:3px;"></i> تحلیل CFD و شبیه‌سازی</li>
+                        <li><i class="fas fa-check-circle" style="color:var(--secondary-color);margin-top:3px;"></i> طراحی سیستم‌های مکانیکی</li>
+                        <li><i class="fas fa-check-circle" style="color:var(--secondary-color);margin-top:3px;"></i> مدل‌سازی CAD و نقشه‌کشی</li>
+                        <li><i class="fas fa-check-circle" style="color:var(--secondary-color);margin-top:3px;"></i> طراحی قطعات پرینتر 3D</li>
+                        <li><i class="fas fa-check-circle" style="color:var(--secondary-color);margin-top:3px;"></i> مشاوره مهندسی مکانیک</li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>شبکه‌های اجتماعی</h4>
+                    <div class="social-items">
+                        <a href="https://t.me/mahanenman" target="_blank" class="social-item">
+                            <div class="social-icon"><i class="fab fa-telegram"></i></div>
+                            <div class="social-info">
+                                <div class="social-name">تلگرام</div>
+                                <div class="social-handle">@mahanenman</div>
+                            </div>
+                            <div class="social-arrow"><i class="fas fa-external-link-alt"></i></div>
+                        </a>
+                        <a href="https://www.instagram.com/mahantheloner" target="_blank" class="social-item">
+                            <div class="social-icon"><i class="fab fa-instagram"></i></div>
+                            <div class="social-info">
+                                <div class="social-name">اینستاگرام</div>
+                                <div class="social-handle">@mahantheloner</div>
+                            </div>
+                            <div class="social-arrow"><i class="fas fa-external-link-alt"></i></div>
+                        </a>
+                        <a href="mailto:mahan.neman2020@gmail.com" class="social-item">
+                            <div class="social-icon"><i class="fas fa-envelope"></i></div>
+                            <div class="social-info">
+                                <div class="social-name">ایمیل</div>
+                                <div class="social-handle">mahan.neman2020</div>
+                            </div>
+                            <div class="social-arrow"><i class="fas fa-paper-plane"></i></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="copyright"><p>&copy; ۱۴۰۳ ماهان ادهم قزوینی. تمامی حقوق محفوظ است.</p></div>
+                <div class="footer-badges">
+                    <span class="badge"><i class="fas fa-shield-alt"></i> امنیت اطلاعات</span>
+                    <span class="badge"><i class="fas fa-bolt"></i> پاسخگویی سریع</span>
+                    <span class="badge"><i class="fas fa-mobile-alt"></i> ریسپانسیو</span>
+                    <span class="badge"><i class="fas fa-globe"></i> دسترسی جهانی</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== لایت‌باکس ===== -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="close-lightbox" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
+        <button class="nav-lightbox prev" onclick="prevLightbox()"><i class="fas fa-chevron-right"></i></button>
+        <img id="lightboxImage" src="" alt="بزرگ‌نمایی">
+        <button class="nav-lightbox next" onclick="nextLightbox()"><i class="fas fa-chevron-left"></i></button>
+    </div>
+
+    <!-- ============================================================
+         اسکریپت‌ها (ترتیب مهم است)
+         ============================================================ -->
+    <script src="auth.js"></script>
+    <script src="load-menu.js"></script>
+    <script src="menu-loader.js"></script>
+
+    <!-- ===== اسکریپت اصلی + بارگذاری تنظیمات ظاهری ===== -->
+    <script>
+        // ===== بارگذاری تنظیمات ظاهری از settings.json =====
+        async function loadAppearanceSettings() {
+            try {
+                const res = await fetch('_data/settings.json?t=' + Date.now());
+                if (!res.ok) return;
+                const data = await res.json();
+                const appearance = data.appearance || {};
+                const root = document.documentElement.style;
+                if (appearance.colorPrimary) {
+                    root.setProperty('--primary-color', appearance.colorPrimary);
+                    root.setProperty('--pro-primary', appearance.colorPrimary);
+                }
+                if (appearance.colorSecondary) {
+                    root.setProperty('--secondary-color', appearance.colorSecondary);
+                    root.setProperty('--pro-secondary', appearance.colorSecondary);
+                }
+                if (appearance.colorBg) {
+                    root.setProperty('--bg-primary', appearance.colorBg);
+                    root.setProperty('--pro-bg', appearance.colorBg);
+                }
+                if (appearance.colorText) {
+                    root.setProperty('--text-primary', appearance.colorText);
+                    root.setProperty('--pro-text', appearance.colorText);
+                }
+                if (appearance.colorTextSec) {
+                    root.setProperty('--text-secondary', appearance.colorTextSec);
+                    root.setProperty('--pro-text-secondary', appearance.colorTextSec);
+                }
+                if (appearance.colorCard) {
+                    root.setProperty('--bg-secondary', appearance.colorCard);
+                    root.setProperty('--pro-card', appearance.colorCard);
+                }
+                if (appearance.colorBorder) {
+                    root.setProperty('--border-color', appearance.colorBorder);
+                    root.setProperty('--pro-border', appearance.colorBorder);
+                }
+                if (appearance.fontFamily) {
+                    document.body.style.fontFamily = appearance.fontFamily + ', sans-serif';
+                }
+                if (appearance.fontSize) {
+                    document.body.style.fontSize = appearance.fontSize + 'px';
+                }
+                if (appearance.fontSizeHeading) {
+                    document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(el => {
+                        el.style.fontSize = appearance.fontSizeHeading + 'px';
+                    });
+                }
+                if (appearance.lineHeight) {
+                    document.body.style.lineHeight = appearance.lineHeight;
+                }
+                if (appearance.bgImage) {
+                    document.body.style.backgroundImage = 'url(' + appearance.bgImage + ')';
+                    document.body.style.backgroundSize = 'cover';
+                    document.body.style.backgroundAttachment = 'fixed';
+                }
+            } catch (e) {
+                console.error('خطا در بارگذاری تنظیمات ظاهر:', e);
+            }
+        }
+
+        // ============================================================
+        // نگاشت وضعیت‌ها به فارسی
+        // ============================================================
+        const statusMap = {
+            'pending': '⏳ در انتظار پرداخت',
+            'paid': '✅ پرداخت شده',
+            'shipped': '📦 ارسال شده',
+            'completed': '✔️ تکمیل شده',
+            'canceled': '❌ لغو شده'
+        };
+
+        // ============================================================
+        // توابع کمکی گیت‌هاب
+        // ============================================================
+        const REPO_OWNER = 'mahanneman';
+        const REPO_NAME = 'MA.AD.GH.SITE';
+        const REPO_PATH = `repos/${REPO_OWNER}/${REPO_NAME}/contents`;
+
+        async function fetchFromGitHub(path) {
+            const token = localStorage.getItem('github_token');
+            if (!token) throw new Error('❌ توکن گیت‌هاب یافت نشد.');
+            const url = `https://api.github.com/${REPO_PATH}/${path}`;
+            const res = await fetch(url, {
+                headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (res.status === 404) return null;
+            if (!res.ok) throw new Error(`خطا در خواندن فایل (${res.status})`);
+            const data = await res.json();
+            const binaryString = atob(data.content);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) { bytes[i] = binaryString.charCodeAt(i); }
+            const decoder = new TextDecoder('utf-8');
+            const content = decoder.decode(bytes).replace(/^\uFEFF/, '');
+            return { ...data, content };
+        }
+
+        async function saveToGitHub(path, content, sha = null) {
+            const token = localStorage.getItem('github_token');
+            if (!token) throw new Error('❌ توکن گیت‌هاب یافت نشد.');
+            const url = `https://api.github.com/${REPO_PATH}/${path}`;
+            const jsonString = JSON.stringify(content, null, 2);
+            const encoder = new TextEncoder();
+            const encoded = encoder.encode(jsonString);
+            let binary = '';
+            for (let i = 0; i < encoded.length; i++) { binary += String.fromCharCode(encoded[i]); }
+            const base64Content = btoa(binary);
+            const body = {
+                message: `Update order via cart - ${new Date().toISOString()}`,
+                content: base64Content,
+                branch: 'main'
+            };
+            if (sha) body.sha = sha;
+            const res = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify(body)
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.message || 'خطا در ذخیره‌سازی');
+            }
+            return await res.json();
+        }
+
+        // ============================================================
+        // ثبت/به‌روزرسانی سفارش pending در گیت‌هاب
+        // ============================================================
+        async function syncPendingOrderToGitHub(userId, productId, quantity, productPrice, productName) {
+            try {
+                const orderPath = `member/member${userId}/orders.json`;
+                const existing = await fetchFromGitHub(orderPath);
+                let orders = [];
+                let sha = null;
+                if (existing) {
+                    orders = JSON.parse(existing.content);
+                    sha = existing.sha;
+                }
+                if (!Array.isArray(orders)) orders = [];
+
+                // پیدا کردن سفارش pending موجود
+                let pendingOrder = orders.find(o => o.status === 'pending');
+
+                if (!pendingOrder) {
+                    pendingOrder = {
+                        id: 'ORD-' + Date.now().toString(36).toUpperCase(),
+                        date: new Date().toISOString(),
+                        items: [],
+                        total: 0,
+                        status: 'pending',
+                        tracking: '---',
+                        userId: userId,
+                        createdAt: new Date().toISOString()
+                    };
+                    orders.push(pendingOrder);
+                }
+
+                // به‌روزرسانی آیتم‌ها
+                const existingItem = pendingOrder.items.find(item => item.productId === productId);
+                if (existingItem) {
+                    existingItem.quantity = (existingItem.quantity || 0) + quantity;
+                } else {
+                    pendingOrder.items.push({
+                        productId: productId,
+                        productName: productName || productId,
+                        price: productPrice || 0,
+                        quantity: quantity
+                    });
+                }
+
+                // محاسبه جمع کل
+                pendingOrder.total = pendingOrder.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+                // ذخیره در گیت‌هاب
+                await saveToGitHub(orderPath, orders, sha);
+                console.log(`✅ سفارش pending برای کاربر ${userId} به‌روز شد.`);
+
+                // همگام‌سازی با sender (برای تلگرام)
+                await syncOrderToSender(userId, pendingOrder);
+
+                return true;
+            } catch (e) {
+                console.error('❌ خطا در ثبت سفارش در گیت‌هاب:', e);
+                throw e;
+            }
+        }
+
+        // ============================================================
+        // همگام‌سازی با sender.json برای ارسال به تلگرام
+        // ============================================================
+        async function syncOrderToSender(userId, order) {
+            try {
+                const senderPath = 'member/orders/pendingorder-sender.json';
+                const existing = await fetchFromGitHub(senderPath);
+                let senderData = existing ? JSON.parse(existing.content) : [];
+                if (!Array.isArray(senderData)) senderData = [];
+
+                const exists = senderData.some(s => s.id === order.id);
+                if (!exists) {
+                    const infoPath = `member/member${userId}/info.json`;
+                    const infoData = await fetchFromGitHub(infoPath);
+                    let userName = 'کاربر';
+                    if (infoData) {
+                        const userInfo = JSON.parse(infoData.content);
+                        userName = userInfo.name || userInfo.username || 'کاربر';
+                    }
+                    senderData.push({
+                        ...order,
+                        userId: userId,
+                        userName: userName,
+                        status: order.status || 'pending'
+                    });
+                    let sha = existing ? existing.sha : null;
+                    await saveToGitHub(senderPath, senderData, sha);
+                    console.log(`✅ سفارش ${order.id} به sender اضافه شد.`);
+                }
+            } catch (e) {
+                console.warn('⚠️ خطا در همگام‌سازی sender:', e);
+            }
+        }
+
+        // ============================================================
+        // تابع addToCart (نسخه اصلاح‌شده)
+        // ============================================================
+        window.addToCart = async function(productId, quantity) {
+            if (!productId) return;
+
+            // ۱. بررسی لاگین بودن کاربر
+            const userId = sessionStorage.getItem('current_user_id');
+            if (!userId) {
+                showToast('⚠️ لطفاً ابتدا وارد حساب کاربری شوید.', 'error');
+                return;
+            }
+
+            // ۲. ارسال به گیت‌هاب
+            try {
+                const productPrice = 0; // در صورت نیاز قیمت محصول را از دیتا بگیرید
+                const productName = document.querySelector('h1')?.textContent || productId;
+                await syncPendingOrderToGitHub(userId, productId, quantity || 1, productPrice, productName);
+                updateCartBadge();
+                if (typeof window.renderCartDropdownContent === 'function') {
+                    window.renderCartDropdownContent();
+                }
+
+                // ۳. تغییر دکمه
+                const btn = document.getElementById('btnAddCart');
+                if (btn) {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> اضافه شد';
+                    btn.disabled = true;
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }, 3000);
+                }
+                showToast('✅ محصول به سبد خرید اضافه شد!');
+            } catch (e) {
+                console.error('❌ خطا:', e);
+                showToast('❌ ' + e.message, 'error');
+            }
+        };
+
+        // ============================================================
+        // توابع نمایش پیام و به‌روزرسانی بج
+        // ============================================================
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed; bottom: 30px; left: 30px;
+                background: ${isError ? '#ef4444' : 'var(--primary-color, #2563eb)'};
+                color: #fff; padding: 12px 24px; border-radius: 12px;
+                font-weight: 600; z-index: 9999;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                animation: slideUp 0.3s ease; font-family: 'Vazirmatn', sans-serif;
+                direction: rtl; max-width: 90%;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('user_cart') || '[]');
+            const count = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            const badges = document.querySelectorAll('.cart-badge');
+            badges.forEach(b => {
+                b.textContent = count;
+                b.style.display = count > 0 ? 'flex' : 'none';
+            });
+            if (typeof window.renderCartDropdownContent === 'function') {
+                window.renderCartDropdownContent();
+            }
+        }
+
+        // ============================================================
+        // بارگذاری محصول (بدون تغییر در منطق اصلی)
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ===== بارگذاری تنظیمات ظاهری =====
+            loadAppearanceSettings();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            const container = document.getElementById('productContent');
+
+            let lightboxImages = [];
+            let lightboxIndex = 0;
+
+            window.openLightbox = function(index) {
+                if (!lightboxImages.length) return;
+                lightboxIndex = index;
+                document.getElementById('lightboxImage').src = lightboxImages[index];
+                document.getElementById('lightboxOverlay').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            };
+            window.closeLightbox = function() {
+                document.getElementById('lightboxOverlay').classList.remove('active');
+                document.body.style.overflow = '';
+            };
+            window.prevLightbox = function() {
+                if (lightboxIndex > 0) {
+                    lightboxIndex--;
+                    document.getElementById('lightboxImage').src = lightboxImages[lightboxIndex];
+                }
+            };
+            window.nextLightbox = function() {
+                if (lightboxIndex < lightboxImages.length - 1) {
+                    lightboxIndex++;
+                    document.getElementById('lightboxImage').src = lightboxImages[lightboxIndex];
+                }
+            };
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') nextLightbox();
+                if (e.key === 'ArrowRight') prevLightbox();
+            });
+
+            if (!id) {
+                container.innerHTML = `
+                    <div class="not-found">
+                        <i class="fas fa-exclamation-circle" style="color:#ef4444;"></i>
+                        <h2>شناسه محصول مشخص نشده است.</h2>
+                        <a href="products.html" class="back-link" style="margin-top:20px;display:inline-block;">مشاهده همه محصولات</a>
+                    </div>
+                `;
+                return;
+            }
+
+            async function loadProduct() {
+                try {
+                    const res = await fetch('_data/products.json?t=' + Date.now());
+                    if (!res.ok) throw new Error('فایل محصولات پیدا نشد');
+                    const data = await res.json();
+                    const product = data[id];
+
+                    if (!product) {
+                        container.innerHTML = `
+                            <div class="not-found">
+                                <i class="fas fa-search" style="color:#f59e0b;"></i>
+                                <h2>محصولی با این شناسه یافت نشد.</h2>
+                                <a href="products.html" class="back-link" style="margin-top:20px;display:inline-block;">مشاهده همه محصولات</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    document.getElementById('pageTitle').textContent = (product.name || 'محصول') + ' | مهندس ماهان ادهم قزوینی';
+                    document.getElementById('pageDescription').content = product.abstract || product.desc || 'مشاهده جزئیات محصول';
+                    document.getElementById('ogTitle').content = product.name || 'محصول';
+                    document.getElementById('ogDescription').content = product.abstract || product.desc || 'مشاهده جزئیات محصول';
+                    if (product.cover) document.getElementById('ogImage').content = product.cover;
+
+                    const allImages = product.cover ? [product.cover] : [];
+                    if (product.images && product.images.length) {
+                        allImages.push(...product.images);
+                    }
+                    lightboxImages = allImages;
+
+                    const coverImg = product.cover || '';
+                    const coverHtml = coverImg ?
+                        `<img src="${coverImg}" alt="${product.name}">` :
+                        `<div class="placeholder"><i class="fas fa-cube"></i></div>`;
+
+                    let galleryThumbsHtml = '';
+                    if (allImages.length > 1) {
+                        galleryThumbsHtml = `<div class="gallery-thumbs">`;
+                        allImages.forEach((img, idx) => {
+                            galleryThumbsHtml += `
+                                <div class="thumb ${idx === 0 ? 'active' : ''}" onclick="openLightbox(${idx})">
+                                    <img src="${img}" alt="تصویر ${idx+1}">
+                                </div>
+                            `;
+                        });
+                        galleryThumbsHtml += `</div>`;
+                    }
+
+                    const stockClass = product.stock === 'موجود' ? 'stock-in-stock' :
+                        product.stock === 'ناموجود' ? 'stock-out-of-stock' : 'stock-pre-order';
+                    const stockLabel = product.stock || 'نامشخص';
+
+                    const priceHtml = product.discount_price ?
+                        `<div class="price-row">
+                            <span class="price">${product.discount_price.toLocaleString()} تومان</span>
+                            <span class="old-price">${product.price.toLocaleString()} تومان</span>
+                            <span class="discount-badge">${Math.round((1 - product.discount_price/product.price)*100)}% تخفیف</span>
+                        </div>` :
+                        `<div class="price-row"><span class="price">${product.price || 'رایگان'}</span></div>`;
+
+                    const qty = product.quantity_available || product.inventory || 10;
+                    const isOutOfStock = product.stock === 'ناموجود' || qty <= 0;
+                    const cartSectionHtml = `
+                        <div class="cart-section">
+                            <div class="qty-control">
+                                <button onclick="changeQty(-1)" id="qtyDec"><i class="fas fa-minus"></i></button>
+                                <span id="qtyDisplay">1</span>
+                                <button onclick="changeQty(1)" id="qtyInc"><i class="fas fa-plus"></i></button>
+                            </div>
+                            <button class="btn-add-cart" id="btnAddCart" onclick="addToCart('${id}', parseInt(document.getElementById('qtyDisplay').textContent))" ${isOutOfStock ? 'disabled' : ''}>
+                                <i class="fas fa-shopping-cart"></i> ${isOutOfStock ? 'ناموجود' : 'افزودن به سبد خرید'}
+                            </button>
+                            <span class="stock-info">${isOutOfStock ? '❌ موجود نیست' : '✅ موجود در انبار (' + qty + ' عدد)'}</span>
+                        </div>
+                    `;
+
+                    let specsHtml = '';
+                    if (product.specifications && Object.keys(product.specifications).length > 0) {
+                        const rows = Object.entries(product.specifications)
+                            .filter(([key]) => key.startsWith('#'))
+                            .map(([key, value]) => {
+                                const label = key.replace('#', '').trim();
+                                return `<tr><th>${label}</th><td>${value}</td></tr>`;
+                            }).join('');
+                        if (rows) {
+                            specsHtml = `
+                                <h4 style="font-size:1rem;font-weight:700;margin:20px 0 10px 0;color:var(--text-primary);">
+                                    <i class="fas fa-list-ul" style="color:var(--primary-color);margin-left:6px;"></i> مشخصات محصول
+                                </h4>
+                                <table class="specs-table"><tbody>${rows}</tbody></table>
+                            `;
+                        }
+                    }
+
+                    const shippingHtml = `
+                        <div class="shipping-section">
+                            <div class="item"><i class="fas fa-boxes"></i><div><strong>موجودی:</strong> ${product.inventory || product.stock || 'نامشخص'} ${product.stock === 'موجود' ? '✓' : ''}</div></div>
+                            <div class="item"><i class="fas fa-calendar-alt"></i><div><strong>تاریخ انتشار:</strong> ${product.release_date || product.updated || '---'}</div></div>
+                            <div class="item"><i class="fas fa-clock"></i><div><strong>زمان ارسال:</strong> ${product.estimated_shipping_time || '۳'} روز کاری</div></div>
+                            <div class="item"><i class="fas fa-truck"></i><div><strong>روش ارسال:</strong> ${Array.isArray(product.shipping_methods) ? product.shipping_methods.join(' • ') : 'حضوری و پستی'}</div></div>
+                        </div>
+                    `;
+
+                    let usageHtml = '';
+                    if (product.usage) {
+                        const items = Array.isArray(product.usage) ? product.usage : [product.usage];
+                        usageHtml = `
+                            <div class="usage-section">
+                                <h4><i class="fas fa-tasks"></i> کاربرد و نحوه استفاده</h4>
+                                <ul>${items.map(item => `<li><i class="fas fa-check-circle"></i> ${item}</li>`).join('')}</ul>
+                            </div>
+                        `;
+                    }
+
+                    let prereqHtml = '';
+                    if (product.prerequisites && product.prerequisites.length > 0) {
+                        prereqHtml = `
+                            <div class="usage-section" style="border-right-color:var(--primary-color);">
+                                <h4><i class="fas fa-list-check"></i> پیش‌نیازها</h4>
+                                <ul>${product.prerequisites.map(item => `<li><i class="fas fa-arrow-left" style="color:var(--primary-color);"></i> ${item}</li>`).join('')}</ul>
+                            </div>
+                        `;
+                    }
+
+                    let filesHtml = '';
+                    if (product.files && product.files.length > 0) {
+                        filesHtml = `
+                            <div class="files-section">
+                                <h3><i class="fas fa-paperclip"></i> فایل‌های پیوست (${product.files.length})</h3>
+                                <div class="files-grid">
+                                    ${product.files.map(f => {
+                                        const name = typeof f === 'string' ? f : f.name || f;
+                                        return `<div class="file-item"><i class="fas fa-file"></i><a href="assets/products/${id}/${name}" target="_blank">${name}</a></div>`;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    let relatedHtml = '';
+                    if (product.category || product.tag) {
+                        try {
+                            const resRelated = await fetch('_data/products.json?t=' + Date.now());
+                            if (resRelated.ok) {
+                                const allProducts = await resRelated.json();
+                                const related = Object.keys(allProducts)
+                                    .filter(k => k !== id)
+                                    .map(k => ({ id: k, ...allProducts[k] }))
+                                    .filter(p => {
+                                        if (product.category && p.category === product.category) return true;
+                                        if (product.tag && p.tag === product.tag) return true;
+                                        return false;
+                                    })
+                                    .slice(0, 4);
+                                if (related.length > 0) {
+                                    relatedHtml = `
+                                        <div class="related-products">
+                                            <h3><i class="fas fa-layer-group"></i> محصولات مشابه</h3>
+                                            <div class="related-grid">
+                                                ${related.map(p => `
+                                                    <div class="related-item" onclick="location.href='product.html?id=${p.id}'">
+                                                        <img src="${p.cover || 'assets/images/placeholder.jpg'}" alt="${p.name}">
+                                                        <div class="name">${p.name}</div>
+                                                        <div class="rprice">${p.price || 'رایگان'}</div>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+                            }
+                        } catch (e) { console.warn('خطا در بارگذاری محصولات مشابه:', e); }
+                    }
+
+                    const reviewsHtml = product.reviews && product.reviews.length ? `
+                        <div class="reviews-section">
+                            <h3><i class="fas fa-star"></i> نظرات (${product.reviews.length})</h3>
+                            ${product.reviews.map(r => `
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <span class="reviewer">${r.name || 'کاربر'}</span>
+                                        <span class="stars">${'⭐'.repeat(r.rating || 5)}</span>
+                                    </div>
+                                    <div class="review-text">${r.text || ''}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : '';
+
+                    const faqHtml = product.faq && product.faq.length ? `
+                        <div class="faq-section">
+                            <h3><i class="fas fa-question-circle"></i> سوالات متداول</h3>
+                            ${product.faq.map((f, i) => `
+                                <div class="faq-item" onclick="this.classList.toggle('open')">
+                                    <div class="faq-q"><span>${f.q}</span><i class="fas fa-chevron-down"></i></div>
+                                    <div class="faq-a">${f.a}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : '';
+
+                    const shareUrl = encodeURIComponent(window.location.href);
+                    const shareTitle = encodeURIComponent(product.name || 'محصول');
+                    const shareHtml = `
+                        <div class="share-section">
+                            <button class="share-btn telegram" onclick="window.open('https://t.me/share/url?url=${shareUrl}&text=${shareTitle}','_blank')"><i class="fab fa-telegram"></i> تلگرام</button>
+                            <button class="share-btn whatsapp" onclick="window.open('https://api.whatsapp.com/send?text=${shareTitle}%20${shareUrl}','_blank')"><i class="fab fa-whatsapp"></i> واتساپ</button>
+                            <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href).then(()=>showToast('✅ لینک کپی شد!'))"><i class="fas fa-copy"></i> کپی لینک</button>
+                        </div>
+                    `;
+
+                    const warrantyHtml = product.warranty ? `
+                        <div class="warranty-section">
+                            <div class="item"><i class="fas fa-shield-alt"></i> گارانتی: ${product.warranty}</div>
+                            ${product.guarantee ? `<div class="item"><i class="fas fa-medal"></i> ضمانت: ${product.guarantee}</div>` : ''}
+                        </div>
+                    ` : '';
+
+                    const discountHtml = product.discount_badge ? `
+                        <div class="badge-discount">${product.discount_badge}</div>
+                    ` : '';
+
+                    window.changeQty = function(delta) {
+                        const display = document.getElementById('qtyDisplay');
+                        let val = parseInt(display.textContent) || 1;
+                        val += delta;
+                        if (val < 1) val = 1;
+                        const max = parseInt(product.quantity_available || product.inventory || 10);
+                        if (val > max) val = max;
+                        display.textContent = val;
+                    };
+
+                    container.innerHTML = `
+                        <div class="product-card">
+                            <div class="cover" onclick="if(lightboxImages.length) openLightbox(0)">
+                                ${coverHtml}
+                                ${discountHtml}
+                            </div>
+                            ${galleryThumbsHtml}
+                            <div class="product-header">
+                                <span class="stock-badge ${stockClass}">${stockLabel}</span>
+                                <h1>${product.name || 'بدون نام'}</h1>
+                            </div>
+                            ${priceHtml}
+                            <div class="meta">
+                                <span><i class="fas fa-tag"></i> ${product.category || 'دسته‌بندی نشده'}</span>
+                                ${product.tag ? `<span class="tag"><i class="fas fa-hashtag"></i> ${product.tag}</span>` : ''}
+                                ${product.icon ? `<span><i class="fas ${product.icon}"></i> ${product.icon.replace('fa-', '')}</span>` : ''}
+                                <span><i class="fas fa-calendar"></i> ${product.updated || '---'}</span>
+                            </div>
+                            ${product.abstract ? `<div class="abstract"><h4><i class="fas fa-align-right"></i> چکیده محصول</h4><p>${product.abstract}</p></div>` : ''}
+                            ${cartSectionHtml}
+                            ${specsHtml}
+                            ${product.material ? `<div style="margin:15px 0;"><i class="fas fa-flask"></i> <span><strong>جنس:</strong> ${product.material}</span></div>` : ''}
+                            ${product.familiarity ? `<div style="margin:15px 0;"><i class="fas fa-info-circle"></i> <span>${product.familiarity}</span></div>` : ''}
+                            ${usageHtml}
+                            ${prereqHtml}
+                            ${shippingHtml}
+                            ${filesHtml}
+                            ${warrantyHtml}
+                            ${shareHtml}
+                            ${relatedHtml}
+                            ${reviewsHtml}
+                            ${faqHtml}
+                        </div>
+                    `;
+
+                } catch (e) {
+                    container.innerHTML = `
+                        <div class="not-found">
+                            <i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i>
+                            <h2>خطا در بارگذاری</h2>
+                            <p>${e.message}</p>
+                        </div>
+                    `;
+                }
+            }
+
+            loadProduct();
+        });
+    </script>
+
+</body>
+</html>

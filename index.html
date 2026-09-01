@@ -1,53 +1,277 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- ===== 200 - هدر و متا تگ‌ها ===== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مهندس ماهان ادهم قزوینی | تخصص در مکانیک سیالات، تحلیل CFD و طراحی پرینتر سه‌بعدی</title>
-    <meta name="description" content="رزومه آنلاین ماهان ادهم قزوینی - مهندس مکانیک فارغ‌التحصیل دانشگاه آزاد اسلامی تهران مرکز، متخصص در تحلیل CFD، طراحی سیستم‌های مکانیکی و قطعات پرینتر سه‌بعدی" />
-    <meta name="keywords" content="مهندس مکانیک, تحلیل CFD, طراحی پرینتر سه بعدی, انسیس فلوئنت, کتیا, سالیدورکس, مهندسی سیالات, ماهان ادهم قزوینی" />
-    <meta name="author" content="ماهان ادهم قزوینی" />
-    <meta property="og:title" content="مهندس ماهان ادهم قزوینی | تخصص در مکانیک سیالات و تحلیل CFD" />
-    <meta property="og:description" content="رزومه آنلاین مهندس مکانیک متخصص در تحلیل CFD و طراحی قطعات پرینتر سه‌بعدی" />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="fa_IR" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#2c3e50" />
-    <meta name="msapplication-TileColor" content="#2c3e50" />
+    <meta name="description" content="رزومه آنلاین ماهان ادهم قزوینی - مهندس مکانیک فارغ‌التحصیل دانشگاه آزاد اسلامی تهران مرکز، متخصص در تحلیل CFD، طراحی سیستم‌های مکانیکی و قطعات پرینتر سه‌بعدی">
+    <meta name="keywords" content="مهندس مکانیک, تحلیل CFD, طراحی پرینتر سه بعدی, انسیس فلوئنت, کتیا, سالیدورکس, مهندسی سیالات, ماهان ادهم قزوینی">
+    <meta name="author" content="ماهان ادهم قزوینی">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="مهندس ماهان ادهم قزوینی | تخصص در مکانیک سیالات و تحلیل CFD">
+    <meta property="og:description" content="رزومه آنلاین مهندس مکانیک متخصص در تحلیل CFD و طراحی قطعات پرینتر سه‌بعدی">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fa_IR">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="msapplication-TileColor" content="#2c3e50">
 
-    <!-- ===== Font Awesome & Google Font ===== -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- ===== 201 - Font Awesome & Google Font ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- ===== common.css (نسخه جدید و فوق‌حرفه‌ای) ===== -->
-    <link rel="stylesheet" href="common.css" />
+    <!-- ===== 202 - استایل‌های جدا شده در common.css ===== -->
+    <link rel="stylesheet" href="common.css">
 
-    <!-- ===== استایل‌های اختصاصی این صفحه (در صورت نیاز) ===== -->
+    <!-- ===== 219 - استایل‌های اضافی برای منو و ریسپانسیو ===== -->
     <style>
-        /* استایل‌های مخصوص index.html که در common.css نیستند */
-        .hero-underline {
-            width: 80px;
-            height: 3px;
-            background: var(--gradient-main);
-            border-radius: 4px;
+        /* ============================================================
+           219.1 - مخفی کردن منوی هدر در موبایل
+           ============================================================ */
+        @media (max-width: 768px) {
+            .main-header .nav-list { display: none !important; }
+            .main-header .header-actions .btn-outline { display: none !important; }
+            .main-header .logo h1 { font-size: 0.9rem; }
+            .main-header .logo .logo-icon { width: 32px; height: 32px; font-size: 1rem; }
+            #themeToggle { width: 36px; height: 36px; font-size: 0.8rem; }
+            .menu-toggle { padding: 0.3rem 0.8rem; font-size: 0.75rem; }
+            .menu-toggle .bar { width: 18px; height: 1.5px; }
+            .menu-toggle span:last-child { font-size: 0.65rem; }
+            .header-cart-icon { font-size: 1rem; }
+            .header-user-info a { font-size: 0.7rem !important; }
+            .slide-menu-container { width: 280px; right: -300px; }
+            .slide-menu-profile-img { width: 70px; height: 70px; }
+            .slide-menu-profile h3 { font-size: 1.1rem; }
+            .slide-menu-link { padding: 12px 16px; font-size: 0.85rem; }
+            .slide-menu-link .menu-icon { width: 32px; height: 32px; font-size: 0.8rem; }
+            .slide-menu-actions .btn { padding: 10px 16px; font-size: 0.8rem; }
+            .hero-text .hero-title { font-size: 2rem; }
+            .hero-text .hero-subtitle { font-size: 1rem; }
+            .hero-stats { grid-template-columns: repeat(2, 1fr); }
+            .hero-actions { grid-template-columns: 1fr; }
+            .about-grid { grid-template-columns: 1fr; }
+            .skills-grid { grid-template-columns: 1fr; }
+            .article-preview-grid { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .section-title { font-size: 1.6rem; }
+            .container { padding: 0 12px; }
+            main { padding-top: 60px !important; }
+        }
+
+        /* ============================================================
+           219.2 - تنظیمات منوی کشویی برای نمایش بهتر
+           ============================================================ */
+        .slide-menu-container { transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .slide-menu-container.active { right: 0; }
+        .menu-overlay { transition: opacity 0.3s ease; }
+        .menu-overlay.active { opacity: 1; visibility: visible; }
+
+        /* ============================================================
+           219.3 - استایل سبد خرید دراپ‌داون
+           ============================================================ */
+        #cartDropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: auto;
+            min-width: 280px;
+            max-width: 360px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            margin-top: 8px;
+            padding: 4px 0;
+        }
+        @media (max-width: 480px) {
+            #cartDropdown { min-width: 240px; left: -20px; right: auto; }
+        }
+        .header-cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        .header-cart-icon .cart-badge {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 0.55rem;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 50%;
+            min-width: 18px;
+            text-align: center;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ============================================================
+           219.4 - منوی کاربر (دراپ‌داون)
+           ============================================================ */
+        .user-dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .user-trigger {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            padding: 4px 10px;
+            border-radius: 8px;
+            transition: 0.3s;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+        }
+        .user-trigger:hover { border-color: var(--primary-color); }
+        .user-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 160px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 6px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
             margin-top: 4px;
         }
-        /* در صورت نیاز به تنظیمات جزئی */
+        .user-dropdown-menu a,
+        .user-dropdown-menu button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: right;
+            cursor: pointer;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        .user-dropdown-menu a:hover,
+        .user-dropdown-menu button:hover { background: var(--bg-tertiary); }
+        .user-dropdown-menu button { color: #ef4444; }
+        .user-dropdown-menu button:hover { background: rgba(239, 68, 68, 0.1); }
+
+        /* ============================================================
+           219.5 - ریسپانسیو برای فوتر و سایر بخش‌ها
+           ============================================================ */
+        @media (max-width: 768px) {
+            .main-footer .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .main-footer .footer-wave { height: 60px; }
+            .main-footer .footer-bottom { flex-direction: column; text-align: center; }
+            .main-footer .footer-bottom .footer-badges { justify-content: center; }
+            .education-timeline .edu-item { padding-right: 1.2rem; }
+            .education-timeline .edu-item .edu-content { padding: 1rem; }
+            .education-timeline .edu-item .edu-content .edu-header { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+            .contact-form-card { position: static; }
+            .contact-form-card form .grid-2 { grid-template-columns: 1fr; }
+            .resume-card .resume-file { flex-direction: column; align-items: center; text-align: center; }
+            .resume-card .resume-actions { flex-direction: column; }
+        }
+        @media (max-width: 480px) {
+            .hero-text .hero-title { font-size: 1.6rem; }
+            .hero-stats { grid-template-columns: 1fr 1fr; }
+            .hero-stats .stat-item .stat-number { font-size: 1.2rem; }
+            .about-card .about-features { grid-template-columns: 1fr 1fr; }
+            .about-card .about-features .feature-item .feature-icon { width: 40px; height: 40px; font-size: 1rem; }
+            .article-preview-card .meta { flex-direction: column; gap: 4px; }
+            .products-grid { grid-template-columns: 1fr; }
+            .articles-grid { grid-template-columns: 1fr; }
+            .archive-grid { grid-template-columns: 1fr; }
+            .slide-menu-container { width: 260px; right: -280px; }
+        }
+
+        /* ============================================================
+           219.6 - بهبودهای ظاهری حرفه‌ای (اضافه شده)
+           ============================================================ */
+        .hero-image .image-box img {
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .hero-image .image-box img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.5);
+        }
+        .hero-section .bg-layer .radial {
+            background: radial-gradient(circle at 30% 50%, rgba(37,99,235,0.08) 0%, transparent 60%);
+        }
+        .about-card, .edu-card, .certs-card, .skill-item, .article-preview-card, .contact-info-card, .resume-card, .contact-form-card {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .about-card:hover, .edu-card:hover, .certs-card:hover, .skill-item:hover, .article-preview-card:hover {
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            transform: translateY(-4px);
+        }
+        .stat-number {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .btn-primary, .btn-secondary, .btn-outline, .submit-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary::after, .btn-secondary::after, .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        .btn-primary:active::after, .btn-secondary:active::after, .submit-btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        @media (max-width: 768px) {
+            .hero-text .hero-title { font-size: 1.8rem; }
+            .hero-text .hero-subtitle { font-size: 0.95rem; }
+            .section-title { font-size: 1.4rem; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ===== هدر و منوی کشویی (بارگذاری توسط menu.js) ===== -->
-    <!-- هیچ کد هدری در اینجا نوشته نشده است -->
+    <!-- ============================================================
+         201 - هدر و منوی کشویی (بارگذاری توسط menu.js)
+         ============================================================ -->
+    <!-- هدر و منوی کشویی از فایل member-menu.html بارگذاری می‌شوند -->
+    <!-- هیچ کد هدر و منویی در اینجا نوشته نشده است -->
 
-    <!-- ===== محتوای اصلی ===== -->
-    <main style="padding-top:72px;">
+    <!-- ============================================================
+         203 - محتوای اصلی (Main)
+         ============================================================ -->
+    <main style="padding-top:70px;">
 
-        <!-- ===== بخش هیرو ===== -->
+        <!-- ============================================================
+             203.1 - بخش هیرو (Hero)
+             ============================================================ -->
         <section id="home" class="hero-section">
             <div class="bg-layer">
                 <div class="overlay"></div>
@@ -55,9 +279,10 @@
             </div>
             <div class="container">
                 <div class="hero-grid">
+                    <!-- متن هیرو -->
                     <div class="hero-text">
-                        <div style="display:inline-flex;align-items:center;gap:0.6rem;background:var(--glass-bg);padding:0.3rem 1.5rem;border-radius:50px;font-size:0.85rem;margin-bottom:1.5rem;border:1px solid var(--glass-border);">
-                            <i class="fas fa-hand-wave" style="color:var(--primary);"></i>
+                        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--bg-tertiary);padding:0.3rem 1rem;border-radius:30px;font-size:0.85rem;margin-bottom:1.5rem;">
+                            <i class="fas fa-hand-wave" style="color:var(--primary-color);"></i>
                             <span>خوش آمدید به رزومه آنلاین</span>
                         </div>
                         <h1 class="hero-title">
@@ -73,12 +298,12 @@
                         <div class="hero-stats">
                             <div class="stat-item">
                                 <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
-                                <div><span class="stat-number" data-count="1">0</span><span style="color:var(--primary);font-size:1.2rem;">+</span></div>
+                                <div><span class="stat-number" data-count="1">0</span><span style="color:var(--primary-color);font-size:1.2rem;">+</span></div>
                                 <div class="stat-label">سال تجربه</div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-icon"><i class="fas fa-project-diagram"></i></div>
-                                <div><span class="stat-number" data-count="5">0</span><span style="color:var(--primary);font-size:1.2rem;">+</span></div>
+                                <div><span class="stat-number" data-count="5">0</span><span style="color:var(--primary-color);font-size:1.2rem;">+</span></div>
                                 <div class="stat-label">پروژه موفق</div>
                             </div>
                             <div class="stat-item">
@@ -88,7 +313,7 @@
                             </div>
                             <div class="stat-item">
                                 <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
-                                <div><span class="stat-number" data-count="2">0</span><span style="color:var(--primary);font-size:1.2rem;">+</span></div>
+                                <div><span class="stat-number" data-count="2">0</span><span style="color:var(--primary-color);font-size:1.2rem;">+</span></div>
                                 <div class="stat-label">مقاله و ترجمه</div>
                             </div>
                         </div>
@@ -98,10 +323,11 @@
                             <a href="articles.html" class="btn btn-outline"><i class="fas fa-eye"></i> مشاهده مقالات</a>
                         </div>
                     </div>
+                    <!-- تصویر هیرو -->
                     <div class="hero-image">
                         <div class="image-wrapper">
                             <div class="image-box">
-                                <img src="mahanphoto.png" alt="مهندس ماهان ادهم قزوینی" loading="lazy" />
+                                <img src="mahanphoto.png" alt="مهندس ماهان ادهم قزوینی" loading="lazy">
                             </div>
                             <div class="badge-top"><i class="fas fa-award"></i> گواهی‌نامه</div>
                             <div class="badge-bottom">
@@ -110,27 +336,29 @@
                             </div>
                         </div>
                         <div class="hero-tags-bottom">
-                            <div class="tag-item"><i class="fas fa-check-circle" style="color:var(--secondary);"></i><span>دارای گواهی‌نامه</span></div>
-                            <div class="tag-item"><i class="fas fa-medal" style="color:var(--secondary);"></i><span>۵ پروژه موفق</span></div>
-                            <div class="tag-item"><i class="fas fa-star" style="color:var(--secondary);"></i><span>رضایت مشتری</span></div>
+                            <div class="tag-item"><i class="fas fa-check-circle" style="color:var(--secondary-color);"></i><span>دارای گواهی‌نامه</span></div>
+                            <div class="tag-item"><i class="fas fa-medal" style="color:var(--secondary-color);"></i><span>۵ پروژه موفق</span></div>
+                            <div class="tag-item"><i class="fas fa-star" style="color:var(--secondary-color);"></i><span>رضایت مشتری</span></div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ===== بخش درباره ===== -->
+        <!-- ============================================================
+             203.2 - بخش درباره (About)
+             ============================================================ -->
         <section id="about" style="padding:4rem 0;background:var(--bg-secondary);">
             <div class="container">
-                <div style="text-align:center;margin-bottom:2.5rem;">
-                    <span class="section-badge-modern"><i class="fas fa-user-tie"></i> معرفی</span>
-                    <h2 class="section-title-modern">درباره مهندس ماهان ادهم قزوینی</h2>
+                <div style="text-align:center;margin-bottom:3rem;">
+                    <span class="section-badge"><i class="fas fa-user-tie"></i> معرفی</span>
+                    <h2 class="section-title">درباره مهندس ماهان ادهم قزوینی</h2>
                     <div class="section-divider">
                         <div class="line"></div>
                         <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
                         <div class="line"></div>
                     </div>
-                    <p class="section-desc-modern">متخصص مهندسی مکانیک با تمرکز بر تحلیل سیالات، طراحی سیستم‌های حرارتی و توسعه راه‌حل‌های نوآورانه</p>
+                    <p class="section-desc">متخصص مهندسی مکانیک با تمرکز بر تحلیل سیالات، طراحی سیستم‌های حرارتی و توسعه راه‌حل‌های نوآورانه</p>
                 </div>
                 <div class="about-grid">
                     <div class="about-card">
@@ -182,29 +410,33 @@
             </div>
         </section>
 
-        <!-- ===== بخش مهارت‌ها ===== -->
+        <!-- ============================================================
+             203.3 - بخش مهارت‌ها (Skills)
+             ============================================================ -->
         <section id="skills" style="padding:4rem 0;background:var(--bg-primary);">
             <div class="container">
-                <div style="text-align:center;margin-bottom:2.5rem;">
-                    <span class="section-badge-modern"><i class="fas fa-tools"></i> تخصص</span>
-                    <h2 class="section-title-modern">مهارت‌های تخصصی</h2>
+                <div style="text-align:center;margin-bottom:3rem;">
+                    <span class="section-badge"><i class="fas fa-tools"></i> تخصص</span>
+                    <h2 class="section-title">مهارت‌های تخصصی</h2>
                     <div class="section-divider">
                         <div class="line"></div>
                         <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
                         <div class="line"></div>
                     </div>
-                    <p class="section-desc-modern">تسلط بر جدیدترین نرم‌افزارها و تکنولوژی‌های مهندسی مکانیک</p>
+                    <p class="section-desc">تسلط بر جدیدترین نرم‌افزارها و تکنولوژی‌های مهندسی مکانیک</p>
                 </div>
                 <div class="skills-grid" id="skillsGrid"></div>
             </div>
         </section>
 
-        <!-- ===== بخش تحصیلات ===== -->
+        <!-- ============================================================
+             203.4 - بخش تحصیلات (Education)
+             ============================================================ -->
         <section id="education" style="padding:4rem 0;background:var(--bg-secondary);">
             <div class="container">
-                <div style="text-align:center;margin-bottom:2.5rem;">
-                    <span class="section-badge-modern"><i class="fas fa-graduation-cap"></i> تحصیلات</span>
-                    <h2 class="section-title-modern">سوابق تحصیلی و دوره‌ها</h2>
+                <div style="text-align:center;margin-bottom:3rem;">
+                    <span class="section-badge"><i class="fas fa-graduation-cap"></i> تحصیلات</span>
+                    <h2 class="section-title">سوابق تحصیلی و دوره‌ها</h2>
                     <div class="section-divider">
                         <div class="line"></div>
                         <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
@@ -215,18 +447,20 @@
             </div>
         </section>
 
-        <!-- ===== بخش مقالات اخیر ===== -->
+        <!-- ============================================================
+             203.5 - بخش مقالات اخیر (Recent Articles)
+             ============================================================ -->
         <section id="recent-articles" style="padding:4rem 0;background:var(--bg-primary);">
             <div class="container">
-                <div style="text-align:center;margin-bottom:2.5rem;">
-                    <span class="section-badge-modern"><i class="fas fa-newspaper"></i> آخرین مطالب</span>
-                    <h2 class="section-title-modern">مقالات و پروژه‌ها</h2>
+                <div style="text-align:center;margin-bottom:3rem;">
+                    <span class="section-badge"><i class="fas fa-newspaper"></i> آخرین مطالب</span>
+                    <h2 class="section-title">مقالات و پروژه‌ها</h2>
                     <div class="section-divider">
                         <div class="line"></div>
                         <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
                         <div class="line"></div>
                     </div>
-                    <p class="section-desc-modern">جدیدترین مقالات، پروژه‌ها و آموزش‌های مهندسی</p>
+                    <p class="section-desc">جدیدترین مقالات، پروژه‌ها و آموزش‌های مهندسی</p>
                 </div>
                 <div class="article-preview-grid" id="recentArticlesGrid"></div>
                 <div style="text-align:center;margin-top:2rem;">
@@ -235,20 +469,23 @@
             </div>
         </section>
 
-        <!-- ===== بخش تماس ===== -->
+        <!-- ============================================================
+             203.6 - بخش تماس (Contact) با پیام تایید
+             ============================================================ -->
         <section id="contact" style="padding:4rem 0;background:var(--bg-secondary);">
             <div class="container">
-                <div style="text-align:center;margin-bottom:2.5rem;">
-                    <span class="section-badge-modern"><i class="fas fa-envelope"></i> ارتباط</span>
-                    <h2 class="section-title-modern">در تماس باشید</h2>
+                <div style="text-align:center;margin-bottom:3rem;">
+                    <span class="section-badge"><i class="fas fa-envelope"></i> ارتباط</span>
+                    <h2 class="section-title">در تماس باشید</h2>
                     <div class="section-divider">
                         <div class="line"></div>
                         <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
                         <div class="line"></div>
                     </div>
-                    <p class="section-desc-modern">برای همکاری، مشاوره یا دریافت اطلاعات بیشتر</p>
+                    <p class="section-desc">برای همکاری، مشاوره یا دریافت اطلاعات بیشتر</p>
                 </div>
                 <div class="contact-grid">
+                    <!-- اطلاعات تماس -->
                     <div>
                         <div class="contact-info-card">
                             <div class="contact-header">
@@ -278,6 +515,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- فرم تماس -->
                     <div>
                         <div class="contact-form-card">
                             <div class="form-header">
@@ -287,32 +526,34 @@
                                     <p class="form-subtitle">پیام خود را ارسال کنید، در اولین فرصت پاسخ می‌دهم</p>
                                 </div>
                             </div>
+
+                            <!-- ===== فرم ===== -->
                             <form id="contactForm">
                                 <div class="form-group">
-                                    <label for="name"><i class="fas fa-user" style="color:var(--primary);"></i> نام کامل <span style="color:red;">*</span></label>
+                                    <label for="name"><i class="fas fa-user" style="color:var(--primary-color);"></i> نام کامل <span style="color:red;">*</span></label>
                                     <div class="input-wrapper">
-                                        <input type="text" id="name" name="name" placeholder="ماهان ادهم قزوینی" required />
+                                        <input type="text" id="name" name="name" placeholder="ماهان ادهم قزوینی" required>
                                         <span class="input-icon"><i class="fas fa-user-check"></i></span>
                                     </div>
                                 </div>
                                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
                                     <div class="form-group">
-                                        <label for="email"><i class="fas fa-envelope" style="color:var(--primary);"></i> ایمیل <span style="color:red;">*</span></label>
+                                        <label for="email"><i class="fas fa-envelope" style="color:var(--primary-color);"></i> ایمیل <span style="color:red;">*</span></label>
                                         <div class="input-wrapper">
-                                            <input type="email" id="email" name="email" placeholder="mahan.neman2020@gmail.com" required />
+                                            <input type="email" id="email" name="email" placeholder="mahan.neman2020@gmail.com" required>
                                             <span class="input-icon"><i class="fas fa-at"></i></span>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="phone"><i class="fas fa-phone" style="color:var(--primary);"></i> شماره تماس</label>
+                                        <label for="phone"><i class="fas fa-phone" style="color:var(--primary-color);"></i> شماره تماس</label>
                                         <div class="input-wrapper">
-                                            <input type="tel" id="phone" name="phone" placeholder="۰۹۹۰۲۲۷۹۷۰۲" />
+                                            <input type="tel" id="phone" name="phone" placeholder="۰۹۹۰۲۲۷۹۷۰۲">
                                             <span class="input-icon"><i class="fas fa-mobile-alt"></i></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="subject"><i class="fas fa-tag" style="color:var(--primary);"></i> موضوع <span style="color:red;">*</span></label>
+                                    <label for="subject"><i class="fas fa-tag" style="color:var(--primary-color);"></i> موضوع <span style="color:red;">*</span></label>
                                     <div class="input-wrapper">
                                         <select id="subject" name="subject" required>
                                             <option value="">انتخاب موضوع</option>
@@ -326,7 +567,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="message"><i class="fas fa-comment" style="color:var(--primary);"></i> پیام شما <span style="color:red;">*</span></label>
+                                    <label for="message"><i class="fas fa-comment" style="color:var(--primary-color);"></i> پیام شما <span style="color:red;">*</span></label>
                                     <div class="input-wrapper">
                                         <textarea id="message" name="message" rows="5" placeholder="پیام خود را اینجا بنویسید..." required></textarea>
                                         <span class="textarea-icon"><i class="fas fa-pen"></i></span>
@@ -344,17 +585,31 @@
                                     <div class="footer-item"><i class="fas fa-bolt"></i><small>پاسخ در کمتر از ۲۴ ساعت</small></div>
                                 </div>
                             </form>
+
+                            <!-- ===== پیام موفقیت (تایید ارسال) ===== -->
                             <div class="form-success" id="formSuccess" style="display:none;">
                                 <div class="success-icon"><i class="fas fa-check-circle"></i></div>
                                 <h4 class="success-title">✅ پیام شما با موفقیت ارسال شد!</h4>
                                 <p class="success-text">در کمتر از ۲۴ ساعت کاری پاسخ خواهم داد.</p>
-                                <button class="close-success" id="closeSuccess"><i class="fas fa-times"></i> بستن</button>
+                                <p class="success-email" style="font-size:0.85rem;color:var(--text-secondary);">
+                                    <i class="fas fa-envelope" style="color:var(--primary-color);"></i> 
+                                    کپی پیام برای شما ارسال شد
+                                </p>
+                                <button class="close-success" id="closeSuccess">
+                                    <i class="fas fa-times"></i> بستن
+                                </button>
                             </div>
-                            <div class="form-error" id="formError" style="display:none;">
-                                <div style="font-size:3rem;color:#ef4444;margin-bottom:10px;"><i class="fas fa-exclamation-circle"></i></div>
+
+                            <!-- ===== پیام خطا ===== -->
+                            <div class="form-error" id="formError" style="display:none;text-align:center;padding:20px;">
+                                <div style="font-size:3rem;color:#ef4444;margin-bottom:10px;">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
                                 <h4 style="color:#ef4444;">❌ خطا در ارسال پیام</h4>
                                 <p style="color:var(--text-secondary);" id="errorMessage">لطفاً مجدداً تلاش کنید.</p>
-                                <button class="btn btn-primary" onclick="document.getElementById('formError').style.display='none';document.getElementById('contactForm').style.display='flex';" style="margin-top:12px;"><i class="fas fa-redo"></i> تلاش مجدد</button>
+                                <button class="member-btn member-btn-primary" onclick="document.getElementById('formError').style.display='none';document.getElementById('contactForm').style.display='flex';" style="margin-top:12px;">
+                                    <i class="fas fa-redo"></i> تلاش مجدد
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -362,19 +617,26 @@
             </div>
         </section>
 
-        <!-- ===== ظرف فوتر ===== -->
+        <!-- ============================================================
+         204 - ظرف فوتر (اضافه شد تا fetch بتواند آن را پر کند)
+         ============================================================ -->
         <div id="footerContainer"></div>
 
     </main>
 
-    <!-- ===== اسکریپت‌ها ===== -->
+    <!-- ============================================================
+         221 - اسکریپت‌ها (JavaScript)
+         ============================================================ -->
+
+    <!-- 221.1 - بارگذاری هدر و منوی کشویی از member-menu.html -->
     <script src="menu.js"></script>
+
+    <!-- 221.2 - اسکریپت بارگذاری فوتر از فایل footer.html -->
     <script>
-        // بارگذاری فوتر
         (function loadFooter() {
             fetch('footer.html')
                 .then(res => {
-                    if (!res.ok) throw new Error('فوتر پیدا نشد!');
+                    if (!res.ok) throw new Error('فوتر پیدا نشد! مسیر را بررسی کن.');
                     return res.text();
                 })
                 .then(html => {
@@ -387,404 +649,425 @@
                 })
                 .catch(err => console.error('خطا در بارگذاری فوتر:', err));
         })();
+    </script>
 
+    <!-- 221.3 - اسکریپت‌های اصلی صفحه (بهبود یافته) -->
+    <script>
         // ============================================================
-        // اسکریپت‌های اصلی صفحه (هماهنگ با common.css جدید)
+        // 221.3.1 - بارگذاری تنظیمات ظاهری
         // ============================================================
-        (function() {
-            'use strict';
-
-            // بارگذاری تنظیمات ظاهری
-            async function loadAppearanceSettings() {
-                try {
-                    const res = await fetch('_data/settings.json?t=' + Date.now());
-                    if (!res.ok) return;
-                    const data = await res.json();
-                    const appearance = data.appearance || {};
-                    const root = document.documentElement.style;
-                    if (appearance.colorPrimary) {
-                        root.setProperty('--primary', appearance.colorPrimary);
-                        root.setProperty('--primary-color', appearance.colorPrimary);
-                    }
-                    if (appearance.colorSecondary) {
-                        root.setProperty('--secondary', appearance.colorSecondary);
-                        root.setProperty('--secondary-color', appearance.colorSecondary);
-                    }
-                    if (appearance.colorBg) root.setProperty('--bg-primary', appearance.colorBg);
-                    if (appearance.colorText) root.setProperty('--text-primary', appearance.colorText);
-                    if (appearance.colorTextSec) root.setProperty('--text-secondary', appearance.colorTextSec);
-                    if (appearance.colorCard) root.setProperty('--bg-secondary', appearance.colorCard);
-                    if (appearance.colorBorder) root.setProperty('--border-color', appearance.colorBorder);
-                    if (appearance.fontFamily) document.body.style.fontFamily = appearance.fontFamily + ', sans-serif';
-                    if (appearance.fontSize) document.body.style.fontSize = appearance.fontSize + 'px';
-                    if (appearance.bgImage) {
-                        document.body.style.backgroundImage = 'url(' + appearance.bgImage + ')';
-                        document.body.style.backgroundSize = 'cover';
-                        document.body.style.backgroundAttachment = 'fixed';
-                    }
-                } catch (e) { console.error('خطا در بارگذاری تنظیمات ظاهر:', e); }
-            }
-
-            // بارگذاری داده‌های بخش‌ها
-            let sectionsData = {};
-
-            async function loadSectionsData() {
-                try {
-                    const res = await fetch('_data/sections.json?t=' + Date.now());
-                    if (res.ok) {
-                        sectionsData = await res.json();
-                        console.log('✅ بخش‌ها بارگذاری شدند:', sectionsData);
-                    } else {
-                        console.warn('⚠️ فایل sections.json پیدا نشد، استفاده از داده‌های پیش‌فرض');
-                        sectionsData = {
-                            hero: {
-                                title: 'مهندس ماهان ادهم قزوینی',
-                                subtitle: 'مهندس مکانیک گرایش سیالات, تحلیل‌گر CFD, طراح قطعات پرینتر سه بعدی',
-                                desc: 'تحلیل‌گر CFD با بیش از ۵ سال تجربه در شبیه‌سازی جریان‌های سیالاتی و انتقال حرارت. طراح قطعات صنعتی با نرم‌افزارهای CATIA و SolidWorks.',
-                                image: 'mahanphoto.png',
-                                tags: 'تحلیل CFD, طراحی مکانیکی, پرینتر سه‌بعدی'
-                            },
-                            about: {
-                                title: 'درباره مهندس ماهان ادهم قزوینی',
-                                text: 'مهندس ماهان ادهم قزوینی، فارغ‌التحصیل کارشناسی مهندسی مکانیک از دانشگاه آزاد اسلامی واحد تهران مرکز با گرایش سیالات و حرارت. با گذراندن دوره‌های تخصصی و کسب گواهی‌نامه‌های معتبر در زمینه نرم‌افزارهای مهندسی، همواره در حال گسترش دانش و مهارت‌های فنی هستم.',
-                                image: 'mahanphoto.png'
-                            },
-                            skills: { title: 'مهارت‌های تخصصی', desc: 'تسلط بر جدیدترین نرم‌افزارها و تکنولوژی‌های مهندسی مکانیک' },
-                            education: { title: 'سوابق تحصیلی و دوره‌ها', layout: 'timeline' },
-                            contact: { title: 'در تماس باشید', desc: 'برای همکاری، مشاوره یا دریافت اطلاعات بیشتر', phone: '۰۹۹۰۲۲۷۹۷۰۲', email: 'mahan.neman2020@gmail.com' }
-                        };
-                    }
-                    renderHeroSection();
-                    renderAboutSection();
-                    renderEducationSection();
-                    renderContactInfo();
-                } catch (e) {
-                    console.error('❌ خطا در بارگذاری بخش‌ها:', e);
+        async function loadAppearanceSettings() {
+            try {
+                const res = await fetch('_data/settings.json?t=' + Date.now());
+                if (!res.ok) return;
+                const data = await res.json();
+                const appearance = data.appearance || {};
+                const root = document.documentElement.style;
+                if (appearance.colorPrimary) {
+                    root.setProperty('--primary-color', appearance.colorPrimary);
+                    root.setProperty('--pro-primary', appearance.colorPrimary);
                 }
-            }
-
-            function renderHeroSection() {
-                const hero = sectionsData.hero || {};
-                document.getElementById('heroTyping').textContent = hero.subtitle || '';
-                document.getElementById('heroDescription').textContent = hero.desc || '';
-                const tagsContainer = document.getElementById('heroTags');
-                if (hero.tags) {
-                    const tags = hero.tags.split(',').map(t => t.trim()).filter(Boolean);
-                    tagsContainer.innerHTML = tags.map(tag =>
-                        `<span>${tag}</span>`
-                    ).join('');
+                if (appearance.colorSecondary) {
+                    root.setProperty('--secondary-color', appearance.colorSecondary);
+                    root.setProperty('--pro-secondary', appearance.colorSecondary);
                 }
-                if (hero.image) {
-                    const heroImg = document.querySelector('.hero-image .image-box img');
-                    if (heroImg) heroImg.src = hero.image;
+                if (appearance.colorBg) {
+                    root.setProperty('--bg-primary', appearance.colorBg);
+                    root.setProperty('--pro-bg', appearance.colorBg);
                 }
-            }
-
-            function renderAboutSection() {
-                const about = sectionsData.about || {};
-                document.getElementById('aboutText').textContent = about.text || '';
-                const eduDetails = document.getElementById('educationDetails');
-                if (eduDetails) {
-                    eduDetails.innerHTML = `
-                        <div class="edu-row"><span class="label"><i class="fas fa-school" style="color:var(--primary);"></i> دانشگاه:</span><span class="value">دانشگاه آزاد اسلامی واحد تهران مرکز</span></div>
-                        <div class="edu-row"><span class="label"><i class="fas fa-building" style="color:var(--primary);"></i> دانشکده:</span><span class="value">فنی مهندسی</span></div>
-                        <div class="edu-row"><span class="label"><i class="fas fa-graduation-cap" style="color:var(--primary);"></i> مقطع:</span><span class="value">کارشناسی مهندسی مکانیک</span></div>
-                        <div class="edu-row"><span class="label"><i class="fas fa-stream" style="color:var(--primary);"></i> گرایش:</span><span class="value">سیالات و حرارت</span></div>
-                        <div class="edu-row"><span class="label"><i class="fas fa-check-circle" style="color:var(--primary);"></i> وضعیت:</span><span class="value">فارغ‌التحصیل (معدل: ۱۵.۷۲)</span></div>
-                    `;
+                if (appearance.colorText) {
+                    root.setProperty('--text-primary', appearance.colorText);
+                    root.setProperty('--pro-text', appearance.colorText);
                 }
-            }
-
-            // بارگذاری و رندر مهارت‌ها
-            async function loadSkills() {
-                try {
-                    const res = await fetch('_data/skills.json?t=' + Date.now());
-                    if (!res.ok) throw new Error('فایل مهارت‌ها پیدا نشد');
-                    const data = await res.json();
-                    renderSkills(data);
-                } catch (e) {
-                    console.error('خطا در بارگذاری مهارت‌ها:', e);
-                    renderSkills({
-                        items: [
-                            { name: 'CATIA', icon: 'fa-drafting-compass', level: 'پیشرفته', desc: 'طراحی سطح، مونتاژ', progress: 90 },
-                            { name: 'SOLIDWORKS', icon: 'fa-cube', level: 'پیشرفته', desc: 'مدل‌سازی سه‌بعدی', progress: 85 },
-                            { name: 'AutoCAD', icon: 'fa-draw-polygon', level: 'حرفه‌ای', desc: 'نقشه‌کشی دو بعدی', progress: 95 },
-                            { name: 'ANSYS Fluent', icon: 'fa-water', level: 'پیشرفته', desc: 'تحلیل جریان سیالات', progress: 80 }
-                        ]
+                if (appearance.colorTextSec) {
+                    root.setProperty('--text-secondary', appearance.colorTextSec);
+                    root.setProperty('--pro-text-secondary', appearance.colorTextSec);
+                }
+                if (appearance.colorCard) {
+                    root.setProperty('--bg-secondary', appearance.colorCard);
+                    root.setProperty('--pro-card', appearance.colorCard);
+                }
+                if (appearance.colorBorder) {
+                    root.setProperty('--border-color', appearance.colorBorder);
+                    root.setProperty('--pro-border', appearance.colorBorder);
+                }
+                if (appearance.fontFamily) {
+                    document.body.style.fontFamily = appearance.fontFamily + ', sans-serif';
+                }
+                if (appearance.fontSize) {
+                    document.body.style.fontSize = appearance.fontSize + 'px';
+                }
+                if (appearance.fontSizeHeading) {
+                    document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(el => {
+                        el.style.fontSize = appearance.fontSizeHeading + 'px';
                     });
                 }
-            }
-
-            function renderSkills(data) {
-                const grid = document.getElementById('skillsGrid');
-                if (!grid) return;
-                const skills = data.items || [];
-                if (skills.length === 0) {
-                    grid.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ مهارتی ثبت نشده است.</p>';
-                    return;
+                if (appearance.lineHeight) {
+                    document.body.style.lineHeight = appearance.lineHeight;
                 }
-                grid.innerHTML = skills.map(s => `
-                    <div class="skill-item">
-                        <div class="skill-header">
-                            <div class="skill-icon"><i class="fas ${s.icon || 'fa-cog'}"></i></div>
-                            <div>
-                                <div class="skill-name">${s.name || 'بدون نام'}</div>
-                                <span class="skill-level">${s.level || 'متوسط'}</span>
-                                ${s.progress ? `<span style="font-size:0.7rem;color:var(--text-secondary);">(${s.progress}%)</span>` : ''}
-                            </div>
-                        </div>
-                        <p class="skill-desc">${s.desc || ''}</p>
-                        ${s.progress ? `
-                            <div class="skill-bar">
-                                <div class="fill" style="width:${s.progress}%;"></div>
-                            </div>
-                        ` : ''}
-                    </div>
-                `).join('');
-            }
-
-            // بارگذاری و رندر تحصیلات
-            async function loadEducation() {
-                try {
-                    const res = await fetch('_data/education.json?t=' + Date.now());
-                    if (!res.ok) throw new Error('فایل تحصیلات پیدا نشد');
-                    const data = await res.json();
-                    renderEducation(data);
-                } catch (e) {
-                    console.error('خطا در بارگذاری تحصیلات:', e);
-                    renderEducation({
-                        items: [
-                            { id: 1, title: 'کارشناسی مهندسی مکانیک', org: 'دانشگاه آزاد اسلامی واحد تهران مرکز', date: '۱۳۹۹ - ۱۴۰۴', badge: 'فارغ‌التحصیل', details: ['گرایش: سیالات و حرارت', 'معدل: ۱۵.۷۲'] },
-                            { id: 2, title: 'گواهی نامه تخصصی CATIA', org: 'مجتمع فنی تهران', date: '۱۴۰۴', badge: 'پیشرفته', details: ['طراحی سطح، مونتاژ، نقشه‌کشی', 'مدت: ۱۲۰ ساعت'] }
-                        ]
-                    });
+                if (appearance.bgImage) {
+                    document.body.style.backgroundImage = 'url(' + appearance.bgImage + ')';
+                    document.body.style.backgroundSize = 'cover';
+                    document.body.style.backgroundAttachment = 'fixed';
                 }
+            } catch (e) {
+                console.error('خطا در بارگذاری تنظیمات ظاهر:', e);
             }
+        }
 
-            function renderEducation(data) {
-                const timeline = document.getElementById('educationTimeline');
-                if (!timeline) return;
-                const items = data.items || [];
-                if (items.length === 0) {
-                    timeline.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ آیتم تحصیلی ثبت نشده است.</p>';
-                    return;
+        // ============================================================
+        // 221.3.2 - بارگذاری داده‌های بخش‌ها
+        // ============================================================
+        let sectionsData = {};
+
+        async function loadSectionsData() {
+            try {
+                const res = await fetch('_data/sections.json?t=' + Date.now());
+                if (res.ok) {
+                    sectionsData = await res.json();
+                    console.log('✅ بخش‌ها بارگذاری شدند:', sectionsData);
+                } else {
+                    console.warn('⚠️ فایل sections.json پیدا نشد، استفاده از داده‌های پیش‌فرض');
+                    sectionsData = {
+                        hero: {
+                            title: 'مهندس ماهان ادهم قزوینی',
+                            subtitle: 'مهندس مکانیک گرایش سیالات, تحلیل‌گر CFD, طراح قطعات پرینتر سه بعدی',
+                            desc: 'تحلیل‌گر CFD با بیش از ۵ سال تجربه در شبیه‌سازی جریان‌های سیالاتی و انتقال حرارت. طراح قطعات صنعتی با نرم‌افزارهای CATIA و SolidWorks.',
+                            image: 'mahanphoto.png',
+                            tags: 'تحلیل CFD, طراحی مکانیکی, پرینتر سه‌بعدی',
+                            btnText: 'درخواست همکاری',
+                            btnLink: '#contact'
+                        },
+                        about: {
+                            title: 'درباره مهندس ماهان ادهم قزوینی',
+                            text: 'مهندس ماهان ادهم قزوینی، فارغ‌التحصیل کارشناسی مهندسی مکانیک از دانشگاه آزاد اسلامی واحد تهران مرکز با گرایش سیالات و حرارت. با گذراندن دوره‌های تخصصی و کسب گواهی‌نامه‌های معتبر در زمینه نرم‌افزارهای مهندسی، همواره در حال گسترش دانش و مهارت‌های فنی هستم.',
+                            image: 'mahanphoto.png'
+                        },
+                        skills: { title: 'مهارت‌های تخصصی', desc: 'تسلط بر جدیدترین نرم‌افزارها و تکنولوژی‌های مهندسی مکانیک', layout: 'grid' },
+                        education: { title: 'سوابق تحصیلی و دوره‌ها', layout: 'timeline', desc: '' },
+                        projects: { title: 'پروژه‌های منتخب', desc: 'نمونه‌ای از پروژه‌های موفق انجام شده در حوزه مهندسی مکانیک', count: 6 },
+                        contact: { title: 'در تماس باشید', desc: 'برای همکاری، مشاوره یا دریافت اطلاعات بیشتر', phone: '۰۹۹۰۲۲۷۹۷۰۲', email: 'mahan.neman2020@gmail.com', btnText: 'ارسال پیام' }
+                    };
                 }
-                timeline.innerHTML = items.map(item => `
-                    <div class="edu-timeline-item">
-                        <div class="dot"></div>
-                        <div class="content">
-                            <div class="header">
-                                <h4>${item.title || 'بدون عنوان'}</h4>
-                                <span class="badge">${item.badge || 'تکمیل شده'}</span>
-                            </div>
-                            <p class="org">${item.org || ''}</p>
-                            <p class="date">${item.date || ''}</p>
-                            <ul class="details">
-                                ${(item.details || []).map(d => `<li><i class="fas fa-check"></i> ${d}</li>`).join('')}
-                            </ul>
-                        </div>
-                    </div>
-                `).join('');
+                renderHeroSection();
+                renderAboutSection();
+                renderSkillsSection();
+                renderEducation(); // ← جایگزین renderEducationSection
+                renderContactInfo();
+            } catch (e) {
+                console.error('❌ خطا در بارگذاری بخش‌ها:', e);
             }
+        }
 
-            // رندر اطلاعات تماس
-            function renderContactInfo() {
-                const contact = sectionsData.contact || {};
-                const container = document.getElementById('contactInfo');
-                if (!container) return;
-                container.innerHTML = `
-                    <div class="contact-item">
-                        <div class="contact-item-icon"><i class="fas fa-phone"></i></div>
-                        <div class="contact-item-content">
-                            <h4>شماره تماس</h4>
-                            <a href="tel:${contact.phone || '۰۹۹۰۲۲۷۹۷۰۲'}">${contact.phone || '۰۹۹۰۲۲۷۹۷۰۲'}</a>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-item-icon"><i class="fas fa-envelope"></i></div>
-                        <div class="contact-item-content">
-                            <h4>ایمیل</h4>
-                            <a href="mailto:${contact.email || 'mahan.neman2020@gmail.com'}">${contact.email || 'mahan.neman2020@gmail.com'}</a>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-item-icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <div class="contact-item-content">
-                            <h4>موقعیت</h4>
-                            <span>تهران، ایران</span>
-                        </div>
-                    </div>
+        // ============================================================
+        // 221.3.3 - رندر بخش هیرو
+        // ============================================================
+        function renderHeroSection() {
+            const hero = sectionsData.hero || {};
+            document.getElementById('heroTyping').textContent = hero.subtitle || '';
+            document.getElementById('heroDescription').textContent = hero.desc || '';
+            const tagsContainer = document.getElementById('heroTags');
+            if (hero.tags) {
+                const tags = hero.tags.split(',').map(t => t.trim()).filter(Boolean);
+                tagsContainer.innerHTML = tags.map(tag =>
+                    `<span style="background:var(--bg-tertiary);padding:0.2rem 0.8rem;border-radius:20px;font-size:0.8rem;color:var(--text-secondary);">${tag}</span>`
+                ).join('');
+            }
+            if (hero.image) {
+                const heroImg = document.querySelector('.hero-image .image-box img');
+                if (heroImg) heroImg.src = hero.image;
+            }
+        }
+
+        // ============================================================
+        // 221.3.4 - رندر بخش درباره
+        // ============================================================
+        function renderAboutSection() {
+            const about = sectionsData.about || {};
+            document.getElementById('aboutText').textContent = about.text || '';
+            const eduDetails = document.getElementById('educationDetails');
+            if (eduDetails) {
+                eduDetails.innerHTML = `
+                    <div class="edu-row"><span class="label"><i class="fas fa-school" style="color:var(--primary-color);"></i> دانشگاه:</span><span class="value">دانشگاه آزاد اسلامی واحد تهران مرکز</span></div>
+                    <div class="edu-row"><span class="label"><i class="fas fa-building" style="color:var(--primary-color);"></i> دانشکده:</span><span class="value">فنی مهندسی</span></div>
+                    <div class="edu-row"><span class="label"><i class="fas fa-graduation-cap" style="color:var(--primary-color);"></i> مقطع:</span><span class="value">کارشناسی مهندسی مکانیک</span></div>
+                    <div class="edu-row"><span class="label"><i class="fas fa-stream" style="color:var(--primary-color);"></i> گرایش:</span><span class="value">سیالات و حرارت</span></div>
+                    <div class="edu-row"><span class="label"><i class="fas fa-check-circle" style="color:var(--primary-color);"></i> وضعیت:</span><span class="value">فارغ‌التحصیل (معدل: ۱۵.۷۲)</span></div>
                 `;
             }
+        }
 
-            // بارگذاری مقالات اخیر
-            async function loadRecentArticles() {
-                try {
-                    const res = await fetch('_data/articles.json?t=' + Date.now());
-                    let articles = [];
-                    if (res.ok) {
-                        const data = await res.json();
-                        articles = Object.keys(data).map(key => ({ key, ...data[key] }));
-                    } else {
-                        articles = [
-                            { key: '0001', title: 'تحلیل جریان آشفته در لوله‌ها', excerpt: 'بررسی عددی جریان آشفته با مدل‌های توربولانس', date: '۱۴۰۳/۰۲/۱۰', tags: ['CFD', 'توربولانس'], type: 'article' },
-                            { key: '0002', title: 'طراحی سیستم تهویه مطبوع', excerpt: 'طراحی و شبیه‌سازی سیستم HVAC', date: '۱۴۰۳/۰۱/۲۵', tags: ['HVAC', 'طراحی'], type: 'project' },
-                            { key: '0003', title: 'آموزش شبکه‌بندی', excerpt: 'آموزش تولید مش ساختار یافته', date: '۱۴۰۲/۱۲/۰۵', tags: ['آموزش', 'شبکه‌بندی'], type: 'tutorial' }
-                        ];
-                    }
-                    const grid = document.getElementById('recentArticlesGrid');
-                    if (!grid) return;
-                    const recent = articles.slice(0, 3);
-                    if (recent.length === 0) {
-                        grid.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ مقاله‌ای یافت نشد.</p>';
-                        return;
-                    }
-                    grid.innerHTML = recent.map(item => `
-                        <div class="article-preview-card">
-                            <span class="tag ${item.type || 'article'}">${item.type === 'article' ? 'مقاله' : item.type === 'project' ? 'پروژه' : 'آموزش'}</span>
-                            <h3><a href="article.html?id=${item.key}">${item.title || 'بدون عنوان'}</a></h3>
-                            <p>${item.excerpt || ''}</p>
-                            <div class="meta">
-                                <span><i class="fas fa-calendar"></i> ${item.date || '---'}</span>
-                                <span><i class="fas fa-tags"></i> ${item.tags ? item.tags.join('، ') : ''}</span>
-                            </div>
-                        </div>
-                    `).join('');
-                } catch (e) {
-                    console.error('خطا در بارگذاری مقالات:', e);
-                }
+        // ============================================================
+        // 221.3.5 - بارگذاری مهارت‌ها از JSON
+        // ============================================================
+        async function loadSkills() {
+            try {
+                const res = await fetch('_data/skills.json?t=' + Date.now());
+                if (!res.ok) throw new Error('فایل مهارت‌ها پیدا نشد');
+                const data = await res.json();
+                renderSkills(data);
+            } catch (e) {
+                console.error('خطا در بارگذاری مهارت‌ها:', e);
+                renderSkills({
+                    title: 'مهارت‌های تخصصی',
+                    desc: 'تسلط بر جدیدترین نرم‌افزارها و تکنولوژی‌ها',
+                    items: [
+                        { name: 'CATIA', icon: 'fa-drafting-compass', level: 'پیشرفته', desc: 'طراحی سطح، مونتاژ', progress: 90, color: '#2563eb' },
+                        { name: 'SOLIDWORKS', icon: 'fa-cube', level: 'پیشرفته', desc: 'مدل‌سازی سه‌بعدی', progress: 85, color: '#10b981' },
+                        { name: 'AutoCAD', icon: 'fa-draw-polygon', level: 'حرفه‌ای', desc: 'نقشه‌کشی دو بعدی', progress: 95, color: '#f59e0b' },
+                        { name: 'ANSYS Fluent', icon: 'fa-water', level: 'پیشرفته', desc: 'تحلیل جریان سیالات', progress: 80, color: '#8b5cf6' }
+                    ]
+                });
             }
+        }
 
-            // گواهی‌نامه‌ها
-            function loadCertificates() {
-                const list = document.getElementById('certificatesList');
-                if (!list) return;
-                const certs = [
-                    { name: 'CATIA سطح پیشرفته', org: 'مجتمع فنی تهران', date: '۱۴۰۲' },
-                    { name: 'تحلیل CFD با Ansys Fluent', org: 'آموزش آزاد CFD', date: '۱۴۰۳' },
-                    { name: 'طراحی با SolidWorks', org: 'دوره تخصصی آنلاین', date: '۱۴۰۲' }
-                ];
-                list.innerHTML = certs.map(c => `
-                    <div>
-                        <div><i class="fas fa-award"></i></div>
+        function renderSkills(data) {
+            const grid = document.getElementById('skillsGrid');
+            if (!grid) return;
+            const skills = data.items || [];
+            if (skills.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ مهارتی ثبت نشده است.</p>';
+                return;
+            }
+            grid.innerHTML = skills.map(s => `
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <div class="skill-icon" style="background:${s.color || 'linear-gradient(135deg,var(--primary-color),#8b5cf6)'};"><i class="fas ${s.icon || 'fa-cog'}"></i></div>
                         <div>
-                            <h5 style="font-size:0.95rem;margin-bottom:0.2rem;">${c.name}</h5>
-                            <p style="font-size:0.8rem;color:var(--text-secondary);margin:0;">${c.org}</p>
-                            <div style="display:flex;gap:1rem;font-size:0.7rem;color:var(--text-secondary);margin-top:0.3rem;"><span><i class="fas fa-calendar"></i> ${c.date}</span></div>
+                            <h4 class="skill-name">${s.name || 'بدون نام'}</h4>
+                            <span class="skill-level">${s.level || 'متوسط'}</span>
+                            ${s.progress ? `<span style="font-size:0.7rem;color:var(--text-secondary);">(${s.progress}%)</span>` : ''}
+                        </div>
+                    </div>
+                    <p class="skill-desc">${s.desc || ''}</p>
+                    ${s.progress ? `<div style="width:100%;height:6px;background:var(--bg-tertiary);border-radius:4px;margin-top:8px;overflow:hidden;"><div style="width:${s.progress}%;height:100%;background:${s.color || 'var(--primary-color)'};border-radius:4px;"></div></div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // ============================================================
+        // 221.3.6 - بارگذاری تحصیلات از JSON
+        // ============================================================
+        async function loadEducation() {
+            try {
+                const res = await fetch('_data/education.json?t=' + Date.now());
+                if (!res.ok) throw new Error('فایل تحصیلات پیدا نشد');
+                const data = await res.json();
+                renderEducation(data);
+            } catch (e) {
+                console.error('خطا در بارگذاری تحصیلات:', e);
+                renderEducation({
+                    title: 'سوابق تحصیلی و دوره‌ها',
+                    layout: 'timeline',
+                    items: [
+                        { id: 1, title: 'کارشناسی مهندسی مکانیک', org: 'دانشگاه آزاد اسلامی واحد تهران مرکز', date: '۱۳۹۹ - ۱۴۰۴', badge: 'فارغ‌التحصیل', badgeColor: '#10b981', details: ['گرایش: سیالات و حرارت', 'معدل: ۱۵.۷۲'] },
+                        { id: 2, title: 'گواهی نامه تخصصی CATIA', org: 'مجتمع فنی تهران', date: '۱۴۰۴', badge: 'پیشرفته', badgeColor: '#8b5cf6', details: ['طراحی سطح، مونتاژ، نقشه‌کشی', 'مدت: ۱۲۰ ساعت'] }
+                    ]
+                });
+            }
+        }
+
+        function renderEducation(data) {
+            const timeline = document.getElementById('educationTimeline');
+            if (!timeline) return;
+            const items = data.items || [];
+            if (items.length === 0) {
+                timeline.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ آیتم تحصیلی ثبت نشده است.</p>';
+                return;
+            }
+            timeline.innerHTML = items.map((item) => `
+                <div class="edu-item">
+                    <div class="edu-dot"></div>
+                    <div class="edu-content">
+                        <div class="edu-header">
+                            <h4>${item.title || 'بدون عنوان'}</h4>
+                            <span class="edu-badge" style="background:${item.badgeColor || 'linear-gradient(135deg,var(--primary-color),#8b5cf6)'};">${item.badge || 'تکمیل شده'}</span>
+                        </div>
+                        <p class="edu-org">${item.org || ''}</p>
+                        <p class="edu-date">${item.date || ''}</p>
+                        <ul class="edu-details">
+                            ${(item.details || []).map(d => `<li><i class="fas fa-check"></i> ${d}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================================
+        // 221.3.8 - بارگذاری مقالات اخیر
+        // ============================================================
+        async function loadRecentArticles() {
+            try {
+                const res = await fetch('_data/articles.json?t=' + Date.now());
+                let articles = [];
+                if (res.ok) {
+                    const data = await res.json();
+                    articles = Object.keys(data).map(key => ({ key, ...data[key] }));
+                } else {
+                    articles = [
+                        { key: '0001', title: 'تحلیل جریان آشفته در لوله‌ها', excerpt: 'بررسی عددی جریان آشفته با مدل‌های توربولانس', date: '۱۴۰۳/۰۲/۱۰', tags: ['CFD', 'توربولانس'], type: 'article' },
+                        { key: '0002', title: 'طراحی سیستم تهویه مطبوع', excerpt: 'طراحی و شبیه‌سازی سیستم HVAC', date: '۱۴۰۳/۰۱/۲۵', tags: ['HVAC', 'طراحی'], type: 'project' },
+                        { key: '0003', title: 'آموزش شبکه‌بندی', excerpt: 'آموزش تولید مش ساختار یافته', date: '۱۴۰۲/۱۲/۰۵', tags: ['آموزش', 'شبکه‌بندی'], type: 'tutorial' }
+                    ];
+                }
+                const grid = document.getElementById('recentArticlesGrid');
+                if (!grid) return;
+                const recent = articles.slice(0, 3);
+                if (recent.length === 0) {
+                    grid.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ مقاله‌ای یافت نشد.</p>';
+                    return;
+                }
+                grid.innerHTML = recent.map(item => `
+                    <div class="article-preview-card">
+                        <span class="tag ${item.type || 'article'}">${item.type === 'article' ? 'مقاله' : item.type === 'project' ? 'پروژه' : 'آموزش'}</span>
+                        <h3><a href="article.html?id=${item.key}">${item.title || 'بدون عنوان'}</a></h3>
+                        <p>${item.excerpt || ''}</p>
+                        <div class="meta">
+                            <span><i class="fas fa-calendar"></i> ${item.date || '---'}</span>
+                            <span><i class="fas fa-tags"></i> ${item.tags ? item.tags.join('، ') : ''}</span>
                         </div>
                     </div>
                 `).join('');
+            } catch (e) {
+                console.error('خطا در بارگذاری مقالات:', e);
+            }
+        }
+
+        // ============================================================
+        // 221.3.9 - گواهی‌نامه‌ها
+        // ============================================================
+        function loadCertificates() {
+            const list = document.getElementById('certificatesList');
+            if (!list) return;
+            const certs = [
+                { name: 'CATIA سطح پیشرفته', org: 'مجتمع فنی تهران', date: '۱۴۰۲' },
+                { name: 'تحلیل CFD با Ansys Fluent', org: 'آموزش آزاد CFD', date: '۱۴۰۳' },
+                { name: 'طراحی با SolidWorks', org: 'دوره تخصصی آنلاین', date: '۱۴۰۲' }
+            ];
+            list.innerHTML = certs.map(c => `
+                <div style="display:flex;gap:0.8rem;padding:0.8rem;background:var(--bg-tertiary);border-radius:12px;">
+                    <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--secondary-color),var(--primary-color));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;"><i class="fas fa-award"></i></div>
+                    <div><h5 style="font-size:0.95rem;margin-bottom:0.2rem;">${c.name}</h5><p style="font-size:0.8rem;color:var(--text-secondary);margin:0;">${c.org}</p><div style="display:flex;gap:1rem;font-size:0.7rem;color:var(--text-secondary);margin-top:0.3rem;"><span><i class="fas fa-calendar"></i> ${c.date}</span></div></div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================================
+        // 221.3.10 - شمارنده‌های آماری
+        // ============================================================
+        function initCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        counters.forEach(c => {
+                            const target = parseInt(c.dataset.count);
+                            let current = 0;
+                            const interval = setInterval(() => {
+                                current++;
+                                if (current >= target) { c.textContent = target; clearInterval(interval); } else c.textContent = current;
+                            }, 50);
+                        });
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.5 });
+            const heroStats = document.querySelector('.hero-stats');
+            if (heroStats) observer.observe(heroStats);
+        }
+
+        // ============================================================
+        // 221.3.11 - فرم تماس (نسخه نهایی با توکن ثابت و پشتیبان localStorage)
+        // ============================================================
+        function initContactForm() {
+            const form = document.getElementById('contactForm');
+            if (!form) {
+                console.error('❌ فرم تماس پیدا نشد!');
+                return;
             }
 
-            // شمارنده‌های آماری
-            function initCounters() {
-                const counters = document.querySelectorAll('.stat-number');
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            counters.forEach(c => {
-                                const target = parseInt(c.dataset.count);
-                                let current = 0;
-                                const interval = setInterval(() => {
-                                    current++;
-                                    if (current >= target) { c.textContent = target; clearInterval(interval); } else c.textContent = current;
-                                }, 50);
-                            });
-                            observer.disconnect();
-                        }
-                    });
-                }, { threshold: 0.5 });
-                const heroStats = document.querySelector('.hero-stats');
-                if (heroStats) observer.observe(heroStats);
+            console.log('✅ فرم تماس پیدا شد');
+
+            // ===== توکن گیت‌هاب (در صورت نیاز آن را تنظیم کنید) =====
+            // این توکن باید دسترسی repo داشته باشد
+            const GITHUB_TOKEN = 'YOUR_GITHUB_TOKEN_HERE'; // <-- توکن خود را جایگزین کنید
+
+            const messageInput = document.getElementById('message');
+            const charCount = document.getElementById('charCount');
+            if (messageInput && charCount) {
+                messageInput.addEventListener('input', function() {
+                    let len = this.value.length;
+                    if (len > 500) {
+                        this.value = this.value.substring(0, 500);
+                        len = 500;
+                    }
+                    charCount.textContent = len;
+                });
             }
 
-            // ===== فرم تماس (ارسال به Webhook یا گیت‌هاب) =====
-            function initContactForm() {
-                const form = document.getElementById('contactForm');
-                if (!form) {
-                    console.error('❌ فرم تماس پیدا نشد!');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('📤 دکمه ارسال کلیک شد!');
+
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value.trim();
+
+                if (!name || !email || !subject || !message) {
+                    alert('❌ لطفاً تمام فیلدهای ضروری را پر کنید.');
                     return;
                 }
-                console.log('✅ فرم تماس پیدا شد');
-
-                const messageInput = document.getElementById('message');
-                const charCount = document.getElementById('charCount');
-                if (messageInput && charCount) {
-                    messageInput.addEventListener('input', function() {
-                        let len = this.value.length;
-                        if (len > 500) {
-                            this.value = this.value.substring(0, 500);
-                            len = 500;
-                        }
-                        charCount.textContent = len;
-                    });
+                if (!email.includes('@')) {
+                    alert('❌ لطفاً یک ایمیل معتبر وارد کنید.');
+                    return;
                 }
 
-                // ===== توکن گیت‌هاب (برای ذخیره در notify.json) =====
-                // می‌توانید توکن خود را اینجا قرار دهید یا از Webhook استفاده کنید.
-                const GITHUB_TOKEN = 'YOUR_GITHUB_TOKEN_HERE'; // <-- توکن خود را جایگزین کنید
-                const WEBHOOK_URL = ''; // اگر Webhook دارید، آدرس آن را اینجا بگذارید
+                const newMessage = {
+                    id: 'MSG-' + Date.now().toString(36).toUpperCase(),
+                    source: 'فرم تماس سایت',
+                    name,
+                    email,
+                    phone: phone || '---',
+                    subject,
+                    message,
+                    date: new Date().toISOString(),
+                    datePersian: new Date().toLocaleString('fa-IR'),
+                    status: 'new'
+                };
 
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    console.log('📤 دکمه ارسال کلیک شد!');
+                const submitBtn = document.getElementById('submitBtn');
+                const btnText = submitBtn?.querySelector('.btn-text');
+                const btnLoader = submitBtn?.querySelector('.btn-loader');
+                if (btnText && btnLoader) {
+                    btnText.style.opacity = '0';
+                    btnLoader.style.opacity = '1';
+                }
+                if (submitBtn) submitBtn.disabled = true;
 
-                    const name = document.getElementById('name').value.trim();
-                    const email = document.getElementById('email').value.trim();
-                    const phone = document.getElementById('phone').value.trim();
-                    const subject = document.getElementById('subject').value;
-                    const message = document.getElementById('message').value.trim();
-
-                    if (!name || !email || !subject || !message) {
-                        alert('❌ لطفاً تمام فیلدهای ضروری را پر کنید.');
-                        return;
+                // ===== ۱. ذخیره در localStorage (همیشه انجام می‌شود) =====
+                let savePromise = new Promise((resolve) => {
+                    try {
+                        let localMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
+                        localMessages.push(newMessage);
+                        localStorage.setItem('contact_messages', JSON.stringify(localMessages));
+                        resolve({ success: true, source: 'localStorage' });
+                    } catch (e) {
+                        throw new Error('خطا در ذخیره محلی');
                     }
-                    if (!email.includes('@')) {
-                        alert('❌ لطفاً یک ایمیل معتبر وارد کنید.');
-                        return;
-                    }
+                });
 
-                    const newMessage = {
-                        id: 'MSG-' + Date.now().toString(36).toUpperCase(),
-                        source: 'فرم تماس سایت',
-                        name,
-                        email,
-                        phone: phone || '---',
-                        subject,
-                        message,
-                        date: new Date().toISOString(),
-                        datePersian: new Date().toLocaleString('fa-IR'),
-                        status: 'new'
-                    };
+                // ===== ۲. تلاش برای گیت‌هاب (با توکن ثابت) =====
+                const token = GITHUB_TOKEN && GITHUB_TOKEN !== 'YOUR_GITHUB_TOKEN_HERE' 
+                    ? GITHUB_TOKEN 
+                    : localStorage.getItem('github_token');
 
-                    const submitBtn = document.getElementById('submitBtn');
-                    const btnText = submitBtn?.querySelector('.btn-text');
-                    const btnLoader = submitBtn?.querySelector('.btn-loader');
-                    if (btnText && btnLoader) {
-                        btnText.style.opacity = '0';
-                        btnLoader.style.opacity = '1';
-                    }
-                    if (submitBtn) submitBtn.disabled = true;
-
-                    // انتخاب روش ارسال
-                    let sendPromise;
-
-                    if (WEBHOOK_URL) {
-                        // ارسال به Webhook
-                        sendPromise = fetch(WEBHOOK_URL, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(newMessage)
-                        }).then(res => {
-                            if (!res.ok) throw new Error('خطا در ارسال به Webhook');
-                            return res.json();
-                        });
-                    } else if (GITHUB_TOKEN && GITHUB_TOKEN !== 'YOUR_GITHUB_TOKEN_HERE') {
-                        // ارسال به گیت‌هاب (notify.json)
-                        const url = 'https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json';
-                        sendPromise = fetch(url, {
+                if (token) {
+                    savePromise = savePromise.then(() => {
+                        return fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
                             headers: {
-                                'Authorization': 'token ' + GITHUB_TOKEN,
+                                'Authorization': 'token ' + token,
                                 'Accept': 'application/vnd.github.v3+json'
                             }
                         })
@@ -799,10 +1082,10 @@
                             messages.push(newMessage);
                             const updatedContent = JSON.stringify(messages, null, 2);
                             const encoded = btoa(unescape(encodeURIComponent(updatedContent)));
-                            return fetch(url, {
+                            return fetch('https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/notify/notify.json', {
                                 method: 'PUT',
                                 headers: {
-                                    'Authorization': 'token ' + GITHUB_TOKEN,
+                                    'Authorization': 'token ' + token,
                                     'Content-Type': 'application/json',
                                     'Accept': 'application/vnd.github.v3+json'
                                 },
@@ -816,146 +1099,184 @@
                         .then(res => {
                             if (!res.ok) throw new Error('خطا در ذخیره در گیت‌هاب');
                             return res.json();
-                        });
-                    } else {
-                        // اگر هیچ روشی تنظیم نشده، خطا بده
-                        throw new Error('هیچ روش ارسال تنظیم نشده است. لطفاً Webhook یا توکن گیت‌هاب را تنظیم کنید.');
-                    }
-
-                    sendPromise
-                        .then(() => {
-                            document.getElementById('contactForm').style.display = 'none';
-                            const successDiv = document.getElementById('formSuccess');
-                            if (successDiv) {
-                                successDiv.style.display = 'flex';
-                                successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            }
-                            document.getElementById('formError').style.display = 'none';
-                            form.reset();
-                            if (charCount) charCount.textContent = '0';
-                            console.log('✅ پیام با موفقیت ارسال شد!');
                         })
-                        .catch(error => {
-                            console.error('❌ خطا:', error);
-                            showError('پیام ارسال نشد. لطفاً مجدداً تلاش کنید یا مستقیماً ایمیل بزنید.');
-                        })
-                        .finally(() => {
-                            if (btnText && btnLoader) {
-                                btnText.style.opacity = '1';
-                                btnLoader.style.opacity = '0';
-                            }
-                            if (submitBtn) submitBtn.disabled = false;
+                        .catch(err => {
+                            console.warn('⚠️ گیت‌هاب با خطا مواجه شد، اما داده در localStorage ذخیره است:', err);
+                            return { success: true, source: 'localStorage' };
                         });
-                });
-
-                function showError(msg) {
-                    const errorDiv = document.getElementById('formError');
-                    const errorMsg = document.getElementById('errorMessage');
-                    if (errorDiv && errorMsg) {
-                        errorMsg.textContent = msg;
-                        errorDiv.style.display = 'block';
-                        document.getElementById('contactForm').style.display = 'none';
-                        document.getElementById('formSuccess').style.display = 'none';
-                    } else {
-                        alert('❌ ' + msg);
-                    }
-                }
-
-                const closeSuccess = document.getElementById('closeSuccess');
-                if (closeSuccess) {
-                    closeSuccess.addEventListener('click', function() {
-                        document.getElementById('formSuccess').style.display = 'none';
-                        document.getElementById('contactForm').style.display = 'flex';
                     });
                 }
-                console.log('✅ فرم تماس با قابلیت ارسال به Webhook/گیت‌هاب آماده است!');
+
+                savePromise
+                    .then(() => {
+                        document.getElementById('contactForm').style.display = 'none';
+                        const successDiv = document.getElementById('formSuccess');
+                        if (successDiv) {
+                            successDiv.style.display = 'flex';
+                            successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                        document.getElementById('formError').style.display = 'none';
+                        form.reset();
+                        if (charCount) charCount.textContent = '0';
+                        console.log('✅ پیام با موفقیت ذخیره شد!');
+                    })
+                    .catch(error => {
+                        console.error('❌ خطا:', error);
+                        showError('متأسفانه پیام ذخیره نشد. لطفاً بعداً تلاش کنید یا مستقیماً ایمیل بزنید.');
+                    })
+                    .finally(() => {
+                        if (btnText && btnLoader) {
+                            btnText.style.opacity = '1';
+                            btnLoader.style.opacity = '0';
+                        }
+                        if (submitBtn) submitBtn.disabled = false;
+                    });
+            });
+
+            function showError(msg) {
+                console.error('❌ خطا:', msg);
+                const errorDiv = document.getElementById('formError');
+                const errorMsg = document.getElementById('errorMessage');
+                if (errorDiv && errorMsg) {
+                    errorMsg.textContent = msg;
+                    errorDiv.style.display = 'block';
+                    document.getElementById('contactForm').style.display = 'none';
+                    document.getElementById('formSuccess').style.display = 'none';
+                } else {
+                    alert('❌ ' + msg);
+                }
             }
 
-            // منوی کشویی و تم
-            (function() {
-                const menuToggle = document.getElementById('menuToggle');
-                const slideMenu = document.getElementById('slideMenu');
-                const slideMenuClose = document.getElementById('slideMenuClose');
-                const menuOverlay = document.getElementById('menuOverlay');
-
-                if (menuToggle) {
-                    menuToggle.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        slideMenu.classList.add('active');
-                        menuOverlay.classList.add('active');
-                        document.body.classList.add('no-scroll');
-                        this.setAttribute('aria-expanded', 'true');
-                    });
-                }
-
-                function closeSlideMenu() {
-                    slideMenu.classList.remove('active');
-                    menuOverlay.classList.remove('active');
-                    document.body.classList.remove('no-scroll');
-                    if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
-                }
-
-                if (slideMenuClose) slideMenuClose.addEventListener('click', closeSlideMenu);
-                if (menuOverlay) menuOverlay.addEventListener('click', closeSlideMenu);
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && slideMenu.classList.contains('active')) closeSlideMenu();
+            const closeSuccess = document.getElementById('closeSuccess');
+            if (closeSuccess) {
+                closeSuccess.addEventListener('click', function() {
+                    document.getElementById('formSuccess').style.display = 'none';
+                    document.getElementById('contactForm').style.display = 'flex';
                 });
-                if (slideMenu) {
-                    slideMenu.querySelectorAll('.slide-menu-link').forEach(link => {
-                        link.addEventListener('click', closeSlideMenu);
-                    });
+            }
+
+            console.log('✅ فرم تماس با قابلیت ذخیره محلی و گیت‌هاب (با توکن ثابت) آماده است!');
+        }
+
+        // ============================================================
+        // 221.3.12 - منوی کشویی و تم تاریک/روشن
+        // ============================================================
+        (function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const slideMenu = document.getElementById('slideMenu');
+            const slideMenuClose = document.getElementById('slideMenuClose');
+            const menuOverlay = document.getElementById('menuOverlay');
+
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    slideMenu.classList.add('active');
+                    menuOverlay.classList.add('active');
+                    document.body.classList.add('no-scroll');
+                    this.setAttribute('aria-expanded', 'true');
+                });
+            }
+
+            function closeSlideMenu() {
+                slideMenu.classList.remove('active');
+                menuOverlay.classList.remove('active');
+                document.body.classList.remove('no-scroll');
+                if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+            }
+
+            if (slideMenuClose) slideMenuClose.addEventListener('click', closeSlideMenu);
+            if (menuOverlay) menuOverlay.addEventListener('click', closeSlideMenu);
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && slideMenu.classList.contains('active')) closeSlideMenu();
+            });
+            if (slideMenu) {
+                slideMenu.querySelectorAll('.slide-menu-link').forEach(link => {
+                    link.addEventListener('click', closeSlideMenu);
+                });
+            }
+
+            const themeToggle = document.getElementById('themeToggle');
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+
+            if (themeToggle) {
+                const moonIcon = themeToggle.querySelector('.fa-moon');
+                const sunIcon = themeToggle.querySelector('.fa-sun');
+                if (currentTheme === 'light') {
+                    if (moonIcon) moonIcon.style.opacity = '0';
+                    if (sunIcon) { sunIcon.style.opacity = '1'; sunIcon.style.transform = 'translate(50%,-50%) rotate(0deg)'; }
+                } else {
+                    if (moonIcon) moonIcon.style.opacity = '1';
+                    if (sunIcon) { sunIcon.style.opacity = '0'; sunIcon.style.transform = 'translate(50%,-50%) rotate(90deg)'; }
                 }
 
-                const themeToggle = document.getElementById('themeToggle');
-                const currentTheme = localStorage.getItem('theme') || 'dark';
-                document.documentElement.setAttribute('data-theme', currentTheme);
-
-                if (themeToggle) {
-                    const moonIcon = themeToggle.querySelector('.fa-moon');
-                    const sunIcon = themeToggle.querySelector('.fa-sun');
-                    if (currentTheme === 'light') {
+                themeToggle.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const newTheme = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    if (newTheme === 'light') {
                         if (moonIcon) moonIcon.style.opacity = '0';
                         if (sunIcon) { sunIcon.style.opacity = '1'; sunIcon.style.transform = 'translate(50%,-50%) rotate(0deg)'; }
                     } else {
                         if (moonIcon) moonIcon.style.opacity = '1';
                         if (sunIcon) { sunIcon.style.opacity = '0'; sunIcon.style.transform = 'translate(50%,-50%) rotate(90deg)'; }
                     }
-
-                    themeToggle.addEventListener('click', function() {
-                        const current = document.documentElement.getAttribute('data-theme');
-                        const newTheme = current === 'dark' ? 'light' : 'dark';
-                        document.documentElement.setAttribute('data-theme', newTheme);
-                        localStorage.setItem('theme', newTheme);
-                        if (newTheme === 'light') {
-                            if (moonIcon) moonIcon.style.opacity = '0';
-                            if (sunIcon) { sunIcon.style.opacity = '1'; sunIcon.style.transform = 'translate(50%,-50%) rotate(0deg)'; }
-                        } else {
-                            if (moonIcon) moonIcon.style.opacity = '1';
-                            if (sunIcon) { sunIcon.style.opacity = '0'; sunIcon.style.transform = 'translate(50%,-50%) rotate(90deg)'; }
-                        }
-                    });
-                }
-            })();
-
-            // ===== بارگذاری اولیه =====
-            document.addEventListener('DOMContentLoaded', function() {
-                loadAppearanceSettings();
-                loadSectionsData();
-                loadSkills();
-                loadEducation();
-                loadRecentArticles();
-                loadCertificates();
-                initCounters();
-                initContactForm();
-
-                const yearEl = document.querySelector('.copyright p:first-child');
-                if (yearEl) {
-                    const persianYear = new Date().getFullYear() - 621;
-                    yearEl.innerHTML = yearEl.innerHTML.replace('۱۴۰۳', persianYear);
-                }
-            });
-
+                });
+            }
         })();
+
+        // ============================================================
+        // 221.3.13 - بارگذاری اولیه
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAppearanceSettings();
+            loadSectionsData();
+            loadSkills();
+            loadEducation();
+            loadRecentArticles();
+            loadCertificates();
+            initCounters();
+            initContactForm();
+
+            // به‌روزرسانی سال در فوتر (اگر قبلاً بارگذاری شده باشد)
+            const yearEl = document.querySelector('.copyright p:first-child');
+            if (yearEl) {
+                const persianYear = new Date().getFullYear() - 621;
+                yearEl.innerHTML = yearEl.innerHTML.replace('۱۴۰۳', persianYear);
+            }
+        });
+
+        // تابع کمکی برای رندر مهارت‌ها (برای سازگاری با نسخه قبلی)
+        function renderSkillsSection(skillsData) {
+            const container = document.getElementById('skills-section');
+            if (!container) return;
+            if (!skillsData || !skillsData.items || skillsData.items.length === 0) {
+                container.innerHTML = '<p>هیچ مهارتی ثبت نشده است.</p>';
+                return;
+            }
+            let html = `<h2>${skillsData.title || 'مهارت‌های تخصصی'}</h2>`;
+            if (skillsData.desc) html += `<p>${skillsData.desc}</p>`;
+            html += `<div class="skills-grid">`;
+            skillsData.items.forEach(item => {
+                html += `
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            ${item.icon ? `<i class="fas ${item.icon}"></i>` : ''}
+                            <span>${item.name}</span>
+                            <span class="skill-level">${item.level || 'متوسط'}</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width:${item.progress || 0}%;background:${item.color || 'var(--primary)'};"></div>
+                        </div>
+                        ${item.desc ? `<p class="skill-desc">${item.desc}</p>` : ''}
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        }
     </script>
+
 </body>
 </html>

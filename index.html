@@ -18,7 +18,6 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="stylesheet" href="mobile.css">
-
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#2c3e50">
     <meta name="msapplication-TileColor" content="#2c3e50">
@@ -27,20 +26,644 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- ===== 202 - استایل‌های جدا شده در common.css (نسخه جدید شما) ===== -->
+    <!-- ===== 202 - استایل‌های جدا شده در common.css ===== -->
     <link rel="stylesheet" href="common.css">
 
-    <!-- ===== 219 - استایل‌های اضافی برای منو و ریسپانسیو (برای اطمینان) ===== -->
+    <!-- ===== استایل‌های مدرن و زیبا ===== -->
     <style>
-        /* این استایل‌ها قبلاً در common.css شما وجود دارند، اما برای اطمینان اضافه می‌شوند */
-        .hero-underline {
-            width: 100px;
-            height: 3px;
+        /* ============================================================
+           استایل‌های مدرن و پیشرفته
+           ============================================================ */
+
+        /* ===== متغیرهای رنگی مدرن ===== */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --radius-modern: 20px;
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        [data-theme="light"] {
+            --glass-bg: rgba(0, 0, 0, 0.03);
+            --glass-border: rgba(0, 0, 0, 0.06);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ===== افکت‌های پس‌زمینه ===== */
+        .hero-section .bg-layer .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .hero-section .bg-layer .orb-1 {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            right: -100px;
+            background: var(--primary-color);
+        }
+        .hero-section .bg-layer .orb-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -50px;
+            left: -50px;
+            background: var(--secondary-color);
+        }
+        .hero-section .bg-layer .orb-3 {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #8b5cf6;
+            opacity: 0.08;
+        }
+
+        /* ===== هدر مدرن ===== */
+        .main-header {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(10, 15, 26, 0.6) !important;
+            border-bottom: 1px solid var(--glass-border) !important;
+            transition: var(--transition-smooth);
+        }
+        [data-theme="light"] .main-header {
+            background: rgba(255, 255, 255, 0.7) !important;
+        }
+        .main-header .logo .logo-icon {
+            background: var(--gradient-main);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+            transition: var(--transition-smooth);
+        }
+        .main-header .logo .logo-icon:hover {
+            transform: scale(1.05) rotate(-5deg);
+            box-shadow: 0 6px 30px rgba(37, 99, 235, 0.4);
+        }
+
+        /* ===== هیرو مدرن ===== */
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(to top, var(--bg-secondary), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .hero-grid {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+        .hero-text .hero-title .highlight {
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+        .hero-text .hero-title .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            width: 100%;
+            height: 4px;
             background: var(--gradient-main);
             border-radius: 4px;
-            margin-top: 0.3rem;
+            opacity: 0.3;
         }
-        /* کوچک‌ترین تنظیمات در صورت نیاز */
+        .hero-text .hero-subtitle {
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            min-height: 2.8rem;
+        }
+        .hero-text .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            max-width: 480px;
+        }
+
+        .hero-stats .stat-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-modern);
+            padding: 1.2rem 1rem;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-stats .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-main);
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+        .hero-stats .stat-item:hover::before {
+            opacity: 1;
+        }
+        .hero-stats .stat-item:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary-color);
+            box-shadow: 0 12px 40px rgba(37, 99, 235, 0.15);
+        }
+        .hero-stats .stat-item .stat-icon {
+            background: var(--gradient-main);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.25);
+        }
+        .hero-stats .stat-item .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-actions .btn {
+            padding: 0.9rem 2.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-actions .btn-primary {
+            background: var(--gradient-main);
+            color: #fff;
+            box-shadow: 0 4px 25px rgba(37, 99, 235, 0.35);
+        }
+        .hero-actions .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 40px rgba(37, 99, 235, 0.45);
+        }
+        .hero-actions .btn-secondary {
+            background: var(--gradient-secondary);
+            color: #fff;
+            box-shadow: 0 4px 25px rgba(59, 130, 246, 0.3);
+        }
+        .hero-actions .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 40px rgba(59, 130, 246, 0.4);
+        }
+        .hero-actions .btn-outline {
+            background: transparent;
+            border: 2px solid var(--glass-border);
+            color: var(--text-primary);
+            backdrop-filter: blur(8px);
+        }
+        .hero-actions .btn-outline:hover {
+            background: var(--gradient-main);
+            color: #fff;
+            border-color: transparent;
+            transform: translateY(-3px);
+        }
+
+        .hero-image .image-box {
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            position: relative;
+            aspect-ratio: 1/1;
+            background: var(--bg-tertiary);
+        }
+        .hero-image .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-smooth);
+        }
+        .hero-image .image-box:hover img {
+            transform: scale(1.03);
+        }
+        .hero-image .badge-top {
+            background: var(--gradient-main);
+            box-shadow: 0 4px 25px rgba(37, 99, 235, 0.3);
+        }
+        .hero-image .badge-bottom {
+            background: rgba(10, 14, 26, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+        }
+        .hero-tags-bottom .tag-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            transition: var(--transition-smooth);
+        }
+        .hero-tags-bottom .tag-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* ===== بخش‌های مدرن ===== */
+        .section-badge-modern {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.3rem 1.8rem;
+            background: var(--gradient-main);
+            color: #fff;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.25);
+        }
+        .section-title-modern {
+            font-size: 2.6rem;
+            font-weight: 800;
+            margin: 1rem 0 0.5rem;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===== کارت‌های شیشه‌ای ===== */
+        .glass-card-modern {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-modern);
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition-smooth);
+        }
+        .glass-card-modern:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 12px 48px rgba(37, 99, 235, 0.12);
+            transform: translateY(-4px);
+        }
+
+        .about-card, .edu-card, .certs-card, .skill-item, .article-preview-card,
+        .contact-info-card, .resume-card, .contact-form-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-modern);
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition-smooth);
+        }
+        .about-card:hover, .edu-card:hover, .certs-card:hover,
+        .skill-item:hover, .article-preview-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 12px 48px rgba(37, 99, 235, 0.12);
+            transform: translateY(-4px);
+        }
+
+        /* ===== فرم تماس مدرن و زیبا ===== */
+        .contact-form-card {
+            padding: 2.5rem;
+            position: sticky;
+            top: 90px;
+        }
+        .contact-form-card .form-header {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .contact-form-card .form-header .form-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-main);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 24px rgba(37, 99, 235, 0.25);
+        }
+        .contact-form-card .form-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+        .contact-form-card .form-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .contact-form-card .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .contact-form-card .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        .contact-form-card .form-group label i {
+            color: var(--primary-color);
+        }
+        .contact-form-card .form-group label .required {
+            color: #ef4444;
+        }
+
+        .contact-form-card .form-group .input-wrapper {
+            position: relative;
+        }
+        .contact-form-card .form-group .input-wrapper input,
+        .contact-form-card .form-group .input-wrapper textarea,
+        .contact-form-card .form-group .input-wrapper select {
+            width: 100%;
+            padding: 0.9rem 1.2rem 0.9rem 3rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 2px solid var(--glass-border);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+            outline: none;
+        }
+        .contact-form-card .form-group .input-wrapper input:focus,
+        .contact-form-card .form-group .input-wrapper textarea:focus,
+        .contact-form-card .form-group .input-wrapper select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .contact-form-card .form-group .input-wrapper input::placeholder,
+        .contact-form-card .form-group .input-wrapper textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+        .contact-form-card .form-group .input-wrapper textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .contact-form-card .form-group .input-wrapper select {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .contact-form-card .form-group .input-wrapper .input-icon {
+            position: absolute;
+            top: 50%;
+            right: 1.2rem;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            transition: var(--transition-smooth);
+        }
+        .contact-form-card .form-group .input-wrapper .textarea-icon {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        .contact-form-card .form-group .input-wrapper input:focus~.input-icon,
+        .contact-form-card .form-group .input-wrapper textarea:focus~.textarea-icon {
+            color: var(--primary-color);
+        }
+
+        .contact-form-card .char-counter {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 0.4rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .contact-form-card .char-counter .count {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .contact-form-card .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            background: var(--gradient-main);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(37, 99, 235, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        .contact-form-card .submit-btn .btn-text {
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .contact-form-card .submit-btn .btn-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+        .contact-form-card .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 36px rgba(37, 99, 235, 0.35);
+        }
+        .contact-form-card .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .contact-form-card .form-footer {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1.2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+        .contact-form-card .form-footer .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+        .contact-form-card .form-footer .footer-item i {
+            color: var(--primary-color);
+        }
+
+        /* ===== پیام موفقیت ===== */
+        .form-success {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border-radius: var(--radius-modern);
+            border: 1px solid var(--glass-border);
+            position: relative;
+        }
+        .form-success .success-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 24px rgba(37, 99, 235, 0.25);
+        }
+        .form-success .success-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .form-success .success-text {
+            color: var(--text-secondary);
+        }
+        .form-success .close-success {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
+        .form-success .close-success:hover {
+            color: var(--text-primary);
+            transform: rotate(90deg);
+            background: var(--glass-bg);
+        }
+
+        /* ===== فرم خطا ===== */
+        .form-error {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* ===== فوتر مدرن ===== */
+        .main-footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--glass-border);
+            position: relative;
+        }
+        .main-footer .footer-wave {
+            height: 80px;
+            overflow: hidden;
+            position: relative;
+            top: -1px;
+        }
+        .main-footer .footer-wave svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--bg-primary);
+        }
+
+        /* ===== انیمیشن‌ها ===== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .float-animation {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* ===== ریسپانسیو ===== */
+        @media (max-width: 768px) {
+            .hero-text .hero-title {
+                font-size: 2.4rem !important;
+            }
+            .section-title-modern {
+                font-size: 2rem !important;
+            }
+            .hero-stats .stat-item .stat-number {
+                font-size: 1.6rem !important;
+            }
+            .contact-form-card {
+                padding: 1.8rem !important;
+            }
+            .contact-form-card .form-header .form-icon {
+                width: 50px !important;
+                height: 50px !important;
+                font-size: 1.4rem !important;
+            }
+            .contact-form-card .form-title {
+                font-size: 1.1rem !important;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero-text .hero-title {
+                font-size: 1.8rem !important;
+            }
+            .section-title-modern {
+                font-size: 1.6rem !important;
+            }
+            .contact-form-card {
+                padding: 1.2rem !important;
+            }
+        }
+
+        /* ===== استایل اسکرول ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-main);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -63,18 +686,21 @@
             <div class="bg-layer">
                 <div class="overlay"></div>
                 <div class="radial"></div>
+                <div class="orb orb-1"></div>
+                <div class="orb orb-2"></div>
+                <div class="orb orb-3"></div>
             </div>
             <div class="container">
                 <div class="hero-grid">
                     <!-- متن هیرو -->
-                    <div class="hero-text">
-                        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--bg-tertiary);padding:0.3rem 1.2rem;border-radius:var(--radius-full);font-size:0.85rem;margin-bottom:1.5rem;border:1px solid var(--border-color);">
+                    <div class="hero-text fade-in-up">
+                        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--glass-bg);backdrop-filter:blur(8px);padding:0.3rem 1.2rem;border-radius:var(--radius-full);font-size:0.85rem;margin-bottom:1.5rem;border:1px solid var(--glass-border);">
                             <i class="fas fa-hand-wave" style="color:var(--primary-color);"></i>
                             <span>خوش آمدید به رزومه آنلاین</span>
                         </div>
                         <h1 class="hero-title">
                             <span style="display:block;font-weight:300;">مهندس</span>
-                            <span class="highlight">مهندس ادهم قزوینی</span>
+                            <span class="highlight">ادهم قزوینی</span>
                         </h1>
                         <div style="margin-bottom:1.5rem;">
                             <p class="hero-subtitle" id="heroTyping"></p>
@@ -111,8 +737,8 @@
                         </div>
                     </div>
                     <!-- تصویر هیرو -->
-                    <div class="hero-image">
-                        <div class="image-wrapper">
+                    <div class="hero-image fade-in-up" style="animation-delay:0.2s;">
+                        <div class="image-wrapper float-animation">
                             <div class="image-box">
                                 <img src="mahanphoto.png" alt="مهندس ادهم قزوینی" loading="lazy">
                             </div>
@@ -138,8 +764,8 @@
         <section id="about" style="padding:4rem 0;background:var(--bg-secondary);">
             <div class="container">
                 <div style="text-align:center;margin-bottom:3rem;">
-                    <span class="section-badge"><i class="fas fa-user-tie"></i> معرفی</span>
-                    <h2 class="section-title">درباره مهندس ادهم قزوینی</h2>
+                    <span class="section-badge-modern"><i class="fas fa-user-tie"></i> معرفی</span>
+                    <h2 class="section-title-modern">درباره مهندس ادهم قزوینی</h2>
                     <div class="section-divider">
                         <div class="line"></div>
                         <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
@@ -203,8 +829,8 @@
         <section id="skills" style="padding:4rem 0;background:var(--bg-primary);">
             <div class="container">
                 <div style="text-align:center;margin-bottom:3rem;">
-                    <span class="section-badge"><i class="fas fa-tools"></i> تخصص</span>
-                    <h2 class="section-title">مهارت‌های تخصصی</h2>
+                    <span class="section-badge-modern"><i class="fas fa-tools"></i> تخصص</span>
+                    <h2 class="section-title-modern">مهارت‌های تخصصی</h2>
                     <div class="section-divider">
                         <div class="line"></div>
                         <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
@@ -222,8 +848,8 @@
         <section id="education" style="padding:4rem 0;background:var(--bg-secondary);">
             <div class="container">
                 <div style="text-align:center;margin-bottom:3rem;">
-                    <span class="section-badge"><i class="fas fa-graduation-cap"></i> تحصیلات</span>
-                    <h2 class="section-title">سوابق تحصیلی و دوره‌ها</h2>
+                    <span class="section-badge-modern"><i class="fas fa-graduation-cap"></i> تحصیلات</span>
+                    <h2 class="section-title-modern">سوابق تحصیلی و دوره‌ها</h2>
                     <div class="section-divider">
                         <div class="line"></div>
                         <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
@@ -240,8 +866,8 @@
         <section id="recent-articles" style="padding:4rem 0;background:var(--bg-primary);">
             <div class="container">
                 <div style="text-align:center;margin-bottom:3rem;">
-                    <span class="section-badge"><i class="fas fa-newspaper"></i> آخرین مطالب</span>
-                    <h2 class="section-title">مقالات و پروژه‌ها</h2>
+                    <span class="section-badge-modern"><i class="fas fa-newspaper"></i> آخرین مطالب</span>
+                    <h2 class="section-title-modern">مقالات و پروژه‌ها</h2>
                     <div class="section-divider">
                         <div class="line"></div>
                         <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
@@ -262,8 +888,8 @@
         <section id="contact" style="padding:4rem 0;background:var(--bg-secondary);">
             <div class="container">
                 <div style="text-align:center;margin-bottom:3rem;">
-                    <span class="section-badge"><i class="fas fa-envelope"></i> ارتباط</span>
-                    <h2 class="section-title">در تماس باشید</h2>
+                    <span class="section-badge-modern"><i class="fas fa-envelope"></i> ارتباط</span>
+                    <h2 class="section-title-modern">در تماس باشید</h2>
                     <div class="section-divider">
                         <div class="line"></div>
                         <div class="icon"><i class="fas fa-cog fa-spin"></i></div>
@@ -303,7 +929,7 @@
                         </div>
                     </div>
 
-                    <!-- فرم تماس -->
+                    <!-- فرم تماس مدرن و زیبا -->
                     <div>
                         <div class="contact-form-card">
                             <div class="form-header">
@@ -317,33 +943,35 @@
                             <!-- ===== فرم ===== -->
                             <form id="contactForm">
                                 <div class="form-group">
-                                    <label for="name"><i class="fas fa-user" style="color:var(--primary-color);"></i> نام کامل <span style="color:red;">*</span></label>
+                                    <label for="name"><i class="fas fa-user"></i> نام کامل <span class="required">*</span></label>
                                     <div class="input-wrapper">
-                                        <input type="text" id="name" name="name" placeholder="مهندس ادهم قزوینی" required>
+                                        <input type="text" id="name" name="name" placeholder="نام و نام خانوادگی خود را وارد کنید" required>
                                         <span class="input-icon"><i class="fas fa-user-check"></i></span>
                                     </div>
                                 </div>
-                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;">
                                     <div class="form-group">
-                                        <label for="email"><i class="fas fa-envelope" style="color:var(--primary-color);"></i> ایمیل <span style="color:red;">*</span></label>
+                                        <label for="email"><i class="fas fa-envelope"></i> ایمیل <span class="required">*</span></label>
                                         <div class="input-wrapper">
-                                            <input type="email" id="email" name="email" placeholder="mahan.neman2020@gmail.com" required>
+                                            <input type="email" id="email" name="email" placeholder="ایمیل خود را وارد کنید" required>
                                             <span class="input-icon"><i class="fas fa-at"></i></span>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="phone"><i class="fas fa-phone" style="color:var(--primary-color);"></i> شماره تماس</label>
+                                        <label for="phone"><i class="fas fa-phone"></i> شماره تماس</label>
                                         <div class="input-wrapper">
-                                            <input type="tel" id="phone" name="phone" placeholder="۰۹۹۰۲۲۷۹۷۰۲">
+                                            <input type="tel" id="phone" name="phone" placeholder="شماره تماس خود را وارد کنید">
                                             <span class="input-icon"><i class="fas fa-mobile-alt"></i></span>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="form-group">
-                                    <label for="subject"><i class="fas fa-tag" style="color:var(--primary-color);"></i> موضوع <span style="color:red;">*</span></label>
+                                    <label for="subject"><i class="fas fa-tag"></i> موضوع <span class="required">*</span></label>
                                     <div class="input-wrapper">
                                         <select id="subject" name="subject" required>
-                                            <option value="">انتخاب موضوع</option>
+                                            <option value="">موضوع پیام را انتخاب کنید</option>
                                             <option value="همکاری">پیشنهاد همکاری</option>
                                             <option value="مشاوره">مشاوره فنی</option>
                                             <option value="پروژه">درخواست پروژه</option>
@@ -353,48 +981,47 @@
                                         <span class="input-icon"><i class="fas fa-chevron-down"></i></span>
                                     </div>
                                 </div>
+
                                 <div class="form-group">
-                                    <label for="message"><i class="fas fa-comment" style="color:var(--primary-color);"></i> پیام شما <span style="color:red;">*</span></label>
+                                    <label for="message"><i class="fas fa-comment"></i> پیام شما <span class="required">*</span></label>
                                     <div class="input-wrapper">
-                                        <textarea id="message" name="message" rows="5" placeholder="پیام خود را اینجا بنویسید..." required></textarea>
+                                        <textarea id="message" name="message" rows="5" placeholder="پیام خود را با جزئیات کامل بنویسید..." required></textarea>
                                         <span class="textarea-icon"><i class="fas fa-pen"></i></span>
                                     </div>
                                     <div class="char-counter">
                                         <span><span class="count" id="charCount">0</span> / 500 کاراکتر</span>
                                     </div>
                                 </div>
+
                                 <button type="submit" class="submit-btn" id="submitBtn">
                                     <span class="btn-text"><i class="fas fa-paper-plane"></i> ارسال پیام</span>
                                     <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i> در حال ارسال...</span>
                                 </button>
+
                                 <div class="form-footer">
-                                    <div class="footer-item"><i class="fas fa-shield-alt"></i><small>اطلاعات شما محرمانه می‌ماند</small></div>
-                                    <div class="footer-item"><i class="fas fa-bolt"></i><small>پاسخ در کمتر از ۲۴ ساعت</small></div>
+                                    <div class="footer-item"><i class="fas fa-shield-alt"></i> <small>اطلاعات شما محرمانه می‌ماند</small></div>
+                                    <div class="footer-item"><i class="fas fa-bolt"></i> <small>پاسخ در کمتر از ۲۴ ساعت</small></div>
                                 </div>
                             </form>
 
-                            <!-- ===== پیام موفقیت (تایید ارسال) ===== -->
+                            <!-- ===== پیام موفقیت ===== -->
                             <div class="form-success" id="formSuccess" style="display:none;">
                                 <div class="success-icon"><i class="fas fa-check-circle"></i></div>
                                 <h4 class="success-title">✅ پیام شما با موفقیت ارسال شد!</h4>
                                 <p class="success-text">در کمتر از ۲۴ ساعت کاری پاسخ خواهم داد.</p>
-                                <p class="success-email" style="font-size:0.85rem;color:var(--text-secondary);">
-                                    <i class="fas fa-envelope" style="color:var(--primary-color);"></i> 
-                                    کپی پیام برای شما ارسال شد
-                                </p>
                                 <button class="close-success" id="closeSuccess">
-                                    <i class="fas fa-times"></i> بستن
+                                    <i class="fas fa-times"></i>
                                 </button>
                             </div>
 
                             <!-- ===== پیام خطا ===== -->
-                            <div class="form-error" id="formError" style="display:none;text-align:center;padding:20px;">
+                            <div class="form-error" id="formError" style="display:none;">
                                 <div style="font-size:3rem;color:#ef4444;margin-bottom:10px;">
                                     <i class="fas fa-exclamation-circle"></i>
                                 </div>
                                 <h4 style="color:#ef4444;">❌ خطا در ارسال پیام</h4>
                                 <p style="color:var(--text-secondary);" id="errorMessage">لطفاً مجدداً تلاش کنید.</p>
-                                <button class="member-btn member-btn-primary" onclick="document.getElementById('formError').style.display='none';document.getElementById('contactForm').style.display='flex';" style="margin-top:12px;">
+                                <button class="btn btn-primary" onclick="document.getElementById('formError').style.display='none';document.getElementById('contactForm').style.display='flex';" style="margin-top:12px;">
                                     <i class="fas fa-redo"></i> تلاش مجدد
                                 </button>
                             </div>
@@ -538,8 +1165,8 @@
                 }
                 renderHeroSection();
                 renderAboutSection();
-                renderSkillsSection();   // <-- اینجا تابع renderSkillsSection فراخوانی می‌شود
-                renderEducationSection(); // <-- اینجا تابع renderEducationSection فراخوانی می‌شود
+                renderSkillsSection();
+                renderEducationSection();
                 renderContactInfo();
             } catch (e) {
                 console.error('❌ خطا در بارگذاری بخش‌ها:', e);
@@ -557,7 +1184,7 @@
             if (hero.tags) {
                 const tags = hero.tags.split(',').map(t => t.trim()).filter(Boolean);
                 tagsContainer.innerHTML = tags.map(tag =>
-                    `<span style="background:var(--bg-tertiary);padding:0.2rem 0.8rem;border-radius:var(--radius-full);font-size:0.8rem;color:var(--text-secondary);border:1px solid var(--border-color);">${tag}</span>`
+                    `<span style="background:var(--glass-bg);backdrop-filter:blur(4px);padding:0.2rem 0.8rem;border-radius:var(--radius-full);font-size:0.8rem;color:var(--text-secondary);border:1px solid var(--glass-border);">${tag}</span>`
                 ).join('');
             }
             if (hero.image) {
@@ -585,7 +1212,7 @@
         }
 
         // ============================================================
-        // 221.3.5 - رندر مهارت‌ها (تعریف تابع renderSkillsSection)
+        // 221.3.5 - رندر مهارت‌ها
         // ============================================================
         function renderSkillsSection() {
             const container = document.getElementById('skillsGrid');
@@ -593,7 +1220,6 @@
                 console.warn('⚠️ المنت skillsGrid پیدا نشد!');
                 return;
             }
-            // از sectionsData.skills استفاده می‌کنیم
             const skillsData = sectionsData.skills || { items: [] };
             if (!skillsData.items || skillsData.items.length === 0) {
                 container.innerHTML = '<p style="text-align:center;color:var(--text-secondary);">هیچ مهارتی ثبت نشده است.</p>';
@@ -616,7 +1242,7 @@
         }
 
         // ============================================================
-        // 221.3.6 - رندر تحصیلات (تعریف تابع renderEducationSection)
+        // 221.3.6 - رندر تحصیلات
         // ============================================================
         function renderEducationSection() {
             const container = document.getElementById('educationTimeline');
@@ -648,19 +1274,17 @@
         }
 
         // ============================================================
-        // 221.3.7 - بارگذاری مهارت‌ها از JSON (برای داده‌های واقعی)
+        // 221.3.7 - بارگذاری مهارت‌ها از JSON
         // ============================================================
         async function loadSkills() {
             try {
                 const res = await fetch('_data/skills.json?t=' + Date.now());
                 if (!res.ok) throw new Error('فایل مهارت‌ها پیدا نشد');
                 const data = await res.json();
-                // به‌روزرسانی sectionsData.skills با داده‌های واقعی
                 sectionsData.skills = data;
-                renderSkillsSection(); // رندر مجدد
+                renderSkillsSection();
             } catch (e) {
                 console.error('خطا در بارگذاری مهارت‌ها:', e);
-                // در صورت خطا، از داده‌های پیش‌فرض استفاده می‌شود (که قبلاً در sectionsData تنظیم شده)
             }
         }
 
@@ -673,10 +1297,9 @@
                 if (!res.ok) throw new Error('فایل تحصیلات پیدا نشد');
                 const data = await res.json();
                 sectionsData.education = data;
-                renderEducationSection(); // رندر مجدد
+                renderEducationSection();
             } catch (e) {
                 console.error('خطا در بارگذاری تحصیلات:', e);
-                // در صورت خطا، از داده‌های پیش‌فرض استفاده می‌شود
             }
         }
 
@@ -732,7 +1355,7 @@
                 { name: 'طراحی با SolidWorks', org: 'دوره تخصصی آنلاین', date: '۱۴۰۲' }
             ];
             list.innerHTML = certs.map(c => `
-                <div style="display:flex;gap:0.8rem;padding:0.8rem;background:var(--bg-tertiary);border-radius:var(--radius-sm);">
+                <div style="display:flex;gap:0.8rem;padding:0.8rem;background:var(--glass-bg);border-radius:var(--radius-sm);border:1px solid var(--glass-border);">
                     <div style="width:40px;height:40px;background:var(--gradient-main);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;"><i class="fas fa-award"></i></div>
                     <div><h5 style="font-size:0.95rem;margin-bottom:0.2rem;">${c.name}</h5><p style="font-size:0.8rem;color:var(--text-secondary);margin:0;">${c.org}</p><div style="display:flex;gap:1rem;font-size:0.7rem;color:var(--text-secondary);margin-top:0.3rem;"><span><i class="fas fa-calendar"></i> ${c.date}</span></div></div>
                 </div>
@@ -775,9 +1398,7 @@
 
             console.log('✅ فرم تماس پیدا شد');
 
-            // ===== توکن گیت‌هاب (در صورت نیاز آن را تنظیم کنید) =====
-            // این توکن باید دسترسی repo داشته باشد
-            const GITHUB_TOKEN = 'YOUR_GITHUB_TOKEN_HERE'; // <-- توکن خود را جایگزین کنید
+            const GITHUB_TOKEN = 'YOUR_GITHUB_TOKEN_HERE';
 
             const messageInput = document.getElementById('message');
             const charCount = document.getElementById('charCount');
@@ -833,7 +1454,6 @@
                 }
                 if (submitBtn) submitBtn.disabled = true;
 
-                // ===== ۱. ذخیره در localStorage (همیشه انجام می‌شود) =====
                 let savePromise = new Promise((resolve) => {
                     try {
                         let localMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
@@ -845,7 +1465,6 @@
                     }
                 });
 
-                // ===== ۲. تلاش برای گیت‌هاب (با توکن ثابت) =====
                 const token = GITHUB_TOKEN && GITHUB_TOKEN !== 'YOUR_GITHUB_TOKEN_HERE' 
                     ? GITHUB_TOKEN 
                     : localStorage.getItem('github_token');
@@ -1050,15 +1669,14 @@
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             loadAppearanceSettings();
-            loadSectionsData();   // این تابع renderSkillsSection و renderEducationSection را صدا می‌زند
-            loadSkills();        // بارگذاری مهارت‌های واقعی از JSON
-            loadEducation();     // بارگذاری تحصیلات واقعی از JSON
+            loadSectionsData();
+            loadSkills();
+            loadEducation();
             loadRecentArticles();
             loadCertificates();
             initCounters();
             initContactForm();
 
-            // به‌روزرسانی سال در فوتر (اگر قبلاً بارگذاری شده باشد)
             const yearEl = document.querySelector('.copyright p:first-child');
             if (yearEl) {
                 const persianYear = new Date().getFullYear() - 621;

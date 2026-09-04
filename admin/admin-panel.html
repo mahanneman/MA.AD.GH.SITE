@@ -447,35 +447,209 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        0015 - افزودن مقاله
-        ============================================================ -->
-        <div class="pro-tab-content" id="tab-add-article">
-            <div class="pro-card">
-                <div class="pro-card-header"><h3><i class="fas fa-plus-circle"></i> افزودن مقاله جدید</h3><span class="sub">شماره خودکار</span></div>
-                <form id="addArticleForm">
-                    <div class="pro-grid">
-                        <div class="pro-field"><label>شماره</label><div class="id-display" onclick="copyId('articleIdDisplay')"><span>ART-</span><span id="articleIdDisplay">----</span></div><input type="hidden" id="articleId"></div>
-                        <div class="pro-field"><label>تاریخ</label><input type="date" id="articleDate"></div>
-                        <div class="pro-field full"><label>عنوان</label><input type="text" id="articleTitle" required placeholder="عنوان مقاله"></div>
-                        <div class="pro-field full"><label>چکیده</label><textarea id="articleExcerpt" rows="3" required></textarea></div>
-                        <div class="pro-field"><label>نوع</label><select id="articleType"><option value="article">مقاله</option><option value="project">پروژه</option><option value="tutorial">آموزش</option></select></div>
-                        <div class="pro-field"><label>زمان مطالعه</label><input type="number" id="articleReadTime" value="5"></div>
-                        <div class="pro-field full"><label>برچسب‌ها</label><input type="text" id="articleTags" placeholder="CFD, طراحی"></div>
-                    </div>
-                    <div class="pro-grid"><div class="pro-field full"><label>تصویر شاخص</label><div class="pro-upload-zone" id="articleCoverZone"><i class="fas fa-cloud-upload-alt"></i><p>کلیک کنید</p><input type="file" id="articleCoverInput" accept="image/*" style="display:none;"><div id="articleCoverPreview" style="display:none;"><img id="articleCoverPreviewImg" class="upload-preview-img"><button class="pro-btn pro-btn-danger pro-btn-sm" onclick="removeArticleCover()">حذف</button></div></div></div></div>
-                    <div class="pro-grid"><div class="pro-field full"><label>گالری (۴ عدد)</label><div class="pro-upload-zone" id="articleGalleryZone"><i class="fas fa-plus-circle"></i><p>کلیک کنید</p><input type="file" id="articleGalleryInput" accept="image/*" multiple style="display:none;"><div id="articleGalleryList" class="file-list"></div></div></div></div>
-                    <div class="pro-grid"><div class="pro-field full"><label>فایل‌های پیوست</label><div class="pro-upload-zone" id="articleFilesZone"><i class="fas fa-cloud-upload-alt"></i><p>کلیک کنید</p><input type="file" id="articleFilesInput" multiple style="display:none;"><div id="articleFilesList" class="file-list"></div></div></div></div>
-                    <div class="pro-grid"><div class="pro-field full"><label>متن کامل</label><div class="pro-editor-wrapper"><div class="pro-editor-toolbar"><button type="button" class="pro-btn pro-btn-sm" onclick="execCmd('articleBody','bold')"><b>B</b></button><button type="button" class="pro-btn pro-btn-sm" onclick="execCmd('articleBody','italic')"><i>I</i></button><button type="button" class="pro-btn pro-btn-sm" onclick="execCmd('articleBody','insertUnorderedList')"><i class="fas fa-list-ul"></i></button><button type="button" class="pro-btn pro-btn-sm" onclick="insertImagePlaceholder('articleBody')"><i class="fas fa-image"></i></button><button type="button" class="pro-btn pro-btn-sm" onclick="insertLink('articleBody')"><i class="fas fa-link"></i></button></div><div class="pro-editor-content" id="articleBody" contenteditable="true" style="min-height:150px;"></div></div></div></div>
-                    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
-                        <button type="submit" class="pro-btn pro-btn-primary pro-btn-lg"><i class="fas fa-save"></i> انتشار</button>
-                        <button type="reset" class="pro-btn pro-btn-outline"><i class="fas fa-undo"></i> بازنشانی</button>
-                        <a href="blank-article.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
-                    </div>
-                </form>
+      <!-- ============================================================
+0015 - افزودن مقاله (نسخه کامل با آپلود فایل و گیت‌هاب)
+============================================================ -->
+<div class="pro-tab-content active" id="tab-add-article">
+    <div class="pro-card">
+        <div class="pro-card-header">
+            <h3><i class="fas fa-plus-circle"></i> افزودن مقاله جدید</h3>
+            <span class="sub">شماره خودکار - آپلود تصاویر و فایل‌ها</span>
+        </div>
+
+        <!-- ===== بخش ۱: اطلاعات پایه ===== -->
+        <div class="form-section">
+            <h4><i class="fas fa-info-circle"></i> اطلاعات پایه <span class="section-badge">ضروری</span></h4>
+            <div class="pro-grid">
+                <div class="pro-field">
+                    <label><i class="fas fa-hashtag"></i> شماره مقاله</label>
+                    <div class="id-display" id="articleIdDisplay">ART-0004</div>
+                    <input type="hidden" id="articleId" value="0004" />
+                </div>
+                <div class="pro-field">
+                    <label><i class="fas fa-calendar-day"></i> تاریخ انتشار</label>
+                    <input type="date" id="articleDate" />
+                </div>
+            </div>
+            <div class="pro-field full">
+                <label><i class="fas fa-heading"></i> عنوان مقاله <span class="required">*</span></label>
+                <input type="text" id="articleTitle" placeholder="عنوان مقاله را وارد کنید..." />
+            </div>
+            <div class="pro-field full">
+                <label><i class="fas fa-align-left"></i> چکیده (Abstract) <span class="required">*</span></label>
+                <textarea id="articleAbstract" rows="3" placeholder="چکیده مقاله به فارسی (حداکثر ۳۰۰ کاراکتر)..."></textarea>
+            </div>
+            <div class="pro-field full">
+                <label><i class="fas fa-file-alt"></i> متن کامل مقاله <span class="required">*</span></label>
+                <textarea id="articleBody" rows="6" placeholder="متن کامل مقاله را اینجا بنویسید (با تگ‌های HTML)..."></textarea>
             </div>
         </div>
 
+        <!-- ===== بخش ۲: نوع و تاریخ ===== -->
+        <div class="form-section">
+            <h4><i class="fas fa-calendar-alt"></i> نوع و زمان</h4>
+            <div class="pro-grid">
+                <div class="pro-field">
+                    <label><i class="fas fa-tag"></i> نوع مقاله</label>
+                    <select id="articleType">
+                        <option value="article">مقاله علمی</option>
+                        <option value="project">پروژه تحقیقاتی</option>
+                        <option value="tutorial">آموزش</option>
+                        <option value="review">مروری</option>
+                        <option value="case-study">مطالعه موردی</option>
+                    </select>
+                </div>
+                <div class="pro-field">
+                    <label><i class="fas fa-clock"></i> زمان مطالعه (دقیقه)</label>
+                    <input type="number" id="articleReadTime" placeholder="۱۲" min="1" value="10" />
+                </div>
+                <div class="pro-field">
+                    <label><i class="fas fa-calendar-alt"></i> سال انتشار</label>
+                    <input type="text" id="articleYear" placeholder="۱۴۰۳" />
+                </div>
+                <div class="pro-field">
+                    <label><i class="fas fa-signal"></i> سطح دشواری</label>
+                    <select id="articleDifficulty">
+                        <option value="مقدماتی">مقدماتی</option>
+                        <option value="متوسط" selected>متوسط</option>
+                        <option value="پیشرفته">پیشرفته</option>
+                        <option value="حرفه‌ای">حرفه‌ای</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== بخش ۳: برچسب‌ها ===== -->
+        <div class="form-section">
+            <h4><i class="fas fa-tags"></i> برچسب‌ها و کلمات کلیدی</h4>
+            <div class="pro-field">
+                <label><i class="fas fa-tags"></i> برچسب‌ها</label>
+                <div class="tags-input" id="articleTagsContainer">
+                    <input type="text" id="articleTagInput" placeholder="تایپ کنید و Enter بزنید..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('articleTagsContainer','articleTagInput');}" />
+                </div>
+                <input type="hidden" id="articleTags" value="" />
+            </div>
+            <div class="pro-field">
+                <label><i class="fas fa-key"></i> کلمات کلیدی (با کاما جدا کنید)</label>
+                <input type="text" id="articleKeywords" placeholder="CFD, توربولانس, انتقال حرارت" />
+            </div>
+        </div>
+
+        <!-- ===== بخش ۴: تصاویر ===== -->
+        <div class="form-section">
+            <h4><i class="fas fa-images"></i> تصاویر و گالری</h4>
+            <div class="pro-field">
+                <label><i class="fas fa-image"></i> تصویر شاخص</label>
+                <div class="upload-zone" id="coverUploadZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>برای آپلود تصویر شاخص کلیک کنید یا فایل را بکشید</p>
+                    <span class="hint">فرمت‌های JPG, PNG, WebP - حداکثر ۵ مگابایت</span>
+                    <input type="file" id="coverFileInput" accept="image/*" />
+                    <div id="coverPreview" style="margin-top:8px;"></div>
+                </div>
+            </div>
+            <div class="pro-field">
+                <label><i class="fas fa-images"></i> گالری تصاویر (چند تصویر)</label>
+                <div class="upload-zone" id="galleryUploadZone">
+                    <i class="fas fa-plus-circle"></i>
+                    <p>برای افزودن عکس‌های گالری کلیک کنید یا بکشید</p>
+                    <span class="hint">حداکثر ۱۰ تصویر - هر کدام زیر ۲ مگابایت</span>
+                    <input type="file" id="galleryFileInput" accept="image/*" multiple />
+                    <div id="galleryPreview" class="gallery-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== بخش ۵: فایل‌های پیوست ===== -->
+        <div class="form-section">
+            <h4><i class="fas fa-paperclip"></i> فایل‌های پیوست</h4>
+            <div class="pro-field">
+                <label><i class="fas fa-file-pdf"></i> فایل اصلی مقاله (PDF)</label>
+                <div class="upload-zone" id="mainFileUploadZone">
+                    <i class="fas fa-file-pdf"></i>
+                    <p>فایل اصلی مقاله (PDF) را آپلود کنید</p>
+                    <span class="hint">حداکثر ۱۰ مگابایت</span>
+                    <input type="file" id="mainFileInput" accept=".pdf" />
+                    <div id="mainFilePreview" class="file-list"></div>
+                </div>
+            </div>
+            <div class="pro-field">
+                <label><i class="fas fa-file"></i> سایر فایل‌های ضمیمه</label>
+                <div class="upload-zone" id="filesUploadZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>فایل‌های ضمیمه (PDF, ZIP, DOCX, ...) را آپلود کنید</p>
+                    <span class="hint">حداکثر ۱۰ فایل - هر کدام زیر ۱۰ مگابایت</span>
+                    <input type="file" id="filesFileInput" multiple />
+                    <div id="filesPreview" class="file-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== بخش ۶: منابع ===== -->
+        <div class="form-section">
+            <h4><i class="fas fa-book"></i> منابع</h4>
+            <div class="pro-field">
+                <label><i class="fas fa-list"></i> فهرست منابع (هر منبع در یک خط)</label>
+                <textarea id="articleReferences" rows="4" placeholder="منبع ۱&#10;منبع ۲&#10;منبع ۳"></textarea>
+            </div>
+            <div class="pro-field">
+                <label><i class="fas fa-link"></i> لینک DOI</label>
+                <input type="text" id="articleDoi" placeholder="مثال: 10.1000/xyz123" />
+            </div>
+        </div>
+
+        <!-- ===== بخش ۷: اطلاعات تکمیلی ===== -->
+        <div class="form-section">
+            <h4><i class="fas fa-ellipsis-h"></i> اطلاعات تکمیلی</h4>
+            <div class="pro-grid">
+                <div class="pro-field">
+                    <label><i class="fas fa-globe"></i> زبان</label>
+                    <select id="articleLanguage">
+                        <option value="فارسی">فارسی</option>
+                        <option value="انگلیسی">انگلیسی</option>
+                        <option value="دوزبانه">دوزبانه</option>
+                    </select>
+                </div>
+                <div class="pro-field">
+                    <label><i class="fas fa-eye"></i> وضعیت انتشار</label>
+                    <select id="articleStatus">
+                        <option value="فعال">فعال (نمایش داده شود)</option>
+                        <option value="غیرفعال">غیرفعال (مخفی شود)</option>
+                        <option value="پیش‌نویس">پیش‌نویس</option>
+                    </select>
+                </div>
+            </div>
+            <div class="pro-field">
+                <label><i class="fas fa-file-alt"></i> خلاصه انگلیسی (English Abstract)</label>
+                <textarea id="articleEnglishAbstract" rows="2" placeholder="English abstract for international readers..."></textarea>
+            </div>
+            <div class="pro-field">
+                <label><i class="fas fa-sticky-note"></i> یادداشت‌های داخلی</label>
+                <textarea id="articleNotes" rows="2" placeholder="یادداشت‌های خصوصی (فقط برای مدیر)"></textarea>
+            </div>
+            <div class="pro-field">
+                <label><i class="fas fa-external-link-alt"></i> لینک‌های مرتبط (با کاما جدا کنید)</label>
+                <input type="text" id="articleRelatedLinks" placeholder="https://example.com, https://another.com" />
+            </div>
+        </div>
+
+        <!-- ===== دکمه‌ها ===== -->
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;padding-top:18px;border-top:1px solid var(--pro-border);">
+            <button class="pro-btn pro-btn-ai" onclick="generateArticleContent()">
+                <i class="fas fa-robot"></i> تولید پیش‌نویس با هوش مصنوعی
+            </button>
+            <button class="pro-btn pro-btn-primary pro-btn-lg" onclick="saveArticle()">
+                <i class="fas fa-save"></i> ذخیره مقاله
+            </button>
+            <button class="pro-btn pro-btn-outline" onclick="resetArticleForm()">
+                <i class="fas fa-undo"></i> بازنشانی
+            </button>
+            <a href="blank-article.html" target="_blank" class="pro-btn pro-btn-blank">
+                <i class="fas fa-external-link-alt"></i> صفحه خالی
+            </a>
+        </div>
+    </div>
+</div>
         <!-- ============================================================
         0016 - افزودن محصول
         ============================================================ -->

@@ -3971,13 +3971,7 @@ function getToken() {
     // ============================================================
     // 0530 - بروزرسانی توابع اصلی (Override) و اتصال به window
     // ============================================================
-    const originalSwitchTab = switchTab;
-    switchTab = function(tabId) {
-        originalSwitchTab(tabId);
-        if (tabId === 'orders') loadGlobalOrders();
-        if (tabId === 'members') loadMembers();
-        if (tabId === 'index-content') loadAllIndexContent();
-    };
+  
     const originalUpdateDashboard = updateDashboard;
     updateDashboard = function() {
         originalUpdateDashboard();

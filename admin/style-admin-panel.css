@@ -810,3 +810,389 @@ body {
     font-size: 0.7rem;
     opacity: 0.7;
 }
+/* ============================================================
+   0025 - استایل‌های فرم افزودن مقاله (آپلود، گالری، تگ‌ها)
+   ============================================================ */
+
+/* ---- بخش‌های فرم ---- */
+.form-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--pro-border);
+}
+.form-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.form-section h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--pro-text-secondary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.form-section h4 i {
+    color: var(--pro-primary);
+}
+.section-badge {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 20px;
+    background: var(--pro-primary);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 600;
+    margin-right: 6px;
+}
+.required {
+    color: #ef4444;
+    margin-right: 4px;
+}
+
+/* ---- نمایشگر شماره ---- */
+.id-display {
+    display: inline-block;
+    padding: 8px 18px;
+    background: var(--pro-bg);
+    border-radius: 10px;
+    border: 2px solid var(--pro-border);
+    font-weight: 700;
+    color: var(--pro-primary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--pro-transition);
+}
+.id-display:hover {
+    border-color: var(--pro-primary);
+    background: rgba(37,99,235,0.05);
+}
+
+/* ---- ورودی تگ‌ها ---- */
+.tags-input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 2px solid var(--pro-border);
+    border-radius: 12px;
+    background: var(--pro-bg);
+    min-height: 50px;
+    align-items: center;
+    transition: var(--pro-transition);
+}
+.tags-input:focus-within {
+    border-color: var(--pro-primary);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+}
+.tags-input .tag-item {
+    background: var(--pro-primary);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.tags-input .tag-item i {
+    cursor: pointer;
+    font-size: 0.7rem;
+    opacity: 0.7;
+    transition: 0.3s;
+}
+.tags-input .tag-item i:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+.tags-input input {
+    border: none;
+    background: transparent;
+    color: var(--pro-text);
+    font-family: var(--pro-font);
+    font-size: 0.9rem;
+    flex: 1;
+    min-width: 80px;
+    padding: 4px 0;
+}
+.tags-input input:focus {
+    outline: none;
+    box-shadow: none;
+    border: none;
+}
+
+/* ---- منطقه آپلود فایل ---- */
+.upload-zone {
+    border: 2px dashed var(--pro-border);
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: var(--pro-bg);
+    position: relative;
+}
+.upload-zone:hover {
+    border-color: var(--pro-primary);
+    background: rgba(37, 99, 235, 0.05);
+}
+.upload-zone.dragover {
+    border-color: var(--pro-primary);
+    background: rgba(37, 99, 235, 0.1);
+    transform: scale(1.01);
+}
+.upload-zone i {
+    font-size: 2.5rem;
+    color: var(--pro-text-secondary);
+    display: block;
+    margin-bottom: 8px;
+}
+.upload-zone p {
+    color: var(--pro-text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+}
+.upload-zone .hint {
+    font-size: 0.65rem;
+    opacity: 0.6;
+}
+.upload-zone input[type="file"] {
+    display: none;
+}
+
+/* ---- پیش‌نمایش تصویر شاخص ---- */
+.upload-preview-img {
+    max-width: 100%;
+    max-height: 150px;
+    border-radius: 8px;
+    border: 1px solid var(--pro-border);
+    margin-top: 8px;
+}
+
+/* ---- گالری تصاویر ---- */
+.gallery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+.gallery-item {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--pro-border);
+    background: var(--pro-bg);
+}
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.gallery-item .remove-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.6rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+.gallery-item .remove-btn:hover {
+    background: #ef4444;
+    transform: scale(1.1);
+}
+
+/* ---- لیست فایل‌های پیوست ---- */
+.file-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+.file-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px 4px 8px;
+    background: var(--pro-bg);
+    border-radius: 20px;
+    border: 1px solid var(--pro-border);
+    font-size: 0.8rem;
+    transition: var(--pro-transition);
+}
+.file-tag:hover {
+    border-color: var(--pro-primary);
+}
+.file-tag .remove {
+    background: none;
+    border: none;
+    color: var(--pro-text-secondary);
+    cursor: pointer;
+    padding: 0 4px;
+    font-size: 0.7rem;
+    transition: 0.3s;
+}
+.file-tag .remove:hover {
+    color: #ef4444;
+    transform: scale(1.2);
+}
+
+/* ---- دکمه هوش مصنوعی ---- */
+.pro-btn-ai {
+    background: linear-gradient(135deg, #8b5cf6, #6366f1, #2563eb);
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease infinite;
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-family: var(--pro-font);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+.pro-btn-ai:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
+}
+
+/* ---- استایل‌های مودال ویرایش (تکمیل‌کننده) ---- */
+.pro-upload-zone-edit {
+    border: 2px dashed var(--pro-border);
+    border-radius: var(--pro-radius);
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--pro-transition);
+    background: var(--pro-bg);
+    margin-top: 8px;
+}
+.pro-upload-zone-edit:hover {
+    border-color: var(--pro-primary);
+    background: rgba(37,99,235,0.05);
+}
+.pro-upload-zone-edit.dragover {
+    border-color: var(--pro-primary);
+    background: rgba(37,99,235,0.1);
+}
+.pro-upload-zone-edit i {
+    font-size: 2rem;
+    color: var(--pro-text-secondary);
+    display: block;
+    margin-bottom: 8px;
+}
+.pro-upload-zone-edit p {
+    color: var(--pro-text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+}
+.pro-upload-zone-edit .hint {
+    font-size: 0.7rem;
+    color: var(--pro-text-secondary);
+    opacity: 0.7;
+}
+.upload-preview-img-edit {
+    max-width: 100%;
+    max-height: 150px;
+    border-radius: 8px;
+    border: 1px solid var(--pro-border);
+    margin-top: 10px;
+}
+.edit-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+.edit-gallery-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--pro-border);
+    background: var(--pro-bg);
+}
+.edit-gallery-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+}
+.edit-gallery-item .remove-btn {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    background: var(--pro-red);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--pro-transition);
+    opacity: 0.8;
+}
+.edit-gallery-item .remove-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+.edit-file-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+.edit-file-tag {
+    background: var(--pro-bg);
+    border: 1px solid var(--pro-border);
+    border-radius: 20px;
+    padding: 4px 12px 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    transition: var(--pro-transition);
+}
+.edit-file-tag:hover {
+    border-color: var(--pro-primary);
+}
+.edit-file-tag .remove-btn {
+    background: var(--pro-red);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--pro-transition);
+}
+.edit-file-tag .remove-btn:hover {
+    transform: scale(1.1);
+}

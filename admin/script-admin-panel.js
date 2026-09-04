@@ -147,16 +147,22 @@
         updateTokenStatus(true);
     } else { updateTokenStatus(false); }
 
-    function proSaveToken() {
-        const tokenInput = document.getElementById('proToken');
-        if (!tokenInput) { showMsg('❌ المان توکن پیدا نشد.', 'error'); return; }
-        const token = tokenInput.value.trim();
-        if (!token) { showMsg('لطفاً توکن را وارد کنید.', 'error'); return; }
-        PRO_TOKEN = token;
-        localStorage.setItem('github_token', token);
-        updateTokenStatus(true);
-        showMsg('✅ توکن با موفقیت ذخیره شد.', 'success');
-        loadAllData();
+function proSaveToken() {
+    const tokenInput = document.getElementById('proToken');
+    if (!tokenInput) {
+        showMsg('❌ المان توکن پیدا نشد.', 'error');
+        return;
+    }
+    const token = tokenInput.value.trim();
+    if (!token) {
+        showMsg('لطفاً توکن را وارد کنید.', 'error');
+        return;
+    }
+    localStorage.setItem('github_token', token);
+    updateTokenStatus(true);
+    showMsg('✅ توکن با موفقیت ذخیره شد.', 'success');
+    loadAllData();
+}
     }
     function updateTokenStatus(valid) {
         const el = document.getElementById('proTokenStatus');

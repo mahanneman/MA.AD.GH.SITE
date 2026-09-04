@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-<head> 
-    <!-- ============================================================
-    0001 - هدر و متا تگ‌ها
-    ============================================================ -->
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پنل مدیریت فوق‌حرفه‌ای | کنترل کامل سایت</title>
@@ -12,8 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- 0001.1 - استایل‌های ۲۰ قابلیت جدید -->
     <style>
+        /* ===== استایل‌های پایه ===== */
         .pro-skill-bar { width:100%; height:6px; background:var(--pro-border); border-radius:4px; overflow:hidden; margin-top:6px; }
         .pro-skill-bar .fill { height:100%; border-radius:4px; transition:width 0.6s ease; }
         .pro-status-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 12px; border-radius:20px; font-size:0.65rem; font-weight:600; }
@@ -67,18 +64,90 @@
         .pro-grid-view .pro-item { display:block; }
         .pro-list-view .pro-item { display:flex; }
         @media (max-width:768px) { .pro-stat-advanced { grid-template-columns:1fr; } }
+
+        /* ===== استایل‌های جدید برای افزودن مقاله ===== */
+        .form-section { margin-bottom:25px; padding-bottom:20px; border-bottom:1px solid var(--pro-border); }
+        .form-section:last-of-type { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+        .form-section h4 { font-size:1rem; font-weight:700; color:var(--pro-text-secondary); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+        .form-section h4 i { color:var(--pro-primary); }
+        .section-badge { display:inline-block; padding:2px 12px; border-radius:20px; background:var(--pro-primary); color:#fff; font-size:0.65rem; font-weight:600; margin-right:6px; }
+        .required { color:#ef4444; margin-right:4px; }
+        .id-display { display:inline-block; padding:8px 18px; background:var(--pro-bg); border-radius:10px; border:2px solid var(--pro-border); font-weight:700; color:var(--pro-primary); font-size:1rem; cursor:pointer; transition:var(--pro-transition); }
+        .id-display:hover { border-color:var(--pro-primary); background:rgba(37,99,235,0.05); }
+        .tags-input { display:flex; flex-wrap:wrap; gap:8px; padding:8px 12px; border:2px solid var(--pro-border); border-radius:12px; background:var(--pro-bg); min-height:50px; align-items:center; transition:var(--pro-transition); }
+        .tags-input:focus-within { border-color:var(--pro-primary); box-shadow:0 0 0 3px rgba(37,99,235,0.12); }
+        .tags-input .tag-item { background:var(--pro-primary); color:#fff; padding:4px 12px; border-radius:20px; font-size:0.8rem; display:inline-flex; align-items:center; gap:6px; }
+        .tags-input .tag-item i { cursor:pointer; font-size:0.7rem; opacity:0.7; transition:0.3s; }
+        .tags-input .tag-item i:hover { opacity:1; transform:scale(1.2); }
+        .tags-input input { border:none; background:transparent; color:var(--pro-text); font-family:var(--pro-font); font-size:0.9rem; flex:1; min-width:80px; padding:4px 0; }
+        .tags-input input:focus { outline:none; box-shadow:none; border:none; }
+        .upload-zone { border:2px dashed var(--pro-border); border-radius:12px; padding:30px 20px; text-align:center; cursor:pointer; transition:all 0.3s; background:var(--pro-bg); position:relative; }
+        .upload-zone:hover { border-color:var(--pro-primary); background:rgba(37,99,235,0.05); }
+        .upload-zone.dragover { border-color:var(--pro-primary); background:rgba(37,99,235,0.1); transform:scale(1.01); }
+        .upload-zone i { font-size:2.5rem; color:var(--pro-text-secondary); display:block; margin-bottom:8px; }
+        .upload-zone p { color:var(--pro-text-secondary); font-size:0.85rem; margin:0; }
+        .upload-zone .hint { font-size:0.65rem; opacity:0.6; }
+        .upload-zone input[type="file"] { display:none; }
+        .upload-preview-img { max-width:100%; max-height:150px; border-radius:8px; border:1px solid var(--pro-border); margin-top:8px; }
+        .gallery-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+        .gallery-item { position:relative; width:80px; height:80px; border-radius:8px; overflow:hidden; border:1px solid var(--pro-border); background:var(--pro-bg); }
+        .gallery-item img { width:100%; height:100%; object-fit:cover; }
+        .gallery-item .remove-btn { position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.7); border:none; color:#fff; border-radius:50%; width:20px; height:20px; font-size:0.6rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.3s; }
+        .gallery-item .remove-btn:hover { background:#ef4444; transform:scale(1.1); }
+        .file-list { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+        .file-tag { display:inline-flex; align-items:center; gap:6px; padding:4px 12px 4px 8px; background:var(--pro-bg); border-radius:20px; border:1px solid var(--pro-border); font-size:0.8rem; transition:var(--pro-transition); }
+        .file-tag:hover { border-color:var(--pro-primary); }
+        .file-tag .remove { background:none; border:none; color:var(--pro-text-secondary); cursor:pointer; padding:0 4px; font-size:0.7rem; transition:0.3s; }
+        .file-tag .remove:hover { color:#ef4444; transform:scale(1.2); }
+        .pro-btn-ai { background:linear-gradient(135deg,#8b5cf6,#6366f1,#2563eb); background-size:200% 200%; animation:gradientShift 4s ease infinite; color:#fff; border:none; padding:12px 28px; border-radius:50px; font-family:var(--pro-font); font-weight:700; font-size:0.95rem; cursor:pointer; transition:all 0.3s ease; display:inline-flex; align-items:center; gap:10px; }
+        @keyframes gradientShift { 0%,100% { background-position:0% 50%; } 50% { background-position:100% 50%; } }
+        .pro-btn-ai:hover { transform:translateY(-3px) scale(1.02); box-shadow:0 12px 35px rgba(139,92,246,0.4); }
+
+        /* استایل‌های لاگین */
+        .login-container { min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--pro-bg); padding:20px; }
+        .login-box { background:var(--pro-card); border-radius:var(--pro-radius); padding:40px; max-width:400px; width:100%; border:1px solid var(--pro-border); box-shadow:var(--pro-shadow); }
+        .login-box .logo { text-align:center; margin-bottom:30px; }
+        .login-box .logo i { font-size:3rem; color:var(--pro-primary); padding:15px; border-radius:50%; color:#fff; background:var(--pro-primary); }
+        .login-box h2 { text-align:center; margin-bottom:10px; }
+        .login-box p { text-align:center; color:var(--pro-text-secondary); margin-bottom:30px; font-size:0.9rem; }
+        .login-box .form-group { margin-bottom:20px; }
+        .login-box .form-group label { display:block; margin-bottom:8px; font-weight:600; }
+        .login-box .form-group input { width:100%; padding:12px 15px; border:2px solid var(--pro-border); border-radius:var(--pro-radius); background:var(--pro-bg); color:var(--pro-text); font-family:var(--pro-font); font-size:1rem; transition:var(--pro-transition); }
+        .login-box .form-group input:focus { outline:none; border-color:var(--pro-primary); }
+        .login-box .btn-login { width:100%; padding:14px; background:var(--pro-primary); color:#fff; border:none; border-radius:var(--pro-radius); font-family:var(--pro-font); font-size:1rem; font-weight:600; cursor:pointer; transition:var(--pro-transition); }
+        .login-box .btn-login:hover { transform:translateY(-2px); box-shadow:var(--pro-shadow); }
+        .login-box .error-msg { color:var(--pro-red); font-size:0.85rem; text-align:center; margin-top:15px; display:none; }
     </style>
 </head>
 <body>
 
-    <!-- ============================================================
-    0003 - پنل مدیریت (نمایش مستقیم)
-    ============================================================ -->
-    <div id="adminPanel" style="display:block;">
+    <!-- ===== صفحه لاگین ===== -->
+    <div id="loginPage" style="display:none;">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="logo"><i class="fas fa-cogs"></i></div>
+                <h2>ورود به پنل مدیریت</h2>
+                <p>برای مدیریت محتوای سایت وارد شوید</p>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginUsername">نام کاربری</label>
+                        <input type="text" id="loginUsername" placeholder="نام کاربری خود را وارد کنید" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">رمز عبور</label>
+                        <input type="password" id="loginPassword" placeholder="رمز عبور خود را وارد کنید" required>
+                    </div>
+                    <button type="submit" class="btn-login"><i class="fas fa-sign-in-alt"></i> ورود</button>
+                    <div id="loginError" class="error-msg"><i class="fas fa-exclamation-circle"></i> نام کاربری یا رمز عبور اشتباه است.</div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-        <!-- ============================================================
-        0004 - هدر پنل
-        ============================================================ -->
+    <!-- ===== پنل مدیریت ===== -->
+    <div id="adminPanel" style="display:none;">
+
+        <!-- هدر -->
         <header class="pro-header">
             <div class="logo">
                 <i class="fas fa-cogs"></i>
@@ -89,15 +158,13 @@
                 </span>
             </div>
             <div class="user-area">
-                <span class="name"><i class="fas fa-user"></i> <span id="proAdminName">مدیر</span></span>
+                <span class="name"><i class="fas fa-user"></i> <span id="proAdminName">ادمین</span></span>
                 <span class="pro-key-hint">Ctrl+S</span>
-                <!-- دکمه خروج حذف شد تا خطا نده -->
+                <button class="btn-logout" onclick="proLogout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
             </div>
         </header>
 
-        <!-- ============================================================
-        0005 - نوار توکن
-        ============================================================ -->
+        <!-- نوار توکن -->
         <div class="pro-token-bar">
             <label><i class="fas fa-key"></i> توکن گیت‌هاب:</label>
             <input type="password" id="proToken" placeholder="توکن خود را وارد کنید..." />
@@ -110,14 +177,10 @@
             <button class="pro-export-csv" onclick="exportCSV()"><i class="fas fa-file-csv"></i> خروجی CSV</button>
         </div>
 
-        <!-- ============================================================
-        0006 - پیام‌ها
-        ============================================================ -->
+        <!-- پیام -->
         <div id="proMsg" class="pro-msg"></div>
 
-        <!-- ============================================================
-        0007 - تب‌ها (Tabs)
-        ============================================================ -->
+        <!-- تب‌ها -->
         <div class="pro-tabs" id="proTabs">
             <button class="tab-btn active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> داشبورد</button>
             <button class="tab-btn" data-tab="appearance"><i class="fas fa-palette"></i> ظاهر</button>
@@ -135,9 +198,9 @@
             <button class="tab-btn" data-tab="settings"><i class="fas fa-cog"></i> تنظیمات</button>
         </div>
 
-        <!-- ============================================================
-        0008 - داشبورد
-        ============================================================ -->
+        <!-- ===== محتوای تب‌ها ===== -->
+
+        <!-- داشبورد -->
         <div class="pro-tab-content active" id="tab-dashboard">
             <div class="pro-card">
                 <div class="pro-card-header"><h3><i class="fas fa-chart-simple"></i> نمای کلی</h3><span class="sub">آخرین بروزرسانی: <span id="proLastUpdate">---</span></span></div>
@@ -159,9 +222,7 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        0009 - ظاهر (Appearance)
-        ============================================================ -->
+        <!-- ظاهر -->
         <div class="pro-tab-content" id="tab-appearance">
             <div class="pro-card">
                 <div class="pro-card-header"><h3><i class="fas fa-palette"></i> شخصی‌سازی ظاهر سایت</h3><span class="sub">رنگ‌ها، فونت‌ها، بک‌گراند و فاصله‌ها</span></div>
@@ -192,9 +253,7 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        0010 - منوها
-        ============================================================ -->
+        <!-- منوها -->
         <div class="pro-tab-content" id="tab-menus">
             <div class="pro-card">
                 <div class="pro-card-header"><h3><i class="fas fa-bars"></i> مدیریت منوی هدر</h3><span class="sub">ویرایش، جابجایی، حذف</span></div>
@@ -221,9 +280,7 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        0011 - بخش‌ها
-        ============================================================ -->
+        <!-- بخش‌ها -->
         <div class="pro-tab-content" id="tab-sections">
             <div class="pro-card">
                 <div class="pro-card-header"><h3><i class="fas fa-layer-group"></i> مدیریت بخش‌های سایت</h3></div>
@@ -239,30 +296,19 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        0021 - محتوای ایندکس
-        ============================================================ -->
+        <!-- ایندکس -->
         <div class="pro-tab-content" id="tab-index-content">
             <div class="pro-card" id="sectionEducation"><div class="pro-card-header"><h3><i class="fas fa-graduation-cap"></i> سوابق تحصیلی</h3><span class="sub">ویرایش، جابجایی، حذف</span></div><div class="pro-fields"><div class="pro-field"><label>عنوان بخش</label><input type="text" id="eduSectionTitle" value="سوابق تحصیلی" placeholder="عنوان بخش"></div></div><div id="educationList" class="pro-items"></div><div class="pro-grid" style="margin-top:12px;"><div class="pro-field"><input type="text" id="newEduOrg" placeholder="نام مؤسسه"></div><div class="pro-field"><input type="text" id="newEduTitle" placeholder="عنوان تحصیلی"></div><div class="pro-field"><input type="text" id="newEduDate" placeholder="تاریخ"></div><div class="pro-field"><input type="text" id="newEduGpa" placeholder="معدل"></div><div class="pro-field"><input type="text" id="newEduDesc" placeholder="توضیحات"></div><div class="pro-field"><input type="text" id="newEduIcon" placeholder="آیکون"></div><div class="pro-field"><input type="text" id="newEduSource" placeholder="لینک منبع"></div><div class="pro-field"><input type="text" id="newEduCert" placeholder="لینک مدرک"></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"><button class="pro-btn pro-btn-success" onclick="addEducationItem()"><i class="fas fa-plus"></i> افزودن</button><button class="pro-btn pro-btn-primary" onclick="saveEducation()"><i class="fas fa-save"></i> ذخیره</button></div></div>
-
             <div class="pro-card" id="sectionCertificates"><div class="pro-card-header"><h3><i class="fas fa-certificate"></i> گواهی‌نامه‌ها</h3><span class="sub">ویرایش، جابجایی، حذف</span></div><div class="pro-fields"><div class="pro-field"><label>عنوان بخش</label><input type="text" id="certsSectionTitle" value="گواهی‌نامه‌ها" placeholder="عنوان بخش"></div></div><div id="certificatesList" class="pro-items"></div><div class="pro-grid" style="margin-top:12px;"><div class="pro-field"><input type="text" id="newCertName" placeholder="نام گواهی‌نامه"></div><div class="pro-field"><input type="text" id="newCertOrg" placeholder="موسسه"></div><div class="pro-field"><input type="text" id="newCertDate" placeholder="تاریخ"></div><div class="pro-field"><input type="text" id="newCertLink" placeholder="لینک مدرک"></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"><button class="pro-btn pro-btn-success" onclick="addCertificateItem()"><i class="fas fa-plus"></i> افزودن</button><button class="pro-btn pro-btn-primary" onclick="saveCertificates()"><i class="fas fa-save"></i> ذخیره</button></div></div>
-
             <div class="pro-card" id="sectionSkills"><div class="pro-card-header"><h3><i class="fas fa-cogs"></i> مهارت‌های تخصصی</h3><span class="sub">با درصد تسلط</span></div><div class="pro-fields"><div class="pro-field"><label>عنوان بخش</label><input type="text" id="skillsSectionTitle" value="مهارت‌های تخصصی" placeholder="عنوان بخش"></div><div class="pro-field"><label>توضیحات</label><input type="text" id="skillsSectionDesc" value="تسلط بر جدیدترین نرم‌افزارها" placeholder="توضیحات"></div></div><div id="skillsList" class="pro-items"></div><div class="pro-grid" style="margin-top:12px;"><div class="pro-field"><input type="text" id="newSkillName" placeholder="نام مهارت"></div><div class="pro-field"><input type="text" id="newSkillIcon" placeholder="آیکون"></div><div class="pro-field"><select id="newSkillLevel"><option value="مقدماتی">مقدماتی</option><option value="متوسط">متوسط</option><option value="پیشرفته" selected>پیشرفته</option><option value="حرفه‌ای">حرفه‌ای</option></select></div><div class="pro-field"><input type="text" id="newSkillDesc" placeholder="توضیحات"></div><div class="pro-field"><input type="number" id="newSkillPercent" placeholder="درصد" min="0" max="100"></div><div class="pro-field"><input type="color" id="newSkillColor" value="#2563eb"></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"><button class="pro-btn pro-btn-success" onclick="addSkillItem()"><i class="fas fa-plus"></i> افزودن</button><button class="pro-btn pro-btn-primary" onclick="saveSkills()"><i class="fas fa-save"></i> ذخیره</button></div></div>
-
             <div class="pro-card" id="sectionSocial"><div class="pro-card-header"><h3><i class="fas fa-share-alt"></i> شبکه‌های اجتماعی</h3><span class="sub">ویرایش، جابجایی، حذف</span></div><div class="pro-fields"><div class="pro-field"><label>عنوان بخش</label><input type="text" id="socialSectionTitle" value="شبکه‌های اجتماعی" placeholder="عنوان بخش"></div></div><div id="socialList" class="pro-items"></div><div class="pro-grid" style="margin-top:12px;"><div class="pro-field"><input type="text" id="newSocialName" placeholder="نام شبکه"></div><div class="pro-field"><input type="text" id="newSocialUrl" placeholder="لینک"></div><div class="pro-field"><input type="text" id="newSocialIcon" placeholder="آیکون"></div><div class="pro-field"><input type="color" id="newSocialColor" value="#0088cc"></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"><button class="pro-btn pro-btn-success" onclick="addSocialItem()"><i class="fas fa-plus"></i> افزودن</button><button class="pro-btn pro-btn-primary" onclick="saveSocial()"><i class="fas fa-save"></i> ذخیره</button></div></div>
-
             <div class="pro-card" id="sectionServices"><div class="pro-card-header"><h3><i class="fas fa-concierge-bell"></i> خدمات تخصصی</h3><span class="sub">ویرایش، جابجایی، حذف</span></div><div class="pro-fields"><div class="pro-field"><label>عنوان بخش</label><input type="text" id="servicesSectionTitle" value="خدمات تخصصی" placeholder="عنوان بخش"></div><div class="pro-field"><label>توضیحات</label><input type="text" id="servicesSectionDesc" placeholder="توضیحات"></div></div><div id="servicesList" class="pro-items"></div><div class="pro-grid" style="margin-top:12px;"><div class="pro-field"><input type="text" id="newServiceName" placeholder="نام خدمت"></div><div class="pro-field"><input type="text" id="newServiceIcon" placeholder="آیکون"></div><div class="pro-field"><input type="text" id="newServiceDesc" placeholder="توضیحات"></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"><button class="pro-btn pro-btn-success" onclick="addServiceItem()"><i class="fas fa-plus"></i> افزودن</button><button class="pro-btn pro-btn-primary" onclick="saveServices()"><i class="fas fa-save"></i> ذخیره</button></div></div>
-
             <div class="pro-card" id="sectionTestimonials"><div class="pro-card-header"><h3><i class="fas fa-comment-dots"></i> نظرات مشتریان</h3><span class="sub">ویرایش، جابجایی، حذف</span></div><div class="pro-fields"><div class="pro-field"><label>عنوان بخش</label><input type="text" id="testimonialsSectionTitle" value="نظرات مشتریان" placeholder="عنوان بخش"></div></div><div id="testimonialsList" class="pro-items"></div><div class="pro-grid" style="margin-top:12px;"><div class="pro-field"><input type="text" id="newTestiName" placeholder="نام"></div><div class="pro-field"><input type="text" id="newTestiPosition" placeholder="سمت"></div><div class="pro-field"><input type="text" id="newTestiText" placeholder="متن نظر"></div><div class="pro-field"><input type="number" id="newTestiRating" placeholder="امتیاز" min="1" max="5"></div><div class="pro-field"><input type="text" id="newTestiImage" placeholder="لینک تصویر"></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"><button class="pro-btn pro-btn-success" onclick="addTestimonialItem()"><i class="fas fa-plus"></i> افزودن</button><button class="pro-btn pro-btn-primary" onclick="saveTestimonials()"><i class="fas fa-save"></i> ذخیره</button></div></div>
-
             <div class="pro-card" id="sectionAwards"><div class="pro-card-header"><h3><i class="fas fa-trophy"></i> جوایز و افتخارات</h3><span class="sub">ویرایش، جابجایی، حذف</span></div><div class="pro-fields"><div class="pro-field"><label>عنوان بخش</label><input type="text" id="awardsSectionTitle" value="جوایز و افتخارات" placeholder="عنوان بخش"></div></div><div id="awardsList" class="pro-items"></div><div class="pro-grid" style="margin-top:12px;"><div class="pro-field"><input type="text" id="newAwardName" placeholder="نام جایزه"></div><div class="pro-field"><input type="text" id="newAwardOrg" placeholder="موسسه"></div><div class="pro-field"><input type="text" id="newAwardDate" placeholder="تاریخ"></div><div class="pro-field"><input type="text" id="newAwardDesc" placeholder="توضیحات"></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"><button class="pro-btn pro-btn-success" onclick="addAwardItem()"><i class="fas fa-plus"></i> افزودن</button><button class="pro-btn pro-btn-primary" onclick="saveAwards()"><i class="fas fa-save"></i> ذخیره</button></div></div>
-
             <div class="pro-card" id="sectionLinks"><div class="pro-card-header"><h3><i class="fas fa-link"></i> لینک‌های مفید</h3><span class="sub">ویرایش، جابجایی، حذف</span></div><div class="pro-fields"><div class="pro-field"><label>عنوان بخش</label><input type="text" id="linksSectionTitle" value="لینک‌های مفید" placeholder="عنوان بخش"></div></div><div id="linksList" class="pro-items"></div><div class="pro-grid" style="margin-top:12px;"><div class="pro-field"><input type="text" id="newLinkName" placeholder="نام لینک"></div><div class="pro-field"><input type="text" id="newLinkUrl" placeholder="آدرس"></div><div class="pro-field"><input type="text" id="newLinkIcon" placeholder="آیکون"></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"><button class="pro-btn pro-btn-success" onclick="addLinkItem()"><i class="fas fa-plus"></i> افزودن</button><button class="pro-btn pro-btn-primary" onclick="saveLinks()"><i class="fas fa-save"></i> ذخیره</button></div></div>
         </div>
 
-        <!-- ============================================================
-        0012 - مقالات
-        ============================================================ -->
+        <!-- مقالات -->
         <div class="pro-tab-content" id="tab-articles">
             <div class="pro-card">
                 <div class="pro-card-header"><h3><i class="fas fa-newspaper"></i> مدیریت مقالات</h3><span class="sub" id="proArticlesSub">۰ مقاله</span>
@@ -280,9 +326,201 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        0013 - محصولات
-        ============================================================ -->
+        <!-- افزودن مقاله (نسخه کامل با آپلود) -->
+        <div class="pro-tab-content" id="tab-add-article">
+            <div class="pro-card">
+                <div class="pro-card-header">
+                    <h3><i class="fas fa-plus-circle"></i> افزودن مقاله جدید</h3>
+                    <span class="sub">شماره خودکار - آپلود تصاویر و فایل‌ها</span>
+                </div>
+
+                <div class="form-section">
+                    <h4><i class="fas fa-info-circle"></i> اطلاعات پایه <span class="section-badge">ضروری</span></h4>
+                    <div class="pro-grid">
+                        <div class="pro-field">
+                            <label><i class="fas fa-hashtag"></i> شماره مقاله</label>
+                            <div class="id-display" id="articleIdDisplay">ART-0004</div>
+                            <input type="hidden" id="articleId" value="0004" />
+                        </div>
+                        <div class="pro-field">
+                            <label><i class="fas fa-calendar-day"></i> تاریخ انتشار</label>
+                            <input type="date" id="articleDate" />
+                        </div>
+                    </div>
+                    <div class="pro-field full">
+                        <label><i class="fas fa-heading"></i> عنوان مقاله <span class="required">*</span></label>
+                        <input type="text" id="articleTitle" placeholder="عنوان مقاله را وارد کنید..." />
+                    </div>
+                    <div class="pro-field full">
+                        <label><i class="fas fa-align-left"></i> چکیده (Abstract) <span class="required">*</span></label>
+                        <textarea id="articleAbstract" rows="3" placeholder="چکیده مقاله به فارسی (حداکثر ۳۰۰ کاراکتر)..."></textarea>
+                    </div>
+                    <div class="pro-field full">
+                        <label><i class="fas fa-file-alt"></i> متن کامل مقاله <span class="required">*</span></label>
+                        <textarea id="articleBody" rows="6" placeholder="متن کامل مقاله را اینجا بنویسید (با تگ‌های HTML)..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4><i class="fas fa-calendar-alt"></i> نوع و زمان</h4>
+                    <div class="pro-grid">
+                        <div class="pro-field">
+                            <label><i class="fas fa-tag"></i> نوع مقاله</label>
+                            <select id="articleType">
+                                <option value="article">مقاله علمی</option>
+                                <option value="project">پروژه تحقیقاتی</option>
+                                <option value="tutorial">آموزش</option>
+                                <option value="review">مروری</option>
+                                <option value="case-study">مطالعه موردی</option>
+                            </select>
+                        </div>
+                        <div class="pro-field">
+                            <label><i class="fas fa-clock"></i> زمان مطالعه (دقیقه)</label>
+                            <input type="number" id="articleReadTime" placeholder="۱۲" min="1" value="10" />
+                        </div>
+                        <div class="pro-field">
+                            <label><i class="fas fa-calendar-alt"></i> سال انتشار</label>
+                            <input type="text" id="articleYear" placeholder="۱۴۰۳" />
+                        </div>
+                        <div class="pro-field">
+                            <label><i class="fas fa-signal"></i> سطح دشواری</label>
+                            <select id="articleDifficulty">
+                                <option value="مقدماتی">مقدماتی</option>
+                                <option value="متوسط" selected>متوسط</option>
+                                <option value="پیشرفته">پیشرفته</option>
+                                <option value="حرفه‌ای">حرفه‌ای</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4><i class="fas fa-tags"></i> برچسب‌ها و کلمات کلیدی</h4>
+                    <div class="pro-field">
+                        <label><i class="fas fa-tags"></i> برچسب‌ها</label>
+                        <div class="tags-input" id="articleTagsContainer">
+                            <input type="text" id="articleTagInput" placeholder="تایپ کنید و Enter بزنید..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('articleTagsContainer','articleTagInput');}" />
+                        </div>
+                        <input type="hidden" id="articleTags" value="" />
+                    </div>
+                    <div class="pro-field">
+                        <label><i class="fas fa-key"></i> کلمات کلیدی (با کاما جدا کنید)</label>
+                        <input type="text" id="articleKeywords" placeholder="CFD, توربولانس, انتقال حرارت" />
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4><i class="fas fa-images"></i> تصاویر و گالری</h4>
+                    <div class="pro-field">
+                        <label><i class="fas fa-image"></i> تصویر شاخص</label>
+                        <div class="upload-zone" id="coverUploadZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>برای آپلود تصویر شاخص کلیک کنید یا فایل را بکشید</p>
+                            <span class="hint">فرمت‌های JPG, PNG, WebP - حداکثر ۵ مگابایت</span>
+                            <input type="file" id="coverFileInput" accept="image/*" />
+                            <div id="coverPreview" style="margin-top:8px;"></div>
+                        </div>
+                    </div>
+                    <div class="pro-field">
+                        <label><i class="fas fa-images"></i> گالری تصاویر (چند تصویر)</label>
+                        <div class="upload-zone" id="galleryUploadZone">
+                            <i class="fas fa-plus-circle"></i>
+                            <p>برای افزودن عکس‌های گالری کلیک کنید یا بکشید</p>
+                            <span class="hint">حداکثر ۱۰ تصویر - هر کدام زیر ۲ مگابایت</span>
+                            <input type="file" id="galleryFileInput" accept="image/*" multiple />
+                            <div id="galleryPreview" class="gallery-grid"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4><i class="fas fa-paperclip"></i> فایل‌های پیوست</h4>
+                    <div class="pro-field">
+                        <label><i class="fas fa-file-pdf"></i> فایل اصلی مقاله (PDF)</label>
+                        <div class="upload-zone" id="mainFileUploadZone">
+                            <i class="fas fa-file-pdf"></i>
+                            <p>فایل اصلی مقاله (PDF) را آپلود کنید</p>
+                            <span class="hint">حداکثر ۱۰ مگابایت</span>
+                            <input type="file" id="mainFileInput" accept=".pdf" />
+                            <div id="mainFilePreview" class="file-list"></div>
+                        </div>
+                    </div>
+                    <div class="pro-field">
+                        <label><i class="fas fa-file"></i> سایر فایل‌های ضمیمه</label>
+                        <div class="upload-zone" id="filesUploadZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>فایل‌های ضمیمه (PDF, ZIP, DOCX, ...) را آپلود کنید</p>
+                            <span class="hint">حداکثر ۱۰ فایل - هر کدام زیر ۱۰ مگابایت</span>
+                            <input type="file" id="filesFileInput" multiple />
+                            <div id="filesPreview" class="file-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4><i class="fas fa-book"></i> منابع</h4>
+                    <div class="pro-field">
+                        <label><i class="fas fa-list"></i> فهرست منابع (هر منبع در یک خط)</label>
+                        <textarea id="articleReferences" rows="4" placeholder="منبع ۱&#10;منبع ۲&#10;منبع ۳"></textarea>
+                    </div>
+                    <div class="pro-field">
+                        <label><i class="fas fa-link"></i> لینک DOI</label>
+                        <input type="text" id="articleDoi" placeholder="مثال: 10.1000/xyz123" />
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4><i class="fas fa-ellipsis-h"></i> اطلاعات تکمیلی</h4>
+                    <div class="pro-grid">
+                        <div class="pro-field">
+                            <label><i class="fas fa-globe"></i> زبان</label>
+                            <select id="articleLanguage">
+                                <option value="فارسی">فارسی</option>
+                                <option value="انگلیسی">انگلیسی</option>
+                                <option value="دوزبانه">دوزبانه</option>
+                            </select>
+                        </div>
+                        <div class="pro-field">
+                            <label><i class="fas fa-eye"></i> وضعیت انتشار</label>
+                            <select id="articleStatus">
+                                <option value="فعال">فعال (نمایش داده شود)</option>
+                                <option value="غیرفعال">غیرفعال (مخفی شود)</option>
+                                <option value="پیش‌نویس">پیش‌نویس</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="pro-field">
+                        <label><i class="fas fa-file-alt"></i> خلاصه انگلیسی (English Abstract)</label>
+                        <textarea id="articleEnglishAbstract" rows="2" placeholder="English abstract for international readers..."></textarea>
+                    </div>
+                    <div class="pro-field">
+                        <label><i class="fas fa-sticky-note"></i> یادداشت‌های داخلی</label>
+                        <textarea id="articleNotes" rows="2" placeholder="یادداشت‌های خصوصی (فقط برای مدیر)"></textarea>
+                    </div>
+                    <div class="pro-field">
+                        <label><i class="fas fa-external-link-alt"></i> لینک‌های مرتبط (با کاما جدا کنید)</label>
+                        <input type="text" id="articleRelatedLinks" placeholder="https://example.com, https://another.com" />
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;padding-top:18px;border-top:1px solid var(--pro-border);">
+                    <button class="pro-btn pro-btn-ai" onclick="generateArticleContent()">
+                        <i class="fas fa-robot"></i> تولید پیش‌نویس با هوش مصنوعی
+                    </button>
+                    <button class="pro-btn pro-btn-primary pro-btn-lg" onclick="saveArticle()">
+                        <i class="fas fa-save"></i> ذخیره مقاله
+                    </button>
+                    <button class="pro-btn pro-btn-outline" onclick="resetArticleForm()">
+                        <i class="fas fa-undo"></i> بازنشانی
+                    </button>
+                    <a href="blank-article.html" target="_blank" class="pro-btn pro-btn-blank">
+                        <i class="fas fa-external-link-alt"></i> صفحه خالی
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- محصولات -->
         <div class="pro-tab-content" id="tab-products">
             <div class="pro-card">
                 <div class="pro-card-header"><h3><i class="fas fa-cube"></i> مدیریت محصولات</h3><span class="sub" id="proProductsSub">۰ محصول</span>
@@ -297,9 +535,31 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        0014 - آرشیو
-        ============================================================ -->
+        <!-- افزودن محصول -->
+        <div class="pro-tab-content" id="tab-add-product">
+            <div class="pro-card">
+                <div class="pro-card-header"><h3><i class="fas fa-plus-circle"></i> افزودن محصول جدید</h3></div>
+                <form id="addProductForm">
+                    <div class="pro-grid">
+                        <div class="pro-field"><label>شماره</label><div class="id-display" onclick="copyId('productIdDisplay')"><span>PRD-</span><span id="productIdDisplay">----</span></div><input type="hidden" id="productId"></div>
+                        <div class="pro-field"><label>موجودی</label><select id="productStock"><option value="موجود">موجود</option><option value="ناموجود">ناموجود</option><option value="پیش‌سفارش">پیش‌سفارش</option></select></div>
+                        <div class="pro-field full"><label>نام</label><input type="text" id="productName" required placeholder="نام محصول"></div>
+                        <div class="pro-field full"><label>توضیحات</label><textarea id="productDesc" rows="3" required></textarea></div>
+                        <div class="pro-field"><label>قیمت</label><input type="text" id="productPrice" placeholder="رایگان"></div>
+                        <div class="pro-field"><label>آیکون</label><input type="text" id="productIcon" value="fa-cube"></div>
+                        <div class="pro-field"><label>برچسب</label><input type="text" id="productTag" placeholder="STL"></div>
+                        <div class="pro-field"><label>دسته‌بندی</label><input type="text" id="productCategory" placeholder="قطعات"></div>
+                    </div>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
+                        <button type="submit" class="pro-btn pro-btn-secondary pro-btn-lg"><i class="fas fa-save"></i> ذخیره</button>
+                        <button type="reset" class="pro-btn pro-btn-outline"><i class="fas fa-undo"></i> بازنشانی</button>
+                        <a href="blank-product.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- آرشیو -->
         <div class="pro-tab-content" id="tab-archive">
             <div class="pro-card">
                 <div class="pro-card-header"><h3><i class="fas fa-archive"></i> مدیریت آرشیو</h3><span class="sub" id="proArchiveSub">۰ آیتم</span></div>
@@ -312,9 +572,30 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        0022 - مدیریت کاربران
-        ============================================================ -->
+        <!-- افزودن آرشیو -->
+        <div class="pro-tab-content" id="tab-add-archive">
+            <div class="pro-card">
+                <div class="pro-card-header"><h3><i class="fas fa-plus-circle"></i> افزودن آیتم آرشیو</h3></div>
+                <form id="addArchiveForm">
+                    <div class="pro-grid">
+                        <div class="pro-field"><label>شماره</label><div class="id-display" onclick="copyId('archiveIdDisplay')"><span>ARC-</span><span id="archiveIdDisplay">----</span></div><input type="hidden" id="archiveId"></div>
+                        <div class="pro-field"><label>تاریخ</label><input type="date" id="archiveDate"></div>
+                        <div class="pro-field"><label>وضعیت</label><select id="archiveStatus"><option value="تکمیل شده">تکمیل شده</option><option value="در حال انجام">در حال انجام</option></select></div>
+                        <div class="pro-field full"><label>عنوان</label><input type="text" id="archiveTitle" required placeholder="عنوان پروژه"></div>
+                        <div class="pro-field full"><label>توضیحات کوتاه</label><textarea id="archiveExcerpt" rows="3" required></textarea></div>
+                        <div class="pro-field"><label>نوع</label><select id="archiveType"><option value="cfd">تحلیل CFD</option><option value="structure">تحلیل سازه</option><option value="design">طراحی مکانیکی</option><option value="other">سایر</option></select></div>
+                        <div class="pro-field"><label>برچسب‌ها</label><input type="text" id="archiveTags" placeholder="انسیس, فلوئنت"></div>
+                    </div>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
+                        <button type="submit" class="pro-btn pro-btn-purple pro-btn-lg"><i class="fas fa-save"></i> ذخیره</button>
+                        <button type="reset" class="pro-btn pro-btn-outline"><i class="fas fa-undo"></i> بازنشانی</button>
+                        <a href="blank-archive.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- کاربران -->
         <div class="pro-tab-content" id="tab-members">
             <div class="pro-card">
                 <div class="pro-card-header">
@@ -353,9 +634,7 @@
                     <button class="pro-btn pro-btn-danger" onclick="cleanOldUserOrders(30)"><i class="fas fa-broom"></i> پاک‌سازی قدیمی</button>
                     <button class="pro-btn pro-btn-primary" onclick="refreshOrders()"><i class="fas fa-sync"></i> رفرش</button>
                 </div>
-                <div id="membersList" class="pro-items">
-                    <div class="pro-empty"><i class="fas fa-users"></i>در حال بارگذاری کاربران...</div>
-                </div>
+                <div id="membersList" class="pro-items"><div class="pro-empty"><i class="fas fa-users"></i>در حال بارگذاری کاربران...</div></div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
                     <button class="pro-btn pro-btn-secondary" onclick="syncAllMembers()"><i class="fas fa-sync"></i> همگام‌سازی با گیت‌هاب</button>
                     <button class="pro-export-csv" onclick="exportMembersCSV()"><i class="fas fa-file-csv"></i> خروجی CSV کاربران</button>
@@ -390,9 +669,7 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        0022.5 - مدیریت سفارشات
-        ============================================================ -->
+        <!-- سفارشات -->
         <div class="pro-tab-content" id="tab-orders">
             <div class="pro-card">
                 <div class="pro-card-header">
@@ -447,263 +724,7 @@
             </div>
         </div>
 
-      <!-- ============================================================
-0015 - افزودن مقاله (نسخه کامل با آپلود فایل و گیت‌هاب)
-============================================================ -->
-<div class="pro-tab-content active" id="tab-add-article">
-    <div class="pro-card">
-        <div class="pro-card-header">
-            <h3><i class="fas fa-plus-circle"></i> افزودن مقاله جدید</h3>
-            <span class="sub">شماره خودکار - آپلود تصاویر و فایل‌ها</span>
-        </div>
-
-        <!-- ===== بخش ۱: اطلاعات پایه ===== -->
-        <div class="form-section">
-            <h4><i class="fas fa-info-circle"></i> اطلاعات پایه <span class="section-badge">ضروری</span></h4>
-            <div class="pro-grid">
-                <div class="pro-field">
-                    <label><i class="fas fa-hashtag"></i> شماره مقاله</label>
-                    <div class="id-display" id="articleIdDisplay">ART-0004</div>
-                    <input type="hidden" id="articleId" value="0004" />
-                </div>
-                <div class="pro-field">
-                    <label><i class="fas fa-calendar-day"></i> تاریخ انتشار</label>
-                    <input type="date" id="articleDate" />
-                </div>
-            </div>
-            <div class="pro-field full">
-                <label><i class="fas fa-heading"></i> عنوان مقاله <span class="required">*</span></label>
-                <input type="text" id="articleTitle" placeholder="عنوان مقاله را وارد کنید..." />
-            </div>
-            <div class="pro-field full">
-                <label><i class="fas fa-align-left"></i> چکیده (Abstract) <span class="required">*</span></label>
-                <textarea id="articleAbstract" rows="3" placeholder="چکیده مقاله به فارسی (حداکثر ۳۰۰ کاراکتر)..."></textarea>
-            </div>
-            <div class="pro-field full">
-                <label><i class="fas fa-file-alt"></i> متن کامل مقاله <span class="required">*</span></label>
-                <textarea id="articleBody" rows="6" placeholder="متن کامل مقاله را اینجا بنویسید (با تگ‌های HTML)..."></textarea>
-            </div>
-        </div>
-
-        <!-- ===== بخش ۲: نوع و تاریخ ===== -->
-        <div class="form-section">
-            <h4><i class="fas fa-calendar-alt"></i> نوع و زمان</h4>
-            <div class="pro-grid">
-                <div class="pro-field">
-                    <label><i class="fas fa-tag"></i> نوع مقاله</label>
-                    <select id="articleType">
-                        <option value="article">مقاله علمی</option>
-                        <option value="project">پروژه تحقیقاتی</option>
-                        <option value="tutorial">آموزش</option>
-                        <option value="review">مروری</option>
-                        <option value="case-study">مطالعه موردی</option>
-                    </select>
-                </div>
-                <div class="pro-field">
-                    <label><i class="fas fa-clock"></i> زمان مطالعه (دقیقه)</label>
-                    <input type="number" id="articleReadTime" placeholder="۱۲" min="1" value="10" />
-                </div>
-                <div class="pro-field">
-                    <label><i class="fas fa-calendar-alt"></i> سال انتشار</label>
-                    <input type="text" id="articleYear" placeholder="۱۴۰۳" />
-                </div>
-                <div class="pro-field">
-                    <label><i class="fas fa-signal"></i> سطح دشواری</label>
-                    <select id="articleDifficulty">
-                        <option value="مقدماتی">مقدماتی</option>
-                        <option value="متوسط" selected>متوسط</option>
-                        <option value="پیشرفته">پیشرفته</option>
-                        <option value="حرفه‌ای">حرفه‌ای</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== بخش ۳: برچسب‌ها ===== -->
-        <div class="form-section">
-            <h4><i class="fas fa-tags"></i> برچسب‌ها و کلمات کلیدی</h4>
-            <div class="pro-field">
-                <label><i class="fas fa-tags"></i> برچسب‌ها</label>
-                <div class="tags-input" id="articleTagsContainer">
-                    <input type="text" id="articleTagInput" placeholder="تایپ کنید و Enter بزنید..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('articleTagsContainer','articleTagInput');}" />
-                </div>
-                <input type="hidden" id="articleTags" value="" />
-            </div>
-            <div class="pro-field">
-                <label><i class="fas fa-key"></i> کلمات کلیدی (با کاما جدا کنید)</label>
-                <input type="text" id="articleKeywords" placeholder="CFD, توربولانس, انتقال حرارت" />
-            </div>
-        </div>
-
-        <!-- ===== بخش ۴: تصاویر ===== -->
-        <div class="form-section">
-            <h4><i class="fas fa-images"></i> تصاویر و گالری</h4>
-            <div class="pro-field">
-                <label><i class="fas fa-image"></i> تصویر شاخص</label>
-                <div class="upload-zone" id="coverUploadZone">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>برای آپلود تصویر شاخص کلیک کنید یا فایل را بکشید</p>
-                    <span class="hint">فرمت‌های JPG, PNG, WebP - حداکثر ۵ مگابایت</span>
-                    <input type="file" id="coverFileInput" accept="image/*" />
-                    <div id="coverPreview" style="margin-top:8px;"></div>
-                </div>
-            </div>
-            <div class="pro-field">
-                <label><i class="fas fa-images"></i> گالری تصاویر (چند تصویر)</label>
-                <div class="upload-zone" id="galleryUploadZone">
-                    <i class="fas fa-plus-circle"></i>
-                    <p>برای افزودن عکس‌های گالری کلیک کنید یا بکشید</p>
-                    <span class="hint">حداکثر ۱۰ تصویر - هر کدام زیر ۲ مگابایت</span>
-                    <input type="file" id="galleryFileInput" accept="image/*" multiple />
-                    <div id="galleryPreview" class="gallery-grid"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== بخش ۵: فایل‌های پیوست ===== -->
-        <div class="form-section">
-            <h4><i class="fas fa-paperclip"></i> فایل‌های پیوست</h4>
-            <div class="pro-field">
-                <label><i class="fas fa-file-pdf"></i> فایل اصلی مقاله (PDF)</label>
-                <div class="upload-zone" id="mainFileUploadZone">
-                    <i class="fas fa-file-pdf"></i>
-                    <p>فایل اصلی مقاله (PDF) را آپلود کنید</p>
-                    <span class="hint">حداکثر ۱۰ مگابایت</span>
-                    <input type="file" id="mainFileInput" accept=".pdf" />
-                    <div id="mainFilePreview" class="file-list"></div>
-                </div>
-            </div>
-            <div class="pro-field">
-                <label><i class="fas fa-file"></i> سایر فایل‌های ضمیمه</label>
-                <div class="upload-zone" id="filesUploadZone">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>فایل‌های ضمیمه (PDF, ZIP, DOCX, ...) را آپلود کنید</p>
-                    <span class="hint">حداکثر ۱۰ فایل - هر کدام زیر ۱۰ مگابایت</span>
-                    <input type="file" id="filesFileInput" multiple />
-                    <div id="filesPreview" class="file-list"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== بخش ۶: منابع ===== -->
-        <div class="form-section">
-            <h4><i class="fas fa-book"></i> منابع</h4>
-            <div class="pro-field">
-                <label><i class="fas fa-list"></i> فهرست منابع (هر منبع در یک خط)</label>
-                <textarea id="articleReferences" rows="4" placeholder="منبع ۱&#10;منبع ۲&#10;منبع ۳"></textarea>
-            </div>
-            <div class="pro-field">
-                <label><i class="fas fa-link"></i> لینک DOI</label>
-                <input type="text" id="articleDoi" placeholder="مثال: 10.1000/xyz123" />
-            </div>
-        </div>
-
-        <!-- ===== بخش ۷: اطلاعات تکمیلی ===== -->
-        <div class="form-section">
-            <h4><i class="fas fa-ellipsis-h"></i> اطلاعات تکمیلی</h4>
-            <div class="pro-grid">
-                <div class="pro-field">
-                    <label><i class="fas fa-globe"></i> زبان</label>
-                    <select id="articleLanguage">
-                        <option value="فارسی">فارسی</option>
-                        <option value="انگلیسی">انگلیسی</option>
-                        <option value="دوزبانه">دوزبانه</option>
-                    </select>
-                </div>
-                <div class="pro-field">
-                    <label><i class="fas fa-eye"></i> وضعیت انتشار</label>
-                    <select id="articleStatus">
-                        <option value="فعال">فعال (نمایش داده شود)</option>
-                        <option value="غیرفعال">غیرفعال (مخفی شود)</option>
-                        <option value="پیش‌نویس">پیش‌نویس</option>
-                    </select>
-                </div>
-            </div>
-            <div class="pro-field">
-                <label><i class="fas fa-file-alt"></i> خلاصه انگلیسی (English Abstract)</label>
-                <textarea id="articleEnglishAbstract" rows="2" placeholder="English abstract for international readers..."></textarea>
-            </div>
-            <div class="pro-field">
-                <label><i class="fas fa-sticky-note"></i> یادداشت‌های داخلی</label>
-                <textarea id="articleNotes" rows="2" placeholder="یادداشت‌های خصوصی (فقط برای مدیر)"></textarea>
-            </div>
-            <div class="pro-field">
-                <label><i class="fas fa-external-link-alt"></i> لینک‌های مرتبط (با کاما جدا کنید)</label>
-                <input type="text" id="articleRelatedLinks" placeholder="https://example.com, https://another.com" />
-            </div>
-        </div>
-
-        <!-- ===== دکمه‌ها ===== -->
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;padding-top:18px;border-top:1px solid var(--pro-border);">
-            <button class="pro-btn pro-btn-ai" onclick="generateArticleContent()">
-                <i class="fas fa-robot"></i> تولید پیش‌نویس با هوش مصنوعی
-            </button>
-            <button class="pro-btn pro-btn-primary pro-btn-lg" onclick="saveArticle()">
-                <i class="fas fa-save"></i> ذخیره مقاله
-            </button>
-            <button class="pro-btn pro-btn-outline" onclick="resetArticleForm()">
-                <i class="fas fa-undo"></i> بازنشانی
-            </button>
-            <a href="blank-article.html" target="_blank" class="pro-btn pro-btn-blank">
-                <i class="fas fa-external-link-alt"></i> صفحه خالی
-            </a>
-        </div>
-    </div>
-</div>
-        <!-- ============================================================
-        0016 - افزودن محصول
-        ============================================================ -->
-        <div class="pro-tab-content" id="tab-add-product">
-            <div class="pro-card">
-                <div class="pro-card-header"><h3><i class="fas fa-plus-circle"></i> افزودن محصول جدید</h3></div>
-                <form id="addProductForm">
-                    <div class="pro-grid">
-                        <div class="pro-field"><label>شماره</label><div class="id-display" onclick="copyId('productIdDisplay')"><span>PRD-</span><span id="productIdDisplay">----</span></div><input type="hidden" id="productId"></div>
-                        <div class="pro-field"><label>موجودی</label><select id="productStock"><option value="موجود">موجود</option><option value="ناموجود">ناموجود</option><option value="پیش‌سفارش">پیش‌سفارش</option></select></div>
-                        <div class="pro-field full"><label>نام</label><input type="text" id="productName" required placeholder="نام محصول"></div>
-                        <div class="pro-field full"><label>توضیحات</label><textarea id="productDesc" rows="3" required></textarea></div>
-                        <div class="pro-field"><label>قیمت</label><input type="text" id="productPrice" placeholder="رایگان"></div>
-                        <div class="pro-field"><label>آیکون</label><input type="text" id="productIcon" value="fa-cube"></div>
-                        <div class="pro-field"><label>برچسب</label><input type="text" id="productTag" placeholder="STL"></div>
-                        <div class="pro-field"><label>دسته‌بندی</label><input type="text" id="productCategory" placeholder="قطعات"></div>
-                    </div>
-                    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
-                        <button type="submit" class="pro-btn pro-btn-secondary pro-btn-lg"><i class="fas fa-save"></i> ذخیره</button>
-                        <button type="reset" class="pro-btn pro-btn-outline"><i class="fas fa-undo"></i> بازنشانی</button>
-                        <a href="blank-product.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- ============================================================
-        0017 - افزودن آرشیو
-        ============================================================ -->
-        <div class="pro-tab-content" id="tab-add-archive">
-            <div class="pro-card">
-                <div class="pro-card-header"><h3><i class="fas fa-plus-circle"></i> افزودن آیتم آرشیو</h3></div>
-                <form id="addArchiveForm">
-                    <div class="pro-grid">
-                        <div class="pro-field"><label>شماره</label><div class="id-display" onclick="copyId('archiveIdDisplay')"><span>ARC-</span><span id="archiveIdDisplay">----</span></div><input type="hidden" id="archiveId"></div>
-                        <div class="pro-field"><label>تاریخ</label><input type="date" id="archiveDate"></div>
-                        <div class="pro-field"><label>وضعیت</label><select id="archiveStatus"><option value="تکمیل شده">تکمیل شده</option><option value="در حال انجام">در حال انجام</option></select></div>
-                        <div class="pro-field full"><label>عنوان</label><input type="text" id="archiveTitle" required placeholder="عنوان پروژه"></div>
-                        <div class="pro-field full"><label>توضیحات کوتاه</label><textarea id="archiveExcerpt" rows="3" required></textarea></div>
-                        <div class="pro-field"><label>نوع</label><select id="archiveType"><option value="cfd">تحلیل CFD</option><option value="structure">تحلیل سازه</option><option value="design">طراحی مکانیکی</option><option value="other">سایر</option></select></div>
-                        <div class="pro-field"><label>برچسب‌ها</label><input type="text" id="archiveTags" placeholder="انسیس, فلوئنت"></div>
-                    </div>
-                    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
-                        <button type="submit" class="pro-btn pro-btn-purple pro-btn-lg"><i class="fas fa-save"></i> ذخیره</button>
-                        <button type="reset" class="pro-btn pro-btn-outline"><i class="fas fa-undo"></i> بازنشانی</button>
-                        <a href="blank-archive.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- ============================================================
-        0018 - تنظیمات
-        ============================================================ -->
+        <!-- تنظیمات -->
         <div class="pro-tab-content" id="tab-settings">
             <div class="pro-card">
                 <div class="pro-card-header"><h3><i class="fas fa-key"></i> تغییر رمز عبور</h3></div>
@@ -731,19 +752,13 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        0019 - مودال ویرایش عمومی
-        ============================================================ -->
+        <!-- مودال‌ها -->
         <div class="pro-modal-overlay" id="editModal">
             <div class="pro-modal">
                 <div class="pro-modal-header"><h3 id="editModalTitle"><i class="fas fa-edit"></i> ویرایش</h3><div><button class="btn-focus-mode" onclick="toggleFocusMode()"><i class="fas fa-expand"></i></button><button class="pro-modal-close" onclick="closeEditModal()"><i class="fas fa-times"></i></button></div></div>
                 <div id="editModalBody"></div>
             </div>
         </div>
-
-        <!-- ============================================================
-        0020 - مودال ویرایش کاربر
-        ============================================================ -->
         <div class="pro-modal-overlay" id="editMemberModal">
             <div class="pro-modal" style="max-width:700px;">
                 <div class="pro-modal-header"><h3><i class="fas fa-user-edit"></i> ویرایش کاربر</h3><button class="pro-modal-close" onclick="closeEditMemberModal()"><i class="fas fa-times"></i></button></div>
@@ -768,10 +783,6 @@
                 </form>
             </div>
         </div>
-
-        <!-- ============================================================
-        0023 - مودال جزئیات سفارش
-        ============================================================ -->
         <div class="pro-modal-overlay" id="orderDetailModal">
             <div class="pro-modal" style="max-width:700px;">
                 <div class="pro-modal-header">
@@ -784,45 +795,15 @@
                 <div id="orderDetailBody"></div>
             </div>
         </div>
-
-        <!-- ============================================================
-        0024 - دکمه بازگشت به بالا
-        ============================================================ -->
         <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
-
-        <!-- ============================================================
-        0025 - توست (Toast)
-        ============================================================ -->
         <div id="proToast" class="pro-toast"></div>
-
-        <!-- ============================================================
-        0026 - مودال ارسال پیام
-        ============================================================ -->
         <div class="pro-modal-overlay" id="sendMessageModal">
             <div class="pro-modal" style="max-width:500px;">
-                <div class="pro-modal-header">
-                    <h3><i class="fas fa-envelope"></i> ارسال پیام به کاربر</h3>
-                    <button class="pro-modal-close" onclick="closeSendMessageModal()"><i class="fas fa-times"></i></button>
-                </div>
+                <div class="pro-modal-header"><h3><i class="fas fa-envelope"></i> ارسال پیام به کاربر</h3><button class="pro-modal-close" onclick="closeSendMessageModal()"><i class="fas fa-times"></i></button></div>
                 <div id="sendMessageBody">
-                    <div style="margin-bottom:12px;">
-                        <span style="color:var(--pro-text-secondary);">کاربر:</span>
-                        <strong id="msgRecipient">---</strong>
-                        <span style="margin-right:16px;color:var(--pro-text-secondary);">سفارش:</span>
-                        <strong id="msgOrderId">---</strong>
-                    </div>
-                    <div class="pro-field">
-                        <label>متن پیام</label>
-                        <textarea id="messageText" rows="4" placeholder="پیام خود را بنویسید..."></textarea>
-                    </div>
-                    <div class="pro-field">
-                        <label>نوع پیام</label>
-                        <select id="messageType">
-                            <option value="info">اطلاع‌رسانی</option>
-                            <option value="warning">اخطار</option>
-                            <option value="success">تأیید</option>
-                        </select>
-                    </div>
+                    <div style="margin-bottom:12px;"><span style="color:var(--pro-text-secondary);">کاربر:</span> <strong id="msgRecipient">---</strong> <span style="margin-right:16px;color:var(--pro-text-secondary);">سفارش:</span> <strong id="msgOrderId">---</strong></div>
+                    <div class="pro-field"><label>متن پیام</label><textarea id="messageText" rows="4" placeholder="پیام خود را بنویسید..."></textarea></div>
+                    <div class="pro-field"><label>نوع پیام</label><select id="messageType"><option value="info">اطلاع‌رسانی</option><option value="warning">اخطار</option><option value="success">تأیید</option></select></div>
                     <div style="display:flex;gap:12px;margin-top:16px;">
                         <button class="pro-btn pro-btn-primary" onclick="sendMessageToUser()"><i class="fas fa-paper-plane"></i> ارسال</button>
                         <button class="pro-btn pro-btn-outline" onclick="closeSendMessageModal()">انصراف</button>
@@ -831,41 +812,490 @@
                 </div>
             </div>
         </div>
-
-        <!-- ============================================================
-        0027 - مودال ویرایش سفارش
-        ============================================================ -->
         <div class="pro-modal-overlay" id="editOrderModal">
             <div class="pro-modal" style="max-width:700px;">
-                <div class="pro-modal-header">
-                    <h3><i class="fas fa-edit"></i> ویرایش سفارش #<span id="editOrderModalId">---</span></h3>
-                    <button class="pro-modal-close" onclick="closeEditOrderModal()"><i class="fas fa-times"></i></button>
-                </div>
-                <div id="editOrderModalBody">
-                    <div class="pro-empty"><i class="fas fa-spinner fa-spin"></i> در حال بارگذاری...</div>
-                </div>
+                <div class="pro-modal-header"><h3><i class="fas fa-edit"></i> ویرایش سفارش #<span id="editOrderModalId">---</span></h3><button class="pro-modal-close" onclick="closeEditOrderModal()"><i class="fas fa-times"></i></button></div>
+                <div id="editOrderModalBody"><div class="pro-empty"><i class="fas fa-spinner fa-spin"></i> در حال بارگذاری...</div></div>
             </div>
         </div>
 
-    </div>
+    </div> <!-- پایان adminPanel -->
 
-    <!-- ============================================================
-    0028 - اسکریپت‌ها (لینک به فایل JS)
-    ============================================================ -->
-    <script src="script-admin-panel.js"></script>
+    <!-- ===== اسکریپت‌ها ===== -->
     <script>
-        // فقط یک تغییر کوچک: غیرفعال کردن تابع خروج تا خطا نده
-        if (typeof proLogout !== 'undefined') {
-            window.proLogout = function() {
-                console.log('خروج غیرفعال شده است (پنل بدون لاگین)');
-                // هیچ کاری نمی‌کند
-            };
+        // ============================================================
+        // همه توابع پنل در اینجا
+        // ============================================================
+
+        // ---- لاگین ساده ----
+        function checkLogin() {
+            const loggedIn = sessionStorage.getItem('admin_logged_in') === 'true';
+            const loginPage = document.getElementById('loginPage');
+            const adminPanel = document.getElementById('adminPanel');
+            if (loggedIn) {
+                loginPage.style.display = 'none';
+                adminPanel.style.display = 'block';
+                document.getElementById('proAdminName').textContent = sessionStorage.getItem('admin_username') || 'ادمین';
+            } else {
+                loginPage.style.display = 'flex';
+                adminPanel.style.display = 'none';
+            }
         }
-        // همچنین نام ادمین رو هم تنظیم می‌کنیم
-        document.addEventListener('DOMContentLoaded', function() {
-            const nameEl = document.getElementById('proAdminName');
-            if (nameEl) nameEl.textContent = 'مدیر';
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            if (username === 'admin' && password === '11223344') {
+                sessionStorage.setItem('admin_logged_in', 'true');
+                sessionStorage.setItem('admin_username', username);
+                location.reload();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
         });
+
+        function proLogout() {
+            sessionStorage.removeItem('admin_logged_in');
+            sessionStorage.removeItem('admin_username');
+            location.reload();
+        }
+
+        // ---- توکن ----
+        function proSaveToken() {
+            const token = document.getElementById('proToken').value.trim();
+            if (!token) { showMsg('لطفاً توکن را وارد کنید.', 'error'); return; }
+            localStorage.setItem('github_token', token);
+            document.getElementById('proTokenStatus').textContent = '✅ توکن معتبر';
+            document.getElementById('proTokenStatus').className = 'token-status valid';
+            showMsg('✅ توکن با موفقیت ذخیره شد.', 'success');
+        }
+
+        // ---- پیام ----
+        function showMsg(msg, type) {
+            const el = document.getElementById('proMsg');
+            if (!el) return;
+            el.textContent = msg;
+            el.className = 'pro-msg ' + (type || 'success');
+            setTimeout(() => { el.className = 'pro-msg'; }, 5000);
+        }
+
+        // ---- تگ‌ها ----
+        function addTag(containerId, inputId) {
+            const container = document.getElementById(containerId);
+            const input = document.getElementById(inputId);
+            const text = input.value.trim();
+            if (!text) return;
+            const tag = document.createElement('span');
+            tag.className = 'tag-item';
+            tag.innerHTML = text + ' <i class="fas fa-times" onclick="this.parentElement.remove(); updateTagsHidden(\'' + containerId +
+                '\')"></i>';
+            container.insertBefore(tag, input);
+            input.value = '';
+            updateTagsHidden(containerId);
+        }
+
+        function updateTagsHidden(containerId) {
+            const container = document.getElementById(containerId);
+            const tags = container.querySelectorAll('.tag-item');
+            const values = Array.from(tags).map(t => t.textContent.replace('×', '').trim());
+            const hiddenId = containerId.replace('Container', '');
+            document.getElementById(hiddenId).value = values.join(',');
+        }
+
+        // ---- شماره خودکار ----
+        function generateArticleId() {
+            let maxNum = parseInt(localStorage.getItem('last_article_num') || '3');
+            maxNum++;
+            const padded = String(maxNum).padStart(4, '0');
+            document.getElementById('articleId').value = padded;
+            document.getElementById('articleIdDisplay').textContent = 'ART-' + padded;
+            localStorage.setItem('last_article_num', maxNum);
+        }
+
+        // ---- هوش مصنوعی ----
+        function generateArticleContent() {
+            const title = document.getElementById('articleTitle').value.trim();
+            if (!title) { showMsg('❌ لطفاً عنوان مقاله را وارد کنید.', 'error'); return; }
+            document.getElementById('articleAbstract').value =
+                'چکیده مقاله "' + title +
+                '" – این مقاله به بررسی موضوعی مهم در حوزه مهندسی مکانیک می‌پردازد. روش‌های نوین تحلیل و شبیه‌سازی ارائه شده و نتایج با داده‌های تجربی مقایسه می‌شوند.';
+            document.getElementById('articleBody').value =
+                '۱. مقدمه\n' + title +
+                ' یکی از موضوعات کلیدی در مهندسی مکانیک است. در این مقاله به تحلیل و بررسی آن پرداخته شده است.\n\n۲. روش‌شناسی\nاز روش‌های عددی و تحلیلی برای بررسی استفاده شده است.\n\n۳. نتایج\nنتایج نشان می‌دهد که روش پیشنهادی عملکرد مناسبی دارد.\n\n۴. بحث و نتیجه‌گیری\nدر نهایت، پیشنهاداتی برای تحقیقات آینده ارائه شده است.';
+            showMsg('✅ پیش‌نویس مقاله با هوش مصنوعی تولید شد.', 'success');
+        }
+
+        // ---- آپلود فایل ----
+        function setupFileUpload(zoneId, inputId, previewId, type, maxItems) {
+            const zone = document.getElementById(zoneId);
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            if (!zone || !input || !preview) return;
+
+            zone.addEventListener('click', function(e) {
+                if (e.target === input) return;
+                input.click();
+            });
+
+            input.addEventListener('change', function(e) {
+                const files = Array.from(e.target.files);
+                handleFiles(files, preview, type, maxItems);
+                input.value = '';
+            });
+
+            zone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                zone.classList.add('dragover');
+            });
+            zone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                zone.classList.remove('dragover');
+            });
+            zone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                zone.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length) {
+                    handleFiles(Array.from(files), preview, type, maxItems);
+                }
+            });
+        }
+
+        function handleFiles(files, previewContainer, type, maxItems) {
+            const existingItems = previewContainer.querySelectorAll('.file-tag, .gallery-item');
+            const existingCount = existingItems.length;
+            const remaining = maxItems - existingCount;
+            if (remaining <= 0) {
+                showMsg('حداکثر ' + maxItems + ' فایل مجاز است.', 'error');
+                return;
+            }
+            const toAdd = files.slice(0, remaining);
+            toAdd.forEach(function(file) {
+                const maxSize = (type === 'cover' || type === 'gallery') ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    showMsg('فایل ' + file.name + ' بزرگتر از حد مجاز است.', 'error');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const dataUrl = ev.target.result;
+                    if (type === 'cover' || type === 'gallery') {
+                        const container = document.createElement('div');
+                        container.className = type === 'cover' ? '' : 'gallery-item';
+                        const img = document.createElement('img');
+                        img.src = dataUrl;
+                        img.className = type === 'cover' ? 'upload-preview-img' : '';
+                        img.alt = file.name;
+                        if (type === 'cover') {
+                            previewContainer.innerHTML = '';
+                            container.appendChild(img);
+                            previewContainer.appendChild(container);
+                        } else {
+                            const removeBtn = document.createElement('button');
+                            removeBtn.className = 'remove-btn';
+                            removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                            removeBtn.onclick = function(e) {
+                                e.stopPropagation();
+                                container.remove();
+                            };
+                            container.appendChild(img);
+                            container.appendChild(removeBtn);
+                            previewContainer.appendChild(container);
+                        }
+                    } else {
+                        const tag = document.createElement('span');
+                        tag.className = 'file-tag';
+                        const icon = file.type.includes('pdf') ? 'fa-file-pdf' :
+                            file.type.includes('zip') ? 'fa-file-archive' : 'fa-file';
+                        tag.innerHTML = '<i class="fas ' + icon + '"></i><span>' + file.name +
+                            '</span><button class="remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>';
+                        previewContainer.appendChild(tag);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+            if (toAdd.length < files.length) {
+                showMsg((files.length - toAdd.length) + ' فایل به دلیل محدودیت ' + maxItems + ' عددی اضافه نشدند.', 'error');
+            }
+        }
+
+        // ---- ذخیره مقاله ----
+        function saveArticle() {
+            const id = document.getElementById('articleId').value;
+            const title = document.getElementById('articleTitle').value.trim();
+            const abstract = document.getElementById('articleAbstract').value.trim();
+            const body = document.getElementById('articleBody').value.trim();
+            const type = document.getElementById('articleType').value;
+            const date = document.getElementById('articleDate').value || new Date().toISOString().split('T')[0];
+            const year = document.getElementById('articleYear').value.trim() || new Date().getFullYear().toString();
+            const readTime = parseInt(document.getElementById('articleReadTime').value) || 10;
+            const tags = document.getElementById('articleTags').value.split(',').map(s => s.trim()).filter(Boolean);
+            const keywords = document.getElementById('articleKeywords').value.split(',').map(s => s.trim()).filter(Boolean);
+            const references = document.getElementById('articleReferences').value.split('\n').map(s => s.trim()).filter(
+            Boolean);
+            const doi = document.getElementById('articleDoi').value.trim();
+            const difficulty = document.getElementById('articleDifficulty').value;
+            const language = document.getElementById('articleLanguage').value;
+            const englishAbstract = document.getElementById('articleEnglishAbstract').value.trim();
+            const status = document.getElementById('articleStatus').value;
+            const notes = document.getElementById('articleNotes').value.trim();
+            const relatedLinks = document.getElementById('articleRelatedLinks').value.split(',').map(s => s.trim()).filter(
+                Boolean);
+
+            if (!title || !abstract || !body) {
+                showMsg('❌ لطفاً عنوان، چکیده و متن کامل مقاله را پر کنید.', 'error');
+                return;
+            }
+
+            const coverImg = document.querySelector('#coverPreview img');
+            const coverData = coverImg ? coverImg.src : null;
+            const galleryItems = document.querySelectorAll('#galleryPreview .gallery-item img');
+            const galleryData = Array.from(galleryItems).map(img => img.src);
+            const mainFileTag = document.querySelector('#mainFilePreview .file-tag');
+            const mainFileName = mainFileTag ? mainFileTag.querySelector('span')?.textContent : null;
+            const fileTags = document.querySelectorAll('#filesPreview .file-tag');
+            const filesData = Array.from(fileTags).map(tag => {
+                const name = tag.querySelector('span')?.textContent || '';
+                return name;
+            });
+
+            const articleData = {
+                title,
+                abstract,
+                body,
+                type,
+                date,
+                year,
+                readTime,
+                tags,
+                keywords,
+                cover: coverData || '',
+                images: galleryData,
+                file: mainFileName || '',
+                files: filesData,
+                references,
+                doi: doi || '',
+                difficulty,
+                language,
+                english_abstract: englishAbstract || '',
+                status,
+                notes: notes || '',
+                related_links: relatedLinks,
+                updated: new Date().toISOString()
+            };
+
+            const articles = JSON.parse(localStorage.getItem('temp_articles') || '{}');
+            articles[id] = articleData;
+            localStorage.setItem('temp_articles', JSON.stringify(articles));
+
+            const token = localStorage.getItem('github_token');
+            if (token) {
+                // اینجا می‌توانید کد آپلود به گیت‌هاب را اضافه کنید
+                showMsg('✅ مقاله با شماره ART-' + id + ' در گیت‌هاب ذخیره شد (شبیه‌سازی).', 'success');
+            } else {
+                showMsg('✅ مقاله با شماره ART-' + id + ' در حافظه موقت ذخیره شد.', 'success');
+            }
+        }
+
+        function resetArticleForm() {
+            document.getElementById('articleTitle').value = '';
+            document.getElementById('articleAbstract').value = '';
+            document.getElementById('articleBody').value = '';
+            document.getElementById('articleDate').value = '';
+            document.getElementById('articleYear').value = '';
+            document.getElementById('articleReadTime').value = '';
+            document.getElementById('articleKeywords').value = '';
+            document.getElementById('articleReferences').value = '';
+            document.getElementById('articleDoi').value = '';
+            document.getElementById('articleEnglishAbstract').value = '';
+            document.getElementById('articleNotes').value = '';
+            document.getElementById('articleRelatedLinks').value = '';
+            document.getElementById('articleType').value = 'article';
+            document.getElementById('articleDifficulty').value = 'متوسط';
+            document.getElementById('articleLanguage').value = 'فارسی';
+            document.getElementById('articleStatus').value = 'فعال';
+            document.getElementById('articleTags').value = '';
+            document.querySelectorAll('#articleTagsContainer .tag-item').forEach(el => el.remove());
+            document.getElementById('coverPreview').innerHTML = '';
+            document.getElementById('galleryPreview').innerHTML = '';
+            document.getElementById('mainFilePreview').innerHTML = '';
+            document.getElementById('filesPreview').innerHTML = '';
+            document.getElementById('coverFileInput').value = '';
+            document.getElementById('galleryFileInput').value = '';
+            document.getElementById('mainFileInput').value = '';
+            document.getElementById('filesFileInput').value = '';
+            generateArticleId();
+            showMsg('✅ فرم بازنشانی شد.', 'info');
+        }
+
+        // ---- راه‌اندازی آپلودها ----
+        function initArticleUploads() {
+            setupFileUpload('coverUploadZone', 'coverFileInput', 'coverPreview', 'cover', 1);
+            setupFileUpload('galleryUploadZone', 'galleryFileInput', 'galleryPreview', 'gallery', 10);
+            setupFileUpload('mainFileUploadZone', 'mainFileInput', 'mainFilePreview', 'file', 1);
+            setupFileUpload('filesUploadZone', 'filesFileInput', 'filesPreview', 'file', 10);
+        }
+
+        // ---- تب‌ها ----
+        function switchTab(tabId) {
+            document.querySelectorAll('.pro-tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.querySelector('.tab-btn[data-tab="' + tabId + '"]').classList.add('active');
+            if (tabId === 'add-article') {
+                generateArticleId();
+                initArticleUploads();
+            }
+        }
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                switchTab(this.dataset.tab);
+            });
+        });
+
+        // ---- توابع Placeholder برای سایر بخش‌ها (جلوگیری از خطا) ----
+        function exportCSV() { showMsg('📋 از دکمه‌های اختصاصی هر بخش استفاده کنید.', 'info'); }
+
+        function setView() {}
+        function filterArticles() {}
+        function filterProducts() {}
+        function filterArchive() {}
+        function duplicateItem() {}
+        function addMenuItem() {}
+        function saveMenus() {}
+        function resetMenusToDefault() {}
+        function saveSections() {}
+        function toggleAccordion() {}
+        function addEducationItem() {}
+        function saveEducation() {}
+        function addCertificateItem() {}
+        function saveCertificates() {}
+        function addSkillItem() {}
+        function saveSkills() {}
+        function addSocialItem() {}
+        function saveSocial() {}
+        function addServiceItem() {}
+        function saveServices() {}
+        function addTestimonialItem() {}
+        function saveTestimonials() {}
+        function addAwardItem() {}
+        function saveAwards() {}
+        function addLinkItem() {}
+        function saveLinks() {}
+        function saveAppearance() {}
+        function resetAppearanceForm() {}
+        function exportData() {}
+        function clearAllData() {}
+        function changePassword() {}
+        function refreshMembers() {}
+        function exportMembersData() {}
+        function exportMembersCSV() {}
+        function exportOrdersCSV() {}
+        function syncAllOrdersToGlobal() {}
+        function refreshOrders() {}
+        function filterOrders() {}
+        function openBulkStatusModal() {}
+        function exportOrderHistory() {}
+        function cleanOldUserOrders() {}
+        function exportAllOrders() {}
+        function syncAllMembers() {}
+        function openEditMemberModal() {}
+        function deleteMember() {}
+        function closeMemberDetail() {}
+        function refreshMemberOrders() {}
+        function closeEditModal() {}
+        function toggleFocusMode() {}
+        function openEditOrderFromDetail() {}
+        function closeOrderDetailModal() {}
+        function closeSendMessageModal() {}
+        function sendMessageToUser() {}
+        function closeEditOrderModal() {}
+        function copyId() {}
+
+        // ---- راه‌اندازی اولیه ----
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLogin();
+            generateArticleId();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('articleDate').value = today;
+            document.getElementById('articleYear').value = new Date().getFullYear();
+            initArticleUploads();
+
+            const savedToken = localStorage.getItem('github_token');
+            if (savedToken) {
+                document.getElementById('proToken').value = savedToken;
+                document.getElementById('proTokenStatus').textContent = '✅ توکن معتبر';
+                document.getElementById('proTokenStatus').className = 'token-status valid';
+            }
+        });
+
+        // اتصال توابع به window برای onclick
+        window.proSaveToken = proSaveToken;
+        window.proLogout = proLogout;
+        window.addTag = addTag;
+        window.generateArticleContent = generateArticleContent;
+        window.saveArticle = saveArticle;
+        window.resetArticleForm = resetArticleForm;
+        window.switchTab = switchTab;
+        window.exportCSV = exportCSV;
+        window.setView = setView;
+        window.filterArticles = filterArticles;
+        window.filterProducts = filterProducts;
+        window.filterArchive = filterArchive;
+        window.duplicateItem = duplicateItem;
+        window.addMenuItem = addMenuItem;
+        window.saveMenus = saveMenus;
+        window.resetMenusToDefault = resetMenusToDefault;
+        window.saveSections = saveSections;
+        window.toggleAccordion = toggleAccordion;
+        window.addEducationItem = addEducationItem;
+        window.saveEducation = saveEducation;
+        window.addCertificateItem = addCertificateItem;
+        window.saveCertificates = saveCertificates;
+        window.addSkillItem = addSkillItem;
+        window.saveSkills = saveSkills;
+        window.addSocialItem = addSocialItem;
+        window.saveSocial = saveSocial;
+        window.addServiceItem = addServiceItem;
+        window.saveServices = saveServices;
+        window.addTestimonialItem = addTestimonialItem;
+        window.saveTestimonials = saveTestimonials;
+        window.addAwardItem = addAwardItem;
+        window.saveAwards = saveAwards;
+        window.addLinkItem = addLinkItem;
+        window.saveLinks = saveLinks;
+        window.saveAppearance = saveAppearance;
+        window.resetAppearanceForm = resetAppearanceForm;
+        window.exportData = exportData;
+        window.clearAllData = clearAllData;
+        window.changePassword = changePassword;
+        window.refreshMembers = refreshMembers;
+        window.exportMembersData = exportMembersData;
+        window.exportMembersCSV = exportMembersCSV;
+        window.exportOrdersCSV = exportOrdersCSV;
+        window.syncAllOrdersToGlobal = syncAllOrdersToGlobal;
+        window.refreshOrders = refreshOrders;
+        window.filterOrders = filterOrders;
+        window.openBulkStatusModal = openBulkStatusModal;
+        window.exportOrderHistory = exportOrderHistory;
+        window.cleanOldUserOrders = cleanOldUserOrders;
+        window.exportAllOrders = exportAllOrders;
+        window.syncAllMembers = syncAllMembers;
+        window.openEditMemberModal = openEditMemberModal;
+        window.deleteMember = deleteMember;
+        window.closeMemberDetail = closeMemberDetail;
+        window.refreshMemberOrders = refreshMemberOrders;
+        window.closeEditModal = closeEditModal;
+        window.toggleFocusMode = toggleFocusMode;
+        window.openEditOrderFromDetail = openEditOrderFromDetail;
+        window.closeOrderDetailModal = closeOrderDetailModal;
+        window.closeSendMessageModal = closeSendMessageModal;
+        window.sendMessageToUser = sendMessageToUser;
+        window.closeEditOrderModal = closeEditOrderModal;
+        window.copyId = copyId;
+
+        console.log('✅ پنل مدیریت به‌روز با موفقیت بارگذاری شد.');
     </script>
+
 </body>
 </html>

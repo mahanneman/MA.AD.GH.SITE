@@ -3156,9 +3156,6 @@ window.saveProduct = async function() {
     // ============================================================
     // 0527 - مدیریت کاربران (Members) و سفارشات
     // ============================================================
-    let membersData = [];
-    let currentMemberId = null;
-    let currentMemberOrders = [];
 
     async function loadMembers() {
         const list = document.getElementById('membersList');
@@ -4501,8 +4498,7 @@ window.saveProduct = async function() {
     // ============================================================
     // 0528 - مدیریت سفارشات گلوبال
     // ============================================================
-    let allOrdersData = [];
-    let filteredOrdersData = [];
+   
 
     async function loadGlobalOrders() {
         try {

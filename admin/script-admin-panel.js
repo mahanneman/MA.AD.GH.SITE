@@ -4519,6 +4519,108 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('articleDate').value = today;
     document.getElementById('articleYear').value = new Date().getFullYear();
 });
+// ============================================================
+// ۰۰۰۳ - توابع آپلود فایل (برای افزودن مقاله)
+// ============================================================
 
+function setupFileUpload(zoneId, inputId, previewId, type, maxItems) {
+    const zone = document.getElementById(zoneId);
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    if (!zone || !input || !preview) return;
+
+    zone.addEventListener('click', function(e) {
+        if (e.target === input) return;
+        input.click();
+    });
+
+    input.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        handleFiles(files, preview, type, maxItems);
+        input.value = '';
+    });
+
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        zone.classList.add('dragover');
+    });
+    zone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length) {
+            handleFiles(Array.from(files), preview, type, maxItems);
+        }
+    });
+}
+
+function handleFiles(files, previewContainer, type, maxItems) {
+    const existingItems = previewContainer.querySelectorAll('.file-tag, .gallery-item');
+    const existingCount = existingItems.length;
+    const remaining = maxItems - existingCount;
+    if (remaining <= 0) {
+        showMsg('حداکثر ' + maxItems + ' فایل مجاز است.', 'error');
+        return;
+    }
+    const toAdd = files.slice(0, remaining);
+    toAdd.forEach(function(file) {
+        const maxSize = (type === 'cover' || type === 'gallery') ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
+        if (file.size > maxSize) {
+            showMsg('فایل ' + file.name + ' بزرگتر از حد مجاز است.', 'error');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const dataUrl = ev.target.result;
+            if (type === 'cover' || type === 'gallery') {
+                const container = document.createElement('div');
+                container.className = type === 'cover' ? '' : 'gallery-item';
+                const img = document.createElement('img');
+                img.src = dataUrl;
+                img.className = type === 'cover' ? 'upload-preview-img' : '';
+                img.alt = file.name;
+                if (type === 'cover') {
+                    previewContainer.innerHTML = '';
+                    container.appendChild(img);
+                    previewContainer.appendChild(container);
+                } else {
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-btn';
+                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    removeBtn.onclick = function(e) {
+                        e.stopPropagation();
+                        container.remove();
+                    };
+                    container.appendChild(img);
+                    container.appendChild(removeBtn);
+                    previewContainer.appendChild(container);
+                }
+            } else {
+                const tag = document.createElement('span');
+                tag.className = 'file-tag';
+                const icon = file.type.includes('pdf') ? 'fa-file-pdf' :
+                    file.type.includes('zip') ? 'fa-file-archive' : 'fa-file';
+                tag.innerHTML = '<i class="fas ' + icon + '"></i><span>' + file.name +
+                    '</span><button class="remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>';
+                previewContainer.appendChild(tag);
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+    if (toAdd.length < files.length) {
+        showMsg((files.length - toAdd.length) + ' فایل به دلیل محدودیت ' + maxItems + ' عددی اضافه نشدند.', 'error');
+    }
+}
+
+function initArticleUploads() {
+    setupFileUpload('coverUploadZone', 'coverFileInput', 'coverPreview', 'cover', 1);
+    setupFileUpload('galleryUploadZone', 'galleryFileInput', 'galleryPreview', 'gallery', 10);
+    setupFileUpload('mainFileUploadZone', 'mainFileInput', 'mainFilePreview', 'file', 1);
+    setupFileUpload('filesUploadZone', 'filesFileInput', 'filesPreview', 'file', 10);
+}
 
 })();

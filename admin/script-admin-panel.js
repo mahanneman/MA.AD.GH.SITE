@@ -1,6 +1,7 @@
+```javascript
 // ============================================================
 // script-admin-panel.js - پنل مدیریت کامل (هماهنگ با admin-panel.html)
-// نسخه اصلاح‌شده - رفع تداخلات توابع + ایمن‌سازی addEventListener
+// نسخه نهایی - رفع تمام تداخلات و خطاها
 // ============================================================
 
 (function() {
@@ -150,18 +151,21 @@
     // ============================================================
     function showMsg(msg, type = 'success') {
         const el = document.getElementById('proMsg');
+        if (!el) return;
         el.textContent = msg;
         el.className = 'pro-msg ' + type;
         setTimeout(() => { el.className = 'pro-msg'; }, 6000);
     }
     function showToast(msg, type = 'success') {
         const el = document.getElementById('proToast');
+        if (!el) return;
         el.textContent = msg;
         el.className = 'pro-toast ' + type;
         setTimeout(() => { el.className = 'pro-toast'; }, 4000);
     }
     function logActivity(message) {
         const log = document.getElementById('proActivityLog');
+        if (!log) return;
         const time = new Date().toLocaleString('fa-IR');
         const item = document.createElement('div');
         item.className = 'item';
@@ -176,6 +180,7 @@
     function loadActivity() {
         const history = JSON.parse(localStorage.getItem('pro_activity') || '[]');
         const log = document.getElementById('proActivityLog');
+        if (!log) return;
         log.innerHTML = history.map(item =>
             `<div class="item"><span>${item.message}</span><span class="time">${item.time}</span></div>`
         ).join('');
@@ -193,9 +198,9 @@
         if (btn) btn.classList.add('active');
         const content = document.getElementById('tab-' + tabId);
         if (content) content.classList.add('active');
-        if (tabId === 'articles') { loadArticles(); document.getElementById('articlesSearch').value = ''; }
-        if (tabId === 'products') { loadProducts(); document.getElementById('productsSearch').value = ''; }
-        if (tabId === 'archive') { loadArchive(); document.getElementById('archiveSearch').value = ''; }
+        if (tabId === 'articles') { loadArticles(); const search = document.getElementById('articlesSearch'); if (search) search.value = ''; }
+        if (tabId === 'products') { loadProducts(); const search = document.getElementById('productsSearch'); if (search) search.value = ''; }
+        if (tabId === 'archive') { loadArchive(); const search = document.getElementById('archiveSearch'); if (search) search.value = ''; }
         if (tabId === 'dashboard') updateDashboard();
         if (tabId === 'add-article') generateArticleId();
         if (tabId === 'add-product') generateProductId();
@@ -247,10 +252,9 @@
         content: base64Content,
         branch: 'main'
     };
-// فقط اگر sha وجود داشته باشد، اضافه کن
-if (sha) {
-    body.sha = sha;
-}
+    if (sha) {
+        body.sha = sha;
+    }
         const res = await fetch(url, {
             method: 'PUT',
             headers: {
@@ -325,28 +329,34 @@ if (sha) {
     }
     function generateArticleId() {
         const { id, num } = generateId(articlesData, 'ART');
-        document.getElementById('articleId').value = num;
-        document.getElementById('articleIdDisplay').textContent = id;
-        document.getElementById('articleDate').value = new Date().toISOString().split('T')[0];
+        const idEl = document.getElementById('articleId');
+        const displayEl = document.getElementById('articleIdDisplay');
+        const dateEl = document.getElementById('articleDate');
+        if (idEl) idEl.value = num;
+        if (displayEl) displayEl.textContent = id;
+        if (dateEl) dateEl.value = new Date().toISOString().split('T')[0];
     }
     function generateProductId() {
         const { id, num } = generateId(productsData, 'PRD');
-        document.getElementById('productId').value = num;
-        document.getElementById('productIdDisplay').textContent = id;
-        // چک کردن وجود productDate (برای جلوگیری از خطای null)
-        const productDateEl = document.getElementById('productDate');
-        if (productDateEl) {
-            productDateEl.value = new Date().toISOString().split('T')[0];
-        }
+        const idEl = document.getElementById('productId');
+        const displayEl = document.getElementById('productIdDisplay');
+        const dateEl = document.getElementById('productDate');
+        if (idEl) idEl.value = num;
+        if (displayEl) displayEl.textContent = id;
+        if (dateEl) dateEl.value = new Date().toISOString().split('T')[0];
     }
     function generateArchiveId() {
         const { id, num } = generateId(archiveData, 'ARC');
-        document.getElementById('archiveId').value = num;
-        document.getElementById('archiveIdDisplay').textContent = id;
-        document.getElementById('archiveDate').value = new Date().toISOString().split('T')[0];
+        const idEl = document.getElementById('archiveId');
+        const displayEl = document.getElementById('archiveIdDisplay');
+        const dateEl = document.getElementById('archiveDate');
+        if (idEl) idEl.value = num;
+        if (displayEl) displayEl.textContent = id;
+        if (dateEl) dateEl.value = new Date().toISOString().split('T')[0];
     }
     function copyId(elementId) {
         const el = document.getElementById(elementId);
+        if (!el) return;
         const text = el.textContent;
         navigator.clipboard.writeText(text).then(() => {
             showToast('✅ شماره ' + text + ' کپی شد!', 'success');
@@ -385,6 +395,7 @@ if (sha) {
     let articlesFiltered = [];
     async function loadArticles() {
         const list = document.getElementById('proArticlesList');
+        if (!list) return;
         if (!getToken()) {
             list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
             return;
@@ -407,6 +418,7 @@ if (sha) {
     }
     function renderArticles(items) {
         const list = document.getElementById('proArticlesList');
+        if (!list) return;
         if (items.length === 0) {
             list.innerHTML = '<div class="pro-empty"><i class="fas fa-newspaper"></i>هیچ مقاله‌ای یافت نشد.</div>';
         } else {
@@ -435,8 +447,10 @@ if (sha) {
                 `;
             }).join('');
         }
-        document.getElementById('proArticlesCount').textContent = allArticles.length;
-        document.getElementById('proArticlesSub').textContent = allArticles.length + ' مقاله';
+        const countEl = document.getElementById('proArticlesCount');
+        if (countEl) countEl.textContent = allArticles.length;
+        const subEl = document.getElementById('proArticlesSub');
+        if (subEl) subEl.textContent = allArticles.length + ' مقاله';
         updateDashboard();
         updateCounts();
     }
@@ -485,6 +499,7 @@ if (sha) {
     let productsFiltered = [];
     async function loadProducts() {
         const list = document.getElementById('proProductsList');
+        if (!list) return;
         if (!getToken()) {
             list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
             return;
@@ -507,6 +522,7 @@ if (sha) {
     }
     function renderProducts(items) {
         const list = document.getElementById('proProductsList');
+        if (!list) return;
         if (items.length === 0) {
             list.innerHTML = '<div class="pro-empty"><i class="fas fa-cube"></i>هیچ محصولی یافت نشد.</div>';
         } else {
@@ -534,8 +550,10 @@ if (sha) {
                 `;
             }).join('');
         }
-        document.getElementById('proProductsCount').textContent = allProducts.length;
-        document.getElementById('proProductsSub').textContent = allProducts.length + ' محصول';
+        const countEl = document.getElementById('proProductsCount');
+        if (countEl) countEl.textContent = allProducts.length;
+        const subEl = document.getElementById('proProductsSub');
+        if (subEl) subEl.textContent = allProducts.length + ' محصول';
         updateDashboard();
         updateCounts();
     }
@@ -584,6 +602,7 @@ if (sha) {
     let archiveFiltered = [];
     async function loadArchive() {
         const list = document.getElementById('proArchiveList');
+        if (!list) return;
         if (!getToken()) {
             list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
             return;
@@ -606,6 +625,7 @@ if (sha) {
     }
     function renderArchive(items) {
         const list = document.getElementById('proArchiveList');
+        if (!list) return;
         const typeLabels = { cfd: 'تحلیل CFD', structure: 'تحلیل سازه', design: 'طراحی مکانیکی', electro: 'تحلیل الکترومغناطیس', university: 'پروژه دانشگاهی', fabrication: 'ساخت و نمونه‌سازی', other: 'سایر' };
         const typeBadgeClass = { cfd: 'badge-cfd', structure: 'badge-structure', design: 'badge-design', electro: 'badge-electro', university: 'badge-university', fabrication: 'badge-fabrication', other: 'badge-other' };
         if (items.length === 0) {
@@ -638,8 +658,10 @@ if (sha) {
                 `;
             }).join('');
         }
-        document.getElementById('proArchiveCount').textContent = allArchive.length;
-        document.getElementById('proArchiveSub').textContent = allArchive.length + ' آیتم';
+        const countEl = document.getElementById('proArchiveCount');
+        if (countEl) countEl.textContent = allArchive.length;
+        const subEl = document.getElementById('proArchiveSub');
+        if (subEl) subEl.textContent = allArchive.length + ' آیتم';
         updateDashboard();
         updateCounts();
     }
@@ -691,6 +713,7 @@ if (sha) {
         const modal = document.getElementById('editModal');
         const title = document.getElementById('editModalTitle');
         const body = document.getElementById('editModalBody');
+        if (!modal || !title || !body) { showMsg('❌ مودال یافت نشد.', 'error'); return; }
 
         let data = {};
         if (type === 'article') data = articlesData[key];
@@ -850,16 +873,20 @@ if (sha) {
         setupEditGalleryUpload();
         setupEditFilesUpload();
 
-        document.getElementById('editForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            saveEdit();
-        });
+        const form = document.getElementById('editForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveEdit();
+            });
+        }
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
     function closeEditModal() {
-        document.getElementById('editModal').classList.remove('active');
+        const modal = document.getElementById('editModal');
+        if (modal) modal.classList.remove('active');
         document.body.style.overflow = '';
         editingItem = null;
         editingType = null;
@@ -869,13 +896,16 @@ if (sha) {
     let focusModeActive = false;
     function toggleFocusMode() {
         const modal = document.querySelector('.pro-modal');
+        if (!modal) return;
         focusModeActive = !focusModeActive;
         if (focusModeActive) {
             modal.classList.add('focus-mode');
-            document.querySelector('.btn-focus-mode').innerHTML = '<i class="fas fa-compress"></i>';
+            const btn = document.querySelector('.btn-focus-mode');
+            if (btn) btn.innerHTML = '<i class="fas fa-compress"></i>';
         } else {
             modal.classList.remove('focus-mode');
-            document.querySelector('.btn-focus-mode').innerHTML = '<i class="fas fa-expand"></i>';
+            const btn = document.querySelector('.btn-focus-mode');
+            if (btn) btn.innerHTML = '<i class="fas fa-expand"></i>';
         }
     }
 
@@ -883,18 +913,23 @@ if (sha) {
     // 0512 - توابع کمکی ویرایش (Edit Helpers)
     // ============================================================
     function removeEditCover() {
-        document.getElementById('editCoverPreview').style.display = 'none';
-        document.getElementById('editCoverPreviewImg').src = '';
-        document.getElementById('editCoverInput').value = '';
+        const preview = document.getElementById('editCoverPreview');
+        const img = document.getElementById('editCoverPreviewImg');
+        const input = document.getElementById('editCoverInput');
+        if (preview) preview.style.display = 'none';
+        if (img) img.src = '';
+        if (input) input.value = '';
         window._editCoverImage = null;
     }
     function removeEditImage(index) {
         const grid = document.getElementById('editGalleryGrid');
+        if (!grid) return;
         const items = grid.querySelectorAll('.edit-gallery-item');
         if (items[index]) { items[index].remove(); }
     }
     function removeEditFile(index) {
         const list = document.getElementById('editFileList');
+        if (!list) return;
         const items = list.querySelectorAll('.edit-file-tag');
         if (items[index]) { items[index].remove(); }
     }
@@ -903,7 +938,7 @@ if (sha) {
         const input = document.getElementById('editCoverInput');
         const preview = document.getElementById('editCoverPreview');
         const img = document.getElementById('editCoverPreviewImg');
-        if (!zone) return;
+        if (!zone || !input || !preview || !img) return;
         zone.addEventListener('click', () => input.click());
         input.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -932,7 +967,7 @@ if (sha) {
         const zone = document.getElementById('editGalleryZone');
         const input = document.getElementById('editGalleryInput');
         const grid = document.getElementById('editGalleryGrid');
-        if (!zone) return;
+        if (!zone || !input || !grid) return;
         zone.addEventListener('click', () => input.click());
         input.addEventListener('change', function(e) {
             const newFiles = Array.from(e.target.files);
@@ -970,7 +1005,7 @@ if (sha) {
         const zone = document.getElementById('editFilesZone');
         const input = document.getElementById('editFilesInput');
         const list = document.getElementById('editFileList');
-        if (!zone) return;
+        if (!zone || !input || !list) return;
         zone.addEventListener('click', () => input.click());
         input.addEventListener('change', function(e) {
             const newFiles = Array.from(e.target.files);
@@ -1010,11 +1045,12 @@ if (sha) {
         });
     }
     async function saveEdit() {
-        const key = document.getElementById('editKey').value;
-        const type = document.getElementById('editType').value;
+        const key = document.getElementById('editKey')?.value;
+        const type = document.getElementById('editType')?.value;
+        if (!key || !type) { showMsg('❌ اطلاعات ویرایش کامل نیست.', 'error'); return; }
         try {
             let data = {};
-            let cover = document.getElementById('editCoverPreviewImg').src;
+            let cover = document.getElementById('editCoverPreviewImg')?.src;
             if (!cover || cover.includes('placeholder') || cover === '') cover = null;
             const galleryItems = document.querySelectorAll('#editGalleryGrid .edit-gallery-item img');
             const images = [];
@@ -1031,13 +1067,13 @@ if (sha) {
             });
             if (type === 'article') {
                 data = {
-                    title: document.getElementById('editTitle').value.trim(),
-                    excerpt: document.getElementById('editExcerpt').value.trim(),
-                    type: document.getElementById('editTypeSelect').value,
-                    date: document.getElementById('editDate').value || new Date().toISOString().split('T')[0],
-                    tags: document.getElementById('editTags').value.split(/[،,]/).map(t => t.trim()).filter(Boolean),
-                    readTime: parseInt(document.getElementById('editReadTime').value) || 5,
-                    body: document.getElementById('editBody').value.trim(),
+                    title: document.getElementById('editTitle')?.value?.trim() || '',
+                    excerpt: document.getElementById('editExcerpt')?.value?.trim() || '',
+                    type: document.getElementById('editTypeSelect')?.value || 'article',
+                    date: document.getElementById('editDate')?.value || new Date().toISOString().split('T')[0],
+                    tags: (document.getElementById('editTags')?.value || '').split(/[،,]/).map(t => t.trim()).filter(Boolean),
+                    readTime: parseInt(document.getElementById('editReadTime')?.value) || 5,
+                    body: document.getElementById('editBody')?.value?.trim() || '',
                     cover: cover,
                     images: images,
                     files: files,
@@ -1050,13 +1086,13 @@ if (sha) {
                 loadArticles();
             } else if (type === 'product') {
                 data = {
-                    name: document.getElementById('editName').value.trim(),
-                    desc: document.getElementById('editDesc').value.trim(),
-                    price: document.getElementById('editPrice').value.trim() || 'رایگان',
-                    icon: document.getElementById('editIcon').value.trim() || 'fa-cube',
-                    tag: document.getElementById('editTag').value.trim() || '',
-                    category: document.getElementById('editCategory').value.trim() || '',
-                    stock: document.getElementById('editStock').value,
+                    name: document.getElementById('editName')?.value?.trim() || '',
+                    desc: document.getElementById('editDesc')?.value?.trim() || '',
+                    price: document.getElementById('editPrice')?.value?.trim() || 'رایگان',
+                    icon: document.getElementById('editIcon')?.value?.trim() || 'fa-cube',
+                    tag: document.getElementById('editTag')?.value?.trim() || '',
+                    category: document.getElementById('editCategory')?.value?.trim() || '',
+                    stock: document.getElementById('editStock')?.value || 'موجود',
                     cover: cover,
                     images: images,
                     files: files,
@@ -1069,13 +1105,13 @@ if (sha) {
                 loadProducts();
             } else if (type === 'archive') {
                 data = {
-                    title: document.getElementById('editTitle').value.trim(),
-                    excerpt: document.getElementById('editExcerpt').value.trim(),
-                    type: document.getElementById('editTypeSelect').value,
-                    date: document.getElementById('editDate').value || new Date().toISOString().split('T')[0],
-                    status: document.getElementById('editStatus').value,
-                    tags: document.getElementById('editTags').value.split(/[،,]/).map(t => t.trim()).filter(Boolean),
-                    body: document.getElementById('editBody').value.trim(),
+                    title: document.getElementById('editTitle')?.value?.trim() || '',
+                    excerpt: document.getElementById('editExcerpt')?.value?.trim() || '',
+                    type: document.getElementById('editTypeSelect')?.value || 'other',
+                    date: document.getElementById('editDate')?.value || new Date().toISOString().split('T')[0],
+                    status: document.getElementById('editStatus')?.value || 'تکمیل شده',
+                    tags: (document.getElementById('editTags')?.value || '').split(/[،,]/).map(t => t.trim()).filter(Boolean),
+                    body: document.getElementById('editBody')?.value?.trim() || '',
                     cover: cover,
                     images: images,
                     files: files,
@@ -1165,6 +1201,7 @@ if (sha) {
     }
     function removeFileFromList(listId, btn) {
         const list = document.getElementById(listId);
+        if (!list) return;
         const item = btn.closest('.file-tag');
         if (item) {
             const index = Array.from(list.children).indexOf(item);
@@ -1288,14 +1325,14 @@ if (sha) {
     if (addArticleForm) {
         addArticleForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const id = parseInt(document.getElementById('articleId').value);
-            const title = document.getElementById('articleTitle').value.trim();
-            const excerpt = document.getElementById('articleExcerpt').value.trim();
-            const type = document.getElementById('articleType').value;
-            const date = document.getElementById('articleDate').value || new Date().toISOString().split('T')[0];
-            const tags = document.getElementById('articleTags').value.split(',').map(t => t.trim()).filter(Boolean);
-            const readTime = parseInt(document.getElementById('articleReadTime').value) || 5;
-            const body = document.getElementById('articleBody').innerHTML.trim();
+            const id = parseInt(document.getElementById('articleId')?.value);
+            const title = document.getElementById('articleTitle')?.value?.trim() || '';
+            const excerpt = document.getElementById('articleExcerpt')?.value?.trim() || '';
+            const type = document.getElementById('articleType')?.value || 'article';
+            const date = document.getElementById('articleDate')?.value || new Date().toISOString().split('T')[0];
+            const tags = (document.getElementById('articleTags')?.value || '').split(',').map(t => t.trim()).filter(Boolean);
+            const readTime = parseInt(document.getElementById('articleReadTime')?.value) || 5;
+            const body = document.getElementById('articleBody')?.innerHTML?.trim() || '';
 
             if (!title || !excerpt || !body) {
                 showMsg('❌ لطفاً عنوان، چکیده و متن کامل را پر کنید.', 'error');
@@ -1305,7 +1342,7 @@ if (sha) {
 
             let cover = null;
             const coverImg = document.getElementById('articleCoverPreviewImg');
-            if (coverImg.src && coverImg.src.startsWith('data:')) {
+            if (coverImg && coverImg.src && coverImg.src.startsWith('data:')) {
                 cover = coverImg.src;
             }
 
@@ -1350,10 +1387,14 @@ if (sha) {
                 showToast('✅ مقاله ذخیره شد', 'success');
                 logActivity(`مقاله جدید: ${title} (#${key})`);
                 this.reset();
-                document.getElementById('articleBody').innerHTML = '';
-                document.getElementById('articleFilesList').innerHTML = '';
-                document.getElementById('articleGalleryList').innerHTML = '';
-                document.getElementById('articleCoverPreview').style.display = 'none';
+                const bodyEl = document.getElementById('articleBody');
+                if (bodyEl) bodyEl.innerHTML = '';
+                const filesList = document.getElementById('articleFilesList');
+                if (filesList) filesList.innerHTML = '';
+                const galleryList = document.getElementById('articleGalleryList');
+                if (galleryList) galleryList.innerHTML = '';
+                const coverPreview = document.getElementById('articleCoverPreview');
+                if (coverPreview) coverPreview.style.display = 'none';
                 window._pendingFiles = null;
                 window._coverImage = null;
                 generateArticleId();
@@ -1372,14 +1413,14 @@ if (sha) {
     if (addProductForm) {
         addProductForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const id = parseInt(document.getElementById('productId').value);
-            const name = document.getElementById('productName').value.trim();
-            const desc = document.getElementById('productDesc').value.trim();
-            const price = document.getElementById('productPrice').value.trim() || 'رایگان';
-            const icon = document.getElementById('productIcon').value.trim() || 'fa-cube';
-            const tag = document.getElementById('productTag').value.trim() || 'جدید';
-            const category = document.getElementById('productCategory').value.trim();
-            const stock = document.getElementById('productStock').value;
+            const id = parseInt(document.getElementById('productId')?.value);
+            const name = document.getElementById('productName')?.value?.trim() || '';
+            const desc = document.getElementById('productDesc')?.value?.trim() || '';
+            const price = document.getElementById('productPrice')?.value?.trim() || 'رایگان';
+            const icon = document.getElementById('productIcon')?.value?.trim() || 'fa-cube';
+            const tag = document.getElementById('productTag')?.value?.trim() || 'جدید';
+            const category = document.getElementById('productCategory')?.value?.trim() || '';
+            const stock = document.getElementById('productStock')?.value || 'موجود';
 
             if (!name || !desc) {
                 showMsg('❌ لطفاً نام و توضیحات را پر کنید.', 'error');
@@ -1389,7 +1430,7 @@ if (sha) {
 
             let cover = null;
             const coverImg = document.getElementById('productCoverPreviewImg');
-            if (coverImg.src && coverImg.src.startsWith('data:')) {
+            if (coverImg && coverImg.src && coverImg.src.startsWith('data:')) {
                 cover = coverImg.src;
             }
 
@@ -1434,9 +1475,12 @@ if (sha) {
                 showToast('✅ محصول ذخیره شد', 'success');
                 logActivity(`محصول جدید: ${name} (#${key})`);
                 this.reset();
-                document.getElementById('productFilesList').innerHTML = '';
-                document.getElementById('productGalleryList').innerHTML = '';
-                document.getElementById('productCoverPreview').style.display = 'none';
+                const filesList = document.getElementById('productFilesList');
+                if (filesList) filesList.innerHTML = '';
+                const galleryList = document.getElementById('productGalleryList');
+                if (galleryList) galleryList.innerHTML = '';
+                const coverPreview = document.getElementById('productCoverPreview');
+                if (coverPreview) coverPreview.style.display = 'none';
                 window._pendingFiles = null;
                 window._coverImage = null;
                 generateProductId();
@@ -1455,14 +1499,14 @@ if (sha) {
     if (addArchiveForm) {
         addArchiveForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const id = parseInt(document.getElementById('archiveId').value);
-            const title = document.getElementById('archiveTitle').value.trim();
-            const excerpt = document.getElementById('archiveExcerpt').value.trim();
-            const type = document.getElementById('archiveType').value;
-            const date = document.getElementById('archiveDate').value || new Date().toISOString().split('T')[0];
-            const tags = document.getElementById('archiveTags').value.split(',').map(t => t.trim()).filter(Boolean);
-            const status = document.getElementById('archiveStatus').value;
-            const body = document.getElementById('archiveBody').innerHTML.trim();
+            const id = parseInt(document.getElementById('archiveId')?.value);
+            const title = document.getElementById('archiveTitle')?.value?.trim() || '';
+            const excerpt = document.getElementById('archiveExcerpt')?.value?.trim() || '';
+            const type = document.getElementById('archiveType')?.value || 'other';
+            const date = document.getElementById('archiveDate')?.value || new Date().toISOString().split('T')[0];
+            const tags = (document.getElementById('archiveTags')?.value || '').split(',').map(t => t.trim()).filter(Boolean);
+            const status = document.getElementById('archiveStatus')?.value || 'تکمیل شده';
+            const body = document.getElementById('archiveBody')?.innerHTML?.trim() || '';
 
             if (!title || !excerpt) {
                 showMsg('❌ لطفاً عنوان و توضیحات کوتاه را پر کنید.', 'error');
@@ -1472,7 +1516,7 @@ if (sha) {
 
             let cover = null;
             const coverImg = document.getElementById('archiveCoverPreviewImg');
-            if (coverImg.src && coverImg.src.startsWith('data:')) {
+            if (coverImg && coverImg.src && coverImg.src.startsWith('data:')) {
                 cover = coverImg.src;
             }
 
@@ -1517,9 +1561,12 @@ if (sha) {
                 showToast('✅ آرشیو ذخیره شد', 'success');
                 logActivity(`آیتم آرشیو جدید: ${title} (#${key})`);
                 this.reset();
-                document.getElementById('archiveFilesList').innerHTML = '';
-                document.getElementById('archiveGalleryList').innerHTML = '';
-                document.getElementById('archiveCoverPreview').style.display = 'none';
+                const filesList = document.getElementById('archiveFilesList');
+                if (filesList) filesList.innerHTML = '';
+                const galleryList = document.getElementById('archiveGalleryList');
+                if (galleryList) galleryList.innerHTML = '';
+                const coverPreview = document.getElementById('archiveCoverPreview');
+                if (coverPreview) coverPreview.style.display = 'none';
                 window._pendingFiles = null;
                 window._coverImage = null;
                 generateArchiveId();
@@ -1533,10 +1580,11 @@ if (sha) {
 
     // ===== 0519 - تغییر رمز عبور =====
     function changePassword() {
-        const current = document.getElementById('proCurrentPass').value.trim();
-        const newPass = document.getElementById('proNewPass').value.trim();
-        const confirm = document.getElementById('proConfirmPass').value.trim();
+        const current = document.getElementById('proCurrentPass')?.value?.trim() || '';
+        const newPass = document.getElementById('proNewPass')?.value?.trim() || '';
+        const confirm = document.getElementById('proConfirmPass')?.value?.trim() || '';
         const msgEl = document.getElementById('proPassMsg');
+        if (!msgEl) return;
         
         if (!current || !newPass || !confirm) {
             msgEl.textContent = '❌ همه فیلدها را پر کنید.';
@@ -1571,9 +1619,12 @@ if (sha) {
         saveUsers(users);
         msgEl.textContent = '✅ رمز عبور با موفقیت تغییر کرد.';
         msgEl.style.color = 'var(--pro-secondary)';
-        document.getElementById('proCurrentPass').value = '';
-        document.getElementById('proNewPass').value = '';
-        document.getElementById('proConfirmPass').value = '';
+        const currentEl = document.getElementById('proCurrentPass');
+        const newEl = document.getElementById('proNewPass');
+        const confirmEl = document.getElementById('proConfirmPass');
+        if (currentEl) currentEl.value = '';
+        if (newEl) newEl.value = '';
+        if (confirmEl) confirmEl.value = '';
         logActivity('رمز عبور تغییر کرد');
     }
 
@@ -1589,16 +1640,24 @@ if (sha) {
         products.forEach(p => { if (p.files) fileCount += p.files.length; });
         archive.forEach(a => { if (a.files) fileCount += a.files.length; });
 
-        document.getElementById('dashArticles').textContent = articles.length;
-        document.getElementById('dashProducts').textContent = products.length;
-        document.getElementById('dashArchive').textContent = archive.length;
-        document.getElementById('dashFiles').textContent = fileCount;
-        document.getElementById('proLastUpdate').textContent = new Date().toLocaleString('fa-IR');
+        const dashArticles = document.getElementById('dashArticles');
+        if (dashArticles) dashArticles.textContent = articles.length;
+        const dashProducts = document.getElementById('dashProducts');
+        if (dashProducts) dashProducts.textContent = products.length;
+        const dashArchive = document.getElementById('dashArchive');
+        if (dashArchive) dashArchive.textContent = archive.length;
+        const dashFiles = document.getElementById('dashFiles');
+        if (dashFiles) dashFiles.textContent = fileCount;
+        const lastUpdate = document.getElementById('proLastUpdate');
+        if (lastUpdate) lastUpdate.textContent = new Date().toLocaleString('fa-IR');
     }
     function updateCounts() {
-        document.getElementById('proArticlesCount').textContent = Object.values(articlesData).length;
-        document.getElementById('proProductsCount').textContent = Object.values(productsData).length;
-        document.getElementById('proArchiveCount').textContent = Object.values(archiveData).length;
+        const a = document.getElementById('proArticlesCount');
+        if (a) a.textContent = Object.values(articlesData).length;
+        const p = document.getElementById('proProductsCount');
+        if (p) p.textContent = Object.values(productsData).length;
+        const ar = document.getElementById('proArchiveCount');
+        if (ar) ar.textContent = Object.values(archiveData).length;
     }
 
     // ============================================================
@@ -1616,18 +1675,24 @@ if (sha) {
             if (data) {
                 const settings = JSON.parse(data.content);
                 const app = settings.appearance || {};
-                document.getElementById('appColorPrimary').value = app.colorPrimary || '#2563eb';
-                document.getElementById('appColorSecondary').value = app.colorSecondary || '#10b981';
-                document.getElementById('appColorBg').value = app.colorBg || '#0a0f1a';
-                document.getElementById('appColorText').value = app.colorText || '#f1f5f9';
-                document.getElementById('appColorTextSec').value = app.colorTextSec || '#94a3b8';
-                document.getElementById('appColorCard').value = app.colorCard || '#141b2b';
-                document.getElementById('appColorBorder').value = app.colorBorder || '#1e2a3d';
-                document.getElementById('appFontFamily').value = app.fontFamily || 'Vazirmatn';
-                document.getElementById('appFontSize').value = app.fontSize || 16;
-                document.getElementById('appFontSizeHeading').value = app.fontSizeHeading || 36;
-                document.getElementById('appLineHeight').value = app.lineHeight || 1.8;
-                document.getElementById('appBgImage').value = app.bgImage || '';
+                const fields = {
+                    appColorPrimary: app.colorPrimary || '#2563eb',
+                    appColorSecondary: app.colorSecondary || '#10b981',
+                    appColorBg: app.colorBg || '#0a0f1a',
+                    appColorText: app.colorText || '#f1f5f9',
+                    appColorTextSec: app.colorTextSec || '#94a3b8',
+                    appColorCard: app.colorCard || '#141b2b',
+                    appColorBorder: app.colorBorder || '#1e2a3d',
+                    appFontFamily: app.fontFamily || 'Vazirmatn',
+                    appFontSize: app.fontSize || 16,
+                    appFontSizeHeading: app.fontSizeHeading || 36,
+                    appLineHeight: app.lineHeight || 1.8,
+                    appBgImage: app.bgImage || ''
+                };
+                Object.keys(fields).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = fields[id];
+                });
                 updateColorHexes();
                 applyAppearanceToPreview(app);
                 applyToPanel(app);
@@ -1670,30 +1735,37 @@ if (sha) {
         localStorage.setItem('appearance_preview', JSON.stringify(app));
     }
     function updateColorHexes() {
-        document.getElementById('appColorPrimaryHex').textContent = document.getElementById('appColorPrimary').value;
-        document.getElementById('appColorSecondaryHex').textContent = document.getElementById('appColorSecondary').value;
-        document.getElementById('appColorBgHex').textContent = document.getElementById('appColorBg').value;
-        document.getElementById('appColorTextHex').textContent = document.getElementById('appColorText').value;
-        document.getElementById('appColorTextSecHex').textContent = document.getElementById('appColorTextSec').value;
-        document.getElementById('appColorCardHex').textContent = document.getElementById('appColorCard').value;
-        document.getElementById('appColorBorderHex').textContent = document.getElementById('appColorBorder').value;
+        const map = {
+            appColorPrimaryHex: 'appColorPrimary',
+            appColorSecondaryHex: 'appColorSecondary',
+            appColorBgHex: 'appColorBg',
+            appColorTextHex: 'appColorText',
+            appColorTextSecHex: 'appColorTextSec',
+            appColorCardHex: 'appColorCard',
+            appColorBorderHex: 'appColorBorder'
+        };
+        Object.keys(map).forEach(hexId => {
+            const el = document.getElementById(hexId);
+            const source = document.getElementById(map[hexId]);
+            if (el && source) el.textContent = source.value;
+        });
     }
     document.querySelectorAll('#appearanceForm input[type="color"]').forEach(inp => {
         inp.addEventListener('input', function() {
             updateColorHexes();
             const app = {
-                colorPrimary: document.getElementById('appColorPrimary').value,
-                colorSecondary: document.getElementById('appColorSecondary').value,
-                colorBg: document.getElementById('appColorBg').value,
-                colorText: document.getElementById('appColorText').value,
-                colorTextSec: document.getElementById('appColorTextSec').value,
-                colorCard: document.getElementById('appColorCard').value,
-                colorBorder: document.getElementById('appColorBorder').value,
-                fontFamily: document.getElementById('appFontFamily').value,
-                fontSize: parseInt(document.getElementById('appFontSize').value),
-                fontSizeHeading: parseInt(document.getElementById('appFontSizeHeading').value),
-                lineHeight: parseFloat(document.getElementById('appLineHeight').value),
-                bgImage: document.getElementById('appBgImage').value
+                colorPrimary: document.getElementById('appColorPrimary')?.value || '#2563eb',
+                colorSecondary: document.getElementById('appColorSecondary')?.value || '#10b981',
+                colorBg: document.getElementById('appColorBg')?.value || '#0a0f1a',
+                colorText: document.getElementById('appColorText')?.value || '#f1f5f9',
+                colorTextSec: document.getElementById('appColorTextSec')?.value || '#94a3b8',
+                colorCard: document.getElementById('appColorCard')?.value || '#141b2b',
+                colorBorder: document.getElementById('appColorBorder')?.value || '#1e2a3d',
+                fontFamily: document.getElementById('appFontFamily')?.value || 'Vazirmatn',
+                fontSize: parseInt(document.getElementById('appFontSize')?.value) || 16,
+                fontSizeHeading: parseInt(document.getElementById('appFontSizeHeading')?.value) || 36,
+                lineHeight: parseFloat(document.getElementById('appLineHeight')?.value) || 1.8,
+                bgImage: document.getElementById('appBgImage')?.value || ''
             };
             applyAppearanceToPreview(app);
             applyToPanel(app);
@@ -1702,53 +1774,56 @@ if (sha) {
     document.querySelectorAll('#appearanceForm input[type="number"], #appearanceForm select, #appearanceForm input[type="text"]').forEach(inp => {
         inp.addEventListener('input', function() {
             const app = {
-                colorPrimary: document.getElementById('appColorPrimary').value,
-                colorSecondary: document.getElementById('appColorSecondary').value,
-                colorBg: document.getElementById('appColorBg').value,
-                colorText: document.getElementById('appColorText').value,
-                colorTextSec: document.getElementById('appColorTextSec').value,
-                colorCard: document.getElementById('appColorCard').value,
-                colorBorder: document.getElementById('appColorBorder').value,
-                fontFamily: document.getElementById('appFontFamily').value,
-                fontSize: parseInt(document.getElementById('appFontSize').value) || 16,
-                fontSizeHeading: parseInt(document.getElementById('appFontSizeHeading').value) || 36,
-                lineHeight: parseFloat(document.getElementById('appLineHeight').value) || 1.8,
-                bgImage: document.getElementById('appBgImage').value
+                colorPrimary: document.getElementById('appColorPrimary')?.value || '#2563eb',
+                colorSecondary: document.getElementById('appColorSecondary')?.value || '#10b981',
+                colorBg: document.getElementById('appColorBg')?.value || '#0a0f1a',
+                colorText: document.getElementById('appColorText')?.value || '#f1f5f9',
+                colorTextSec: document.getElementById('appColorTextSec')?.value || '#94a3b8',
+                colorCard: document.getElementById('appColorCard')?.value || '#141b2b',
+                colorBorder: document.getElementById('appColorBorder')?.value || '#1e2a3d',
+                fontFamily: document.getElementById('appFontFamily')?.value || 'Vazirmatn',
+                fontSize: parseInt(document.getElementById('appFontSize')?.value) || 16,
+                fontSizeHeading: parseInt(document.getElementById('appFontSizeHeading')?.value) || 36,
+                lineHeight: parseFloat(document.getElementById('appLineHeight')?.value) || 1.8,
+                bgImage: document.getElementById('appBgImage')?.value || ''
             };
             applyAppearanceToPreview(app);
             applyToPanel(app);
         });
     });
     function resetAppearanceForm() {
-        document.getElementById('appColorPrimary').value = '#2563eb';
-        document.getElementById('appColorSecondary').value = '#10b981';
-        document.getElementById('appColorBg').value = '#0a0f1a';
-        document.getElementById('appColorText').value = '#f1f5f9';
-        document.getElementById('appColorTextSec').value = '#94a3b8';
-        document.getElementById('appColorCard').value = '#141b2b';
-        document.getElementById('appColorBorder').value = '#1e2a3d';
-        document.getElementById('appFontFamily').value = 'Vazirmatn';
-        document.getElementById('appFontSize').value = 16;
-        document.getElementById('appFontSizeHeading').value = 36;
-        document.getElementById('appLineHeight').value = 1.8;
-        document.getElementById('appBgImage').value = '';
+        const fields = ['appColorPrimary', 'appColorSecondary', 'appColorBg', 'appColorText', 'appColorTextSec', 'appColorCard', 'appColorBorder'];
+        fields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '#';
+        });
+        const fontFamily = document.getElementById('appFontFamily');
+        if (fontFamily) fontFamily.value = 'Vazirmatn';
+        const fontSize = document.getElementById('appFontSize');
+        if (fontSize) fontSize.value = 16;
+        const fontSizeHeading = document.getElementById('appFontSizeHeading');
+        if (fontSizeHeading) fontSizeHeading.value = 36;
+        const lineHeight = document.getElementById('appLineHeight');
+        if (lineHeight) lineHeight.value = 1.8;
+        const bgImage = document.getElementById('appBgImage');
+        if (bgImage) bgImage.value = '';
         updateColorHexes();
         loadAppearanceSettings();
     }
     async function saveAppearance() {
         const app = {
-            colorPrimary: document.getElementById('appColorPrimary').value,
-            colorSecondary: document.getElementById('appColorSecondary').value,
-            colorBg: document.getElementById('appColorBg').value,
-            colorText: document.getElementById('appColorText').value,
-            colorTextSec: document.getElementById('appColorTextSec').value,
-            colorCard: document.getElementById('appColorCard').value,
-            colorBorder: document.getElementById('appColorBorder').value,
-            fontFamily: document.getElementById('appFontFamily').value,
-            fontSize: parseInt(document.getElementById('appFontSize').value) || 16,
-            fontSizeHeading: parseInt(document.getElementById('appFontSizeHeading').value) || 36,
-            lineHeight: parseFloat(document.getElementById('appLineHeight').value) || 1.8,
-            bgImage: document.getElementById('appBgImage').value || ''
+            colorPrimary: document.getElementById('appColorPrimary')?.value || '#2563eb',
+            colorSecondary: document.getElementById('appColorSecondary')?.value || '#10b981',
+            colorBg: document.getElementById('appColorBg')?.value || '#0a0f1a',
+            colorText: document.getElementById('appColorText')?.value || '#f1f5f9',
+            colorTextSec: document.getElementById('appColorTextSec')?.value || '#94a3b8',
+            colorCard: document.getElementById('appColorCard')?.value || '#141b2b',
+            colorBorder: document.getElementById('appColorBorder')?.value || '#1e2a3d',
+            fontFamily: document.getElementById('appFontFamily')?.value || 'Vazirmatn',
+            fontSize: parseInt(document.getElementById('appFontSize')?.value) || 16,
+            fontSizeHeading: parseInt(document.getElementById('appFontSizeHeading')?.value) || 36,
+            lineHeight: parseFloat(document.getElementById('appLineHeight')?.value) || 1.8,
+            bgImage: document.getElementById('appBgImage')?.value || ''
         };
         try {
             const existing = await fetchFromGitHub('_data/settings.json');
@@ -1775,7 +1850,6 @@ if (sha) {
     // 0522 - منوها (با قابلیت ویرایش و جابجایی) - نسخه پایدار
     // ============================================================
 
-    // بارگذاری داده‌های منو از گیت‌هاب یا ایجاد پیش‌فرض
     function loadMenuData() {
         const token = getToken();
         if (!token) {
@@ -1790,7 +1864,6 @@ if (sha) {
                 if (data) {
                     try {
                         const parsed = JSON.parse(data.content);
-                        // اطمینان از وجود کلیدهای header و slide
                         menuData = {
                             header: Array.isArray(parsed.header) ? parsed.header : [],
                             slide: Array.isArray(parsed.slide) ? parsed.slide : []
@@ -1800,7 +1873,6 @@ if (sha) {
                         menuData = { header: [], slide: [] };
                     }
                 } else {
-                    // فایل وجود ندارد، ایجاد با منوی پیش‌فرض
                     menuData = {
                         header: [
                             { title: 'خانه', link: 'index.html' },
@@ -1816,7 +1888,6 @@ if (sha) {
                             { title: 'پروژه‌ها', link: 'index.html#projects' }
                         ]
                     };
-                    // ذخیره خودکار در گیت‌هاب (در صورت امکان)
                     saveToGitHub('_data/menu.json', menuData, null)
                         .then(() => console.log('✅ منوی پیش‌فرض ذخیره شد.'))
                         .catch(err => console.warn('⚠️ ذخیره منوی پیش‌فرض ناموفق:', err));
@@ -1831,18 +1902,15 @@ if (sha) {
             });
     }
 
-    // رندر لیست‌های منو در UI
     function renderMenuLists() {
         const headerList = document.getElementById('headerMenuList');
         const slideList = document.getElementById('slideMenuList');
 
-        // اگر المنت‌ها وجود نداشتند، خطا ندهیم
         if (!headerList || !slideList) {
             console.warn('⚠️ المنت‌های منو در DOM پیدا نشدند!');
             return;
         }
 
-        // رندر منوی هدر
         if (!menuData.header || menuData.header.length === 0) {
             headerList.innerHTML = '<div class="pro-empty"><i class="fas fa-list"></i>هیچ آیتمی در منوی هدر وجود ندارد.</div>';
         } else {
@@ -1859,7 +1927,6 @@ if (sha) {
             `).join('');
         }
 
-        // رندر منوی کشویی
         if (!menuData.slide || menuData.slide.length === 0) {
             slideList.innerHTML = '<div class="pro-empty"><i class="fas fa-list"></i>هیچ آیتمی در منوی کشویی وجود ندارد.</div>';
         } else {
@@ -1877,7 +1944,6 @@ if (sha) {
         }
     }
 
-    // افزودن آیتم جدید به منو
     function addMenuItem(type) {
         const titleInput = type === 'header' ? document.getElementById('newHeaderTitle') : document.getElementById('newSlideTitle');
         const linkInput = type === 'header' ? document.getElementById('newHeaderLink') : document.getElementById('newSlideLink');
@@ -1900,7 +1966,6 @@ if (sha) {
         showMsg(`✅ آیتم "${title}" به منو اضافه شد.`, 'success');
     }
 
-    // حذف آیتم از منو
     function removeMenuItem(type, index) {
         if (!confirm('آیا از حذف این آیتم از منو مطمئن هستید؟')) return;
         menuData[type].splice(index, 1);
@@ -1908,7 +1973,6 @@ if (sha) {
         showMsg('✅ آیتم حذف شد.', 'info');
     }
 
-    // جابجایی آیتم در منو
     function moveMenuItem(type, index, direction) {
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= menuData[type].length) return;
@@ -1918,7 +1982,6 @@ if (sha) {
         showMsg('✅ ترتیب منو تغییر کرد.', 'info');
     }
 
-    // باز کردن مودال ویرایش آیتم منو
     function openEditMenuModal(type, index) {
         const item = menuData[type][index];
         if (!item) {
@@ -1926,7 +1989,6 @@ if (sha) {
             return;
         }
 
-        // ایجاد مودال با استفاده از DOM (برای اطمینان از عدم تداخل)
         const overlay = document.createElement('div');
         overlay.className = 'pro-modal-overlay active';
         overlay.style.display = 'flex';
@@ -1953,7 +2015,6 @@ if (sha) {
 
         document.body.appendChild(overlay);
 
-        // ارسال فرم ویرایش
         const form = overlay.querySelector('#editMenuForm');
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -1971,13 +2032,11 @@ if (sha) {
             showMsg('✅ آیتم منو ویرایش شد.', 'success');
         });
 
-        // بستن با کلیک روی پس‌زمینه
         overlay.addEventListener('click', function(e) {
             if (e.target === this) this.remove();
         });
     }
 
-    // ذخیره منوها در گیت‌هاب
     async function saveMenus() {
         try {
             if (!getToken()) {
@@ -1998,7 +2057,6 @@ if (sha) {
         }
     }
 
-    // بازنشانی منوها به حالت پیش‌فرض
     function resetMenusToDefault() {
         if (!confirm('آیا از بازنشانی منوها به حالت پیش‌فرض مطمئن هستید؟')) return;
 
@@ -2021,8 +2079,6 @@ if (sha) {
         renderMenuLists();
         showMsg('✅ منوها به حالت پیش‌فرض بازنشانی شدند.', 'info');
     }
-
-    // ===== پایان بخش منوها =====
 
     // ============================================================
     // 0523 - بخش‌ها (Sections)
@@ -2055,54 +2111,64 @@ if (sha) {
         });
     }
     function fillSectionsForm() {
-        document.getElementById('secHeroTitle').value = sectionsData.hero?.title || '';
-        document.getElementById('secHeroSubtitle').value = sectionsData.hero?.subtitle || '';
-        document.getElementById('secHeroDesc').value = sectionsData.hero?.desc || '';
-        document.getElementById('secHeroImage').value = sectionsData.hero?.image || '';
-        document.getElementById('secHeroTags').value = sectionsData.hero?.tags || '';
-        document.getElementById('secAboutText').value = sectionsData.about?.text || '';
-        document.getElementById('secAboutImage').value = sectionsData.about?.image || '';
-        document.getElementById('secSkillsTitle').value = sectionsData.skills?.title || '';
-        document.getElementById('secSkillsDesc').value = sectionsData.skills?.desc || '';
-        document.getElementById('secEduTitle').value = sectionsData.education?.title || '';
-        document.getElementById('secEduLayout').value = sectionsData.education?.layout || 'timeline';
-        document.getElementById('secProjectsTitle').value = sectionsData.projects?.title || '';
-        document.getElementById('secProjectsDesc').value = sectionsData.projects?.desc || '';
-        document.getElementById('secContactTitle').value = sectionsData.contact?.title || '';
-        document.getElementById('secContactDesc').value = sectionsData.contact?.desc || '';
-        document.getElementById('secContactPhone').value = sectionsData.contact?.phone || '';
-        document.getElementById('secContactEmail').value = sectionsData.contact?.email || '';
+        const map = {
+            secHeroTitle: 'hero.title',
+            secHeroSubtitle: 'hero.subtitle',
+            secHeroDesc: 'hero.desc',
+            secHeroImage: 'hero.image',
+            secHeroTags: 'hero.tags',
+            secAboutText: 'about.text',
+            secAboutImage: 'about.image',
+            secSkillsTitle: 'skills.title',
+            secSkillsDesc: 'skills.desc',
+            secEduTitle: 'education.title',
+            secEduLayout: 'education.layout',
+            secProjectsTitle: 'projects.title',
+            secProjectsDesc: 'projects.desc',
+            secContactTitle: 'contact.title',
+            secContactDesc: 'contact.desc',
+            secContactPhone: 'contact.phone',
+            secContactEmail: 'contact.email'
+        };
+        Object.keys(map).forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const parts = map[id].split('.');
+            let val = sectionsData;
+            parts.forEach(p => { val = val && val[p]; });
+            el.value = val || '';
+        });
     }
     async function saveSections() {
         const data = {
             hero: {
-                title: document.getElementById('secHeroTitle').value.trim(),
-                subtitle: document.getElementById('secHeroSubtitle').value.trim(),
-                desc: document.getElementById('secHeroDesc').value.trim(),
-                image: document.getElementById('secHeroImage').value.trim(),
-                tags: document.getElementById('secHeroTags').value.trim()
+                title: document.getElementById('secHeroTitle')?.value?.trim() || '',
+                subtitle: document.getElementById('secHeroSubtitle')?.value?.trim() || '',
+                desc: document.getElementById('secHeroDesc')?.value?.trim() || '',
+                image: document.getElementById('secHeroImage')?.value?.trim() || '',
+                tags: document.getElementById('secHeroTags')?.value?.trim() || ''
             },
             about: {
-                text: document.getElementById('secAboutText').value.trim(),
-                image: document.getElementById('secAboutImage').value.trim()
+                text: document.getElementById('secAboutText')?.value?.trim() || '',
+                image: document.getElementById('secAboutImage')?.value?.trim() || ''
             },
             skills: {
-                title: document.getElementById('secSkillsTitle').value.trim(),
-                desc: document.getElementById('secSkillsDesc').value.trim()
+                title: document.getElementById('secSkillsTitle')?.value?.trim() || '',
+                desc: document.getElementById('secSkillsDesc')?.value?.trim() || ''
             },
             education: {
-                title: document.getElementById('secEduTitle').value.trim(),
-                layout: document.getElementById('secEduLayout').value
+                title: document.getElementById('secEduTitle')?.value?.trim() || '',
+                layout: document.getElementById('secEduLayout')?.value || 'timeline'
             },
             projects: {
-                title: document.getElementById('secProjectsTitle').value.trim(),
-                desc: document.getElementById('secProjectsDesc').value.trim()
+                title: document.getElementById('secProjectsTitle')?.value?.trim() || '',
+                desc: document.getElementById('secProjectsDesc')?.value?.trim() || ''
             },
             contact: {
-                title: document.getElementById('secContactTitle').value.trim(),
-                desc: document.getElementById('secContactDesc').value.trim(),
-                phone: document.getElementById('secContactPhone').value.trim(),
-                email: document.getElementById('secContactEmail').value.trim()
+                title: document.getElementById('secContactTitle')?.value?.trim() || '',
+                desc: document.getElementById('secContactDesc')?.value?.trim() || '',
+                phone: document.getElementById('secContactPhone')?.value?.trim() || '',
+                email: document.getElementById('secContactEmail')?.value?.trim() || ''
             }
         };
         try {
@@ -2185,9 +2251,12 @@ if (sha) {
                 if (document.querySelector('.pro-tab-content.active#tab-archive')) loadArchive();
             }, 30000);
         } else {
-            document.getElementById('proArticlesList').innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
-            document.getElementById('proProductsList').innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
-            document.getElementById('proArchiveList').innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
+            const articlesList = document.getElementById('proArticlesList');
+            if (articlesList) articlesList.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
+            const productsList = document.getElementById('proProductsList');
+            if (productsList) productsList.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
+            const archiveList = document.getElementById('proArchiveList');
+            if (archiveList) archiveList.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
         }
         console.log('✅ پنل مدیریت فوق‌حرفه‌ای با موفقیت بارگذاری شد.');
         loadAppearanceSettings();
@@ -2199,7 +2268,6 @@ if (sha) {
     // 0526 - محتوای ایندکس (Index Content)
     // ============================================================
 
-    // ===== ابزارهای عمومی =====
     function renderItems(containerId, items, renderFn) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -2274,24 +2342,18 @@ if (sha) {
         `);
     }
     function addEducationItem() {
-        const org = document.getElementById('newEduOrg').value.trim();
-        const title = document.getElementById('newEduTitle').value.trim();
-        const date = document.getElementById('newEduDate').value.trim();
-        const gpa = document.getElementById('newEduGpa').value.trim();
-        const desc = document.getElementById('newEduDesc').value.trim();
-        const icon = document.getElementById('newEduIcon').value.trim();
-        const source = document.getElementById('newEduSource').value.trim();
-        const cert = document.getElementById('newEduCert').value.trim();
+        const org = document.getElementById('newEduOrg')?.value?.trim() || '';
+        const title = document.getElementById('newEduTitle')?.value?.trim() || '';
+        const date = document.getElementById('newEduDate')?.value?.trim() || '';
+        const gpa = document.getElementById('newEduGpa')?.value?.trim() || '';
+        const desc = document.getElementById('newEduDesc')?.value?.trim() || '';
+        const icon = document.getElementById('newEduIcon')?.value?.trim() || '';
+        const source = document.getElementById('newEduSource')?.value?.trim() || '';
+        const cert = document.getElementById('newEduCert')?.value?.trim() || '';
         if (!org || !title) { showMsg('لطفاً نام مؤسسه و عنوان را وارد کنید.', 'error'); return; }
         eduData.items.push({ org, title, date, gpa, desc, icon, source, cert });
-        document.getElementById('newEduOrg').value = '';
-        document.getElementById('newEduTitle').value = '';
-        document.getElementById('newEduDate').value = '';
-        document.getElementById('newEduGpa').value = '';
-        document.getElementById('newEduDesc').value = '';
-        document.getElementById('newEduIcon').value = '';
-        document.getElementById('newEduSource').value = '';
-        document.getElementById('newEduCert').value = '';
+        const fields = ['newEduOrg', 'newEduTitle', 'newEduDate', 'newEduGpa', 'newEduDesc', 'newEduIcon', 'newEduSource', 'newEduCert'];
+        fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         renderEducation();
         showMsg('✅ آیتم اضافه شد.', 'success');
     }
@@ -2342,7 +2404,7 @@ if (sha) {
     }
     async function saveEducation() {
         try {
-            eduData.title = document.getElementById('eduSectionTitle').value.trim() || 'سوابق تحصیلی';
+            eduData.title = document.getElementById('eduSectionTitle')?.value?.trim() || 'سوابق تحصیلی';
             const existing = await fetchFromGitHub('_data/education.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2379,16 +2441,14 @@ if (sha) {
         `);
     }
     function addCertificateItem() {
-        const name = document.getElementById('newCertName').value.trim();
-        const org = document.getElementById('newCertOrg').value.trim();
-        const date = document.getElementById('newCertDate').value.trim();
-        const link = document.getElementById('newCertLink').value.trim();
+        const name = document.getElementById('newCertName')?.value?.trim() || '';
+        const org = document.getElementById('newCertOrg')?.value?.trim() || '';
+        const date = document.getElementById('newCertDate')?.value?.trim() || '';
+        const link = document.getElementById('newCertLink')?.value?.trim() || '';
         if (!name) { showMsg('لطفاً نام گواهی‌نامه را وارد کنید.', 'error'); return; }
         certsData.items.push({ name, org, date, link });
-        document.getElementById('newCertName').value = '';
-        document.getElementById('newCertOrg').value = '';
-        document.getElementById('newCertDate').value = '';
-        document.getElementById('newCertLink').value = '';
+        const fields = ['newCertName', 'newCertOrg', 'newCertDate', 'newCertLink'];
+        fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         renderCertificates();
         showMsg('✅ گواهی‌نامه اضافه شد.', 'success');
     }
@@ -2431,7 +2491,7 @@ if (sha) {
     }
     async function saveCertificates() {
         try {
-            certsData.title = document.getElementById('certsSectionTitle').value.trim() || 'گواهی‌نامه‌ها';
+            certsData.title = document.getElementById('certsSectionTitle')?.value?.trim() || 'گواهی‌نامه‌ها';
             const existing = await fetchFromGitHub('_data/certificates.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2486,18 +2546,16 @@ if (sha) {
         `).join('');
     }
     function addSkillItem() {
-        const name = document.getElementById('newSkillName').value.trim();
-        const icon = document.getElementById('newSkillIcon').value.trim();
-        const level = document.getElementById('newSkillLevel').value;
-        const desc = document.getElementById('newSkillDesc').value.trim();
-        const progress = parseInt(document.getElementById('newSkillPercent').value) || 0;
-        const color = document.getElementById('newSkillColor').value;
+        const name = document.getElementById('newSkillName')?.value?.trim() || '';
+        const icon = document.getElementById('newSkillIcon')?.value?.trim() || '';
+        const level = document.getElementById('newSkillLevel')?.value || 'متوسط';
+        const desc = document.getElementById('newSkillDesc')?.value?.trim() || '';
+        const progress = parseInt(document.getElementById('newSkillPercent')?.value) || 0;
+        const color = document.getElementById('newSkillColor')?.value || '#2563eb';
         if (!name) { showMsg('لطفاً نام مهارت را وارد کنید.', 'error'); return; }
         skillsData.items.push({ name, icon, level, desc, progress, color });
-        document.getElementById('newSkillName').value = '';
-        document.getElementById('newSkillIcon').value = '';
-        document.getElementById('newSkillDesc').value = '';
-        document.getElementById('newSkillPercent').value = '';
+        const fields = ['newSkillName', 'newSkillIcon', 'newSkillDesc', 'newSkillPercent'];
+        fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         renderSkills();
         showMsg('✅ مهارت اضافه شد.', 'success');
     }
@@ -2551,8 +2609,8 @@ if (sha) {
     }
     async function saveSkills() {
         try {
-            skillsData.title = document.getElementById('skillsSectionTitle').value.trim() || 'مهارت‌های تخصصی';
-            skillsData.desc = document.getElementById('skillsSectionDesc').value.trim();
+            skillsData.title = document.getElementById('skillsSectionTitle')?.value?.trim() || 'مهارت‌های تخصصی';
+            skillsData.desc = document.getElementById('skillsSectionDesc')?.value?.trim() || '';
             const existing = await fetchFromGitHub('_data/skills.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2589,15 +2647,14 @@ if (sha) {
         `);
     }
     function addSocialItem() {
-        const name = document.getElementById('newSocialName').value.trim();
-        const url = document.getElementById('newSocialUrl').value.trim();
-        const icon = document.getElementById('newSocialIcon').value.trim();
-        const color = document.getElementById('newSocialColor').value;
+        const name = document.getElementById('newSocialName')?.value?.trim() || '';
+        const url = document.getElementById('newSocialUrl')?.value?.trim() || '';
+        const icon = document.getElementById('newSocialIcon')?.value?.trim() || '';
+        const color = document.getElementById('newSocialColor')?.value || '#0088cc';
         if (!name || !url) { showMsg('لطفاً نام و آدرس لینک را وارد کنید.', 'error'); return; }
         socialData.items.push({ name, url, icon, color });
-        document.getElementById('newSocialName').value = '';
-        document.getElementById('newSocialUrl').value = '';
-        document.getElementById('newSocialIcon').value = '';
+        const fields = ['newSocialName', 'newSocialUrl', 'newSocialIcon'];
+        fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         renderSocial();
         showMsg('✅ شبکه اضافه شد.', 'success');
     }
@@ -2640,7 +2697,7 @@ if (sha) {
     }
     async function saveSocial() {
         try {
-            socialData.title = document.getElementById('socialSectionTitle').value.trim() || 'شبکه‌های اجتماعی';
+            socialData.title = document.getElementById('socialSectionTitle')?.value?.trim() || 'شبکه‌های اجتماعی';
             const existing = await fetchFromGitHub('_data/social.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2678,14 +2735,13 @@ if (sha) {
         `);
     }
     function addServiceItem() {
-        const name = document.getElementById('newServiceName').value.trim();
-        const icon = document.getElementById('newServiceIcon').value.trim();
-        const desc = document.getElementById('newServiceDesc').value.trim();
+        const name = document.getElementById('newServiceName')?.value?.trim() || '';
+        const icon = document.getElementById('newServiceIcon')?.value?.trim() || '';
+        const desc = document.getElementById('newServiceDesc')?.value?.trim() || '';
         if (!name) { showMsg('لطفاً نام خدمت را وارد کنید.', 'error'); return; }
         servicesData.items.push({ name, icon, desc });
-        document.getElementById('newServiceName').value = '';
-        document.getElementById('newServiceIcon').value = '';
-        document.getElementById('newServiceDesc').value = '';
+        const fields = ['newServiceName', 'newServiceIcon', 'newServiceDesc'];
+        fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         renderServices();
         showMsg('✅ خدمت اضافه شد.', 'success');
     }
@@ -2726,8 +2782,8 @@ if (sha) {
     }
     async function saveServices() {
         try {
-            servicesData.title = document.getElementById('servicesSectionTitle').value.trim() || 'خدمات تخصصی';
-            servicesData.desc = document.getElementById('servicesSectionDesc').value.trim();
+            servicesData.title = document.getElementById('servicesSectionTitle')?.value?.trim() || 'خدمات تخصصی';
+            servicesData.desc = document.getElementById('servicesSectionDesc')?.value?.trim() || '';
             const existing = await fetchFromGitHub('_data/services.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2736,6 +2792,7 @@ if (sha) {
             showToast('✅ خدمات ذخیره شدند', 'success');
         } catch (e) { showMsg('❌ خطا: ' + e.message, 'error'); }
     }
+
     // ===== 0526.6 - نظرات مشتریان =====
     function loadTestimonials() {
         fetchFromGitHub('_data/testimonials.json').then(data => {
@@ -2763,18 +2820,15 @@ if (sha) {
         `);
     }
     function addTestimonialItem() {
-        const name = document.getElementById('newTestiName').value.trim();
-        const position = document.getElementById('newTestiPosition').value.trim();
-        const text = document.getElementById('newTestiText').value.trim();
-        const rating = parseInt(document.getElementById('newTestiRating').value) || 5;
-        const image = document.getElementById('newTestiImage').value.trim();
+        const name = document.getElementById('newTestiName')?.value?.trim() || '';
+        const position = document.getElementById('newTestiPosition')?.value?.trim() || '';
+        const text = document.getElementById('newTestiText')?.value?.trim() || '';
+        const rating = parseInt(document.getElementById('newTestiRating')?.value) || 5;
+        const image = document.getElementById('newTestiImage')?.value?.trim() || '';
         if (!name || !text) { showMsg('لطفاً نام و متن نظر را وارد کنید.', 'error'); return; }
         testimonialsData.items.push({ name, position, text, rating, image });
-        document.getElementById('newTestiName').value = '';
-        document.getElementById('newTestiPosition').value = '';
-        document.getElementById('newTestiText').value = '';
-        document.getElementById('newTestiRating').value = '';
-        document.getElementById('newTestiImage').value = '';
+        const fields = ['newTestiName', 'newTestiPosition', 'newTestiText', 'newTestiRating', 'newTestiImage'];
+        fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         renderTestimonials();
         showMsg('✅ نظر اضافه شد.', 'success');
     }
@@ -2819,7 +2873,7 @@ if (sha) {
     }
     async function saveTestimonials() {
         try {
-            testimonialsData.title = document.getElementById('testimonialsSectionTitle').value.trim() || 'نظرات مشتریان';
+            testimonialsData.title = document.getElementById('testimonialsSectionTitle')?.value?.trim() || 'نظرات مشتریان';
             const existing = await fetchFromGitHub('_data/testimonials.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2856,16 +2910,14 @@ if (sha) {
         `);
     }
     function addAwardItem() {
-        const name = document.getElementById('newAwardName').value.trim();
-        const org = document.getElementById('newAwardOrg').value.trim();
-        const date = document.getElementById('newAwardDate').value.trim();
-        const desc = document.getElementById('newAwardDesc').value.trim();
+        const name = document.getElementById('newAwardName')?.value?.trim() || '';
+        const org = document.getElementById('newAwardOrg')?.value?.trim() || '';
+        const date = document.getElementById('newAwardDate')?.value?.trim() || '';
+        const desc = document.getElementById('newAwardDesc')?.value?.trim() || '';
         if (!name) { showMsg('لطفاً نام جایزه را وارد کنید.', 'error'); return; }
         awardsData.items.push({ name, org, date, desc });
-        document.getElementById('newAwardName').value = '';
-        document.getElementById('newAwardOrg').value = '';
-        document.getElementById('newAwardDate').value = '';
-        document.getElementById('newAwardDesc').value = '';
+        const fields = ['newAwardName', 'newAwardOrg', 'newAwardDate', 'newAwardDesc'];
+        fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         renderAwards();
         showMsg('✅ جایزه اضافه شد.', 'success');
     }
@@ -2908,7 +2960,7 @@ if (sha) {
     }
     async function saveAwards() {
         try {
-            awardsData.title = document.getElementById('awardsSectionTitle').value.trim() || 'جوایز و افتخارات';
+            awardsData.title = document.getElementById('awardsSectionTitle')?.value?.trim() || 'جوایز و افتخارات';
             const existing = await fetchFromGitHub('_data/awards.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2945,14 +2997,13 @@ if (sha) {
         `);
     }
     function addLinkItem() {
-        const name = document.getElementById('newLinkName').value.trim();
-        const url = document.getElementById('newLinkUrl').value.trim();
-        const icon = document.getElementById('newLinkIcon').value.trim();
+        const name = document.getElementById('newLinkName')?.value?.trim() || '';
+        const url = document.getElementById('newLinkUrl')?.value?.trim() || '';
+        const icon = document.getElementById('newLinkIcon')?.value?.trim() || '';
         if (!name) { showMsg('لطفاً نام لینک را وارد کنید.', 'error'); return; }
         linksData.items.push({ name, url, icon });
-        document.getElementById('newLinkName').value = '';
-        document.getElementById('newLinkUrl').value = '';
-        document.getElementById('newLinkIcon').value = '';
+        const fields = ['newLinkName', 'newLinkUrl', 'newLinkIcon'];
+        fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         renderLinks();
         showMsg('✅ لینک اضافه شد.', 'success');
     }
@@ -2993,7 +3044,7 @@ if (sha) {
     }
     async function saveLinks() {
         try {
-            linksData.title = document.getElementById('linksSectionTitle').value.trim() || 'لینک‌های مفید';
+            linksData.title = document.getElementById('linksSectionTitle')?.value?.trim() || 'لینک‌های مفید';
             const existing = await fetchFromGitHub('_data/links.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -3022,9 +3073,9 @@ if (sha) {
     let currentMemberId = null;
     let currentMemberOrders = [];
 
-    // ===== ۱. بارگذاری لیست کاربران =====
     async function loadMembers() {
         const list = document.getElementById('membersList');
+        if (!list) return;
         if (!getToken()) {
             list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
             document.getElementById('proMembersCount').textContent = '0';
@@ -3081,7 +3132,7 @@ if (sha) {
             console.error('❌ خطا در بارگذاری کاربران:', e);
         }
     }
-    // ===== دریافت اطلاعات کاربر (کمکی) =====
+
     async function getUserInfo(userId) {
         try {
             const infoPath = `member/member${userId}/info.json`;
@@ -3093,7 +3144,6 @@ if (sha) {
         }
     }
 
-    // ===== ۲. رندر لیست کاربران =====
     function renderMembers() {
         const list = document.getElementById('membersList');
         if (!list) return;
@@ -3129,7 +3179,6 @@ if (sha) {
         updateDashboard();
     }
 
-    // ===== ۳. فیلتر کاربران =====
     function filterMembers(query) {
         const q = query.toLowerCase().trim();
         if (!q) { renderMembers(); return; }
@@ -3159,35 +3208,43 @@ if (sha) {
         }
     }
 
-    // ===== ۴. مشاهده جزئیات کاربر =====
     async function viewMemberDetail(memberId) {
         currentMemberId = memberId;
         const card = document.getElementById('memberDetailCard');
-        card.style.display = 'block';
+        if (card) card.style.display = 'block';
         const member = membersData.find(m => m.id === memberId);
         if (!member) { showMsg('❌ کاربر یافت نشد.', 'error'); return; }
-        document.getElementById('memberDetailName').textContent = member.name || 'بدون نام';
-        document.getElementById('memberDetailId').textContent = member.id;
-        document.getElementById('memberDetailPhone').textContent = member.phone || '---';
-        document.getElementById('memberDetailWhatsapp').textContent = member.whatsapp || '---';
-        document.getElementById('memberDetailTelegram').textContent = member.telegram || '---';
-        document.getElementById('memberDetailEmail').textContent = member.email || '---';
-        document.getElementById('memberDetailCreated').textContent = member.created ? new Date(member.created).toLocaleDateString('fa-IR') : '---';
+        const nameEl = document.getElementById('memberDetailName');
+        if (nameEl) nameEl.textContent = member.name || 'بدون نام';
+        const idEl = document.getElementById('memberDetailId');
+        if (idEl) idEl.textContent = member.id;
+        const phoneEl = document.getElementById('memberDetailPhone');
+        if (phoneEl) phoneEl.textContent = member.phone || '---';
+        const whatsappEl = document.getElementById('memberDetailWhatsapp');
+        if (whatsappEl) whatsappEl.textContent = member.whatsapp || '---';
+        const telegramEl = document.getElementById('memberDetailTelegram');
+        if (telegramEl) telegramEl.textContent = member.telegram || '---';
+        const emailEl = document.getElementById('memberDetailEmail');
+        if (emailEl) emailEl.textContent = member.email || '---';
+        const createdEl = document.getElementById('memberDetailCreated');
+        if (createdEl) createdEl.textContent = member.created ? new Date(member.created).toLocaleDateString('fa-IR') : '---';
         const addrContainer = document.getElementById('memberAddresses');
-        if (member.addresses && member.addresses.length > 0) {
-            addrContainer.innerHTML = member.addresses.map(addr =>
-                `<div style="padding:4px 8px;background:var(--pro-bg);border-radius:6px;margin-bottom:4px;border:1px solid var(--pro-border);font-size:0.85rem;">${addr}</div>`
-            ).join('');
-        } else {
-            addrContainer.innerHTML = '<span style="color:var(--pro-text-secondary);">هیچ آدرسی ثبت نشده است.</span>';
+        if (addrContainer) {
+            if (member.addresses && member.addresses.length > 0) {
+                addrContainer.innerHTML = member.addresses.map(addr =>
+                    `<div style="padding:4px 8px;background:var(--pro-bg);border-radius:6px;margin-bottom:4px;border:1px solid var(--pro-border);font-size:0.85rem;">${addr}</div>`
+                ).join('');
+            } else {
+                addrContainer.innerHTML = '<span style="color:var(--pro-text-secondary);">هیچ آدرسی ثبت نشده است.</span>';
+            }
         }
         await loadMemberOrders(memberId);
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // ===== ۵. بارگذاری سفارشات کاربر =====
     async function loadMemberOrders(memberId) {
         const container = document.getElementById('memberOrdersList');
+        if (!container) return;
         container.innerHTML = '<div class="pro-empty"><i class="fas fa-spinner fa-spin"></i> در حال بارگذاری سفارشات...</div>';
         try {
             const path = `member/member${memberId}/order${memberId}.json`;
@@ -3207,9 +3264,9 @@ if (sha) {
         }
     }
 
-    // ===== ۶. رندر سفارشات کاربر =====
     function renderMemberOrders(orders) {
         const container = document.getElementById('memberOrdersList');
+        if (!container) return;
         if (!orders || orders.length === 0) {
             container.innerHTML = '<div class="pro-empty"><i class="fas fa-box"></i>هیچ سفارشی ثبت نشده است.</div>';
             return;
@@ -3238,7 +3295,6 @@ if (sha) {
         `).join('');
     }
 
-    // ===== ۷. مشاهده جزئیات سفارش =====
     async function viewOrderDetail(userId, orderIndex) {
         if (!userId) { showMsg('❌ شناسه کاربر نامعتبر است.', 'error'); return; }
         try {
@@ -3328,7 +3384,7 @@ if (sha) {
             showMsg('❌ خطا: ' + e.message, 'error');
         }
     }
-    // ===== حذف یک سفارش خاص =====
+
     async function deleteOrder(userId, orderIdx) {
         if (!userId) { showMsg('❌ شناسه کاربر نامعتبر است.', 'error'); return; }
         if (!confirm('آیا از حذف این سفارش مطمئن هستید؟')) return;
@@ -3350,7 +3406,7 @@ if (sha) {
             showMsg('❌ خطا در حذف سفارش: ' + e.message, 'error');
         }
     }
-    // ===== ۸. ویرایش کامل سفارش =====
+
     async function openEditOrderModal(userId, orderIdx) {
         if (!userId) { showMsg('❌ شناسه کاربر نامعتبر است.', 'error'); return; }
         try {
@@ -3470,8 +3526,7 @@ if (sha) {
             showMsg('❌ خطا: ' + e.message, 'error');
         }
     }
-    
-    // ===== ۹. حذف کاربر =====
+
     async function deleteMember(memberId) {
         if (!memberId) memberId = currentMemberId;
         if (!memberId) { showMsg('❌ کاربری انتخاب نشده است.', 'error'); return; }
@@ -3504,7 +3559,7 @@ if (sha) {
             console.error(e);
         }
     }
-    // ===== تابع کمکی برای حذف کاربر از pendingorder.json =====
+
     async function cleanUserFromPending(userId) {
         try {
             const pendingPath = 'member/orders/pendingorder.json';
@@ -3517,25 +3572,34 @@ if (sha) {
             await saveToGitHub(pendingPath, pendingData, existing.sha);
         } catch (e) { console.warn('⚠️ خطا در پاک‌سازی pending:', e); }
     }
-    // ===== ۱۰. باز کردن مودال ویرایش کاربر =====
+
     function openEditMemberModal(memberId) {
         if (!memberId) memberId = currentMemberId;
         if (!memberId) { showMsg('❌ کاربری انتخاب نشده است.', 'error'); return; }
         const member = membersData.find(m => m.id === memberId);
         if (!member) { showMsg('❌ کاربر یافت نشد.', 'error'); return; }
-        document.getElementById('editMemberId').value = memberId;
-        document.getElementById('editMemberName').value = member.name || '';
-        document.getElementById('editMemberUsername').value = member.username || '';
-        document.getElementById('editMemberEmail').value = member.email || '';
-        document.getElementById('editMemberPhone').value = member.phone || '';
-        document.getElementById('editMemberWhatsapp').value = member.whatsapp || '';
-        document.getElementById('editMemberTelegram').value = member.telegram || '';
-        document.getElementById('editMemberAddresses').value = (member.addresses || []).join('\n');
-        document.getElementById('editMemberModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
+        const idEl = document.getElementById('editMemberId');
+        if (idEl) idEl.value = memberId;
+        const nameEl = document.getElementById('editMemberName');
+        if (nameEl) nameEl.value = member.name || '';
+        const userEl = document.getElementById('editMemberUsername');
+        if (userEl) userEl.value = member.username || '';
+        const emailEl = document.getElementById('editMemberEmail');
+        if (emailEl) emailEl.value = member.email || '';
+        const phoneEl = document.getElementById('editMemberPhone');
+        if (phoneEl) phoneEl.value = member.phone || '';
+        const wappEl = document.getElementById('editMemberWhatsapp');
+        if (wappEl) wappEl.value = member.whatsapp || '';
+        const telEl = document.getElementById('editMemberTelegram');
+        if (telEl) telEl.value = member.telegram || '';
+        const addrEl = document.getElementById('editMemberAddresses');
+        if (addrEl) addrEl.value = (member.addresses || []).join('\n');
+        const modal = document.getElementById('editMemberModal');
+        if (modal) { modal.classList.add('active'); document.body.style.overflow = 'hidden'; }
     }
     function closeEditMemberModal() {
-        document.getElementById('editMemberModal').classList.remove('active');
+        const modal = document.getElementById('editMemberModal');
+        if (modal) modal.classList.remove('active');
         document.body.style.overflow = '';
     }
     document.getElementById('editMemberForm')?.addEventListener('submit', async function(e) {
@@ -3575,7 +3639,11 @@ if (sha) {
             closeEditMemberModal();
         } catch (e) { showMsg('❌ خطا در ذخیره اطلاعات: ' + e.message, 'error'); }
     });
-    function closeMemberDetail() { document.getElementById('memberDetailCard').style.display = 'none'; currentMemberId = null; }
+    function closeMemberDetail() { 
+        const card = document.getElementById('memberDetailCard');
+        if (card) card.style.display = 'none';
+        currentMemberId = null; 
+    }
     function refreshMemberOrders() { if (currentMemberId) loadMemberOrders(currentMemberId); }
     async function refreshMembers() { await loadMembers(); showMsg('✅ لیست کاربران به‌روز شد.', 'success'); }
     function exportMembersData() {
@@ -3590,7 +3658,6 @@ if (sha) {
         URL.revokeObjectURL(url);
         showMsg('✅ خروجی کاربران دریافت شد.', 'success');
     }
-    // ===== تابع کمکی برای اضافه کردن BOM =====
     function generateCSVWithBOM(csvContent) {
         const BOM = '\uFEFF';
         return BOM + csvContent;
@@ -3647,19 +3714,16 @@ if (sha) {
         }
     }
 
-    // تابع عمومی exportCSV (در صورت نیاز)
     function exportCSV() {
         showMsg('📋 از دکمه‌های اختصاصی هر بخش برای خروجی CSV استفاده کنید.', 'info');
     }
 
     // ============================================================
-    // 0528 - مدیریت سفارشات گلوبال (با ساختار جدید)
+    // 0528 - مدیریت سفارشات گلوبال
     // ============================================================
-
     let allOrdersData = [];
     let filteredOrdersData = [];
 
-    // ===== ۱. بارگذاری سفارشات از pendingorder.json =====
     async function loadGlobalOrders() {
         try {
             const data = await fetchFromGitHub('member/orders/pendingorder.json');
@@ -3686,7 +3750,6 @@ if (sha) {
         }
     }
 
-    // ===== ۲. همگام‌سازی کامل به گلوبال + بکاپ =====
     async function syncAllOrdersToGlobal() {
         if (!getToken()) { 
             showMsg('❌ لطفاً توکن را وارد کنید.', 'error'); 
@@ -3752,74 +3815,7 @@ if (sha) {
             console.error(e);
         }
     }
-    // ===== ۴. خروجی CSV از pendingorder.json =====
-    async function exportOrdersCSV() {
-        try {
-            const data = await fetchFromGitHub('member/orders/pendingorder.json');
-            if (!data) {
-                showMsg('⚠️ هیچ سفارشی یافت نشد.', 'error');
-                return;
-            }
-            const pendingData = JSON.parse(data.content);
-            const orders = pendingData.orders || [];
-            
-            let csv = 'شناسه کاربر,نام کاربر,شناسه سفارش,تاریخ,مبلغ کل,وضعیت,محصولات\n';
-            orders.forEach(user => {
-                (user.orders || []).forEach(order => {
-                    const products = (order.items || []).map(item => 
-                        `${item.productName || item.productId} (${item.quantity || 1})`
-                    ).join(' | ');
-                    csv += `"${user.userId}","${user.userName || ''}","${order.id || ''}","${order.date || ''}","${order.total || 0}","${order.status || ''}","${products}"\n`;
-                });
-            });
-            
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `orders-export-${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showMsg('✅ خروجی CSV سفارشات دریافت شد.', 'success');
-        } catch (e) {
-            showMsg('❌ خطا: ' + e.message, 'error');
-        }
-    }
 
-    // ===== ۵. پاک‌سازی سفارشات قدیمی از pendingorder.json =====
-    async function cleanOldUserOrders(days) {
-        if (!confirm(`⚠️ آیا از حذف سفارشات قدیمی‌تر از ${days} روز مطمئن هستید؟`)) return;
-        showMsg('⏳ در حال پاک‌سازی...', 'info');
-        const data = await fetchFromGitHub('member/orders/pendingorder.json');
-        if (!data) {
-            showMsg('⚠️ هیچ سفارشی یافت نشد.', 'error');
-            return;
-        }
-        const pendingData = JSON.parse(data.content);
-        const now = new Date();
-        let removedCount = 0;
-        
-        pendingData.orders = pendingData.orders.map(user => {
-            const filteredOrders = user.orders.filter(order => {
-                const orderDate = new Date(order.date);
-                const diffDays = (now - orderDate) / (1000 * 60 * 60 * 24);
-                return diffDays < days;
-            });
-            removedCount += user.orders.length - filteredOrders.length;
-            return { ...user, orders: filteredOrders };
-        }).filter(user => user.orders.length > 0);
-        
-        pendingData.total_pending = pendingData.orders.reduce((sum, u) => sum + u.orders.length, 0);
-        pendingData.updated = new Date().toISOString();
-        
-        await saveToGitHub('member/orders/pendingorder.json', pendingData, data.sha);
-        showMsg(`✅ ${removedCount} سفارش قدیمی‌تر از ${days} روز پاک‌سازی شدند.`, 'success');
-        await loadGlobalOrders();
-    }
-
-    // ============================================================
-    // 0529 - توابع نمایش و فیلتر سفارشات
-    // ============================================================
     function renderOrders(orders) {
         const container = document.getElementById('ordersListContainer');
         if (!container) return;
@@ -3894,14 +3890,22 @@ if (sha) {
         const completed = orders.filter(o => o.status === 'completed').length;
         const canceled = orders.filter(o => o.status === 'canceled').length;
 
-        document.getElementById('orderStatTotal').textContent = total;
-        document.getElementById('orderStatPending').textContent = pending;
-        document.getElementById('orderStatPaid').textContent = paid;
-        document.getElementById('orderStatShipped').textContent = shipped;
-        document.getElementById('orderStatCompleted').textContent = completed;
-        document.getElementById('orderStatCanceled').textContent = canceled;
-        document.getElementById('proOrdersCount').textContent = total;
-        document.getElementById('proOrdersSub').textContent = total + ' سفارش';
+        const statTotal = document.getElementById('orderStatTotal');
+        if (statTotal) statTotal.textContent = total;
+        const statPending = document.getElementById('orderStatPending');
+        if (statPending) statPending.textContent = pending;
+        const statPaid = document.getElementById('orderStatPaid');
+        if (statPaid) statPaid.textContent = paid;
+        const statShipped = document.getElementById('orderStatShipped');
+        if (statShipped) statShipped.textContent = shipped;
+        const statCompleted = document.getElementById('orderStatCompleted');
+        if (statCompleted) statCompleted.textContent = completed;
+        const statCanceled = document.getElementById('orderStatCanceled');
+        if (statCanceled) statCanceled.textContent = canceled;
+        const countEl = document.getElementById('proOrdersCount');
+        if (countEl) countEl.textContent = total;
+        const subEl = document.getElementById('proOrdersSub');
+        if (subEl) subEl.textContent = total + ' سفارش';
     }
 
     function filterOrders() {
@@ -3967,511 +3971,41 @@ if (sha) {
         showMsg('✅ گزارش تغییرات دریافت شد.', 'success');
     }
 
-    window.viewOrderDetail = function(userId, orderIndex) {
-        if (typeof openOrderDetailModal === 'function') {
-            openOrderDetailModal(userId, orderIndex);
-        } else {
-            alert('جزئیات سفارش: ' + orderIndex);
-        }
-    };
-
-    console.log('✅ بخش‌های ۰۵۲۸ و ۰۵۲۹ با ساختار جدید سفارشات بارگذاری شدند.');
-    // ============================================================
-    // 0530 - بروزرسانی توابع اصلی (Override)
-    // ============================================================
-    const originalSwitchTab = switchTab;
-    switchTab = function(tabId) {
-        originalSwitchTab(tabId);
-        if (tabId === 'orders') loadGlobalOrders();
-        if (tabId === 'members') loadMembers();
-        if (tabId === 'index-content') loadAllIndexContent();
-    };
-    const originalUpdateDashboard = updateDashboard;
-    updateDashboard = function() {
-        originalUpdateDashboard();
-        document.getElementById('dashMembers').textContent = membersData.length || 0;
-    };
-    const originalExportData = exportData;
-    exportData = function() {
-        const data = {
-            articles: articlesData, products: productsData, archive: archiveData,
-            menu: menuData, sections: sectionsData,
-            education: eduData, certificates: certsData, social: socialData,
-            services: servicesData, skills: skillsData, testimonials: testimonialsData,
-            awards: awardsData, links: linksData, members: membersData,
-            exported: new Date().toISOString()
-        };
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `full-backup-${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-        showMsg('✅ خروجی کامل با موفقیت دریافت شد.', 'success');
-        logActivity('خروجی کامل گرفته شد');
-    };
-
-    // ============================================================
-    // 0531 - بارگذاری خودکار در DOMContentLoaded
-    // ============================================================
-    document.addEventListener('DOMContentLoaded', function() {
-        if (document.getElementById('tab-index-content')?.classList.contains('active')) loadAllIndexContent();
-        if (document.getElementById('tab-members')?.classList.contains('active')) loadMembers();
-        if (document.getElementById('tab-orders')?.classList.contains('active')) loadGlobalOrders();
-        setTimeout(() => { if (membersData.length > 0) syncAllOrdersToGlobal(); }, 3000);
-        console.log('✅ پنل مدیریت با موفقیت بارگذاری شد.');
-        console.log('📌 تعداد کل خطوط فایل: ~۴۳۰۰ خط');
-    });
-
-    // ============================================================
-    // ۰۰۰۳ - توابع آپلود فایل و ذخیره در گیت‌هاب (نسخه یکپارچه برای blank-*)
-    // ============================================================
-
-    // ---- توابع کمکی گیت‌هاب با پارامترهای اختیاری (نسخه دوم - تغییر نام داده شده) ----
-    async function fetchFromGitHubWithParams(path, token = null, owner = null, repo = null) {
-        const t = token || getToken();
-        const o = owner || REPO_OWNER;
-        const r = repo || REPO_NAME;
-        if (!t) throw new Error('توکن وارد نشده است.');
-        const url = `https://api.github.com/repos/${o}/${r}/contents/${path}`;
-        const res = await fetch(url, {
-            headers: { 'Authorization': 'token ' + t, 'Accept': 'application/vnd.github.v3+json' }
-        });
-        if (res.status === 404) return null;
-        if (!res.ok) throw new Error('خطا در خواندن فایل: ' + res.status);
-        const data = await res.json();
-        const binaryString = atob(data.content);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
-        const decoder = new TextDecoder('utf-8');
-        const content = decoder.decode(bytes).replace(/^\uFEFF/, '');
-        return { ...data, content };
-    }
-
-    async function saveToGitHubWithParams(path, content, sha = null, token = null, owner = null, repo = null) {
-        const t = token || getToken();
-        const o = owner || REPO_OWNER;
-        const r = repo || REPO_NAME;
-        if (!t) throw new Error('توکن وارد نشده است.');
-        const url = `https://api.github.com/repos/${o}/${r}/contents/${path}`;
-        const jsonString = JSON.stringify(content, null, 2);
-        const encoder = new TextEncoder();
-        const encoded = encoder.encode(jsonString);
-        let binary = '';
-        for (let i = 0; i < encoded.length; i++) {
-            binary += String.fromCharCode(encoded[i]);
-        }
-        const base64Content = btoa(binary);
-        const body = {
-            message: `Update ${path} via admin panel - ${new Date().toISOString()}`,
-            content: base64Content,
-            branch: 'main'
-        };
-        if (sha) body.sha = sha;
-        const res = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Authorization': 'token ' + t,
-                'Content-Type': 'application/json',
-                'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify(body)
-        });
-        if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.message || 'خطا در ذخیره فایل');
-        }
-        return res.json();
-    }
-
-    async function uploadFileToGitHubWithParams(path, base64Data, token = null, owner = null, repo = null) {
-        const t = token || getToken();
-        const o = owner || REPO_OWNER;
-        const r = repo || REPO_NAME;
-        if (!t) throw new Error('توکن وارد نشده است.');
-        const url = `https://api.github.com/repos/${o}/${r}/contents/${path}`;
-        const body = {
-            message: `Upload ${path} via admin panel - ${new Date().toISOString()}`,
-            content: base64Data,
-            branch: 'main'
-        };
-        const res = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Authorization': 'token ' + t,
-                'Content-Type': 'application/json',
-                'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify(body)
-        });
-        if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.message || 'خطا در آپلود فایل');
-        }
-        return res.json();
-    }
-
-    // ---- توابع آپلود فایل (UI) برای blank-* ----
-    function setupFileUploadBlank(zoneId, inputId, previewId, type, maxItems) {
-        const zone = document.getElementById(zoneId);
-        const input = document.getElementById(inputId);
-        const preview = document.getElementById(previewId);
-        if (!zone || !input || !preview) return;
-
-        zone.addEventListener('click', function(e) {
-            if (e.target === input) return;
-            input.click();
-        });
-
-        input.addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            handleFilesBlank(files, preview, type, maxItems);
-            input.value = '';
-        });
-
-        zone.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            zone.classList.add('dragover');
-        });
-        zone.addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            zone.classList.remove('dragover');
-        });
-        zone.addEventListener('drop', function(e) {
-            e.preventDefault();
-            zone.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length) {
-                handleFilesBlank(Array.from(files), preview, type, maxItems);
-            }
-        });
-    }
-
-    function handleFilesBlank(files, previewContainer, type, maxItems) {
-        const existingItems = previewContainer.querySelectorAll('.file-tag, .gallery-item');
-        const existingCount = existingItems.length;
-        const remaining = maxItems - existingCount;
-        if (remaining <= 0) {
-            showMsg('حداکثر ' + maxItems + ' فایل مجاز است.', 'error');
+    async function cleanOldUserOrders(days) {
+        if (!confirm(`⚠️ آیا از حذف سفارشات قدیمی‌تر از ${days} روز مطمئن هستید؟`)) return;
+        showMsg('⏳ در حال پاک‌سازی...', 'info');
+        const data = await fetchFromGitHub('member/orders/pendingorder.json');
+        if (!data) {
+            showMsg('⚠️ هیچ سفارشی یافت نشد.', 'error');
             return;
         }
-        const toAdd = files.slice(0, remaining);
-        toAdd.forEach(function(file) {
-            const maxSize = (type === 'cover' || type === 'gallery') ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
-            if (file.size > maxSize) {
-                showMsg('فایل ' + file.name + ' بزرگتر از حد مجاز است.', 'error');
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                const dataUrl = ev.target.result;
-                if (type === 'cover' || type === 'gallery') {
-                    const container = document.createElement('div');
-                    container.className = type === 'cover' ? '' : 'gallery-item';
-                    const img = document.createElement('img');
-                    img.src = dataUrl;
-                    img.className = type === 'cover' ? 'upload-preview-img' : '';
-                    img.alt = file.name;
-                    if (type === 'cover') {
-                        previewContainer.innerHTML = '';
-                        container.appendChild(img);
-                        previewContainer.appendChild(container);
-                    } else {
-                        const removeBtn = document.createElement('button');
-                        removeBtn.className = 'remove-btn';
-                        removeBtn.innerHTML = '<i class="fas fa-times"></i>';
-                        removeBtn.onclick = function(e) {
-                            e.stopPropagation();
-                            container.remove();
-                        };
-                        container.appendChild(img);
-                        container.appendChild(removeBtn);
-                        previewContainer.appendChild(container);
-                    }
-                } else {
-                    const tag = document.createElement('span');
-                    tag.className = 'file-tag';
-                    const icon = file.type.includes('pdf') ? 'fa-file-pdf' :
-                        file.type.includes('zip') ? 'fa-file-archive' : 'fa-file';
-                    tag.innerHTML = '<i class="fas ' + icon + '"></i><span>' + file.name +
-                        '</span><button class="remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>';
-                    previewContainer.appendChild(tag);
-                }
-            };
-            reader.readAsDataURL(file);
-        });
-        if (toAdd.length < files.length) {
-            showMsg((files.length - toAdd.length) + ' فایل به دلیل محدودیت ' + maxItems + ' عددی اضافه نشدند.', 'error');
-        }
-    }
-
-    function initArticleUploadsBlank() {
-        setupFileUploadBlank('coverUploadZone', 'coverFileInput', 'coverPreview', 'cover', 1);
-        setupFileUploadBlank('galleryUploadZone', 'galleryFileInput', 'galleryPreview', 'gallery', 10);
-        setupFileUploadBlank('mainFileUploadZone', 'mainFileInput', 'mainFilePreview', 'file', 1);
-        setupFileUploadBlank('filesUploadZone', 'filesFileInput', 'filesPreview', 'file', 10);
-    }
-
-    // ---- تابع addTag و updateTagsHidden برای blank-* ----
-    window.addTag = function(containerId, inputId) {
-        const container = document.getElementById(containerId);
-        const input = document.getElementById(inputId);
-        const text = input.value.trim();
-        if (!text) return;
-        const tag = document.createElement('span');
-        tag.className = 'tag-item';
-        tag.innerHTML = text + ' <i class="fas fa-times" onclick="this.parentElement.remove(); updateTagsHidden(\'' + containerId + '\')"></i>';
-        container.insertBefore(tag, input);
-        input.value = '';
-        updateTagsHidden(containerId);
-    };
-
-    window.updateTagsHidden = function(containerId) {
-        const container = document.getElementById(containerId);
-        const tags = container.querySelectorAll('.tag-item');
-        const values = Array.from(tags).map(function(t) {
-            return t.textContent.replace('×', '').trim();
-        });
-        const hiddenId = containerId.replace('Container', '');
-        document.getElementById(hiddenId).value = values.join(',');
-    };
-
-    window.generateArticleIdBlank = async function() {
-        try {
-            const res = await fetch('../_data/articles.json?t=' + Date.now());
-            let maxNum = 0;
-            if (res.ok) {
-                const data = await res.json();
-                Object.keys(data).forEach(function(key) {
-                    const num = parseInt(key);
-                    if (!isNaN(num) && num > maxNum) maxNum = num;
-                });
-            }
-            const newNum = maxNum + 1;
-            const padded = String(newNum).padStart(4, '0');
-            document.getElementById('articleId').value = padded;
-            document.getElementById('articleIdDisplay').textContent = 'ART-' + padded;
-        } catch (e) { console.error(e); }
-    };
-
-    window.generateArticleContent = function() {
-        const title = document.getElementById('articleTitle').value.trim();
-        if (!title) { showMsg('❌ لطفاً عنوان مقاله را وارد کنید.', 'error'); return; }
-        document.getElementById('articleAbstract').value =
-            'چکیده مقاله "' + title + '" – این مقاله به بررسی موضوعی مهم در حوزه مهندسی مکانیک می‌پردازد. روش‌های نوین تحلیل و شبیه‌سازی ارائه شده و نتایج با داده‌های تجربی مقایسه می‌شوند.';
-        document.getElementById('articleBody').value =
-            '۱. مقدمه\n' + title + ' یکی از موضوعات کلیدی در مهندسی مکانیک است. در این مقاله به تحلیل و بررسی آن پرداخته شده است.\n\n۲. روش‌شناسی\nاز روش‌های عددی و تحلیلی برای بررسی استفاده شده است.\n\n۳. نتایج\nنتایج نشان می‌دهد که روش پیشنهادی عملکرد مناسبی دارد.\n\n۴. بحث و نتیجه‌گیری\nدر نهایت، پیشنهاداتی برای تحقیقات آینده ارائه شده است.';
-        showMsg('✅ پیش‌نویس مقاله با هوش مصنوعی تولید شد.', 'success');
-    };
-
-    // ---- تابع saveArticle برای blank-article ----
-    window.saveArticle = async function() {
-        const id = document.getElementById('articleId').value;
-        const title = document.getElementById('articleTitle').value.trim();
-        const abstract = document.getElementById('articleAbstract').value.trim();
-        const body = document.getElementById('articleBody').value.trim();
-        const type = document.getElementById('articleType').value;
-        const date = document.getElementById('articleDate').value || new Date().toISOString().split('T')[0];
-        const year = document.getElementById('articleYear').value.trim() || new Date().getFullYear().toString();
-        const readTime = parseInt(document.getElementById('articleReadTime').value) || 10;
-        const tags = document.getElementById('articleTags').value.split(',').map(s => s.trim()).filter(Boolean);
-        const keywords = document.getElementById('articleKeywords').value.split(',').map(s => s.trim()).filter(Boolean);
-        const references = document.getElementById('articleReferences').value.split('\n').map(s => s.trim()).filter(Boolean);
-        const doi = document.getElementById('articleDoi').value.trim();
-        const difficulty = document.getElementById('articleDifficulty').value;
-        const language = document.getElementById('articleLanguage').value;
-        const englishAbstract = document.getElementById('articleEnglishAbstract').value.trim();
-        const status = document.getElementById('articleStatus').value;
-        const notes = document.getElementById('articleNotes').value.trim();
-        const relatedLinks = document.getElementById('articleRelatedLinks').value.split(',').map(s => s.trim()).filter(Boolean);
-
-        if (!title || !abstract || !body) {
-            showMsg('❌ لطفاً عنوان، چکیده و متن کامل مقاله را پر کنید.', 'error');
-            return;
-        }
-
-        const coverImg = document.querySelector('#coverPreview img');
-        const coverData = coverImg ? coverImg.src : null;
-        const galleryItems = document.querySelectorAll('#galleryPreview .gallery-item img');
-        const galleryData = Array.from(galleryItems).map(img => img.src);
-        const mainFileTag = document.querySelector('#mainFilePreview .file-tag');
-        const mainFileName = mainFileTag ? mainFileTag.querySelector('span')?.textContent : null;
-        const fileTags = document.querySelectorAll('#filesPreview .file-tag');
-        const filesData = Array.from(fileTags).map(tag => {
-            const name = tag.querySelector('span')?.textContent || '';
-            return name;
-        });
-
-        const articleData = {
-            title, abstract, body, type, date, year, readTime,
-            tags, keywords, cover: coverData || '', images: galleryData,
-            file: mainFileName || '', files: filesData,
-            references, doi: doi || '', difficulty, language,
-            english_abstract: englishAbstract || '', status,
-            notes: notes || '', related_links: relatedLinks,
-            updated: new Date().toISOString()
-        };
-
-        const articles = JSON.parse(localStorage.getItem('temp_articles') || '{}');
-        articles[id] = articleData;
-        localStorage.setItem('temp_articles', JSON.stringify(articles));
-
-        const token = getToken();
-        if (!token) {
-            showMsg('⚠️ توکن گیت‌هاب یافت نشد. مقاله در حافظه موقت ذخیره شد.', 'info');
-            return;
-        }
-
-        try {
-            showMsg('⏳ در حال ذخیره مقاله در گیت‌هاب...', 'info');
-
-            const repoOwner = 'mahanneman';
-            const repoName = 'MA.AD.GH.SITE';
-            const key = String(id).padStart(4, '0');
-            const basePath = `assets/articles/${key}/`;
-
-            if (coverData && coverData.startsWith('data:')) {
-                await uploadFileToGitHubWithParams(`${basePath}cover.jpg`, coverData.split(',')[1], token, repoOwner, repoName);
-            }
-
-            for (let i = 0; i < galleryData.length; i++) {
-                if (galleryData[i].startsWith('data:')) {
-                    await uploadFileToGitHubWithParams(`${basePath}gallery_${i+1}.jpg`, galleryData[i].split(',')[1], token, repoOwner, repoName);
-                }
-            }
-
-            const mainFileInput = document.getElementById('mainFileInput');
-            if (mainFileInput && mainFileInput.files.length > 0) {
-                const file = mainFileInput.files[0];
-                const reader = new FileReader();
-                const fileData = await new Promise((resolve) => {
-                    reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
-                    reader.readAsDataURL(file);
-                });
-                await uploadFileToGitHubWithParams(`${basePath}${file.name}`, fileData, token, repoOwner, repoName);
-            }
-
-            const extraFiles = document.getElementById('filesFileInput');
-            if (extraFiles && extraFiles.files.length > 0) {
-                for (let i = 0; i < extraFiles.files.length; i++) {
-                    const file = extraFiles.files[i];
-                    const reader = new FileReader();
-                    const fileData = await new Promise((resolve) => {
-                        reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
-                        reader.readAsDataURL(file);
-                    });
-                    await uploadFileToGitHubWithParams(`${basePath}${file.name}`, fileData, token, repoOwner, repoName);
-                }
-            }
-
-            const existing = await fetchFromGitHub('_data/articles.json');
-            let articlesDataLocal = {};
-            let sha = null;
-            if (existing) {
-                articlesDataLocal = JSON.parse(existing.content);
-                sha = existing.sha;
-            }
-            articlesDataLocal[key] = articleData;
-            await saveToGitHub('_data/articles.json', articlesDataLocal, sha);
-
-            showMsg('✅ مقاله با شماره ART-' + id + ' با موفقیت در گیت‌هاب ذخیره شد.', 'success');
-            loadArticles();
-
-        } catch (e) {
-            console.error('❌ خطا در ذخیره گیت‌هاب:', e);
-            showMsg('⚠️ ذخیره در گیت‌هاب با خطا مواجه شد، ولی مقاله در حافظه موقت ذخیره شد.', 'error');
-        }
-    };
-
-    window.resetArticleForm = function() {
-        document.getElementById('articleTitle').value = '';
-        document.getElementById('articleAbstract').value = '';
-        document.getElementById('articleBody').value = '';
-        document.getElementById('articleDate').value = '';
-        document.getElementById('articleYear').value = '';
-        document.getElementById('articleReadTime').value = '';
-        document.getElementById('articleKeywords').value = '';
-        document.getElementById('articleReferences').value = '';
-        document.getElementById('articleDoi').value = '';
-        document.getElementById('articleEnglishAbstract').value = '';
-        document.getElementById('articleNotes').value = '';
-        document.getElementById('articleRelatedLinks').value = '';
-        document.getElementById('articleType').value = 'article';
-        document.getElementById('articleDifficulty').value = 'متوسط';
-        document.getElementById('articleLanguage').value = 'فارسی';
-        document.getElementById('articleStatus').value = 'فعال';
-        document.getElementById('articleTags').value = '';
-        document.querySelectorAll('#articleTagsContainer .tag-item').forEach(el => el.remove());
-        document.getElementById('coverPreview').innerHTML = '';
-        document.getElementById('galleryPreview').innerHTML = '';
-        document.getElementById('mainFilePreview').innerHTML = '';
-        document.getElementById('filesPreview').innerHTML = '';
-        document.getElementById('coverFileInput').value = '';
-        document.getElementById('galleryFileInput').value = '';
-        document.getElementById('mainFileInput').value = '';
-        document.getElementById('filesFileInput').value = '';
-        generateArticleId();
-        showMsg('✅ فرم بازنشانی شد.', 'info');
-    };
-
-    // ---- راه‌اندازی آپلودها هنگام بارگذاری صفحه برای blank-* ----
-    document.addEventListener('DOMContentLoaded', function() {
-        if (document.getElementById('coverUploadZone')) {
-            initArticleUploadsBlank();
-        }
-        const today = new Date().toISOString().split('T')[0];
-        if (document.getElementById('articleDate')) {
-            document.getElementById('articleDate').value = today;
-        }
-        if (document.getElementById('articleYear')) {
-            document.getElementById('articleYear').value = new Date().getFullYear();
-        }
-    });
-
-    console.log('✅ توابع آپلود و ذخیره گیت‌هاب با موفقیت بارگذاری شدند.');
-// ============================================================
-// 0532 - اتصال تمام توابع به window (برای استفاده در onclick)
-
-    // ============================================================
-    // 0532 - اتصال تمام توابع به window و تعریف توابع گم‌شده
-    // ============================================================
-
-    // ---- تابع updateOrderStatus (گم‌شده) ----
-    async function updateOrderStatus(userId, orderIdx, newStatus) {
-        if (!userId) { showMsg('❌ شناسه کاربر نامعتبر است.', 'error'); return; }
-        try {
-            const path = `member/member${userId}/orders.json`;
-            const existing = await fetchFromGitHub(path);
-            if (!existing) { showMsg('❌ فایل سفارشات یافت نشد.', 'error'); return; }
-            let orders = JSON.parse(existing.content);
-            if (!Array.isArray(orders) || orderIdx >= orders.length) {
-                showMsg('❌ سفارش یافت نشد.', 'error');
-                return;
-            }
-            orders[orderIdx].status = newStatus;
-            orders[orderIdx].updated = new Date().toISOString();
-            await saveToGitHub(path, orders, existing.sha);
-            let history = JSON.parse(localStorage.getItem('order_status_history') || '[]');
-            history.unshift({
-                orderId: orders[orderIdx].id,
-                userId: userId,
-                status: newStatus,
-                time: new Date().toISOString()
+        const pendingData = JSON.parse(data.content);
+        const now = new Date();
+        let removedCount = 0;
+        
+        pendingData.orders = pendingData.orders.map(user => {
+            const filteredOrders = user.orders.filter(order => {
+                const orderDate = new Date(order.date);
+                const diffDays = (now - orderDate) / (1000 * 60 * 60 * 24);
+                return diffDays < days;
             });
-            if (history.length > 100) history = history.slice(0, 100);
-            localStorage.setItem('order_status_history', JSON.stringify(history));
-            showMsg('✅ وضعیت سفارش به‌روز شد.', 'success');
-            await loadGlobalOrders();
-            if (currentMemberId) loadMemberOrders(currentMemberId);
-        } catch (e) {
-            showMsg('❌ خطا: ' + e.message, 'error');
-        }
+            removedCount += user.orders.length - filteredOrders.length;
+            return { ...user, orders: filteredOrders };
+        }).filter(user => user.orders.length > 0);
+        
+        pendingData.total_pending = pendingData.orders.reduce((sum, u) => sum + u.orders.length, 0);
+        pendingData.updated = new Date().toISOString();
+        
+        await saveToGitHub('member/orders/pendingorder.json', pendingData, data.sha);
+        showMsg(`✅ ${removedCount} سفارش قدیمی‌تر از ${days} روز پاک‌سازی شدند.`, 'success');
+        await loadGlobalOrders();
     }
 
-    // ---- توابع view و سایر ----
+    // ============================================================
+    // 0529 - توابع اضافی و اتصال به window
+    // ============================================================
+    
+    // توابع view و سایر
     function setView(type, view) {
         const container = document.getElementById('pro' + type.charAt(0).toUpperCase() + type.slice(1) + 'List');
         if (container) {
@@ -4516,7 +4050,7 @@ if (sha) {
     }
 
     function openEditOrderFromDetail() {
-        showMsg('🔧 ویرایش سفارش از طریق دکمه ویرایش در مودال اصلی امکان‌پذیر است.', 'info');
+        showMsg('🔧 این قابلیت از طریق دکمه ویرایش در مودال اصلی قابل دسترسی است.', 'info');
     }
 
     function closeEditOrderModal() {
@@ -4539,7 +4073,77 @@ if (sha) {
         if (modal) modal.classList.remove('active');
     }
 
-    // ---- اتصال تمام توابع به window ----
+    async function updateOrderStatus(userId, orderIdx, newStatus) {
+        if (!userId) { showMsg('❌ شناسه کاربر نامعتبر است.', 'error'); return; }
+        try {
+            const path = `member/member${userId}/orders.json`;
+            const existing = await fetchFromGitHub(path);
+            if (!existing) { showMsg('❌ فایل سفارشات یافت نشد.', 'error'); return; }
+            let orders = JSON.parse(existing.content);
+            if (!Array.isArray(orders) || orderIdx >= orders.length) {
+                showMsg('❌ سفارش یافت نشد.', 'error');
+                return;
+            }
+            orders[orderIdx].status = newStatus;
+            orders[orderIdx].updated = new Date().toISOString();
+            await saveToGitHub(path, orders, existing.sha);
+            let history = JSON.parse(localStorage.getItem('order_status_history') || '[]');
+            history.unshift({
+                orderId: orders[orderIdx].id,
+                userId: userId,
+                status: newStatus,
+                time: new Date().toISOString()
+            });
+            if (history.length > 100) history = history.slice(0, 100);
+            localStorage.setItem('order_status_history', JSON.stringify(history));
+            showMsg('✅ وضعیت سفارش به‌روز شد.', 'success');
+            await loadGlobalOrders();
+            if (currentMemberId) loadMemberOrders(currentMemberId);
+        } catch (e) {
+            showMsg('❌ خطا: ' + e.message, 'error');
+        }
+    }
+
+    // ============================================================
+    // 0530 - بروزرسانی توابع اصلی (Override)
+    // ============================================================
+    const originalSwitchTab = switchTab;
+    switchTab = function(tabId) {
+        originalSwitchTab(tabId);
+        if (tabId === 'orders') loadGlobalOrders();
+        if (tabId === 'members') loadMembers();
+        if (tabId === 'index-content') loadAllIndexContent();
+    };
+    const originalUpdateDashboard = updateDashboard;
+    updateDashboard = function() {
+        originalUpdateDashboard();
+        const dashMembers = document.getElementById('dashMembers');
+        if (dashMembers) dashMembers.textContent = membersData.length || 0;
+    };
+    const originalExportData = exportData;
+    exportData = function() {
+        const data = {
+            articles: articlesData, products: productsData, archive: archiveData,
+            menu: menuData, sections: sectionsData,
+            education: eduData, certificates: certsData, social: socialData,
+            services: servicesData, skills: skillsData, testimonials: testimonialsData,
+            awards: awardsData, links: linksData, members: membersData,
+            exported: new Date().toISOString()
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `full-backup-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showMsg('✅ خروجی کامل با موفقیت دریافت شد.', 'success');
+        logActivity('خروجی کامل گرفته شد');
+    };
+
+    // ============================================================
+    // 0531 - اتصال تمام توابع به window (برای استفاده در onclick)
+    // ============================================================
     window.proSaveToken = proSaveToken;
     window.saveAppearance = saveAppearance;
     window.resetAppearanceForm = resetAppearanceForm;
@@ -4638,11 +4242,12 @@ if (sha) {
     window.exportAllOrders = exportAllOrders;
     window.closeOrderDetailModal = closeOrderDetailModal;
     window.openEditOrderFromDetail = openEditOrderFromDetail;
+    window.closeEditOrderModal = closeEditOrderModal;
     window.sendMessageToUser = sendMessageToUser;
     window.closeSendMessageModal = closeSendMessageModal;
     window.cleanOldUserOrders = cleanOldUserOrders;
 
-    // ---- توابع ایندکس (اتصال کامل) ----
+    // اتصال توابع ایندکس
     window.openEditEducationModal = openEditEducationModal;
     window.moveEducationItem = moveEducationItem;
     window.removeEducationItem = removeEducationItem;
@@ -4670,4 +4275,4 @@ if (sha) {
 
     console.log('✅ تمام توابع به window متصل شدند.');
 })();
-})();
+```

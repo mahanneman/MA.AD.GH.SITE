@@ -1246,7 +1246,16 @@
             }
         }
     }
-
+// ============================================================
+// 0514 - راه‌اندازی آپلودها در فرم افزودن مقاله
+// ============================================================
+function initArticleUploads() {
+    setupFileUpload('coverUploadZone', 'coverFileInput', 'coverPreview', 'cover', 1);
+    setupFileUpload('galleryUploadZone', 'galleryFileInput', 'galleryPreview', 'gallery', 10);
+    setupFileUpload('mainFileUploadZone', 'mainFileInput', 'mainFilePreview', 'file', 1);
+    setupFileUpload('filesUploadZone', 'filesFileInput', 'filesPreview', 'file', 10);
+    window.initArticleUploads = initArticleUploads;
+}
     // ============================================================
     // 0014 - آپلود تصویر شاخص (فرم افزودن)
     // ============================================================

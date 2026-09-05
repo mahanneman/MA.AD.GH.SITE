@@ -126,8 +126,8 @@
     function recordFailedAttempt(username) {
         const data = getAttempts();
         data.attempts = (data.attempts || 0) + 1;
-        if (data.attempts >= 5) {
-            data.lockUntil = Date.now() + 60 * 1000; // 60 ثانیه قفل
+        if (data.attempts >= 50) {
+            data.lockUntil = Date.now() + 1 * 1000; // 60 ثانیه قفل
         }
         saveAttempts(data);
         return data;

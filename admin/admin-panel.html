@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پنل مدیریت فوق‌حرفه‌ای | کنترل کامل سایت</title>
@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ===== استایل‌های قبلی + استایل‌های جدید ===== */
         .pro-skill-bar { width:100%; height:6px; background:var(--pro-border); border-radius:4px; overflow:hidden; margin-top:6px; }
         .pro-skill-bar .fill { height:100%; border-radius:4px; transition:width 0.6s ease; }
         .pro-status-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 12px; border-radius:20px; font-size:0.65rem; font-weight:600; }
@@ -65,7 +64,6 @@
         .pro-list-view .pro-item { display:flex; }
         @media (max-width:768px) { .pro-stat-advanced { grid-template-columns:1fr; } }
 
-        /* استایل‌های فرم افزودن مقاله */
         .form-section { margin-bottom:25px; padding-bottom:20px; border-bottom:1px solid var(--pro-border); }
         .form-section:last-of-type { border-bottom:none; margin-bottom:0; padding-bottom:0; }
         .form-section h4 { font-size:1rem; font-weight:700; color:var(--pro-text-secondary); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
@@ -103,7 +101,6 @@
         @keyframes gradientShift { 0%,100% { background-position:0% 50%; } 50% { background-position:100% 50%; } }
         .pro-btn-ai:hover { transform:translateY(-3px) scale(1.02); box-shadow:0 12px 35px rgba(139,92,246,0.4); }
 
-        /* لاگین */
         .login-container { min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--pro-bg); padding:20px; }
         .login-box { background:var(--pro-card); border-radius:var(--pro-radius); padding:40px; max-width:400px; width:100%; border:1px solid var(--pro-border); box-shadow:var(--pro-shadow); }
         .login-box .logo { text-align:center; margin-bottom:30px; }
@@ -267,7 +264,6 @@
 </head>
 <body>
 
-    <!-- ===== صفحه لاگین ===== -->
     <div id="loginPage" style="display:none;">
         <div class="login-container">
             <div class="login-box">
@@ -290,10 +286,8 @@
         </div>
     </div>
 
-    <!-- ===== پنل مدیریت ===== -->
     <div id="adminPanel" style="display:none;">
 
-        <!-- هدر -->
         <header class="pro-header">
             <div class="logo">
                 <i class="fas fa-cogs"></i>
@@ -310,7 +304,6 @@
             </div>
         </header>
 
-        <!-- نوار توکن -->
         <div class="pro-token-bar">
             <label><i class="fas fa-key"></i> توکن گیت‌هاب:</label>
             <input type="password" id="proToken" placeholder="توکن خود را وارد کنید..." />
@@ -323,10 +316,8 @@
             <button class="pro-export-csv" onclick="exportCSV()"><i class="fas fa-file-csv"></i> خروجی CSV</button>
         </div>
 
-        <!-- پیام -->
         <div id="proMsg" class="pro-msg"></div>
 
-        <!-- تب‌ها -->
         <div class="pro-tabs" id="proTabs">
             <button class="tab-btn active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> داشبورد</button>
             <button class="tab-btn" data-tab="appearance"><i class="fas fa-palette"></i> ظاهر</button>
@@ -343,8 +334,6 @@
             <button class="tab-btn" data-tab="orders"><i class="fas fa-shopping-bag"></i> سفارشات <span class="badge" id="proOrdersCount">0</span></button>
             <button class="tab-btn" data-tab="settings"><i class="fas fa-cog"></i> تنظیمات</button>
         </div>
-
-        <!-- ===== محتوای تب‌ها ===== -->
 
         <!-- داشبورد -->
         <div class="pro-tab-content active" id="tab-dashboard">
@@ -398,14 +387,13 @@
             </div>
         </div>
 
-        <!-- ===== افزودن مقاله (نسخه کامل با آپلود) ===== -->
+        <!-- افزودن مقاله -->
         <div class="pro-tab-content" id="tab-add-article">
             <div class="pro-card">
                 <div class="pro-card-header">
                     <h3><i class="fas fa-plus-circle"></i> افزودن مقاله جدید</h3>
                     <span class="sub">شماره خودکار - آپلود تصاویر و فایل‌ها</span>
                 </div>
-
                 <div class="form-section">
                     <h4><i class="fas fa-info-circle"></i> اطلاعات پایه <span class="section-badge">ضروری</span></h4>
                     <div class="pro-grid">
@@ -432,7 +420,6 @@
                         <textarea id="articleBody" rows="6" placeholder="متن کامل مقاله را اینجا بنویسید (با تگ‌های HTML)..."></textarea>
                     </div>
                 </div>
-
                 <div class="form-section">
                     <h4><i class="fas fa-calendar-alt"></i> نوع و زمان</h4>
                     <div class="pro-grid">
@@ -465,7 +452,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="form-section">
                     <h4><i class="fas fa-tags"></i> برچسب‌ها و کلمات کلیدی</h4>
                     <div class="pro-field">
@@ -480,7 +466,6 @@
                         <input type="text" id="articleKeywords" placeholder="CFD, توربولانس, انتقال حرارت" />
                     </div>
                 </div>
-
                 <div class="form-section">
                     <h4><i class="fas fa-images"></i> تصاویر و گالری</h4>
                     <div class="pro-field">
@@ -504,7 +489,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="form-section">
                     <h4><i class="fas fa-paperclip"></i> فایل‌های پیوست</h4>
                     <div class="pro-field">
@@ -528,7 +512,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="form-section">
                     <h4><i class="fas fa-book"></i> منابع</h4>
                     <div class="pro-field">
@@ -540,7 +523,6 @@
                         <input type="text" id="articleDoi" placeholder="مثال: 10.1000/xyz123" />
                     </div>
                 </div>
-
                 <div class="form-section">
                     <h4><i class="fas fa-ellipsis-h"></i> اطلاعات تکمیلی</h4>
                     <div class="pro-grid">
@@ -574,7 +556,6 @@
                         <input type="text" id="articleRelatedLinks" placeholder="https://example.com, https://another.com" />
                     </div>
                 </div>
-
                 <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;padding-top:18px;border-top:1px solid var(--pro-border);">
                     <button class="pro-btn pro-btn-ai" onclick="generateArticleContent()">
                         <i class="fas fa-robot"></i> تولید پیش‌نویس با هوش مصنوعی
@@ -592,13 +573,25 @@
             </div>
         </div>
 
-        <!-- محصولات -->
-        <div class="pro-tab-content" id="tab-products">...</div>
+        <!-- محصولات (کامل) -->
+        <div class="pro-tab-content" id="tab-products">
+            <div class="pro-card">
+                <div class="pro-card-header"><h3><i class="fas fa-cube"></i> مدیریت محصولات</h3><span class="sub" id="proProductsSub">۰ محصول</span>
+                    <div class="pro-view-toggle"><button class="active" onclick="setView('products','grid')"><i class="fas fa-th"></i></button><button onclick="setView('products','list')"><i class="fas fa-list"></i></button></div>
+                </div>
+                <div class="pro-search">
+                    <input type="text" id="productsSearch" placeholder="جستجو در محصولات..." oninput="filterProducts(this.value)">
+                    <button class="pro-btn pro-btn-secondary" onclick="switchTab('add-product')"><i class="fas fa-plus"></i> افزودن جدید</button>
+                </div>
+                <div id="proProductsList" class="pro-items"><div class="pro-empty"><i class="fas fa-cube"></i>در حال بارگذاری...</div></div>
+                <a href="blank-product.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
+            </div>
+        </div>
 
         <!-- افزودن محصول -->
         <div class="pro-tab-content" id="tab-add-product">...</div>
 
-        <!-- آرشیو -->
+        <!-- آرشیو (کامل) -->
         <div class="pro-tab-content" id="tab-archive">
             <div class="pro-card">
                 <div class="pro-card-header"><h3><i class="fas fa-archive"></i> مدیریت آرشیو</h3><span class="sub" id="proArchiveSub">۰ آیتم</span></div>
@@ -632,12 +625,11 @@
         <div class="pro-modal-overlay" id="sendMessageModal">...</div>
         <div class="pro-modal-overlay" id="editOrderModal">...</div>
 
-    </div> <!-- پایان adminPanel -->
+    </div>
 
-    <!-- ===== اسکریپت‌های کامل (همه توابع گیت‌هاب + افزودن مقاله) ===== -->
     <script>
         // ============================================================
-        // تمام توابع پنل مدیریت (شامل گیت‌هاب، مقالات، محصولات، آرشیو و ...)
+        // همه توابع پنل مدیریت + گیت‌هاب + محصولات + آرشیو + مقالات
         // ============================================================
 
         // ---- متغیرهای عمومی ----
@@ -793,7 +785,7 @@
             if (items.length === 0) {
                 list.innerHTML = '<div class="pro-empty"><i class="fas fa-newspaper"></i>هیچ مقاله‌ای یافت نشد.</div>';
             } else {
-                list.innerHTML = items.map((item, idx) => {
+                list.innerHTML = items.map((item) => {
                     const key = item.key;
                     return `
                         <div class="pro-item">
@@ -840,7 +832,85 @@
             } catch (e) { showMsg('❌ خطا: ' + e.message, 'error'); }
         }
 
-        // ---- بارگذاری آرشیو ----
+        // ---- بارگذاری محصولات (کامل) ----
+        async function loadProducts() {
+            const list = document.getElementById('proProductsList');
+            if (!list) return;
+            if (!getToken()) {
+                list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
+                return;
+            }
+            try {
+                const data = await fetchFromGitHub('_data/products.json');
+                if (data) {
+                    productsData = JSON.parse(data.content);
+                    productsSha = data.sha;
+                } else {
+                    productsData = {};
+                    productsSha = null;
+                }
+                allProducts = Object.keys(productsData).map(key => ({ key, ...productsData[key] }));
+                renderProducts(allProducts);
+            } catch (e) {
+                list.innerHTML = `<div class="pro-empty"><i class="fas fa-exclamation-triangle" style="color:var(--pro-red);"></i>خطا: ${e.message}</div>`;
+            }
+        }
+
+        function renderProducts(items) {
+            const list = document.getElementById('proProductsList');
+            if (!list) return;
+            if (items.length === 0) {
+                list.innerHTML = '<div class="pro-empty"><i class="fas fa-cube"></i>هیچ محصولی یافت نشد.</div>';
+            } else {
+                list.innerHTML = items.map((item) => {
+                    const key = item.key;
+                    return `
+                        <div class="pro-item">
+                            <div class="info">
+                                <div class="title">${item.name || 'بدون نام'} <span style="color:var(--pro-secondary);font-size:0.8rem;">${item.price || 'رایگان'}</span> <span style="color:var(--pro-text-secondary);font-size:0.7rem;">#${String(key).padStart(4,'0')}</span></div>
+                                <div class="meta">
+                                    <span><i class="fas fa-tag"></i> ${item.tag || 'بدون برچسب'}</span>
+                                    <span><i class="fas fa-box"></i> ${item.stock || 'موجود'}</span>
+                                    ${item.files && item.files.length ? `<span><i class="fas fa-paperclip"></i> ${item.files.length} فایل</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <a href="../product.html?id=${key}" class="pro-btn pro-btn-primary pro-btn-sm" target="_blank"><i class="fas fa-eye"></i></a>
+                                <button class="pro-btn pro-btn-warning pro-btn-sm" onclick="openEditModal('product','${key}')"><i class="fas fa-edit"></i></button>
+                                <button class="pro-btn pro-btn-danger pro-btn-sm" onclick="deleteProduct('${key}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            document.getElementById('proProductsCount').textContent = allProducts.length;
+            document.getElementById('proProductsSub').textContent = allProducts.length + ' محصول';
+            updateDashboard();
+        }
+
+        function filterProducts(query) {
+            const q = query.toLowerCase().trim();
+            const filtered = allProducts.filter(item =>
+                (item.name || '').toLowerCase().includes(q) ||
+                (item.desc || '').toLowerCase().includes(q) ||
+                (item.tag || '').toLowerCase().includes(q)
+            );
+            renderProducts(filtered);
+        }
+
+        async function deleteProduct(key) {
+            if (!confirm(`آیا از حذف محصول #${String(key).padStart(4,'0')} مطمئن هستید؟`)) return;
+            if (!getToken()) { showMsg('لطفاً توکن را وارد کنید.', 'error'); return; }
+            try {
+                delete productsData[key];
+                const newSha = await saveToGitHub('_data/products.json', productsData, productsSha);
+                productsSha = newSha;
+                showMsg('✅ محصول حذف شد.', 'success');
+                loadProducts();
+            } catch (e) { showMsg('❌ خطا: ' + e.message, 'error'); }
+        }
+
+        // ---- بارگذاری آرشیو (کامل) ----
         async function loadArchive() {
             const list = document.getElementById('proArchiveList');
             if (!list) return;
@@ -868,17 +938,20 @@
             const list = document.getElementById('proArchiveList');
             if (!list) return;
             if (items.length === 0) {
-                list.innerHTML = '<div class="pro-empty"><i class="fas fa-archive"></i>هیچ آیتمی یافت نشد.</div>';
+                list.innerHTML = '<div class="pro-empty"><i class="fas fa-archive"></i>هیچ آیتمی در آرشیو یافت نشد.</div>';
             } else {
                 list.innerHTML = items.map((item) => {
                     const key = item.key;
+                    const typeLabels = { cfd: 'تحلیل CFD', structure: 'تحلیل سازه', design: 'طراحی مکانیکی', electro: 'تحلیل الکترومغناطیس', university: 'پروژه دانشگاهی', fabrication: 'ساخت و نمونه‌سازی', other: 'سایر' };
+                    const typeLabel = typeLabels[item.type] || item.type || 'سایر';
                     return `
                         <div class="pro-item">
                             <div class="info">
                                 <div class="title">${item.title || 'بدون عنوان'} <span style="color:var(--pro-text-secondary);font-size:0.7rem;">#${String(key).padStart(4,'0')}</span></div>
                                 <div class="meta">
-                                    <span><i class="fas fa-tag"></i> ${item.type || 'other'}</span>
+                                    <span><i class="fas fa-tag"></i> ${typeLabel}</span>
                                     <span><i class="fas fa-calendar"></i> ${item.date || '---'}</span>
+                                    <span><i class="fas fa-flag"></i> ${item.status || 'تکمیل شده'}</span>
                                 </div>
                             </div>
                             <div class="actions">
@@ -916,40 +989,11 @@
             } catch (e) { showMsg('❌ خطا: ' + e.message, 'error'); }
         }
 
-        // ---- بارگذاری محصولات (خلاصه) ----
-        async function loadProducts() {
-            // مشابه مقالات - به اختصار
-            const list = document.getElementById('proProductsList');
-            if (!list) return;
-            if (!getToken()) {
-                list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
-                return;
-            }
-            try {
-                const data = await fetchFromGitHub('_data/products.json');
-                if (data) {
-                    productsData = JSON.parse(data.content);
-                    productsSha = data.sha;
-                } else {
-                    productsData = {};
-                    productsSha = null;
-                }
-                allProducts = Object.keys(productsData).map(key => ({ key, ...productsData[key] }));
-                // renderProducts... (به اختصار)
-                list.innerHTML = `<div class="pro-empty">${allProducts.length} محصول یافت شد.</div>`;
-                document.getElementById('proProductsCount').textContent = allProducts.length;
-            } catch (e) {
-                list.innerHTML = `<div class="pro-empty"><i class="fas fa-exclamation-triangle" style="color:var(--pro-red);"></i>خطا: ${e.message}</div>`;
-            }
-        }
-
-        function filterProducts(query) { /* مشابه */ }
-
         // ---- داشبورد ----
         function updateDashboard() {
             document.getElementById('dashArticles').textContent = allArticles.length;
-            document.getElementById('dashArchive').textContent = allArchive.length;
             document.getElementById('dashProducts').textContent = allProducts.length;
+            document.getElementById('dashArchive').textContent = allArchive.length;
             document.getElementById('proLastUpdate').textContent = new Date().toLocaleString('fa-IR');
         }
 
@@ -1197,20 +1241,17 @@
                 updated: new Date().toISOString()
             };
 
-            // ذخیره موقت در localStorage
             const articles = JSON.parse(localStorage.getItem('temp_articles') || '{}');
             articles[id] = articleData;
             localStorage.setItem('temp_articles', JSON.stringify(articles));
 
-            // اگر توکن وجود دارد، به گیت‌هاب بفرست
             const token = getToken();
             if (token) {
                 showMsg('✅ مقاله با شماره ART-' + id + ' در گیت‌هاب ذخیره شد (شبیه‌سازی).', 'success');
-                // در نسخه واقعی، اینجا کد آپلود واقعی به گیت‌هاب قرار می‌گیرد
             } else {
                 showMsg('✅ مقاله با شماره ART-' + id + ' در حافظه موقت ذخیره شد.', 'success');
             }
-            loadArticles(); // رفرش لیست
+            loadArticles();
         }
 
         function resetArticleForm() {
@@ -1258,8 +1299,8 @@
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.querySelector('.tab-btn[data-tab="' + tabId + '"]').classList.add('active');
             if (tabId === 'articles') { loadArticles(); }
-            if (tabId === 'archive') { loadArchive(); }
             if (tabId === 'products') { loadProducts(); }
+            if (tabId === 'archive') { loadArchive(); }
             if (tabId === 'add-article') {
                 generateArticleId();
                 initArticleUploads();
@@ -1272,7 +1313,7 @@
             });
         });
 
-        // ---- توابع Placeholder برای جلوگیری از خطا ----
+        // ---- توابع Placeholder برای سایر بخش‌ها ----
         function setView() {}
         function duplicateItem() {}
         function addMenuItem() {}
@@ -1414,7 +1455,7 @@
         window.openEditModal = openEditModal;
         window.exportCSV = exportCSV;
 
-        console.log('✅ پنل مدیریت با توابع کامل گیت‌هاب بارگذاری شد.');
+        console.log('✅ پنل مدیریت کامل با پشتیبانی از مقالات، محصولات و آرشیو بارگذاری شد.');
     </script>
 
 </body>

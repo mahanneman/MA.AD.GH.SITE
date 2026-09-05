@@ -4283,158 +4283,18 @@ function handleFiles(files, previewContainer, type, maxItems) {
 }
 
 // ---- ذخیره مقاله (با آپلود در گیت‌هاب) ----
-window.saveArticle = async function() {
-    const id = document.getElementById('articleId').value;
-    const title = document.getElementById('articleTitle').value.trim();
-    const abstract = document.getElementById('articleAbstract').value.trim();
-    const body = document.getElementById('articleBody').value.trim();
-    const type = document.getElementById('articleType').value;
-    const date = document.getElementById('articleDate').value || new Date().toISOString().split('T')[0];
-    const year = document.getElementById('articleYear').value.trim() || new Date().getFullYear().toString();
-    const readTime = parseInt(document.getElementById('articleReadTime').value) || 10;
-    const tags = document.getElementById('articleTags').value.split(',').map(s => s.trim()).filter(Boolean);
-    const keywords = document.getElementById('articleKeywords').value.split(',').map(s => s.trim()).filter(Boolean);
-    const references = document.getElementById('articleReferences').value.split('\n').map(s => s.trim()).filter(Boolean);
-    const doi = document.getElementById('articleDoi').value.trim();
-    const difficulty = document.getElementById('articleDifficulty').value;
-    const language = document.getElementById('articleLanguage').value;
-    const englishAbstract = document.getElementById('articleEnglishAbstract').value.trim();
-    const status = document.getElementById('articleStatus').value;
-    const notes = document.getElementById('articleNotes').value.trim();
-    const relatedLinks = document.getElementById('articleRelatedLinks').value.split(',').map(s => s.trim()).filter(Boolean);
+// ============================================================
+// ۰۰۰۳ - توابع آپلود فایل و ذخیره در گیت‌هاب (نسخه یکپارچه)
+// ============================================================
 
-    if (!title || !abstract || !body) {
-        showMsg('❌ لطفاً عنوان، چکیده و متن کامل مقاله را پر کنید.', 'error');
-        return;
-    }
-
-    // جمع‌آوری فایل‌ها
-    const coverImg = document.querySelector('#coverPreview img');
-    const coverData = coverImg ? coverImg.src : null;
-    const galleryItems = document.querySelectorAll('#galleryPreview .gallery-item img');
-    const galleryData = Array.from(galleryItems).map(img => img.src);
-    const mainFileTag = document.querySelector('#mainFilePreview .file-tag');
-    const mainFileName = mainFileTag ? mainFileTag.querySelector('span')?.textContent : null;
-    const fileTags = document.querySelectorAll('#filesPreview .file-tag');
-    const filesData = Array.from(fileTags).map(tag => {
-        const name = tag.querySelector('span')?.textContent || '';
-        return name;
-    });
-
-    const articleData = {
-        title, abstract, body, type, date, year, readTime,
-        tags, keywords, cover: coverData || '', images: galleryData,
-        file: mainFileName || '', files: filesData,
-        references, doi: doi || '', difficulty, language,
-        english_abstract: englishAbstract || '', status,
-        notes: notes || '', related_links: relatedLinks,
-        updated: new Date().toISOString()
-    };
-
-    // ذخیره موقت
-    const articles = JSON.parse(localStorage.getItem('temp_articles') || '{}');
-    articles[id] = articleData;
-    localStorage.setItem('temp_articles', JSON.stringify(articles));
-
-    // تلاش برای گیت‌هاب
-    const token = localStorage.getItem('github_token');
-    if (token) {
-        try {
-            const repoOwner = 'mahanneman';
-            const repoName = 'MA.AD.GH.SITE';
-            const basePath = `assets/articles/${id}/`;
-            // آپلود تصاویر و فایل‌ها
-            if (coverData && coverData.startsWith('data:')) {
-                await uploadFileToGitHub(`${basePath}cover.jpg`, coverData.split(',')[1], token, repoOwner, repoName);
-            }
-            for (let i = 0; i < galleryData.length; i++) {
-                if (galleryData[i].startsWith('data:')) {
-                    await uploadFileToGitHub(`${basePath}gallery_${i+1}.jpg`, galleryData[i].split(',')[1], token, repoOwner, repoName);
-                }
-            }
-            const mainFile = document.getElementById('mainFileInput').files[0];
-            if (mainFile) {
-                const reader = new FileReader();
-                const fileData = await new Promise((resolve) => {
-                    reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
-                    reader.readAsDataURL(mainFile);
-                });
-                await uploadFileToGitHub(`${basePath}${mainFile.name}`, fileData, token, repoOwner, repoName);
-            }
-            const extraFiles = document.getElementById('filesFileInput').files;
-            for (let i = 0; i < extraFiles.length; i++) {
-                const file = extraFiles[i];
-                const reader = new FileReader();
-                const fileData = await new Promise((resolve) => {
-                    reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
-                    reader.readAsDataURL(file);
-                });
-                await uploadFileToGitHub(`${basePath}${file.name}`, fileData, token, repoOwner, repoName);
-            }
-
-            // ذخیره articles.json
-            const existing = await fetchFromGitHub('_data/articles.json', token, repoOwner, repoName);
-            let articlesData = {};
-            let sha = null;
-            if (existing) {
-                articlesData = JSON.parse(existing.content);
-                sha = existing.sha;
-            }
-            articlesData[id] = articleData;
-            await saveToGitHub('_data/articles.json', articlesData, sha, token, repoOwner, repoName);
-
-            showMsg('✅ مقاله با شماره ART-' + id + ' با موفقیت در گیت‌هاب ذخیره شد.', 'success');
-            loadArticles(); // رفرش لیست
-            return;
-        } catch (e) {
-            console.error('❌ خطا در ذخیره گیت‌هاب:', e);
-            showMsg('⚠️ ذخیره در گیت‌هاب با خطا مواجه شد، ولی مقاله در حافظه موقت ذخیره شد.', 'error');
-        }
-    } else {
-        showMsg('✅ مقاله با شماره ART-' + id + ' در حافظه موقت ذخیره شد (توکن گیت‌هاب یافت نشد).', 'info');
-    }
-};
-
-// ---- بازنشانی فرم ----
-window.resetArticleForm = function() {
-    document.getElementById('articleTitle').value = '';
-    document.getElementById('articleAbstract').value = '';
-    document.getElementById('articleBody').value = '';
-    document.getElementById('articleDate').value = '';
-    document.getElementById('articleYear').value = '';
-    document.getElementById('articleReadTime').value = '';
-    document.getElementById('articleKeywords').value = '';
-    document.getElementById('articleReferences').value = '';
-    document.getElementById('articleDoi').value = '';
-    document.getElementById('articleEnglishAbstract').value = '';
-    document.getElementById('articleNotes').value = '';
-    document.getElementById('articleRelatedLinks').value = '';
-    document.getElementById('articleType').value = 'article';
-    document.getElementById('articleDifficulty').value = 'متوسط';
-    document.getElementById('articleLanguage').value = 'فارسی';
-    document.getElementById('articleStatus').value = 'فعال';
-    document.getElementById('articleTags').value = '';
-    document.querySelectorAll('#articleTagsContainer .tag-item').forEach(el => el.remove());
-    document.getElementById('coverPreview').innerHTML = '';
-    document.getElementById('galleryPreview').innerHTML = '';
-    document.getElementById('mainFilePreview').innerHTML = '';
-    document.getElementById('filesPreview').innerHTML = '';
-    document.getElementById('coverFileInput').value = '';
-    document.getElementById('galleryFileInput').value = '';
-    document.getElementById('mainFileInput').value = '';
-    document.getElementById('filesFileInput').value = '';
-    generateArticleId();
-    showMsg('✅ فرم بازنشانی شد.', 'info');
-};
-
-// ---- توابع کمکی گیت‌هاب برای آپلود ----
+// ---- توابع کمکی گیت‌هاب (در دسترس برای همه) ----
 async function fetchFromGitHub(path, token, owner, repo) {
     const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
     const res = await fetch(url, {
         headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
     });
     if (res.status === 404) return null;
-    if (!res.ok) throw new Error('خطا در خواندن فایل');
+    if (!res.ok) throw new Error('خطا در خواندن فایل: ' + res.status);
     const data = await res.json();
     const binaryString = atob(data.content);
     const bytes = new Uint8Array(binaryString.length);
@@ -4457,7 +4317,7 @@ async function saveToGitHub(path, content, sha, token, owner, repo) {
     }
     const base64Content = btoa(binary);
     const body = {
-        message: `Update article ${path} via admin panel`,
+        message: `Update ${path} via admin panel - ${new Date().toISOString()}`,
         content: base64Content,
         branch: 'main'
     };
@@ -4481,7 +4341,7 @@ async function saveToGitHub(path, content, sha, token, owner, repo) {
 async function uploadFileToGitHub(path, base64Data, token, owner, repo) {
     const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
     const body = {
-        message: `Upload file ${path} via admin panel`,
+        message: `Upload ${path} via admin panel - ${new Date().toISOString()}`,
         content: base64Data,
         branch: 'main'
     };
@@ -4501,28 +4361,7 @@ async function uploadFileToGitHub(path, base64Data, token, owner, repo) {
     return res.json();
 }
 
-// ---- راه‌اندازی آپلودها در هنگام نمایش تب ----
-// این بخش را در تابع switchTab یا در DOMContentLoaded فراخوانی کنید
-function initArticleUploads() {
-    setupFileUpload('coverUploadZone', 'coverFileInput', 'coverPreview', 'cover', 1);
-    setupFileUpload('galleryUploadZone', 'galleryFileInput', 'galleryPreview', 'gallery', 10);
-    setupFileUpload('mainFileUploadZone', 'mainFileInput', 'mainFilePreview', 'file', 1);
-    setupFileUpload('filesUploadZone', 'filesFileInput', 'filesPreview', 'file', 10);
-}
-
-// فراخوانی هنگام بارگذاری صفحه و همچنین هنگام تعویض تب به add-article
-document.addEventListener('DOMContentLoaded', function() {
-    // ... کدهای موجود ...
-    initArticleUploads();
-    generateArticleId();
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('articleDate').value = today;
-    document.getElementById('articleYear').value = new Date().getFullYear();
-});
-// ============================================================
-// ۰۰۰۳ - توابع آپلود فایل (برای افزودن مقاله)
-// ============================================================
-
+// ---- توابع آپلود فایل (UI) ----
 function setupFileUpload(zoneId, inputId, previewId, type, maxItems) {
     const zone = document.getElementById(zoneId);
     const input = document.getElementById(inputId);
@@ -4623,4 +4462,231 @@ function initArticleUploads() {
     setupFileUpload('filesUploadZone', 'filesFileInput', 'filesPreview', 'file', 10);
 }
 
+// ---- ذخیره مقاله در گیت‌هاب (نسخه نهایی) ----
+window.saveArticle = async function() {
+    const id = document.getElementById('articleId').value;
+    const title = document.getElementById('articleTitle').value.trim();
+    const abstract = document.getElementById('articleAbstract').value.trim();
+    const body = document.getElementById('articleBody').value.trim();
+    const type = document.getElementById('articleType').value;
+    const date = document.getElementById('articleDate').value || new Date().toISOString().split('T')[0];
+    const year = document.getElementById('articleYear').value.trim() || new Date().getFullYear().toString();
+    const readTime = parseInt(document.getElementById('articleReadTime').value) || 10;
+    const tags = document.getElementById('articleTags').value.split(',').map(s => s.trim()).filter(Boolean);
+    const keywords = document.getElementById('articleKeywords').value.split(',').map(s => s.trim()).filter(Boolean);
+    const references = document.getElementById('articleReferences').value.split('\n').map(s => s.trim()).filter(Boolean);
+    const doi = document.getElementById('articleDoi').value.trim();
+    const difficulty = document.getElementById('articleDifficulty').value;
+    const language = document.getElementById('articleLanguage').value;
+    const englishAbstract = document.getElementById('articleEnglishAbstract').value.trim();
+    const status = document.getElementById('articleStatus').value;
+    const notes = document.getElementById('articleNotes').value.trim();
+    const relatedLinks = document.getElementById('articleRelatedLinks').value.split(',').map(s => s.trim()).filter(Boolean);
+
+    if (!title || !abstract || !body) {
+        showMsg('❌ لطفاً عنوان، چکیده و متن کامل مقاله را پر کنید.', 'error');
+        return;
+    }
+
+    // جمع‌آوری فایل‌ها
+    const coverImg = document.querySelector('#coverPreview img');
+    const coverData = coverImg ? coverImg.src : null;
+    const galleryItems = document.querySelectorAll('#galleryPreview .gallery-item img');
+    const galleryData = Array.from(galleryItems).map(img => img.src);
+    const mainFileTag = document.querySelector('#mainFilePreview .file-tag');
+    const mainFileName = mainFileTag ? mainFileTag.querySelector('span')?.textContent : null;
+    const fileTags = document.querySelectorAll('#filesPreview .file-tag');
+    const filesData = Array.from(fileTags).map(tag => {
+        const name = tag.querySelector('span')?.textContent || '';
+        return name;
+    });
+
+    const articleData = {
+        title, abstract, body, type, date, year, readTime,
+        tags, keywords, cover: coverData || '', images: galleryData,
+        file: mainFileName || '', files: filesData,
+        references, doi: doi || '', difficulty, language,
+        english_abstract: englishAbstract || '', status,
+        notes: notes || '', related_links: relatedLinks,
+        updated: new Date().toISOString()
+    };
+
+    // ذخیره موقت در localStorage
+    const articles = JSON.parse(localStorage.getItem('temp_articles') || '{}');
+    articles[id] = articleData;
+    localStorage.setItem('temp_articles', JSON.stringify(articles));
+
+    // دریافت توکن
+    const token = getToken();
+    if (!token) {
+        showMsg('⚠️ توکن گیت‌هاب یافت نشد. مقاله در حافظه موقت ذخیره شد.', 'info');
+        return;
+    }
+
+    try {
+        showMsg('⏳ در حال ذخیره مقاله در گیت‌هاب...', 'info');
+
+        const repoOwner = 'mahanneman';
+        const repoName = 'MA.AD.GH.SITE';
+        const key = String(id).padStart(4, '0');
+        const basePath = `assets/articles/${key}/`;
+
+        // 1. آپلود تصویر شاخص
+        if (coverData && coverData.startsWith('data:')) {
+            await uploadFileToGitHub(`${basePath}cover.jpg`, coverData.split(',')[1], token, repoOwner, repoName);
+        }
+
+        // 2. آپلود تصاویر گالری
+        for (let i = 0; i < galleryData.length; i++) {
+            if (galleryData[i].startsWith('data:')) {
+                await uploadFileToGitHub(`${basePath}gallery_${i+1}.jpg`, galleryData[i].split(',')[1], token, repoOwner, repoName);
+            }
+        }
+
+        // 3. آپلود فایل اصلی
+        const mainFileInput = document.getElementById('mainFileInput');
+        if (mainFileInput && mainFileInput.files.length > 0) {
+            const file = mainFileInput.files[0];
+            const reader = new FileReader();
+            const fileData = await new Promise((resolve) => {
+                reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+                reader.readAsDataURL(file);
+            });
+            await uploadFileToGitHub(`${basePath}${file.name}`, fileData, token, repoOwner, repoName);
+        }
+
+        // 4. آپلود فایل‌های ضمیمه
+        const extraFiles = document.getElementById('filesFileInput');
+        if (extraFiles && extraFiles.files.length > 0) {
+            for (let i = 0; i < extraFiles.files.length; i++) {
+                const file = extraFiles.files[i];
+                const reader = new FileReader();
+                const fileData = await new Promise((resolve) => {
+                    reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+                    reader.readAsDataURL(file);
+                });
+                await uploadFileToGitHub(`${basePath}${file.name}`, fileData, token, repoOwner, repoName);
+            }
+        }
+
+        // 5. به‌روزرسانی فایل articles.json
+        const existing = await fetchFromGitHub('_data/articles.json', token, repoOwner, repoName);
+        let articlesData = {};
+        let sha = null;
+        if (existing) {
+            articlesData = JSON.parse(existing.content);
+            sha = existing.sha;
+        }
+        articlesData[key] = articleData;
+        await saveToGitHub('_data/articles.json', articlesData, sha, token, repoOwner, repoName);
+
+        showMsg('✅ مقاله با شماره ART-' + id + ' با موفقیت در گیت‌هاب ذخیره شد.', 'success');
+        loadArticles(); // رفرش لیست مقالات
+
+    } catch (e) {
+        console.error('❌ خطا در ذخیره گیت‌هاب:', e);
+        showMsg('⚠️ ذخیره در گیت‌هاب با خطا مواجه شد، ولی مقاله در حافظه موقت ذخیره شد.', 'error');
+    }
+};
+
+// ---- بازنشانی فرم ----
+window.resetArticleForm = function() {
+    document.getElementById('articleTitle').value = '';
+    document.getElementById('articleAbstract').value = '';
+    document.getElementById('articleBody').value = '';
+    document.getElementById('articleDate').value = '';
+    document.getElementById('articleYear').value = '';
+    document.getElementById('articleReadTime').value = '';
+    document.getElementById('articleKeywords').value = '';
+    document.getElementById('articleReferences').value = '';
+    document.getElementById('articleDoi').value = '';
+    document.getElementById('articleEnglishAbstract').value = '';
+    document.getElementById('articleNotes').value = '';
+    document.getElementById('articleRelatedLinks').value = '';
+    document.getElementById('articleType').value = 'article';
+    document.getElementById('articleDifficulty').value = 'متوسط';
+    document.getElementById('articleLanguage').value = 'فارسی';
+    document.getElementById('articleStatus').value = 'فعال';
+    document.getElementById('articleTags').value = '';
+    document.querySelectorAll('#articleTagsContainer .tag-item').forEach(el => el.remove());
+    document.getElementById('coverPreview').innerHTML = '';
+    document.getElementById('galleryPreview').innerHTML = '';
+    document.getElementById('mainFilePreview').innerHTML = '';
+    document.getElementById('filesPreview').innerHTML = '';
+    document.getElementById('coverFileInput').value = '';
+    document.getElementById('galleryFileInput').value = '';
+    document.getElementById('mainFileInput').value = '';
+    document.getElementById('filesFileInput').value = '';
+    generateArticleId();
+    showMsg('✅ فرم بازنشانی شد.', 'info');
+};
+
+// ---- اتصال توابع به window برای استفاده در onclick ----
+window.addTag = window.addTag || function(containerId, inputId) {
+    const container = document.getElementById(containerId);
+    const input = document.getElementById(inputId);
+    const text = input.value.trim();
+    if (!text) return;
+    const tag = document.createElement('span');
+    tag.className = 'tag-item';
+    tag.innerHTML = text + ' <i class="fas fa-times" onclick="this.parentElement.remove(); updateTagsHidden(\'' + containerId + '\')"></i>';
+    container.insertBefore(tag, input);
+    input.value = '';
+    updateTagsHidden(containerId);
+};
+
+window.updateTagsHidden = window.updateTagsHidden || function(containerId) {
+    const container = document.getElementById(containerId);
+    const tags = container.querySelectorAll('.tag-item');
+    const values = Array.from(tags).map(function(t) {
+        return t.textContent.replace('×', '').trim();
+    });
+    const hiddenId = containerId.replace('Container', '');
+    document.getElementById(hiddenId).value = values.join(',');
+};
+
+window.generateArticleId = window.generateArticleId || async function() {
+    try {
+        const res = await fetch('../_data/articles.json?t=' + Date.now());
+        let maxNum = 0;
+        if (res.ok) {
+            const data = await res.json();
+            Object.keys(data).forEach(function(key) {
+                const num = parseInt(key);
+                if (!isNaN(num) && num > maxNum) maxNum = num;
+            });
+        }
+        const newNum = maxNum + 1;
+        const padded = String(newNum).padStart(4, '0');
+        document.getElementById('articleId').value = padded;
+        document.getElementById('articleIdDisplay').textContent = 'ART-' + padded;
+    } catch (e) { console.error(e); }
+};
+
+window.generateArticleContent = window.generateArticleContent || function() {
+    const title = document.getElementById('articleTitle').value.trim();
+    if (!title) { showMsg('❌ لطفاً عنوان مقاله را وارد کنید.', 'error'); return; }
+    document.getElementById('articleAbstract').value =
+        'چکیده مقاله "' + title + '" – این مقاله به بررسی موضوعی مهم در حوزه مهندسی مکانیک می‌پردازد. روش‌های نوین تحلیل و شبیه‌سازی ارائه شده و نتایج با داده‌های تجربی مقایسه می‌شوند.';
+    document.getElementById('articleBody').value =
+        '۱. مقدمه\n' + title + ' یکی از موضوعات کلیدی در مهندسی مکانیک است. در این مقاله به تحلیل و بررسی آن پرداخته شده است.\n\n۲. روش‌شناسی\nاز روش‌های عددی و تحلیلی برای بررسی استفاده شده است.\n\n۳. نتایج\nنتایج نشان می‌دهد که روش پیشنهادی عملکرد مناسبی دارد.\n\n۴. بحث و نتیجه‌گیری\nدر نهایت، پیشنهاداتی برای تحقیقات آینده ارائه شده است.';
+    showMsg('✅ پیش‌نویس مقاله با هوش مصنوعی تولید شد.', 'success');
+};
+
+// ---- راه‌اندازی آپلودها هنگام بارگذاری صفحه ----
+document.addEventListener('DOMContentLoaded', function() {
+    // فقط در صورتی که المان‌های آپلود وجود داشته باشند
+    if (document.getElementById('coverUploadZone')) {
+        initArticleUploads();
+    }
+    const today = new Date().toISOString().split('T')[0];
+    if (document.getElementById('articleDate')) {
+        document.getElementById('articleDate').value = today;
+    }
+    if (document.getElementById('articleYear')) {
+        document.getElementById('articleYear').value = new Date().getFullYear();
+    }
+});
+
+console.log('✅ توابع آپلود و ذخیره گیت‌هاب با موفقیت بارگذاری شدند.');
 })();

@@ -15,7 +15,6 @@
 
     <!-- استایل‌های تکمیلی -->
     <style>
-        /* تمام استایل‌های قبلی رو اینجا کپی کن (همون‌هایی که در فایل قبلی بود) */
         .pro-key-hint {
             display: inline-block;
             padding: 0 6px;
@@ -245,6 +244,44 @@
         }
         .btn-show-login:hover {
             opacity: 0.8;
+        }
+        /* دکمه‌های توست */
+        .pro-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            padding: 14px 28px;
+            border-radius: var(--pro-radius);
+            font-weight: 600;
+            z-index: 1001;
+            display: none;
+            animation: slideUp 0.4s ease;
+            box-shadow: var(--pro-shadow);
+        }
+        .pro-toast.success {
+            background: var(--pro-secondary);
+            color: #fff;
+            display: block;
+        }
+        .pro-toast.error {
+            background: var(--pro-red);
+            color: #fff;
+            display: block;
+        }
+        .pro-toast.info {
+            background: var(--pro-primary);
+            color: #fff;
+            display: block;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -678,7 +715,7 @@
                     <input type="text" id="articlesSearch" placeholder="جستجو در مقالات..." />
                     <button class="pro-btn pro-btn-secondary" id="addArticleBtn"><i class="fas fa-plus"></i> افزودن جدید</button>
                 </div>
-                <div id="proArticlesList" class="pro-items"><div class="pro-empty"><i class="fas fa-newspaper"></i>در حال بارگذاری...</div></div>
+                <div id="proArticlesList" class="pro-items"><div class="pro-empty"><i class="fas fa-newspaper"></i>هیچ مقاله‌ای یافت نشد.</div></div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
                     <a href="blank-article.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
                     <button class="pro-duplicate-btn" id="duplicateArticleBtn"><i class="fas fa-copy"></i> کپی از روی</button>
@@ -1075,46 +1112,271 @@
             var infoNameEl = document.getElementById('proInfoUsername');
             if (infoNameEl) infoNameEl.textContent = 'ادمین';
 
-            // ===== ۲. override توابع بارگذاری برای جلوگیری از خطا =====
-
-            // ۲-۱. override checkLogin
-            if (typeof window.checkLogin === 'function') {
-                window.checkLogin = function() {
-                    // کاری نمی‌کنیم
-                };
+            // ===== ۲. توابع کمکی =====
+            function getToken() {
+                return document.getElementById('proToken')?.value?.trim() || localStorage.getItem('github_token') || '';
             }
 
-            // ۲-۲. override loadArticles با نسخه‌ی امن
+            function showMsg(msg, type) {
+                var el = document.getElementById('proMsg');
+                if (!el) return;
+                el.textContent = msg;
+                el.className = 'pro-msg ' + (type || 'success');
+                setTimeout(function() { el.className = 'pro-msg'; }, 6000);
+            }
+
+            function showToast(msg, type) {
+                var el = document.getElementById('proToast');
+                if (!el) return;
+                el.textContent = msg;
+                el.className = 'pro-toast ' + (type || 'success');
+                setTimeout(function() { el.className = 'pro-toast'; }, 4000);
+            }
+
+            // ===== ۳. override تابع saveArticle برای ایجاد فایل در صورت نبود =====
+            window.saveArticle = async function() {
+                var id = document.getElementById('articleId')?.value;
+                var title = document.getElementById('articleTitle')?.value?.trim() || '';
+                var abstract = document.getElementById('articleAbstract')?.value?.trim() || '';
+                var body = document.getElementById('articleBody')?.value?.trim() || '';
+                var type = document.getElementById('articleType')?.value || 'article';
+                var date = document.getElementById('articleDate')?.value || new Date().toISOString().split('T')[0];
+                var year = document.getElementById('articleYear')?.value?.trim() || new Date().getFullYear().toString();
+                var readTime = parseInt(document.getElementById('articleReadTime')?.value) || 10;
+                var tags = (document.getElementById('articleTags')?.value || '').split(',').map(function(s) { return s
+                    .trim(); }).filter(Boolean);
+                var keywords = (document.getElementById('articleKeywords')?.value || '').split(',').map(function(s) { return s
+                    .trim(); }).filter(Boolean);
+                var references = (document.getElementById('articleReferences')?.value || '').split('\n').map(function(s) { return s
+                    .trim(); }).filter(Boolean);
+                var doi = document.getElementById('articleDoi')?.value?.trim() || '';
+                var difficulty = document.getElementById('articleDifficulty')?.value || 'متوسط';
+
+                if (!title || !abstract || !body) {
+                    showMsg('❌ لطفاً عنوان، چکیده و متن کامل مقاله را پر کنید.', 'error');
+                    return;
+                }
+
+                var token = getToken();
+                if (!token) {
+                    showMsg('❌ لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.', 'error');
+                    return;
+                }
+
+                // دریافت تصاویر
+                var coverImg = document.querySelector('#coverPreview img');
+                var coverData = coverImg ? coverImg.src : null;
+                var galleryItems = document.querySelectorAll('#galleryPreview .gallery-item img');
+                var galleryData = Array.from(galleryItems).map(function(img) { return img.src; });
+                var mainFileTag = document.querySelector('#mainFilePreview .file-tag');
+                var mainFileName = mainFileTag ? mainFileTag.querySelector('span')?.textContent : null;
+                var fileTags = document.querySelectorAll('#filesPreview .file-tag');
+                var filesData = Array.from(fileTags).map(function(tag) {
+                    var name = tag.querySelector('span')?.textContent || '';
+                    return name;
+                });
+
+                var articleData = {
+                    title: title,
+                    abstract: abstract,
+                    body: body,
+                    type: type,
+                    date: date,
+                    year: year,
+                    readTime: readTime,
+                    tags: tags,
+                    keywords: keywords,
+                    cover: coverData || '',
+                    images: galleryData,
+                    file: mainFileName || '',
+                    files: filesData,
+                    references: references,
+                    doi: doi,
+                    difficulty: difficulty,
+                    updated: new Date().toISOString()
+                };
+
+                var key = String(id).padStart(4, '0');
+
+                try {
+                    showMsg('⏳ در حال ذخیره مقاله در گیت‌هاب...', 'info');
+
+                    // ===== ۱. ابتدا فایل articles.json را بخوان =====
+                    var repoPath = 'repos/mahanneman/MA.AD.GH.SITE/contents/_data/articles.json';
+                    var fetchUrl = 'https://api.github.com/' + repoPath;
+                    var response = await fetch(fetchUrl, {
+                        headers: {
+                            'Authorization': 'token ' + token,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+
+                    var existingData = {};
+                    var sha = null;
+
+                    if (response.status === 200) {
+                        var data = await response.json();
+                        var content = atob(data.content);
+                        try {
+                            existingData = JSON.parse(content);
+                            sha = data.sha;
+                        } catch (e) {
+                            console.warn('⚠️ فایل articles.json خراب است، بازنشانی به {}:', e);
+                            existingData = {};
+                            sha = data.sha;
+                        }
+                    } else if (response.status === 404) {
+                        // فایل وجود ندارد، ایجاد می‌کنیم
+                        console.log('ℹ️ فایل articles.json وجود ندارد، ایجاد می‌شود...');
+                        existingData = {};
+                        sha = null;
+                    } else {
+                        throw new Error('خطا در خواندن فایل: ' + response.status);
+                    }
+
+                    // ===== ۲. مقاله جدید را اضافه کن =====
+                    existingData[key] = articleData;
+
+                    // ===== ۳. ذخیره در گیت‌هاب =====
+                    var jsonString = JSON.stringify(existingData, null, 2);
+                    var encoder = new TextEncoder();
+                    var encoded = encoder.encode(jsonString);
+                    var binary = '';
+                    for (var i = 0; i < encoded.length; i++) {
+                        binary += String.fromCharCode(encoded[i]);
+                    }
+                    var base64Content = btoa(binary);
+
+                    var putBody = {
+                        message: 'Add article #' + key + ' via admin panel - ' + new Date().toISOString(),
+                        content: base64Content,
+                        branch: 'main'
+                    };
+                    if (sha) putBody.sha = sha;
+
+                    var putResponse = await fetch(fetchUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': 'token ' + token,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify(putBody)
+                    });
+
+                    if (!putResponse.ok) {
+                        var err = await putResponse.json();
+                        throw new Error(err.message || 'خطا در ذخیره فایل');
+                    }
+
+                    // ===== ۴. آپلود فایل‌های ضمیمه (تصاویر و ...) =====
+                    var basePath = 'assets/articles/' + key + '/';
+
+                    if (coverData && coverData.startsWith('data:')) {
+                        try {
+                            await uploadFileToGitHub(basePath + 'cover.jpg', coverData.split(',')[1]);
+                        } catch (e) { console.warn('⚠️ آپلود کاور ناموفق:', e); }
+                    }
+
+                    for (var g = 0; g < galleryData.length; g++) {
+                        if (galleryData[g].startsWith('data:')) {
+                            try {
+                                await uploadFileToGitHub(basePath + 'gallery_' + (g + 1) + '.jpg', galleryData[g].split(
+                                ',')[1]);
+                            } catch (e) { console.warn('⚠️ آپلود گالری ناموفق:', e); }
+                        }
+                    }
+
+                    // فایل اصلی
+                    var mainFileInput = document.getElementById('mainFileInput');
+                    if (mainFileInput && mainFileInput.files.length > 0) {
+                        var file = mainFileInput.files[0];
+                        var reader = new FileReader();
+                        var fileData = await new Promise(function(resolve) {
+                            reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+                            reader.readAsDataURL(file);
+                        });
+                        try {
+                            await uploadFileToGitHub(basePath + file.name, fileData);
+                        } catch (e) { console.warn('⚠️ آپلود فایل اصلی ناموفق:', e); }
+                    }
+
+                    // فایل‌های اضافی
+                    var extraFiles = document.getElementById('filesFileInput');
+                    if (extraFiles && extraFiles.files.length > 0) {
+                        for (var f = 0; f < extraFiles.files.length; f++) {
+                            var file = extraFiles.files[f];
+                            var reader = new FileReader();
+                            var fileData = await new Promise(function(resolve) {
+                                reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+                                reader.readAsDataURL(file);
+                            });
+                            try {
+                                await uploadFileToGitHub(basePath + file.name, fileData);
+                            } catch (e) { console.warn('⚠️ آپلود فایل اضافی ناموفق:', e); }
+                        }
+                    }
+
+                    showMsg('✅ مقاله با شماره ART-' + key + ' با موفقیت در گیت‌هاب ذخیره شد.', 'success');
+                    showToast('✅ مقاله ذخیره شد', 'success');
+
+                    // ===== ۵. بازنشانی فرم =====
+                    resetArticleForm();
+                    loadArticles();
+
+                } catch (e) {
+                    console.error('❌ خطا در ذخیره مقاله:', e);
+                    showMsg('❌ خطا در ذخیره: ' + e.message, 'error');
+                    showToast('❌ ذخیره‌سازی ناموفق', 'error');
+                }
+            };
+
+            // ===== ۴. override توابع بارگذاری =====
             if (typeof window.loadArticles === 'function') {
                 window.loadArticles = async function() {
                     var list = document.getElementById('proArticlesList');
                     if (!list) return;
-                    if (!getToken()) {
-                        list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
+                    var token = getToken();
+                    if (!token) {
+                        list.innerHTML =
+                            '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
                         return;
                     }
                     try {
-                        var data = await fetchFromGitHub('_data/articles.json');
-                        if (data && data.content) {
-                            try {
-                                articlesData = JSON.parse(data.content);
-                                articlesSha = data.sha;
-                            } catch (e) {
-                                console.warn('⚠️ فایل articles.json خراب است، بازنشانی به {}:', e);
-                                articlesData = {};
-                                articlesSha = data.sha;
+                        var fetchUrl = 'https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/_data/articles.json';
+                        var response = await fetch(fetchUrl, {
+                            headers: {
+                                'Authorization': 'token ' + token,
+                                'Accept': 'application/vnd.github.v3+json'
                             }
-                        } else {
+                        });
+
+                        if (response.status === 404) {
                             articlesData = {};
-                            articlesSha = null;
+                            allArticles = [];
+                            articlesFiltered = [];
+                            renderArticles([]);
+                            return;
                         }
-                        allArticles = Object.keys(articlesData).map(function(key) { return { key: key, ...articlesData[
-                                key] }; });
+                        if (!response.ok) throw new Error('خطا در خواندن فایل: ' + response.status);
+
+                        var data = await response.json();
+                        var content = atob(data.content);
+                        try {
+                            articlesData = JSON.parse(content);
+                            articlesSha = data.sha;
+                        } catch (e) {
+                            console.warn('⚠️ فایل articles.json خراب است:', e);
+                            articlesData = {};
+                            articlesSha = data.sha;
+                        }
+                        allArticles = Object.keys(articlesData).map(function(key) {
+                            return { key: key, ...articlesData[key] };
+                        });
                         articlesFiltered = allArticles.slice();
                         renderArticles(articlesFiltered);
                     } catch (e) {
-                        // در صورت هر خطایی، لیست خالی نشان داده شود
-                        console.warn('⚠️ خطا در بارگذاری مقالات، نمایش لیست خالی:', e);
+                        console.warn('⚠️ خطا در بارگذاری مقالات:', e);
                         articlesData = {};
                         allArticles = [];
                         articlesFiltered = [];
@@ -1123,83 +1385,7 @@
                 };
             }
 
-            // ۲-۳. override loadProducts با نسخه‌ی امن
-            if (typeof window.loadProducts === 'function') {
-                window.loadProducts = async function() {
-                    var list = document.getElementById('proProductsList');
-                    if (!list) return;
-                    if (!getToken()) {
-                        list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
-                        return;
-                    }
-                    try {
-                        var data = await fetchFromGitHub('_data/products.json');
-                        if (data && data.content) {
-                            try {
-                                productsData = JSON.parse(data.content);
-                                productsSha = data.sha;
-                            } catch (e) {
-                                console.warn('⚠️ فایل products.json خراب است، بازنشانی به {}:', e);
-                                productsData = {};
-                                productsSha = data.sha;
-                            }
-                        } else {
-                            productsData = {};
-                            productsSha = null;
-                        }
-                        allProducts = Object.keys(productsData).map(function(key) { return { key: key, ...productsData[
-                                key] }; });
-                        productsFiltered = allProducts.slice();
-                        renderProducts(productsFiltered);
-                    } catch (e) {
-                        console.warn('⚠️ خطا در بارگذاری محصولات، نمایش لیست خالی:', e);
-                        productsData = {};
-                        allProducts = [];
-                        productsFiltered = [];
-                        renderProducts([]);
-                    }
-                };
-            }
-
-            // ۲-۴. override loadArchive با نسخه‌ی امن
-            if (typeof window.loadArchive === 'function') {
-                window.loadArchive = async function() {
-                    var list = document.getElementById('proArchiveList');
-                    if (!list) return;
-                    if (!getToken()) {
-                        list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
-                        return;
-                    }
-                    try {
-                        var data = await fetchFromGitHub('_data/archive.json');
-                        if (data && data.content) {
-                            try {
-                                archiveData = JSON.parse(data.content);
-                                archiveSha = data.sha;
-                            } catch (e) {
-                                console.warn('⚠️ فایل archive.json خراب است، بازنشانی به {}:', e);
-                                archiveData = {};
-                                archiveSha = data.sha;
-                            }
-                        } else {
-                            archiveData = {};
-                            archiveSha = null;
-                        }
-                        allArchive = Object.keys(archiveData).map(function(key) { return { key: key, ...archiveData[
-                                key] }; });
-                        archiveFiltered = allArchive.slice();
-                        renderArchive(archiveFiltered);
-                    } catch (e) {
-                        console.warn('⚠️ خطا در بارگذاری آرشیو، نمایش لیست خالی:', e);
-                        archiveData = {};
-                        allArchive = [];
-                        archiveFiltered = [];
-                        renderArchive([]);
-                    }
-                };
-            }
-
-            // ۲-۵. override updateDashboard با نسخه‌ی امن
+            // ===== ۵. override updateDashboard =====
             if (typeof window.updateDashboard === 'function') {
                 window.updateDashboard = function() {
                     try {
@@ -1234,7 +1420,14 @@
                 };
             }
 
-            // ===== ۳. بارگذاری داده‌ها =====
+            // ===== ۶. override checkLogin =====
+            if (typeof window.checkLogin === 'function') {
+                window.checkLogin = function() {
+                    // کاری نمی‌کنیم
+                };
+            }
+
+            // ===== ۷. بارگذاری داده‌ها =====
             setTimeout(function() {
                 try {
                     if (typeof loadAllData === 'function') loadAllData();
@@ -1249,9 +1442,8 @@
                 }
             }, 500);
 
-            // ===== ۴. اتصال رویدادها (همانند نسخه‌ی قبلی) =====
-            // ... (کد اتصال رویدادها که در نسخه‌ی قبلی کامل بود، اینجا تکرار می‌شود)
-            // برای اختصار، فقط بخش‌های اصلی رو می‌نویسم، اما شما می‌تونید از نسخه‌ی کامل قبلی استفاده کنید.
+            // ===== ۸. اتصال رویدادها =====
+            // ... (کد اتصال رویدادها که در نسخه‌های قبلی کامل بود)
 
             // ---- خروج ----
             var logoutBtn = document.getElementById('logoutBtn');
@@ -1318,7 +1510,6 @@
             if (saveEduBtn && typeof saveEducation === 'function') {
                 saveEduBtn.addEventListener('click', saveEducation);
             }
-
             var addCertBtn = document.getElementById('addCertBtn');
             if (addCertBtn && typeof addCertificateItem === 'function') {
                 addCertBtn.addEventListener('click', addCertificateItem);
@@ -1327,7 +1518,6 @@
             if (saveCertBtn && typeof saveCertificates === 'function') {
                 saveCertBtn.addEventListener('click', saveCertificates);
             }
-
             var addSkillBtn = document.getElementById('addSkillBtn');
             if (addSkillBtn && typeof addSkillItem === 'function') {
                 addSkillBtn.addEventListener('click', addSkillItem);
@@ -1336,7 +1526,6 @@
             if (saveSkillBtn && typeof saveSkills === 'function') {
                 saveSkillBtn.addEventListener('click', saveSkills);
             }
-
             var addSocialBtn = document.getElementById('addSocialBtn');
             if (addSocialBtn && typeof addSocialItem === 'function') {
                 addSocialBtn.addEventListener('click', addSocialItem);
@@ -1345,7 +1534,6 @@
             if (saveSocialBtn && typeof saveSocial === 'function') {
                 saveSocialBtn.addEventListener('click', saveSocial);
             }
-
             var addServiceBtn = document.getElementById('addServiceBtn');
             if (addServiceBtn && typeof addServiceItem === 'function') {
                 addServiceBtn.addEventListener('click', addServiceItem);
@@ -1354,7 +1542,6 @@
             if (saveServiceBtn && typeof saveServices === 'function') {
                 saveServiceBtn.addEventListener('click', saveServices);
             }
-
             var addTestiBtn = document.getElementById('addTestiBtn');
             if (addTestiBtn && typeof addTestimonialItem === 'function') {
                 addTestiBtn.addEventListener('click', addTestimonialItem);
@@ -1363,7 +1550,6 @@
             if (saveTestiBtn && typeof saveTestimonials === 'function') {
                 saveTestiBtn.addEventListener('click', saveTestimonials);
             }
-
             var addAwardBtn = document.getElementById('addAwardBtn');
             if (addAwardBtn && typeof addAwardItem === 'function') {
                 addAwardBtn.addEventListener('click', addAwardItem);
@@ -1372,7 +1558,6 @@
             if (saveAwardBtn && typeof saveAwards === 'function') {
                 saveAwardBtn.addEventListener('click', saveAwards);
             }
-
             var addLinkBtn = document.getElementById('addLinkBtn');
             if (addLinkBtn && typeof addLinkItem === 'function') {
                 addLinkBtn.addEventListener('click', addLinkItem);
@@ -1398,8 +1583,8 @@
 
             // ---- افزودن مقاله ----
             var saveArticleBtn = document.getElementById('saveArticleBtn');
-            if (saveArticleBtn && typeof saveArticle === 'function') {
-                saveArticleBtn.addEventListener('click', saveArticle);
+            if (saveArticleBtn && typeof window.saveArticle === 'function') {
+                saveArticleBtn.addEventListener('click', window.saveArticle);
             }
             var resetArticleBtn = document.getElementById('resetArticleBtn');
             if (resetArticleBtn && typeof resetArticleForm === 'function') {

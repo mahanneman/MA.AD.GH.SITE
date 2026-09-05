@@ -264,10 +264,9 @@
     document.querySelectorAll('#proTabs .tab-btn').forEach(function(btn) {
         btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
     });
-
-    // ============================================================
-    // 0006 - عملیات گیت‌هاب (GitHub API)
-    // ============================================================
+// ============================================================
+// 0006 - عملیات گیت‌هاب (GitHub API)
+// ============================================================
 async function fetchFromGitHub(path) {
     var token = getToken();
     if (!token) throw new Error('توکن وارد نشده است.');
@@ -297,51 +296,93 @@ async function fetchFromGitHub(path) {
     return { ...data, content: content };
 }
 
-    async function deleteFromGitHub(path, sha) {
-        var token = getToken();
-        if (!token) throw new Error('توکن وارد نشده است.');
-        var url = 'https://api.github.com/' + REPO_PATH + '/' + path;
-        var res = await fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': 'token ' + token,
-                'Content-Type': 'application/json',
-                'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify({
-                message: 'Delete ' + path,
-                sha: sha,
-                branch: 'main'
-            })
-        });
-        if (!res.ok) throw new Error('خطا در حذف فایل');
-        return res.json();
+// ✅ تابع saveToGitHub که در کد شما وجود نداشت
+async function saveToGitHub(path, content, sha) {
+    var token = getToken();
+    if (!token) throw new Error('توکن وارد نشده است.');
+    var url = 'https://api.github.com/' + REPO_PATH + '/' + path;
+    var jsonString = JSON.stringify(content, null, 2);
+    var encoder = new TextEncoder();
+    var encoded = encoder.encode(jsonString);
+    var binary = '';
+    for (var i = 0; i < encoded.length; i++) {
+        binary += String.fromCharCode(encoded[i]);
     }
-
-    async function uploadFileToGitHub(path, base64Data) {
-        var token = getToken();
-        if (!token) throw new Error('توکن وارد نشده است.');
-        var url = 'https://api.github.com/' + REPO_PATH + '/' + path;
-        var body = {
-            message: 'Upload ' + path + ' via admin panel - ' + new Date().toISOString(),
-            content: base64Data,
-            branch: 'main'
-        };
-        var res = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Authorization': 'token ' + token,
-                'Content-Type': 'application/json',
-                'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify(body)
-        });
-        if (!res.ok) {
-            var err = await res.json();
-            throw new Error(err.message || 'خطا در آپلود فایل');
+    var base64Content = btoa(binary);
+    var body = {
+        message: 'Update ' + path + ' via admin panel - ' + new Date().toISOString(),
+        content: base64Content,
+        branch: 'main'
+    };
+    if (sha) body.sha = sha;
+    
+    var res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Authorization': 'token ' + token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+        },
+        body: JSON.stringify(body)
+    });
+    
+    if (!res.ok) {
+        var errData = await res.json().catch(() => ({}));
+        var errorMsg = errData.message || 'خطا در ذخیره‌سازی';
+        if (errorMsg.includes('sha') && errorMsg.includes('does not match')) {
+            throw new Error('_data/articles.json does not match ' + sha);
         }
-        return res.json();
+        throw new Error(errorMsg);
     }
+    var data = await res.json();
+    return data.content.sha;
+}
+
+async function deleteFromGitHub(path, sha) {
+    var token = getToken();
+    if (!token) throw new Error('توکن وارد نشده است.');
+    var url = 'https://api.github.com/' + REPO_PATH + '/' + path;
+    var res = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'token ' + token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+        },
+        body: JSON.stringify({
+            message: 'Delete ' + path,
+            sha: sha,
+            branch: 'main'
+        })
+    });
+    if (!res.ok) throw new Error('خطا در حذف فایل');
+    return res.json();
+}
+
+async function uploadFileToGitHub(path, base64Data) {
+    var token = getToken();
+    if (!token) throw new Error('توکن وارد نشده است.');
+    var url = 'https://api.github.com/' + REPO_PATH + '/' + path;
+    var body = {
+        message: 'Upload ' + path + ' via admin panel - ' + new Date().toISOString(),
+        content: base64Data,
+        branch: 'main'
+    };
+    var res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Authorization': 'token ' + token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+        },
+        body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+        var err = await res.json();
+        throw new Error(err.message || 'خطا در آپلود فایل');
+    }
+    return res.json();
+}
 
     // ============================================================
     // 0007 - شماره‌زنی خودکار (ID Generator)

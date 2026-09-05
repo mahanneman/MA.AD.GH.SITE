@@ -1082,8 +1082,14 @@ async function saveEdit() {
     console.log('✅ saveEdit اجرا شد');
     const key = document.getElementById('editKey').value;
     const type = document.getElementById('editType').value;
+    
     try {
         let data = {};
+        let path = '';
+        let dataObj = {};
+        let shaVar = null;
+
+        // ---------- آماده‌سازی داده‌ها ----------
         if (type === 'article') {
             data = {
                 title: document.getElementById('editTitle').value.trim(),
@@ -1094,34 +1100,9 @@ async function saveEdit() {
                 body: document.getElementById('editBody').value.trim(),
                 updated: new Date().toISOString()
             };
-            
-            if (!getToken()) {
-                showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error');
-                return;
-            }
-            
-            // 1. دریافت فایل از گیت‌هاب برای گرفتن sha به‌روز
-            const fileData = await fetchFromGitHub('_data/articles.json');
-            let shaToUse = null;
-            if (fileData) {
-                // اگر فایل وجود دارد، داده‌های موجود را با داده‌های جدید ادغام کن
-                const existingData = JSON.parse(fileData.content);
-                articlesData = existingData; // بازنویسی داده‌های محلی با داده‌های گیت‌هاب
-                articlesData[key] = { ...articlesData[key], ...data }; // اعمال تغییرات جدید
-                shaToUse = fileData.sha; // استفاده از sha به‌روز
-            } else {
-                // اگر فایل وجود ندارد، از داده‌های محلی استفاده کن و sha را null بگذار
-                articlesData[key] = { ...articlesData[key], ...data };
-                shaToUse = null;
-            }
-            
-            // 2. ذخیره با sha به‌روز
-            const newSha = await saveToGitHub('_data/articles.json', articlesData, shaToUse);
-            articlesSha = newSha; // به‌روزرسانی sha سراسری
-            
-            showMsg('✅ مقاله با موفقیت در گیت‌هاب ذخیره شد.', 'success');
-            loadArticles();
-            
+            path = '_data/articles.json';
+            dataObj = articlesData;
+            shaVar = articlesSha;
         } else if (type === 'product') {
             data = {
                 name: document.getElementById('editName').value.trim(),
@@ -1133,30 +1114,9 @@ async function saveEdit() {
                 stock: document.getElementById('editStock').value,
                 updated: new Date().toISOString()
             };
-            
-            if (!getToken()) {
-                showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error');
-                return;
-            }
-            
-            const fileData = await fetchFromGitHub('_data/products.json');
-            let shaToUse = null;
-            if (fileData) {
-                const existingData = JSON.parse(fileData.content);
-                productsData = existingData;
-                productsData[key] = { ...productsData[key], ...data };
-                shaToUse = fileData.sha;
-            } else {
-                productsData[key] = { ...productsData[key], ...data };
-                shaToUse = null;
-            }
-            
-            const newSha = await saveToGitHub('_data/products.json', productsData, shaToUse);
-            productsSha = newSha;
-            
-            showMsg('✅ محصول با موفقیت در گیت‌هاب ذخیره شد.', 'success');
-            loadProducts();
-            
+            path = '_data/products.json';
+            dataObj = productsData;
+            shaVar = productsSha;
         } else if (type === 'archive') {
             data = {
                 title: document.getElementById('editTitle').value.trim(),
@@ -1167,35 +1127,105 @@ async function saveEdit() {
                 body: document.getElementById('editBody').value.trim(),
                 updated: new Date().toISOString()
             };
-            
-            if (!getToken()) {
-                showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error');
-                return;
-            }
-            
-            const fileData = await fetchFromGitHub('_data/archive.json');
-            let shaToUse = null;
-            if (fileData) {
-                const existingData = JSON.parse(fileData.content);
-                archiveData = existingData;
-                archiveData[key] = { ...archiveData[key], ...data };
-                shaToUse = fileData.sha;
-            } else {
-                archiveData[key] = { ...archiveData[key], ...data };
-                shaToUse = null;
-            }
-            
-            const newSha = await saveToGitHub('_data/archive.json', archiveData, shaToUse);
-            archiveSha = newSha;
-            
-            showMsg('✅ آیتم آرشیو با موفقیت در گیت‌هاب ذخیره شد.', 'success');
-            loadArchive();
+            path = '_data/archive.json';
+            dataObj = archiveData;
+            shaVar = archiveSha;
+        } else {
+            showMsg('❌ نوع نامعتبر', 'error');
+            return;
         }
-        
+
+        if (!getToken()) {
+            showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error');
+            return;
+        }
+
+        // ---------- تابع کمکی برای دریافت فایل با چند بار تلاش ----------
+        async function fetchFileWithRetry(path, retries = 3) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const result = await fetchFromGitHub(path);
+                    return result;
+                } catch (err) {
+                    if (i === retries - 1) throw err;
+                    await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+                }
+            }
+        }
+
+        // ---------- دریافت فایل از گیت‌هاب (با retry) ----------
+        let fileData = await fetchFileWithRetry(path);
+        let shaToUse = null;
+        let finalData = {};
+
+        if (fileData) {
+            // فایل وجود دارد → داده‌های موجود را با تغییرات جدید ادغام کن
+            const existing = JSON.parse(fileData.content);
+            existing[key] = { ...existing[key], ...data };
+            finalData = existing;
+            shaToUse = fileData.sha; // sha به‌روز از گیت‌هاب
+        } else {
+            // فایل وجود ندارد → داده‌های جدید را با کلید مورد نظر ایجاد کن
+            dataObj[key] = { ...dataObj[key], ...data };
+            finalData = dataObj;
+            shaToUse = null;
+        }
+
+        // ---------- ذخیره‌سازی با retry در صورت mismatch ----------
+        let saved = false;
+        let attempts = 0;
+        while (!saved && attempts < 3) {
+            try {
+                const newSha = await saveToGitHub(path, finalData, shaToUse);
+                saved = true;
+
+                // به‌روزرسانی متغیرهای سراسری
+                if (type === 'article') {
+                    articlesData = finalData;
+                    articlesSha = newSha;
+                } else if (type === 'product') {
+                    productsData = finalData;
+                    productsSha = newSha;
+                } else if (type === 'archive') {
+                    archiveData = finalData;
+                    archiveSha = newSha;
+                }
+
+                const typeLabel = type === 'article' ? 'مقاله' : type === 'product' ? 'محصول' : 'آیتم آرشیو';
+                showMsg(`✅ ${typeLabel} با موفقیت در گیت‌هاب ذخیره شد.`, 'success');
+                logActivity(`ویرایش و ذخیره‌سازی ${type} #${key}`);
+
+            } catch (err) {
+                if (err.message && err.message.includes('does not match')) {
+                    attempts++;
+                    console.warn(`⚠️ تلاش ${attempts}: دریافت مجدد فایل برای به‌روزرسانی sha`);
+                    // دریافت مجدد فایل
+                    fileData = await fetchFileWithRetry(path);
+                    if (fileData) {
+                        const existing = JSON.parse(fileData.content);
+                        existing[key] = { ...existing[key], ...data };
+                        finalData = existing;
+                        shaToUse = fileData.sha;
+                    } else {
+                        shaToUse = null; // فایل حذف شده است
+                    }
+                    if (attempts >= 3) {
+                        throw new Error('پس از ۳ بار تلاش، خطای mismatch برطرف نشد.');
+                    }
+                } else {
+                    throw err; // خطای دیگر
+                }
+            }
+        }
+
+        // ---------- بارگذاری مجدد و بستن مودال ----------
+        if (type === 'article') loadArticles();
+        else if (type === 'product') loadProducts();
+        else if (type === 'archive') loadArchive();
+
         closeEditModal();
-        showToast('✅ ذخیره‌سازی در گیت‌هاب با موفقیت انجام شد.', 'success');
-        logActivity('ویرایش و ذخیره‌سازی ' + type + ' #' + key);
-        
+        showToast('✅ ذخیره‌سازی با موفقیت انجام شد.', 'success');
+
     } catch (e) {
         showMsg('❌ خطا در ذخیره‌سازی: ' + e.message, 'error');
         console.error(e);

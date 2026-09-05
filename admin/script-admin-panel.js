@@ -1094,17 +1094,30 @@ async function saveEdit() {
                 body: document.getElementById('editBody').value.trim(),
                 updated: new Date().toISOString()
             };
-            // به‌روزرسانی داده‌های محلی
-            articlesData[key] = { ...articlesData[key], ...data };
             
-            // ========== اصلاح اصلی: ذخیره در گیت‌هاب ==========
             if (!getToken()) {
                 showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error');
                 return;
             }
-            const newSha = await saveToGitHub('_data/articles.json', articlesData, articlesSha);
-            articlesSha = newSha; // به‌روزرسانی sha برای دفعات بعد
-            // ===================================================
+            
+            // 1. دریافت فایل از گیت‌هاب برای گرفتن sha به‌روز
+            const fileData = await fetchFromGitHub('_data/articles.json');
+            let shaToUse = null;
+            if (fileData) {
+                // اگر فایل وجود دارد، داده‌های موجود را با داده‌های جدید ادغام کن
+                const existingData = JSON.parse(fileData.content);
+                articlesData = existingData; // بازنویسی داده‌های محلی با داده‌های گیت‌هاب
+                articlesData[key] = { ...articlesData[key], ...data }; // اعمال تغییرات جدید
+                shaToUse = fileData.sha; // استفاده از sha به‌روز
+            } else {
+                // اگر فایل وجود ندارد، از داده‌های محلی استفاده کن و sha را null بگذار
+                articlesData[key] = { ...articlesData[key], ...data };
+                shaToUse = null;
+            }
+            
+            // 2. ذخیره با sha به‌روز
+            const newSha = await saveToGitHub('_data/articles.json', articlesData, shaToUse);
+            articlesSha = newSha; // به‌روزرسانی sha سراسری
             
             showMsg('✅ مقاله با موفقیت در گیت‌هاب ذخیره شد.', 'success');
             loadArticles();
@@ -1120,13 +1133,25 @@ async function saveEdit() {
                 stock: document.getElementById('editStock').value,
                 updated: new Date().toISOString()
             };
-            productsData[key] = { ...productsData[key], ...data };
             
             if (!getToken()) {
                 showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error');
                 return;
             }
-            const newSha = await saveToGitHub('_data/products.json', productsData, productsSha);
+            
+            const fileData = await fetchFromGitHub('_data/products.json');
+            let shaToUse = null;
+            if (fileData) {
+                const existingData = JSON.parse(fileData.content);
+                productsData = existingData;
+                productsData[key] = { ...productsData[key], ...data };
+                shaToUse = fileData.sha;
+            } else {
+                productsData[key] = { ...productsData[key], ...data };
+                shaToUse = null;
+            }
+            
+            const newSha = await saveToGitHub('_data/products.json', productsData, shaToUse);
             productsSha = newSha;
             
             showMsg('✅ محصول با موفقیت در گیت‌هاب ذخیره شد.', 'success');
@@ -1142,13 +1167,25 @@ async function saveEdit() {
                 body: document.getElementById('editBody').value.trim(),
                 updated: new Date().toISOString()
             };
-            archiveData[key] = { ...archiveData[key], ...data };
             
             if (!getToken()) {
                 showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error');
                 return;
             }
-            const newSha = await saveToGitHub('_data/archive.json', archiveData, archiveSha);
+            
+            const fileData = await fetchFromGitHub('_data/archive.json');
+            let shaToUse = null;
+            if (fileData) {
+                const existingData = JSON.parse(fileData.content);
+                archiveData = existingData;
+                archiveData[key] = { ...archiveData[key], ...data };
+                shaToUse = fileData.sha;
+            } else {
+                archiveData[key] = { ...archiveData[key], ...data };
+                shaToUse = null;
+            }
+            
+            const newSha = await saveToGitHub('_data/archive.json', archiveData, shaToUse);
             archiveSha = newSha;
             
             showMsg('✅ آیتم آرشیو با موفقیت در گیت‌هاب ذخیره شد.', 'success');

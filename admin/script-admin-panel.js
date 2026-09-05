@@ -221,27 +221,30 @@ function getToken() {
     // ============================================================
     // 0504 - تب‌ها (Tabs)
     // ============================================================
-    function switchTab(tabId) {
-        document.querySelectorAll('#proTabs .tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.pro-tab-content').forEach(t => t.classList.remove('active'));
-        const btn = document.querySelector(`#proTabs .tab-btn[data-tab="${tabId}"]`);
-        if (btn) btn.classList.add('active');
-        const content = document.getElementById('tab-' + tabId);
-        if (content) content.classList.add('active');
-        if (tabId === 'articles') { loadArticles(); document.getElementById('articlesSearch').value = ''; }
-        if (tabId === 'products') { loadProducts(); document.getElementById('productsSearch').value = ''; }
-        if (tabId === 'archive') { loadArchive(); document.getElementById('archiveSearch').value = ''; }
-        if (tabId === 'dashboard') updateDashboard();
-        if (tabId === 'add-article') generateArticleId();
-        if (tabId === 'add-product') generateProductId();
-        if (tabId === 'add-archive') generateArchiveId();
-        if (tabId === 'appearance') loadAppearanceSettings();
-        if (tabId === 'menus') loadMenuData();
-        if (tabId === 'sections') loadSectionsData();
-        if (tabId === 'orders') loadGlobalOrders();
-        if (tabId === 'members') loadMembers();
-        if (tabId === 'index-content') loadAllIndexContent();
+function switchTab(tabId) {
+    document.querySelectorAll('#proTabs .tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.pro-tab-content').forEach(t => t.classList.remove('active'));
+    const btn = document.querySelector(`#proTabs .tab-btn[data-tab="${tabId}"]`);
+    if (btn) btn.classList.add('active');
+    const content = document.getElementById('tab-' + tabId);
+    if (content) content.classList.add('active');
+    if (tabId === 'articles') { loadArticles(); document.getElementById('articlesSearch').value = ''; }
+    if (tabId === 'products') { loadProducts(); document.getElementById('productsSearch').value = ''; }
+    if (tabId === 'archive') { loadArchive(); document.getElementById('archiveSearch').value = ''; }
+    if (tabId === 'dashboard') updateDashboard();
+    if (tabId === 'add-article') { 
+        generateArticleId(); 
+        setTimeout(initArticleUploads, 100);
     }
+    if (tabId === 'add-product') generateProductId();
+    if (tabId === 'add-archive') generateArchiveId();
+    if (tabId === 'appearance') loadAppearanceSettings();
+    if (tabId === 'menus') loadMenuData();
+    if (tabId === 'sections') loadSectionsData();
+    if (tabId === 'orders') loadGlobalOrders();
+    if (tabId === 'members') loadMembers();
+    if (tabId === 'index-content') loadAllIndexContent();
+}
     document.querySelectorAll('#proTabs .tab-btn').forEach(btn => {
         btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
     });
@@ -4517,15 +4520,5 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('articleYear').value = new Date().getFullYear();
 });
 
-// همچنین در تابع switchTab که قبلاً تعریف شده، وقتی تب add-article فعال می‌شود، دوباره راه‌اندازی کنیم (برای جلوگیری از تداخل)
-const originalSwitchTab = window.switchTab || function() {};
-window.switchTab = function(tabId) {
-    originalSwitchTab(tabId);
-    if (tabId === 'add-article') {
-        setTimeout(() => {
-            initArticleUploads();
-            generateArticleId();
-        }, 100);
-    }
-};
+
 })();

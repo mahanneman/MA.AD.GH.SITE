@@ -378,7 +378,7 @@ async function loadArticles() {
     }
     try {
         const data = await fetchFromGitHub('_data/articles.json');
-        if (data) {
+        if (data && data.content && data.content.trim() !== '') {
             articlesData = JSON.parse(data.content);
             articlesSha = data.sha;
         } else {
@@ -389,7 +389,13 @@ async function loadArticles() {
         articlesFiltered = [...allArticles];
         renderArticles(articlesFiltered);
     } catch (e) {
-        list.innerHTML = `<div class="pro-empty"><i class="fas fa-exclamation-triangle" style="color:var(--pro-red);"></i>خطا: ${e.message}</div>`;
+        console.error('❌ خطا در بارگذاری مقالات:', e);
+        articlesData = {};
+        articlesSha = null;
+        allArticles = [];
+        articlesFiltered = [];
+        renderArticles([]);
+        list.innerHTML = `<div class="pro-empty"><i class="fas fa-exclamation-triangle" style="color:var(--pro-red);"></i>خطا در بارگذاری مقالات: ${e.message}</div>`;
     }
 }
 function renderArticles(items) {
@@ -577,7 +583,7 @@ async function loadArchive() {
     }
     try {
         const data = await fetchFromGitHub('_data/archive.json');
-        if (data) {
+        if (data && data.content && data.content.trim() !== '') {
             archiveData = JSON.parse(data.content);
             archiveSha = data.sha;
         } else {
@@ -588,7 +594,13 @@ async function loadArchive() {
         archiveFiltered = [...allArchive];
         renderArchive(archiveFiltered);
     } catch (e) {
-        list.innerHTML = `<div class="pro-empty"><i class="fas fa-exclamation-triangle" style="color:var(--pro-red);"></i>خطا: ${e.message}</div>`;
+        console.error('❌ خطا در بارگذاری آرشیو:', e);
+        archiveData = {};
+        archiveSha = null;
+        allArchive = [];
+        archiveFiltered = [];
+        renderArchive([]);
+        list.innerHTML = `<div class="pro-empty"><i class="fas fa-exclamation-triangle" style="color:var(--pro-red);"></i>خطا در بارگذاری آرشیو: ${e.message}</div>`;
     }
 }
 function renderArchive(items) {

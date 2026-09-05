@@ -1078,110 +1078,64 @@
             }
         });
     }
-
-    async function saveEdit() {
-            console.log('✅ تابع saveEdit اجرا شد!');  // ← این خط را اضافه کنید
-
-        var key = document.getElementById('editKey').value;
-        var type = document.getElementById('editType').value;
-        try {
-            var data = {};
-            var cover = document.getElementById('editCoverPreviewImg').src;
-            if (!cover || cover.includes('placeholder') || cover === '') cover = null;
-            var galleryItems = document.querySelectorAll('#editGalleryGrid .edit-gallery-item img');
-            var images = [];
-            galleryItems.forEach(function(img) {
-                if (img.src && !img.src.includes('placeholder')) {
-                    images.push(img.src);
-                }
-            });
-            var fileItems = document.querySelectorAll('#editFileList .edit-file-tag');
-            var files = [];
-            fileItems.forEach(function(el) {
-                var name = el.querySelector('span') ? el.querySelector('span').textContent : 'file';
-                files.push(name);
-            });
-            if (type === 'article') {
-                data = {
-                    title: document.getElementById('editTitle').value.trim(),
-                    excerpt: document.getElementById('editExcerpt').value.trim(),
-                    type: document.getElementById('editTypeSelect').value,
-                    date: document.getElementById('editDate').value || new Date().toISOString().split('T')[0],
-                    tags: document.getElementById('editTags').value.split(/[،,]/).map(function(t) { return t.trim(); }).filter(Boolean),
-                    readTime: parseInt(document.getElementById('editReadTime').value) || 5,
-                    body: document.getElementById('editBody').value.trim(),
-                    cover: cover,
-                    images: images,
-                    files: files,
-                    updated: new Date().toISOString()
-                };
-                articlesData[key] = { ...articlesData[key], ...data };
-                var newSha = await saveToGitHub('_data/articles.json', articlesData, articlesSha);
-                articlesSha = newSha;
-                showMsg('✅ مقاله با موفقیت ویرایش شد!', 'success');
-                loadArticles();
-            } else if (type === 'product') {
-                data = {
-                    name: document.getElementById('editName').value.trim(),
-                    desc: document.getElementById('editDesc').value.trim(),
-                    price: document.getElementById('editPrice').value.trim() || 'رایگان',
-                    icon: document.getElementById('editIcon').value.trim() || 'fa-cube',
-                    tag: document.getElementById('editTag').value.trim() || '',
-                    category: document.getElementById('editCategory').value.trim() || '',
-                    stock: document.getElementById('editStock').value,
-                    cover: cover,
-                    images: images,
-                    files: files,
-                    updated: new Date().toISOString()
-                };
-                productsData[key] = { ...productsData[key], ...data };
-                var newSha2 = await saveToGitHub('_data/products.json', productsData, productsSha);
-                productsSha = newSha2;
-                showMsg('✅ محصول با موفقیت ویرایش شد!', 'success');
-                loadProducts();
-            } else if (type === 'archive') {
-                data = {
-                    title: document.getElementById('editTitle').value.trim(),
-                    excerpt: document.getElementById('editExcerpt').value.trim(),
-                    type: document.getElementById('editTypeSelect').value,
-                    date: document.getElementById('editDate').value || new Date().toISOString().split('T')[0],
-                    status: document.getElementById('editStatus').value,
-                    tags: document.getElementById('editTags').value.split(/[،,]/).map(function(t) { return t.trim(); }).filter(Boolean),
-                    body: document.getElementById('editBody').value.trim(),
-                    cover: cover,
-                    images: images,
-                    files: files,
-                    updated: new Date().toISOString()
-                };
-                archiveData[key] = { ...archiveData[key], ...data };
-                var newSha3 = await saveToGitHub('_data/archive.json', archiveData, archiveSha);
-                archiveSha = newSha3;
-                showMsg('✅ آیتم آرشیو با موفقیت ویرایش شد!', 'success');
-                loadArchive();
-            }
-            var pendingImages = window._editPendingImages || [];
-            var pendingFiles = window._editPendingFiles || [];
-            if (pendingImages.length > 0) {
-                for (var i = 0; i < pendingImages.length; i++) {
-                    var imgPath = 'assets/' + type + 's/' + key + '/img_' + Date.now() + '.jpg';
-                    try { await uploadFileToGitHub(imgPath, pendingImages[i].split(',')[1]); } catch (e) { console.error(e); }
-                }
-            }
-            if (pendingFiles.length > 0) {
-                for (var j = 0; j < pendingFiles.length; j++) {
-                    var filePath = 'assets/' + type + 's/' + key + '/' + pendingFiles[j].name;
-                    try { await uploadFileToGitHub(filePath, pendingFiles[j].data); } catch (e) { console.error(e); }
-                }
-            }
-            logActivity((type === 'article' ? 'مقاله' : type === 'product' ? 'محصول' : 'آرشیو') + ' #' + String(key).padStart(4, '0') + ' ویرایش شد');
-            closeEditModal();
-            showToast('✅ ذخیره شد', 'success');
-        } catch (e) {
-            showMsg('❌ خطا: ' + e.message, 'error');
-            showToast('❌ ذخیره‌سازی ناموفق', 'error');
+async function saveEdit() {
+    console.log('✅ saveEdit اجرا شد');
+    const key = document.getElementById('editKey').value;
+    const type = document.getElementById('editType').value;
+    try {
+        let data = {};
+        if (type === 'article') {
+            data = {
+                title: document.getElementById('editTitle').value.trim(),
+                excerpt: document.getElementById('editExcerpt').value.trim(),
+                type: document.getElementById('editTypeSelect').value,
+                date: document.getElementById('editDate').value || new Date().toISOString().split('T')[0],
+                readTime: parseInt(document.getElementById('editReadTime').value) || 5,
+                body: document.getElementById('editBody').value.trim(),
+                updated: new Date().toISOString()
+            };
+            articlesData[key] = { ...articlesData[key], ...data };
+            // ذخیره در localStorage برای تست
+            localStorage.setItem('test_article_' + key, JSON.stringify(articlesData[key]));
+            showMsg('✅ مقاله در حافظه موقت ذخیره شد (گیت‌هاب غیرفعال).', 'success');
+            loadArticles();
+        } else if (type === 'product') {
+            data = {
+                name: document.getElementById('editName').value.trim(),
+                desc: document.getElementById('editDesc').value.trim(),
+                price: document.getElementById('editPrice').value.trim() || 'رایگان',
+                icon: document.getElementById('editIcon').value.trim() || 'fa-cube',
+                tag: document.getElementById('editTag').value.trim() || '',
+                category: document.getElementById('editCategory').value.trim() || '',
+                stock: document.getElementById('editStock').value,
+                updated: new Date().toISOString()
+            };
+            productsData[key] = { ...productsData[key], ...data };
+            localStorage.setItem('test_product_' + key, JSON.stringify(productsData[key]));
+            showMsg('✅ محصول در حافظه موقت ذخیره شد.', 'success');
+            loadProducts();
+        } else if (type === 'archive') {
+            data = {
+                title: document.getElementById('editTitle').value.trim(),
+                excerpt: document.getElementById('editExcerpt').value.trim(),
+                type: document.getElementById('editTypeSelect').value,
+                date: document.getElementById('editDate').value || new Date().toISOString().split('T')[0],
+                status: document.getElementById('editStatus').value,
+                body: document.getElementById('editBody').value.trim(),
+                updated: new Date().toISOString()
+            };
+            archiveData[key] = { ...archiveData[key], ...data };
+            localStorage.setItem('test_archive_' + key, JSON.stringify(archiveData[key]));
+            showMsg('✅ آرشیو در حافظه موقت ذخیره شد.', 'success');
+            loadArchive();
         }
+        closeEditModal();
+        showToast('✅ ذخیره شد (محلی)', 'success');
+    } catch (e) {
+        showMsg('❌ خطا: ' + e.message, 'error');
+        console.error(e);
     }
-
+}
     // ============================================================
     // 0013 - آپلود فایل‌ها (فرم افزودن)
     // ============================================================

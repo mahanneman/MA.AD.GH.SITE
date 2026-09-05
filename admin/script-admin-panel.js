@@ -1416,83 +1416,94 @@ function switchTab(tabId) {
     // ============================================================
     // 0517 - افزودن محصول (Submit)
     // ============================================================
-    document.getElementById('addProductForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const id = parseInt(document.getElementById('productId').value);
-        const name = document.getElementById('productName').value.trim();
-        const desc = document.getElementById('productDesc').value.trim();
-        const price = document.getElementById('productPrice').value.trim() || 'رایگان';
-        const icon = document.getElementById('productIcon').value.trim() || 'fa-cube';
-        const tag = document.getElementById('productTag').value.trim() || 'جدید';
-        const category = document.getElementById('productCategory').value.trim();
-        const stock = document.getElementById('productStock').value;
+ // ============================================================
+// 0517 - افزودن محصول (با دکمه onclick)
+// ============================================================
+window.saveProduct = async function() {
+    const id = document.getElementById('productId').value;
+    const name = document.getElementById('productName').value.trim();
+    const desc = document.getElementById('productDesc').value.trim();
+    const price = document.getElementById('productPrice').value.trim() || 'رایگان';
+    const icon = document.getElementById('productIcon').value.trim() || 'fa-cube';
+    const tag = document.getElementById('productTag').value.trim() || '';
+    const category = document.getElementById('productCategory').value.trim() || '';
+    const stock = document.getElementById('productStock').value;
+    const date = document.getElementById('productDate').value || new Date().toISOString().split('T')[0];
 
-        if (!name || !desc) {
-            showMsg('❌ لطفاً نام و توضیحات را پر کنید.', 'error');
-            return;
-        }
-        if (!getToken()) { showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error'); return; }
+    if (!name || !desc) {
+        showMsg('❌ لطفاً نام و توضیحات محصول را پر کنید.', 'error');
+        return;
+    }
 
-        let cover = null;
-        const coverImg = document.getElementById('productCoverPreviewImg');
-        if (coverImg.src && coverImg.src.startsWith('data:')) {
-            cover = coverImg.src;
-        }
-
-        const galleryFiles = window._pendingFiles?.product_gallery || [];
-        const imageData = galleryFiles.map(f => f.data);
-        const files = window._pendingFiles?.product || [];
-
-        try {
-            const existing = await fetchFromGitHub('_data/products.json');
-            if (existing) {
-                productsData = JSON.parse(existing.content);
-                productsSha = existing.sha;
-            } else {
-                productsData = {};
-                productsSha = null;
-            }
-            const key = String(id).padStart(4, '0');
-            productsData[key] = {
-                name, desc, price, icon, tag, category, stock,
-                cover: cover,
-                images: imageData,
-                files: files.map(f => f.name),
-                updated: new Date().toISOString()
-            };
-            const newSha = await saveToGitHub('_data/products.json', productsData, productsSha);
-            productsSha = newSha;
-
-            for (const file of files) {
-                const path = `assets/products/${key}/${file.name}`;
-                try { await uploadFileToGitHub(path, file.data); } catch (e) { console.error(e); }
-            }
-            for (let i = 0; i < imageData.length; i++) {
-                const path = `assets/products/${key}/img_${i+1}.jpg`;
-                try { await uploadFileToGitHub(path, imageData[i].split(',')[1]); } catch (e) { console.error(e); }
-            }
-            if (cover) {
-                const coverPath = `assets/products/${key}/cover.jpg`;
-                try { await uploadFileToGitHub(coverPath, cover.split(',')[1]); } catch (e) { console.error(e); }
-            }
-
-            showMsg('✅ محصول با موفقیت ذخیره شد!', 'success');
-            showToast('✅ محصول ذخیره شد', 'success');
-            logActivity(`محصول جدید: ${name} (#${key})`);
-            this.reset();
-            document.getElementById('productFilesList').innerHTML = '';
-            document.getElementById('productGalleryList').innerHTML = '';
-            document.getElementById('productCoverPreview').style.display = 'none';
-            window._pendingFiles = null;
-            window._coverImage = null;
-            generateProductId();
-            loadProducts();
-        } catch (e) {
-            showMsg('❌ خطا: ' + e.message, 'error');
-            showToast('❌ ذخیره‌سازی ناموفق', 'error');
-        }
+    const coverImg = document.querySelector('#productCoverPreview img');
+    const coverData = coverImg ? coverImg.src : null;
+    const galleryItems = document.querySelectorAll('#productGalleryPreview .gallery-item img');
+    const galleryData = Array.from(galleryItems).map(img => img.src);
+    const fileTags = document.querySelectorAll('#productFilesPreview .file-tag');
+    const filesData = Array.from(fileTags).map(tag => {
+        const name2 = tag.querySelector('span')?.textContent || '';
+        return name2;
     });
 
+    const productData = {
+        name, desc, price, icon, tag, category, stock, date,
+        cover: coverData || '', images: galleryData,
+        files: filesData,
+        updated: new Date().toISOString()
+    };
+
+    const products = JSON.parse(localStorage.getItem('temp_products') || '{}');
+    products[id] = productData;
+    localStorage.setItem('temp_products', JSON.stringify(products));
+
+    const token = getToken();
+    if (!token) {
+        showMsg('⚠️ توکن گیت‌هاب یافت نشد. محصول در حافظه موقت ذخیره شد.', 'info');
+        return;
+    }
+
+    try {
+        showMsg('⏳ در حال ذخیره محصول در گیت‌هاب...', 'info');
+        const key = String(id).padStart(4, '0');
+        const basePath = `assets/products/${key}/`;
+
+        if (coverData && coverData.startsWith('data:')) {
+            await uploadFileToGitHub(`${basePath}cover.jpg`, coverData.split(',')[1]);
+        }
+        for (let i = 0; i < galleryData.length; i++) {
+            if (galleryData[i].startsWith('data:')) {
+                await uploadFileToGitHub(`${basePath}gallery_${i+1}.jpg`, galleryData[i].split(',')[1]);
+            }
+        }
+        const productFilesInput = document.getElementById('productFilesFileInput');
+        if (productFilesInput && productFilesInput.files.length > 0) {
+            for (let i = 0; i < productFilesInput.files.length; i++) {
+                const file = productFilesInput.files[i];
+                const reader = new FileReader();
+                const fileData = await new Promise((resolve) => {
+                    reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+                    reader.readAsDataURL(file);
+                });
+                await uploadFileToGitHub(`${basePath}${file.name}`, fileData);
+            }
+        }
+
+        const existing = await fetchFromGitHub('_data/products.json');
+        let productsData = {};
+        let sha = null;
+        if (existing) {
+            productsData = JSON.parse(existing.content);
+            sha = existing.sha;
+        }
+        productsData[key] = productData;
+        await saveToGitHub('_data/products.json', productsData, sha);
+        showMsg('✅ محصول با شماره PRD-' + id + ' با موفقیت در گیت‌هاب ذخیره شد.', 'success');
+        loadProducts();
+    } catch (e) {
+        console.error('❌ خطا در ذخیره گیت‌هاب:', e);
+        showMsg('⚠️ ذخیره در گیت‌هاب با خطا مواجه شد، ولی محصول در حافظه موقت ذخیره شد.', 'error');
+    }
+};
     // ============================================================
     // 0518 - افزودن آرشیو (Submit)
     // ============================================================
@@ -2255,6 +2266,9 @@ function switchTab(tabId) {
     // ============================================================
     // 0526 - محتوای ایندکس (Index Content)
     // ============================================================
+     // ============================================================
+    // 0526 - محتوای ایندکس (Index Content)
+    // ============================================================
     function renderItems(containerId, items, renderFn) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -2264,6 +2278,7 @@ function switchTab(tabId) {
         }
         container.innerHTML = items.map((item, idx) => renderFn(item, idx, items.length)).join('');
     }
+
     function createEditModal(title, bodyHtml, onSave) {
         const modal = document.createElement('div');
         modal.className = 'pro-modal-overlay active';
@@ -2286,10 +2301,13 @@ function switchTab(tabId) {
                 </form>
             </div>
         `;
-        modal.querySelector('#editModalForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            onSave();
-        });
+        const form = modal.querySelector('#editModalForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                onSave();
+            });
+        }
         modal.addEventListener('click', function(e) {
             if (e.target === this) this.remove();
         });
@@ -2305,8 +2323,10 @@ function switchTab(tabId) {
             renderEducation();
         }).catch(() => { eduData = { title: 'سوابق تحصیلی', items: [] }; renderEducation(); });
     }
+
     function renderEducation() {
-        document.getElementById('eduSectionTitle').value = eduData.title || 'سوابق تحصیلی';
+        const titleEl = document.getElementById('eduSectionTitle');
+        if (titleEl) titleEl.value = eduData.title || 'سوابق تحصیلی';
         renderItems('educationList', eduData.items, (item, idx, total) => `
             <div class="pro-item">
                 <div class="info">
@@ -2328,34 +2348,31 @@ function switchTab(tabId) {
             </div>
         `);
     }
+
     function addEducationItem() {
-        const org = document.getElementById('newEduOrg').value.trim();
-        const title = document.getElementById('newEduTitle').value.trim();
-        const date = document.getElementById('newEduDate').value.trim();
-        const gpa = document.getElementById('newEduGpa').value.trim();
-        const desc = document.getElementById('newEduDesc').value.trim();
-        const icon = document.getElementById('newEduIcon').value.trim();
-        const source = document.getElementById('newEduSource').value.trim();
-        const cert = document.getElementById('newEduCert').value.trim();
+        const org = document.getElementById('newEduOrg')?.value?.trim() || '';
+        const title = document.getElementById('newEduTitle')?.value?.trim() || '';
+        const date = document.getElementById('newEduDate')?.value?.trim() || '';
+        const gpa = document.getElementById('newEduGpa')?.value?.trim() || '';
+        const desc = document.getElementById('newEduDesc')?.value?.trim() || '';
+        const icon = document.getElementById('newEduIcon')?.value?.trim() || '';
+        const source = document.getElementById('newEduSource')?.value?.trim() || '';
+        const cert = document.getElementById('newEduCert')?.value?.trim() || '';
         if (!org || !title) { showMsg('لطفاً نام مؤسسه و عنوان را وارد کنید.', 'error'); return; }
         eduData.items.push({ org, title, date, gpa, desc, icon, source, cert });
-        document.getElementById('newEduOrg').value = '';
-        document.getElementById('newEduTitle').value = '';
-        document.getElementById('newEduDate').value = '';
-        document.getElementById('newEduGpa').value = '';
-        document.getElementById('newEduDesc').value = '';
-        document.getElementById('newEduIcon').value = '';
-        document.getElementById('newEduSource').value = '';
-        document.getElementById('newEduCert').value = '';
+        const inputs = ['newEduOrg', 'newEduTitle', 'newEduDate', 'newEduGpa', 'newEduDesc', 'newEduIcon', 'newEduSource', 'newEduCert'];
+        inputs.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         renderEducation();
         showMsg('✅ آیتم اضافه شد.', 'success');
     }
+
     function removeEducationItem(index) {
         if (!confirm('آیا از حذف این سابقه تحصیلی مطمئن هستید؟')) return;
         eduData.items.splice(index, 1);
         renderEducation();
         showMsg('✅ آیتم حذف شد.', 'info');
     }
+
     function moveEducationItem(index, direction) {
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= eduData.items.length) return;
@@ -2364,6 +2381,7 @@ function switchTab(tabId) {
         renderEducation();
         showMsg('✅ ترتیب تغییر کرد.', 'info');
     }
+
     function openEditEducationModal(index) {
         const item = eduData.items[index];
         if (!item) { showMsg('❌ آیتم یافت نشد.', 'error'); return; }
@@ -2395,9 +2413,11 @@ function switchTab(tabId) {
         });
         document.body.appendChild(modal);
     }
+
     async function saveEducation() {
         try {
-            eduData.title = document.getElementById('eduSectionTitle').value.trim() || 'سوابق تحصیلی';
+            const titleEl = document.getElementById('eduSectionTitle');
+            eduData.title = titleEl ? titleEl.value.trim() || 'سوابق تحصیلی' : 'سوابق تحصیلی';
             const existing = await fetchFromGitHub('_data/education.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2416,8 +2436,10 @@ function switchTab(tabId) {
             renderCertificates();
         }).catch(() => { certsData = { title: 'گواهی‌نامه‌ها', items: [] }; renderCertificates(); });
     }
+
     function renderCertificates() {
-        document.getElementById('certsSectionTitle').value = certsData.title || 'گواهی‌نامه‌ها';
+        const titleEl = document.getElementById('certsSectionTitle');
+        if (titleEl) titleEl.value = certsData.title || 'گواهی‌نامه‌ها';
         renderItems('certificatesList', certsData.items, (item, idx, total) => `
             <div class="pro-item">
                 <div class="info">
@@ -2433,26 +2455,29 @@ function switchTab(tabId) {
             </div>
         `);
     }
+
     function addCertificateItem() {
-        const name = document.getElementById('newCertName').value.trim();
-        const org = document.getElementById('newCertOrg').value.trim();
-        const date = document.getElementById('newCertDate').value.trim();
-        const link = document.getElementById('newCertLink').value.trim();
+        const name = document.getElementById('newCertName')?.value?.trim() || '';
+        const org = document.getElementById('newCertOrg')?.value?.trim() || '';
+        const date = document.getElementById('newCertDate')?.value?.trim() || '';
+        const link = document.getElementById('newCertLink')?.value?.trim() || '';
         if (!name) { showMsg('لطفاً نام گواهی‌نامه را وارد کنید.', 'error'); return; }
         certsData.items.push({ name, org, date, link });
-        document.getElementById('newCertName').value = '';
-        document.getElementById('newCertOrg').value = '';
-        document.getElementById('newCertDate').value = '';
-        document.getElementById('newCertLink').value = '';
+        ['newCertName', 'newCertOrg', 'newCertDate', 'newCertLink'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
         renderCertificates();
         showMsg('✅ گواهی‌نامه اضافه شد.', 'success');
     }
+
     function removeCertificateItem(index) {
         if (!confirm('آیا از حذف این گواهی‌نامه مطمئن هستید؟')) return;
         certsData.items.splice(index, 1);
         renderCertificates();
         showMsg('✅ گواهی‌نامه حذف شد.', 'info');
     }
+
     function moveCertificateItem(index, direction) {
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= certsData.items.length) return;
@@ -2461,6 +2486,7 @@ function switchTab(tabId) {
         renderCertificates();
         showMsg('✅ ترتیب تغییر کرد.', 'info');
     }
+
     function openEditCertificateModal(index) {
         const item = certsData.items[index];
         if (!item) { showMsg('❌ آیتم یافت نشد.', 'error'); return; }
@@ -2484,9 +2510,11 @@ function switchTab(tabId) {
         });
         document.body.appendChild(modal);
     }
+
     async function saveCertificates() {
         try {
-            certsData.title = document.getElementById('certsSectionTitle').value.trim() || 'گواهی‌نامه‌ها';
+            const titleEl = document.getElementById('certsSectionTitle');
+            certsData.title = titleEl ? titleEl.value.trim() || 'گواهی‌نامه‌ها' : 'گواهی‌نامه‌ها';
             const existing = await fetchFromGitHub('_data/certificates.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2505,9 +2533,12 @@ function switchTab(tabId) {
             renderSkills();
         }).catch(() => { skillsData = { title: 'مهارت‌های تخصصی', desc: '', items: [] }; renderSkills(); });
     }
+
     function renderSkills() {
-        document.getElementById('skillsSectionTitle').value = skillsData.title || 'مهارت‌های تخصصی';
-        document.getElementById('skillsSectionDesc').value = skillsData.desc || '';
+        const titleEl = document.getElementById('skillsSectionTitle');
+        if (titleEl) titleEl.value = skillsData.title || 'مهارت‌های تخصصی';
+        const descEl = document.getElementById('skillsSectionDesc');
+        if (descEl) descEl.value = skillsData.desc || '';
         const list = document.getElementById('skillsList');
         if (!list) return;
         const items = skillsData.items || [];
@@ -2540,28 +2571,31 @@ function switchTab(tabId) {
             </div>
         `).join('');
     }
+
     function addSkillItem() {
-        const name = document.getElementById('newSkillName').value.trim();
-        const icon = document.getElementById('newSkillIcon').value.trim();
-        const level = document.getElementById('newSkillLevel').value;
-        const desc = document.getElementById('newSkillDesc').value.trim();
-        const progress = parseInt(document.getElementById('newSkillPercent').value) || 0;
-        const color = document.getElementById('newSkillColor').value;
+        const name = document.getElementById('newSkillName')?.value?.trim() || '';
+        const icon = document.getElementById('newSkillIcon')?.value?.trim() || '';
+        const level = document.getElementById('newSkillLevel')?.value || 'متوسط';
+        const desc = document.getElementById('newSkillDesc')?.value?.trim() || '';
+        const progress = parseInt(document.getElementById('newSkillPercent')?.value) || 0;
+        const color = document.getElementById('newSkillColor')?.value || '#2563eb';
         if (!name) { showMsg('لطفاً نام مهارت را وارد کنید.', 'error'); return; }
         skillsData.items.push({ name, icon, level, desc, progress, color });
-        document.getElementById('newSkillName').value = '';
-        document.getElementById('newSkillIcon').value = '';
-        document.getElementById('newSkillDesc').value = '';
-        document.getElementById('newSkillPercent').value = '';
+        ['newSkillName', 'newSkillIcon', 'newSkillDesc', 'newSkillPercent'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
         renderSkills();
         showMsg('✅ مهارت اضافه شد.', 'success');
     }
+
     function removeSkillItem(index) {
         if (!confirm('آیا از حذف این مهارت مطمئن هستید؟')) return;
         skillsData.items.splice(index, 1);
         renderSkills();
         showMsg('✅ مهارت حذف شد.', 'info');
     }
+
     function moveSkillItem(index, direction) {
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= skillsData.items.length) return;
@@ -2570,6 +2604,7 @@ function switchTab(tabId) {
         renderSkills();
         showMsg('✅ ترتیب تغییر کرد.', 'info');
     }
+
     function openEditSkillModal(index) {
         const item = skillsData.items[index];
         if (!item) { showMsg('❌ آیتم یافت نشد.', 'error'); return; }
@@ -2604,10 +2639,13 @@ function switchTab(tabId) {
         });
         document.body.appendChild(modal);
     }
+
     async function saveSkills() {
         try {
-            skillsData.title = document.getElementById('skillsSectionTitle').value.trim() || 'مهارت‌های تخصصی';
-            skillsData.desc = document.getElementById('skillsSectionDesc').value.trim();
+            const titleEl = document.getElementById('skillsSectionTitle');
+            skillsData.title = titleEl ? titleEl.value.trim() || 'مهارت‌های تخصصی' : 'مهارت‌های تخصصی';
+            const descEl = document.getElementById('skillsSectionDesc');
+            skillsData.desc = descEl ? descEl.value.trim() : '';
             const existing = await fetchFromGitHub('_data/skills.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2626,8 +2664,10 @@ function switchTab(tabId) {
             renderSocial();
         }).catch(() => { socialData = { title: 'شبکه‌های اجتماعی', items: [] }; renderSocial(); });
     }
+
     function renderSocial() {
-        document.getElementById('socialSectionTitle').value = socialData.title || 'شبکه‌های اجتماعی';
+        const titleEl = document.getElementById('socialSectionTitle');
+        if (titleEl) titleEl.value = socialData.title || 'شبکه‌های اجتماعی';
         renderItems('socialList', socialData.items, (item, idx, total) => `
             <div class="pro-item">
                 <div class="info">
@@ -2643,25 +2683,29 @@ function switchTab(tabId) {
             </div>
         `);
     }
+
     function addSocialItem() {
-        const name = document.getElementById('newSocialName').value.trim();
-        const url = document.getElementById('newSocialUrl').value.trim();
-        const icon = document.getElementById('newSocialIcon').value.trim();
-        const color = document.getElementById('newSocialColor').value;
+        const name = document.getElementById('newSocialName')?.value?.trim() || '';
+        const url = document.getElementById('newSocialUrl')?.value?.trim() || '';
+        const icon = document.getElementById('newSocialIcon')?.value?.trim() || '';
+        const color = document.getElementById('newSocialColor')?.value || '#0088cc';
         if (!name || !url) { showMsg('لطفاً نام و آدرس لینک را وارد کنید.', 'error'); return; }
         socialData.items.push({ name, url, icon, color });
-        document.getElementById('newSocialName').value = '';
-        document.getElementById('newSocialUrl').value = '';
-        document.getElementById('newSocialIcon').value = '';
+        ['newSocialName', 'newSocialUrl', 'newSocialIcon'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
         renderSocial();
         showMsg('✅ شبکه اضافه شد.', 'success');
     }
+
     function removeSocialItem(index) {
         if (!confirm('آیا از حذف این شبکه اجتماعی مطمئن هستید؟')) return;
         socialData.items.splice(index, 1);
         renderSocial();
         showMsg('✅ شبکه حذف شد.', 'info');
     }
+
     function moveSocialItem(index, direction) {
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= socialData.items.length) return;
@@ -2670,6 +2714,7 @@ function switchTab(tabId) {
         renderSocial();
         showMsg('✅ ترتیب تغییر کرد.', 'info');
     }
+
     function openEditSocialModal(index) {
         const item = socialData.items[index];
         if (!item) { showMsg('❌ آیتم یافت نشد.', 'error'); return; }
@@ -2693,9 +2738,11 @@ function switchTab(tabId) {
         });
         document.body.appendChild(modal);
     }
+
     async function saveSocial() {
         try {
-            socialData.title = document.getElementById('socialSectionTitle').value.trim() || 'شبکه‌های اجتماعی';
+            const titleEl = document.getElementById('socialSectionTitle');
+            socialData.title = titleEl ? titleEl.value.trim() || 'شبکه‌های اجتماعی' : 'شبکه‌های اجتماعی';
             const existing = await fetchFromGitHub('_data/social.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2714,9 +2761,12 @@ function switchTab(tabId) {
             renderServices();
         }).catch(() => { servicesData = { title: 'خدمات تخصصی', desc: '', items: [] }; renderServices(); });
     }
+
     function renderServices() {
-        document.getElementById('servicesSectionTitle').value = servicesData.title || 'خدمات تخصصی';
-        document.getElementById('servicesSectionDesc').value = servicesData.desc || '';
+        const titleEl = document.getElementById('servicesSectionTitle');
+        if (titleEl) titleEl.value = servicesData.title || 'خدمات تخصصی';
+        const descEl = document.getElementById('servicesSectionDesc');
+        if (descEl) descEl.value = servicesData.desc || '';
         renderItems('servicesList', servicesData.items, (item, idx, total) => `
             <div class="pro-item">
                 <div class="info">
@@ -2732,24 +2782,28 @@ function switchTab(tabId) {
             </div>
         `);
     }
+
     function addServiceItem() {
-        const name = document.getElementById('newServiceName').value.trim();
-        const icon = document.getElementById('newServiceIcon').value.trim();
-        const desc = document.getElementById('newServiceDesc').value.trim();
+        const name = document.getElementById('newServiceName')?.value?.trim() || '';
+        const icon = document.getElementById('newServiceIcon')?.value?.trim() || '';
+        const desc = document.getElementById('newServiceDesc')?.value?.trim() || '';
         if (!name) { showMsg('لطفاً نام خدمت را وارد کنید.', 'error'); return; }
         servicesData.items.push({ name, icon, desc });
-        document.getElementById('newServiceName').value = '';
-        document.getElementById('newServiceIcon').value = '';
-        document.getElementById('newServiceDesc').value = '';
+        ['newServiceName', 'newServiceIcon', 'newServiceDesc'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
         renderServices();
         showMsg('✅ خدمت اضافه شد.', 'success');
     }
+
     function removeServiceItem(index) {
         if (!confirm('آیا از حذف این خدمت مطمئن هستید؟')) return;
         servicesData.items.splice(index, 1);
         renderServices();
         showMsg('✅ خدمت حذف شد.', 'info');
     }
+
     function moveServiceItem(index, direction) {
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= servicesData.items.length) return;
@@ -2758,6 +2812,7 @@ function switchTab(tabId) {
         renderServices();
         showMsg('✅ ترتیب تغییر کرد.', 'info');
     }
+
     function openEditServiceModal(index) {
         const item = servicesData.items[index];
         if (!item) { showMsg('❌ آیتم یافت نشد.', 'error'); return; }
@@ -2779,10 +2834,13 @@ function switchTab(tabId) {
         });
         document.body.appendChild(modal);
     }
+
     async function saveServices() {
         try {
-            servicesData.title = document.getElementById('servicesSectionTitle').value.trim() || 'خدمات تخصصی';
-            servicesData.desc = document.getElementById('servicesSectionDesc').value.trim();
+            const titleEl = document.getElementById('servicesSectionTitle');
+            servicesData.title = titleEl ? titleEl.value.trim() || 'خدمات تخصصی' : 'خدمات تخصصی';
+            const descEl = document.getElementById('servicesSectionDesc');
+            servicesData.desc = descEl ? descEl.value.trim() : '';
             const existing = await fetchFromGitHub('_data/services.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2791,6 +2849,7 @@ function switchTab(tabId) {
             showToast('✅ خدمات ذخیره شدند', 'success');
         } catch (e) { showMsg('❌ خطا: ' + e.message, 'error'); }
     }
+
     // ===== 0526.6 - نظرات مشتریان =====
     function loadTestimonials() {
         fetchFromGitHub('_data/testimonials.json').then(data => {
@@ -2800,8 +2859,10 @@ function switchTab(tabId) {
             renderTestimonials();
         }).catch(() => { testimonialsData = { title: 'نظرات مشتریان', items: [] }; renderTestimonials(); });
     }
+
     function renderTestimonials() {
-        document.getElementById('testimonialsSectionTitle').value = testimonialsData.title || 'نظرات مشتریان';
+        const titleEl = document.getElementById('testimonialsSectionTitle');
+        if (titleEl) titleEl.value = testimonialsData.title || 'نظرات مشتریان';
         renderItems('testimonialsList', testimonialsData.items, (item, idx, total) => `
             <div class="pro-item">
                 <div class="info">
@@ -2817,28 +2878,30 @@ function switchTab(tabId) {
             </div>
         `);
     }
+
     function addTestimonialItem() {
-        const name = document.getElementById('newTestiName').value.trim();
-        const position = document.getElementById('newTestiPosition').value.trim();
-        const text = document.getElementById('newTestiText').value.trim();
-        const rating = parseInt(document.getElementById('newTestiRating').value) || 5;
-        const image = document.getElementById('newTestiImage').value.trim();
+        const name = document.getElementById('newTestiName')?.value?.trim() || '';
+        const position = document.getElementById('newTestiPosition')?.value?.trim() || '';
+        const text = document.getElementById('newTestiText')?.value?.trim() || '';
+        const rating = parseInt(document.getElementById('newTestiRating')?.value) || 5;
+        const image = document.getElementById('newTestiImage')?.value?.trim() || '';
         if (!name || !text) { showMsg('لطفاً نام و متن نظر را وارد کنید.', 'error'); return; }
         testimonialsData.items.push({ name, position, text, rating, image });
-        document.getElementById('newTestiName').value = '';
-        document.getElementById('newTestiPosition').value = '';
-        document.getElementById('newTestiText').value = '';
-        document.getElementById('newTestiRating').value = '';
-        document.getElementById('newTestiImage').value = '';
+        ['newTestiName', 'newTestiPosition', 'newTestiText', 'newTestiRating', 'newTestiImage'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
         renderTestimonials();
         showMsg('✅ نظر اضافه شد.', 'success');
     }
+
     function removeTestimonialItem(index) {
         if (!confirm('آیا از حذف این نظر مطمئن هستید؟')) return;
         testimonialsData.items.splice(index, 1);
         renderTestimonials();
         showMsg('✅ نظر حذف شد.', 'info');
     }
+
     function moveTestimonialItem(index, direction) {
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= testimonialsData.items.length) return;
@@ -2847,6 +2910,7 @@ function switchTab(tabId) {
         renderTestimonials();
         showMsg('✅ ترتیب تغییر کرد.', 'info');
     }
+
     function openEditTestimonialModal(index) {
         const item = testimonialsData.items[index];
         if (!item) { showMsg('❌ آیتم یافت نشد.', 'error'); return; }
@@ -2872,9 +2936,11 @@ function switchTab(tabId) {
         });
         document.body.appendChild(modal);
     }
+
     async function saveTestimonials() {
         try {
-            testimonialsData.title = document.getElementById('testimonialsSectionTitle').value.trim() || 'نظرات مشتریان';
+            const titleEl = document.getElementById('testimonialsSectionTitle');
+            testimonialsData.title = titleEl ? titleEl.value.trim() || 'نظرات مشتریان' : 'نظرات مشتریان';
             const existing = await fetchFromGitHub('_data/testimonials.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2893,8 +2959,10 @@ function switchTab(tabId) {
             renderAwards();
         }).catch(() => { awardsData = { title: 'جوایز و افتخارات', items: [] }; renderAwards(); });
     }
+
     function renderAwards() {
-        document.getElementById('awardsSectionTitle').value = awardsData.title || 'جوایز و افتخارات';
+        const titleEl = document.getElementById('awardsSectionTitle');
+        if (titleEl) titleEl.value = awardsData.title || 'جوایز و افتخارات';
         renderItems('awardsList', awardsData.items, (item, idx, total) => `
             <div class="pro-item">
                 <div class="info">
@@ -2910,26 +2978,29 @@ function switchTab(tabId) {
             </div>
         `);
     }
+
     function addAwardItem() {
-        const name = document.getElementById('newAwardName').value.trim();
-        const org = document.getElementById('newAwardOrg').value.trim();
-        const date = document.getElementById('newAwardDate').value.trim();
-        const desc = document.getElementById('newAwardDesc').value.trim();
+        const name = document.getElementById('newAwardName')?.value?.trim() || '';
+        const org = document.getElementById('newAwardOrg')?.value?.trim() || '';
+        const date = document.getElementById('newAwardDate')?.value?.trim() || '';
+        const desc = document.getElementById('newAwardDesc')?.value?.trim() || '';
         if (!name) { showMsg('لطفاً نام جایزه را وارد کنید.', 'error'); return; }
         awardsData.items.push({ name, org, date, desc });
-        document.getElementById('newAwardName').value = '';
-        document.getElementById('newAwardOrg').value = '';
-        document.getElementById('newAwardDate').value = '';
-        document.getElementById('newAwardDesc').value = '';
+        ['newAwardName', 'newAwardOrg', 'newAwardDate', 'newAwardDesc'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
         renderAwards();
         showMsg('✅ جایزه اضافه شد.', 'success');
     }
+
     function removeAwardItem(index) {
         if (!confirm('آیا از حذف این جایزه مطمئن هستید؟')) return;
         awardsData.items.splice(index, 1);
         renderAwards();
         showMsg('✅ جایزه حذف شد.', 'info');
     }
+
     function moveAwardItem(index, direction) {
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= awardsData.items.length) return;
@@ -2938,6 +3009,7 @@ function switchTab(tabId) {
         renderAwards();
         showMsg('✅ ترتیب تغییر کرد.', 'info');
     }
+
     function openEditAwardModal(index) {
         const item = awardsData.items[index];
         if (!item) { showMsg('❌ آیتم یافت نشد.', 'error'); return; }
@@ -2961,9 +3033,11 @@ function switchTab(tabId) {
         });
         document.body.appendChild(modal);
     }
+
     async function saveAwards() {
         try {
-            awardsData.title = document.getElementById('awardsSectionTitle').value.trim() || 'جوایز و افتخارات';
+            const titleEl = document.getElementById('awardsSectionTitle');
+            awardsData.title = titleEl ? titleEl.value.trim() || 'جوایز و افتخارات' : 'جوایز و افتخارات';
             const existing = await fetchFromGitHub('_data/awards.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -2982,8 +3056,10 @@ function switchTab(tabId) {
             renderLinks();
         }).catch(() => { linksData = { title: 'لینک‌های مفید', items: [] }; renderLinks(); });
     }
+
     function renderLinks() {
-        document.getElementById('linksSectionTitle').value = linksData.title || 'لینک‌های مفید';
+        const titleEl = document.getElementById('linksSectionTitle');
+        if (titleEl) titleEl.value = linksData.title || 'لینک‌های مفید';
         renderItems('linksList', linksData.items, (item, idx, total) => `
             <div class="pro-item">
                 <div class="info">
@@ -2999,24 +3075,28 @@ function switchTab(tabId) {
             </div>
         `);
     }
+
     function addLinkItem() {
-        const name = document.getElementById('newLinkName').value.trim();
-        const url = document.getElementById('newLinkUrl').value.trim();
-        const icon = document.getElementById('newLinkIcon').value.trim();
+        const name = document.getElementById('newLinkName')?.value?.trim() || '';
+        const url = document.getElementById('newLinkUrl')?.value?.trim() || '';
+        const icon = document.getElementById('newLinkIcon')?.value?.trim() || '';
         if (!name) { showMsg('لطفاً نام لینک را وارد کنید.', 'error'); return; }
         linksData.items.push({ name, url, icon });
-        document.getElementById('newLinkName').value = '';
-        document.getElementById('newLinkUrl').value = '';
-        document.getElementById('newLinkIcon').value = '';
+        ['newLinkName', 'newLinkUrl', 'newLinkIcon'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
         renderLinks();
         showMsg('✅ لینک اضافه شد.', 'success');
     }
+
     function removeLinkItem(index) {
         if (!confirm('آیا از حذف این لینک مطمئن هستید؟')) return;
         linksData.items.splice(index, 1);
         renderLinks();
         showMsg('✅ لینک حذف شد.', 'info');
     }
+
     function moveLinkItem(index, direction) {
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= linksData.items.length) return;
@@ -3025,6 +3105,7 @@ function switchTab(tabId) {
         renderLinks();
         showMsg('✅ ترتیب تغییر کرد.', 'info');
     }
+
     function openEditLinkModal(index) {
         const item = linksData.items[index];
         if (!item) { showMsg('❌ آیتم یافت نشد.', 'error'); return; }
@@ -3046,9 +3127,11 @@ function switchTab(tabId) {
         });
         document.body.appendChild(modal);
     }
+
     async function saveLinks() {
         try {
-            linksData.title = document.getElementById('linksSectionTitle').value.trim() || 'لینک‌های مفید';
+            const titleEl = document.getElementById('linksSectionTitle');
+            linksData.title = titleEl ? titleEl.value.trim() || 'لینک‌های مفید' : 'لینک‌های مفید';
             const existing = await fetchFromGitHub('_data/links.json');
             let sha = null;
             if (existing) sha = existing.sha;
@@ -3070,6 +3153,699 @@ function switchTab(tabId) {
         loadLinks();
     }
 
+    // ============================================================
+    // 0527 - مدیریت کاربران (Members) و سفارشات
+    // ============================================================
+    let membersData = [];
+    let currentMemberId = null;
+    let currentMemberOrders = [];
+
+    async function loadMembers() {
+        const list = document.getElementById('membersList');
+        if (!list) return;
+        if (!getToken()) {
+            list.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
+            const countEl = document.getElementById('proMembersCount');
+            if (countEl) countEl.textContent = '0';
+            const subEl = document.getElementById('proMembersSub');
+            if (subEl) subEl.textContent = '۰ کاربر';
+            return;
+        }
+        try {
+            const token = getToken();
+            const dirUrl = `https://api.github.com/${REPO_PATH}/member/`;
+            const dirRes = await fetch(dirUrl, {
+                headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (dirRes.status === 404) {
+                list.innerHTML = '<div class="pro-empty"><i class="fas fa-folder-open"></i>پوشه member وجود ندارد. هنوز کاربری ثبت نشده است.</div>';
+                const countEl = document.getElementById('proMembersCount');
+                if (countEl) countEl.textContent = '0';
+                return;
+            }
+            if (!dirRes.ok) throw new Error('خطا در خواندن لیست کاربران: ' + dirRes.status);
+            const items = await dirRes.json();
+            const memberDirs = items.filter(item =>
+                item.type === 'dir' &&
+                item.name.startsWith('member') &&
+                /^member\d{4}$/.test(item.name)
+            );
+            membersData = [];
+            for (const dir of memberDirs) {
+                const memberId = dir.name.replace('member', '');
+                try {
+                    const infoPath = `member/${dir.name}/info.json`;
+                    const infoRes = await fetchFromGitHub(infoPath);
+                    if (infoRes) {
+                        const info = JSON.parse(infoRes.content);
+                        membersData.push({ id: memberId, path: dir.name, ...info });
+                    } else {
+                        membersData.push({
+                            id: memberId,
+                            path: dir.name,
+                            name: 'کاربر ناشناس',
+                            username: 'unknown',
+                            email: '',
+                            phone: '',
+                            whatsapp: '',
+                            telegram: '',
+                            addresses: [],
+                            created: new Date().toISOString()
+                        });
+                    }
+                } catch (e) { console.warn('⚠️ خطا در بارگذاری اطلاعات کاربر:', dir.name, e); }
+            }
+            membersData.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+            renderMembers();
+        } catch (e) {
+            list.innerHTML = `<div class="pro-empty"><i class="fas fa-exclamation-triangle" style="color:var(--pro-red);"></i>خطا: ${e.message}</div>`;
+            console.error('❌ خطا در بارگذاری کاربران:', e);
+        }
+    }
+
+    async function getUserInfo(userId) {
+        try {
+            const infoPath = `member/member${userId}/info.json`;
+            const data = await fetchFromGitHub(infoPath);
+            if (data) return JSON.parse(data.content);
+            return null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function renderMembers() {
+        const list = document.getElementById('membersList');
+        if (!list) return;
+        if (membersData.length === 0) {
+            list.innerHTML = '<div class="pro-empty"><i class="fas fa-users"></i>هیچ کاربری یافت نشد.</div>';
+        } else {
+            list.innerHTML = membersData.map((member) => `
+                <div class="pro-item" onclick="viewMemberDetail('${member.id}')" style="cursor:pointer;">
+                    <div class="info">
+                        <div class="title">
+                            <i class="fas fa-user" style="color:var(--pro-primary);"></i>
+                            ${member.name || 'بدون نام'}
+                            <span style="color:var(--pro-text-secondary);font-size:0.7rem;">#${member.id}</span>
+                            ${member.username ? `<span style="font-size:0.7rem;color:var(--pro-text-secondary);">@${member.username}</span>` : ''}
+                        </div>
+                        <div class="meta">
+                            ${member.email ? `<span><i class="fas fa-envelope"></i> ${member.email}</span>` : ''}
+                            ${member.phone ? `<span><i class="fas fa-phone"></i> ${member.phone}</span>` : ''}
+                            ${member.telegram ? `<span><i class="fab fa-telegram"></i> ${member.telegram}</span>` : ''}
+                            ${member.created ? `<span><i class="fas fa-calendar"></i> ${new Date(member.created).toLocaleDateString('fa-IR')}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="pro-btn pro-btn-primary pro-btn-sm" onclick="event.stopPropagation();viewMemberDetail('${member.id}')"><i class="fas fa-eye"></i></button>
+                        <button class="pro-btn pro-btn-warning pro-btn-sm" onclick="event.stopPropagation();openEditMemberModal('${member.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="pro-btn pro-btn-danger pro-btn-sm" onclick="event.stopPropagation();deleteMember('${member.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        const countEl = document.getElementById('proMembersCount');
+        if (countEl) countEl.textContent = membersData.length;
+        const subEl = document.getElementById('proMembersSub');
+        if (subEl) subEl.textContent = membersData.length + ' کاربر';
+        updateDashboard();
+    }
+
+    function filterMembers(query) {
+        const q = query.toLowerCase().trim();
+        if (!q) { renderMembers(); return; }
+        const filtered = membersData.filter(m =>
+            (m.name || '').toLowerCase().includes(q) ||
+            (m.username || '').toLowerCase().includes(q) ||
+            (m.email || '').toLowerCase().includes(q) ||
+            (m.phone || '').includes(q) ||
+            (m.id || '').includes(q)
+        );
+        const list = document.getElementById('membersList');
+        if (!list) return;
+        if (filtered.length === 0) {
+            list.innerHTML = '<div class="pro-empty"><i class="fas fa-search"></i>کاربری یافت نشد.</div>';
+        } else {
+            list.innerHTML = filtered.map((member) => `
+                <div class="pro-item" onclick="viewMemberDetail('${member.id}')" style="cursor:pointer;">
+                    <div class="info">
+                        <div class="title"><i class="fas fa-user" style="color:var(--pro-primary);"></i> ${member.name || 'بدون نام'} <span style="color:var(--pro-text-secondary);font-size:0.7rem;">#${member.id}</span></div>
+                        <div class="meta">${member.email || ''} ${member.phone || ''}</div>
+                    </div>
+                    <div class="actions">
+                        <button class="pro-btn pro-btn-primary pro-btn-sm" onclick="event.stopPropagation();viewMemberDetail('${member.id}')"><i class="fas fa-eye"></i></button>
+                        <button class="pro-btn pro-btn-warning pro-btn-sm" onclick="event.stopPropagation();openEditMemberModal('${member.id}')"><i class="fas fa-edit"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
+    async function viewMemberDetail(memberId) {
+        currentMemberId = memberId;
+        const card = document.getElementById('memberDetailCard');
+        if (card) card.style.display = 'block';
+        const member = membersData.find(m => m.id === memberId);
+        if (!member) { showMsg('❌ کاربر یافت نشد.', 'error'); return; }
+        const nameEl = document.getElementById('memberDetailName');
+        if (nameEl) nameEl.textContent = member.name || 'بدون نام';
+        const idEl = document.getElementById('memberDetailId');
+        if (idEl) idEl.textContent = member.id;
+        const phoneEl = document.getElementById('memberDetailPhone');
+        if (phoneEl) phoneEl.textContent = member.phone || '---';
+        const whatsappEl = document.getElementById('memberDetailWhatsapp');
+        if (whatsappEl) whatsappEl.textContent = member.whatsapp || '---';
+        const telegramEl = document.getElementById('memberDetailTelegram');
+        if (telegramEl) telegramEl.textContent = member.telegram || '---';
+        const emailEl = document.getElementById('memberDetailEmail');
+        if (emailEl) emailEl.textContent = member.email || '---';
+        const createdEl = document.getElementById('memberDetailCreated');
+        if (createdEl) createdEl.textContent = member.created ? new Date(member.created).toLocaleDateString('fa-IR') : '---';
+        const addrContainer = document.getElementById('memberAddresses');
+        if (addrContainer) {
+            if (member.addresses && member.addresses.length > 0) {
+                addrContainer.innerHTML = member.addresses.map(addr =>
+                    `<div style="padding:4px 8px;background:var(--pro-bg);border-radius:6px;margin-bottom:4px;border:1px solid var(--pro-border);font-size:0.85rem;">${addr}</div>`
+                ).join('');
+            } else {
+                addrContainer.innerHTML = '<span style="color:var(--pro-text-secondary);">هیچ آدرسی ثبت نشده است.</span>';
+            }
+        }
+        await loadMemberOrders(memberId);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function loadMemberOrders(memberId) {
+        const container = document.getElementById('memberOrdersList');
+        if (!container) return;
+        container.innerHTML = '<div class="pro-empty"><i class="fas fa-spinner fa-spin"></i> در حال بارگذاری سفارشات...</div>';
+        try {
+            const path = `member/member${memberId}/order${memberId}.json`;
+            const data = await fetchFromGitHub(path);
+            if (!data) {
+                await saveToGitHub(path, [], null);
+                container.innerHTML = '<div class="pro-empty"><i class="fas fa-box"></i>هیچ سفارشی ثبت نشده است.</div>';
+                currentMemberOrders = [];
+                return;
+            }
+            currentMemberOrders = JSON.parse(data.content);
+            currentMemberOrders.sort((a, b) => (a.date || '').localeCompare(b.date || '') * -1);
+            renderMemberOrders(currentMemberOrders);
+        } catch (e) {
+            container.innerHTML = `<div class="pro-empty"><i class="fas fa-exclamation-triangle" style="color:var(--pro-red);"></i>خطا: ${e.message}</div>`;
+            console.error('❌ خطا در بارگذاری سفارشات:', e);
+        }
+    }
+
+    function renderMemberOrders(orders) {
+        const container = document.getElementById('memberOrdersList');
+        if (!container) return;
+        if (!orders || orders.length === 0) {
+            container.innerHTML = '<div class="pro-empty"><i class="fas fa-box"></i>هیچ سفارشی ثبت نشده است.</div>';
+            return;
+        }
+        const statusLabels = { 'pending': 'در انتظار پرداخت', 'paid': 'پرداخت شده', 'shipped': 'ارسال شده', 'completed': 'تکمیل شده', 'canceled': 'لغو شده' };
+        const statusColors = { 'pending': 'var(--pro-yellow)', 'paid': 'var(--pro-secondary)', 'shipped': 'var(--pro-primary)', 'completed': 'var(--pro-green)', 'canceled': 'var(--pro-red)' };
+        container.innerHTML = orders.map((order, idx) => `
+            <div class="pro-item" style="cursor:pointer;" onclick="viewOrderDetail('${currentMemberId}','${idx}')">
+                <div class="info">
+                    <div class="title">
+                        سفارش #${String(order.id || idx + 1).padStart(3, '0')}
+                        <span style="font-size:0.7rem;color:var(--text-secondary);">${order.date || '---'}</span>
+                        <span style="background:${statusColors[order.status] || 'var(--pro-yellow)'};color:#fff;padding:1px 10px;border-radius:20px;font-size:0.65rem;margin-right:8px;">${statusLabels[order.status] || order.status}</span>
+                    </div>
+                    <div class="meta">
+                        <span><i class="fas fa-box"></i> ${order.items ? order.items.length : 0} محصول</span>
+                        <span><i class="fas fa-money-bill"></i> ${(order.total || 0).toLocaleString()} تومان</span>
+                        <span><i class="fas fa-truck"></i> ${order.shipping || '---'}</span>
+                        <span><i class="fas fa-hashtag"></i> ${order.tracking || '---'}</span>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="pro-btn pro-btn-primary pro-btn-sm" onclick="event.stopPropagation();viewOrderDetail('${currentMemberId}','${idx}')"><i class="fas fa-eye"></i></button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function viewOrderDetail(userId, orderIndex) {
+        if (!userId) { showMsg('❌ شناسه کاربر نامعتبر است.', 'error'); return; }
+        try {
+            const path = `member/member${userId}/orders.json`;
+            const existing = await fetchFromGitHub(path);
+            if (!existing) { showMsg('❌ فایل سفارشات یافت نشد.', 'error'); return; }
+            let orders = JSON.parse(existing.content);
+            if (!Array.isArray(orders) || orderIndex >= orders.length) {
+                showMsg('❌ سفارش یافت نشد.', 'error');
+                return;
+            }
+            const order = orders[orderIndex];
+            
+            const userInfo = await getUserInfo(userId);
+            const userPhone = userInfo?.phone || '---';
+            const userWhatsapp = userInfo?.whatsapp || '---';
+            const userTelegram = userInfo?.telegram || '---';
+            const userEmail = userInfo?.email || '---';
+            const userAddresses = userInfo?.addresses?.join(' | ') || '---';
+            
+            const statusLabels = {
+                'pending': '⏳ در انتظار پرداخت',
+                'paid': '✅ پرداخت شده',
+                'shipped': '📦 ارسال شده',
+                'completed': '✔️ تکمیل شده',
+                'canceled': '❌ لغو شده'
+            };
+            
+            const modal = document.createElement('div');
+            modal.className = 'pro-modal-overlay active';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="pro-modal" style="max-width:750px;">
+                    <div class="pro-modal-header">
+                        <h3><i class="fas fa-receipt"></i> جزئیات سفارش #${order.id || orderIndex+1}</h3>
+                        <div style="display:flex;gap:8px;">
+                            <button class="pro-btn pro-btn-sm pro-btn-warning" onclick="this.closest('.pro-modal-overlay').remove();openEditOrderModal('${userId}', ${orderIndex})"><i class="fas fa-edit"></i> ویرایش</button>
+                            <button class="pro-modal-close" onclick="this.closest('.pro-modal-overlay').remove()"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;background:var(--pro-bg);border-radius:var(--pro-radius);border:1px solid var(--pro-border);margin-bottom:12px;">
+                        <div><span style="color:var(--pro-text-secondary);">🆔 شناسه سفارش:</span> <strong>${order.id || '---'}</strong></div>
+                        <div><span style="color:var(--pro-text-secondary);">📅 تاریخ:</span> <strong>${order.date || '---'}</strong></div>
+                        <div><span style="color:var(--pro-text-secondary);">👤 کاربر:</span> <strong>${order.userName || '---'}</strong> (ID: ${userId})</div>
+                        <div><span style="color:var(--pro-text-secondary);">📌 وضعیت:</span> <span style="background:${order.status === 'pending' ? '#f59e0b' : order.status === 'paid' ? '#10b981' : order.status === 'shipped' ? '#3b82f6' : order.status === 'completed' ? '#10b981' : '#ef4444'}20;color:${order.status === 'pending' ? '#f59e0b' : order.status === 'paid' ? '#10b981' : order.status === 'shipped' ? '#3b82f6' : order.status === 'completed' ? '#10b981' : '#ef4444'};padding:2px 12px;border-radius:12px;font-size:0.7rem;font-weight:600;">${statusLabels[order.status] || order.status}</span></div>
+                        <div style="grid-column:1/-1;border-top:1px solid var(--pro-border);padding-top:8px;">
+                            <span style="color:var(--pro-text-secondary);">📞 اطلاعات تماس کاربر:</span><br>
+                            <span style="font-size:0.9rem;">📱 موبایل: <strong>${userPhone}</strong> | 💬 واتساپ: <strong>${userWhatsapp}</strong> | ✈️ تلگرام: <strong>${userTelegram}</strong></span><br>
+                            <span style="font-size:0.9rem;">📧 ایمیل: <strong>${userEmail}</strong></span>
+                        </div>
+                        <div style="grid-column:1/-1;border-top:1px solid var(--pro-border);padding-top:8px;">
+                            <span style="color:var(--pro-text-secondary);">📍 آدرس‌های ثبت‌شده کاربر:</span><br>
+                            <span style="font-size:0.9rem;"><strong>${userAddresses}</strong></span>
+                        </div>
+                        <div style="grid-column:1/-1;border-top:1px solid var(--pro-border);padding-top:8px;">
+                            <span style="color:var(--pro-text-secondary);">📦 محصولات:</span>
+                            <div style="background:var(--pro-bg);border-radius:var(--pro-radius);border:1px solid var(--pro-border);padding:10px;margin-top:4px;">
+                                ${(order.items || []).map(item => `
+                                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--pro-border);font-size:0.9rem;">
+                                        <span>${item.productName || item.productId} × ${item.quantity || 1}</span>
+                                        <span style="font-weight:600;">${((item.price || 0) * (item.quantity || 1)).toLocaleString()} تومان</span>
+                                    </div>
+                                `).join('')}
+                                <div style="display:flex;justify-content:space-between;padding:8px 0;font-weight:700;font-size:1rem;border-top:2px solid var(--pro-border);margin-top:4px;">
+                                    <span>مجموع کل</span>
+                                    <span style="color:var(--pro-primary);">${(order.total || 0).toLocaleString()} تومان</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="grid-column:1/-1;border-top:1px solid var(--pro-border);padding-top:8px;">
+                            <span style="color:var(--pro-text-secondary);">🚚 روش ارسال:</span> <strong>${order.shipping || '---'}</strong>
+                            <span style="margin-right:16px;color:var(--pro-text-secondary);">🔗 کد پیگیری:</span> <strong>${order.tracking || '---'}</strong>
+                        </div>
+                        ${order.notes ? `<div style="grid-column:1/-1;border-top:1px solid var(--pro-border);padding-top:8px;"><span style="color:var(--pro-text-secondary);">📝 توضیحات:</span> <strong>${order.notes}</strong></div>` : ''}
+                        ${order.transactionId ? `<div style="grid-column:1/-1;"><span style="color:var(--pro-text-secondary);">💳 شناسه پرداخت:</span> <strong>${order.transactionId}</strong></div>` : ''}
+                    </div>
+                    
+                    <div style="display:flex;gap:12px;margin-top:12px;">
+                        <button class="pro-btn pro-btn-outline" onclick="this.closest('.pro-modal-overlay').remove()">بستن</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.addEventListener('click', function(e) { if (e.target === this) this.remove(); });
+        } catch (e) {
+            showMsg('❌ خطا: ' + e.message, 'error');
+        }
+    }
+
+    async function deleteOrder(userId, orderIdx) {
+        if (!userId) { showMsg('❌ شناسه کاربر نامعتبر است.', 'error'); return; }
+        if (!confirm('آیا از حذف این سفارش مطمئن هستید؟')) return;
+        try {
+            const path = `member/member${userId}/orders.json`;
+            const existing = await fetchFromGitHub(path);
+            if (!existing) { showMsg('❌ فایل سفارشات یافت نشد.', 'error'); return; }
+            let orders = JSON.parse(existing.content);
+            if (!Array.isArray(orders) || orderIdx >= orders.length) {
+                showMsg('❌ سفارش یافت نشد.', 'error');
+                return;
+            }
+            const removed = orders.splice(orderIdx, 1)[0];
+            await saveToGitHub(path, orders, existing.sha);
+            showMsg(`✅ سفارش #${removed.id || orderIdx+1} حذف شد.`, 'success');
+            await loadGlobalOrders();
+            if (currentMemberId) loadMemberOrders(currentMemberId);
+        } catch (e) {
+            showMsg('❌ خطا در حذف سفارش: ' + e.message, 'error');
+        }
+    }
+
+    async function openEditOrderModal(userId, orderIdx) {
+        if (!userId) { showMsg('❌ شناسه کاربر نامعتبر است.', 'error'); return; }
+        try {
+            const path = `member/member${userId}/orders.json`;
+            const existing = await fetchFromGitHub(path);
+            if (!existing) { showMsg('❌ فایل سفارشات یافت نشد.', 'error'); return; }
+            let orders = JSON.parse(existing.content);
+            if (!Array.isArray(orders) || orderIdx >= orders.length) {
+                showMsg('❌ سفارش یافت نشد.', 'error');
+                return;
+            }
+            const order = orders[orderIdx];
+            
+            const userInfo = await getUserInfo(userId);
+            const userPhone = userInfo?.phone || '---';
+            const userWhatsapp = userInfo?.whatsapp || '---';
+            const userTelegram = userInfo?.telegram || '---';
+            const userEmail = userInfo?.email || '---';
+            const userAddresses = userInfo?.addresses?.join(' | ') || '---';
+            
+            const modal = document.createElement('div');
+            modal.className = 'pro-modal-overlay active';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="pro-modal" style="max-width:800px;">
+                    <div class="pro-modal-header">
+                        <h3><i class="fas fa-edit"></i> ویرایش سفارش #${order.id || orderIdx+1}</h3>
+                        <button class="pro-modal-close" onclick="this.closest('.pro-modal-overlay').remove()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <form id="editOrderForm">
+                        <input type="hidden" id="editOrderUserId" value="${userId}">
+                        <input type="hidden" id="editOrderIdx" value="${orderIdx}">
+                        
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--pro-bg);padding:12px;border-radius:8px;border:1px solid var(--pro-border);margin-bottom:12px;">
+                            <div><span style="color:var(--pro-text-secondary);">👤 کاربر:</span> <strong>${order.userName || '---'}</strong> (ID: ${userId})</div>
+                            <div><span style="color:var(--pro-text-secondary);">📱 موبایل:</span> <strong>${userPhone}</strong></div>
+                            <div><span style="color:var(--pro-text-secondary);">💬 واتساپ:</span> <strong>${userWhatsapp}</strong></div>
+                            <div><span style="color:var(--pro-text-secondary);">✈️ تلگرام:</span> <strong>${userTelegram}</strong></div>
+                            <div style="grid-column:1/-1;"><span style="color:var(--pro-text-secondary);">📧 ایمیل:</span> <strong>${userEmail}</strong></div>
+                            <div style="grid-column:1/-1;"><span style="color:var(--pro-text-secondary);">📍 آدرس‌های کاربر:</span> <strong>${userAddresses}</strong></div>
+                        </div>
+                        
+                        <div class="pro-grid">
+                            <div class="pro-field full"><label>شناسه سفارش</label><input type="text" id="editOrderId" value="${order.id || ''}" placeholder="شناسه سفارش"></div>
+                            <div class="pro-field"><label>تاریخ</label><input type="date" id="editOrderDate" value="${order.date || ''}"></div>
+                            <div class="pro-field"><label>نام کاربر</label><input type="text" id="editOrderUserName" value="${order.userName || ''}" placeholder="نام کاربر"></div>
+                            <div class="pro-field"><label>مبلغ کل</label><input type="number" id="editOrderTotal" value="${order.total || 0}"></div>
+                            <div class="pro-field"><label>روش ارسال</label>
+                                <select id="editOrderShipping">
+                                    <option value="پست پیشتاز" ${order.shipping === 'پست پیشتاز' ? 'selected' : ''}>پست پیشتاز</option>
+                                    <option value="تیپاکس" ${order.shipping === 'تیپاکس' ? 'selected' : ''}>تیپاکس</option>
+                                    <option value="حضوری" ${order.shipping === 'حضوری' ? 'selected' : ''}>حضوری</option>
+                                    <option value="چاپار" ${order.shipping === 'چاپار' ? 'selected' : ''}>چاپار</option>
+                                </select>
+                            </div>
+                            <div class="pro-field"><label>وضعیت</label>
+                                <select id="editOrderStatus">
+                                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>در انتظار پرداخت</option>
+                                    <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>پرداخت شده</option>
+                                    <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>ارسال شده</option>
+                                    <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>تکمیل شده</option>
+                                    <option value="canceled" ${order.status === 'canceled' ? 'selected' : ''}>لغو شده</option>
+                                </select>
+                            </div>
+                            <div class="pro-field full"><label>آدرس</label><input type="text" id="editOrderAddress" value="${order.address || ''}" placeholder="آدرس"></div>
+                            <div class="pro-field"><label>کد پیگیری</label><input type="text" id="editOrderTracking" value="${order.tracking || ''}" placeholder="کد پیگیری"></div>
+                            <div class="pro-field full"><label>محصولات (JSON)</label>
+                                <textarea id="editOrderItems" rows="4" style="font-size:0.8rem;font-family:monospace;">${JSON.stringify(order.items || [], null, 2)}</textarea>
+                                <span class="hint">فرمت: [{"productId":"PRD-001","productName":"نام محصول","quantity":1,"price":0}]</span>
+                            </div>
+                            <div class="pro-field full"><label>توضیحات</label><input type="text" id="editOrderNotes" value="${order.notes || ''}" placeholder="توضیحات اضافی"></div>
+                        </div>
+                        <div style="display:flex;gap:12px;margin-top:18px;">
+                            <button type="submit" class="pro-btn pro-btn-primary"><i class="fas fa-save"></i> ذخیره تغییرات</button>
+                            <button type="button" class="pro-btn pro-btn-outline" onclick="this.closest('.pro-modal-overlay').remove()">انصراف</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            const form = document.getElementById('editOrderForm');
+            if (form) {
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const userId2 = document.getElementById('editOrderUserId').value;
+                    const orderIdx2 = parseInt(document.getElementById('editOrderIdx').value);
+                    const newData = {
+                        id: document.getElementById('editOrderId').value.trim() || `ORD-${Date.now().toString(36).toUpperCase()}`,
+                        date: document.getElementById('editOrderDate').value || new Date().toISOString().split('T')[0],
+                        userName: document.getElementById('editOrderUserName').value.trim() || 'کاربر',
+                        total: parseFloat(document.getElementById('editOrderTotal').value) || 0,
+                        shipping: document.getElementById('editOrderShipping').value,
+                        status: document.getElementById('editOrderStatus').value,
+                        address: document.getElementById('editOrderAddress').value.trim() || '---',
+                        tracking: document.getElementById('editOrderTracking').value.trim() || `IR${Date.now().toString(36).toUpperCase()}`,
+                        items: JSON.parse(document.getElementById('editOrderItems').value || '[]'),
+                        notes: document.getElementById('editOrderNotes').value.trim() || '',
+                        updated: new Date().toISOString()
+                    };
+                    try {
+                        const path2 = `member/member${userId2}/orders.json`;
+                        const existing2 = await fetchFromGitHub(path2);
+                        if (!existing2) { showMsg('❌ فایل سفارشات یافت نشد.', 'error'); return; }
+                        let orders2 = JSON.parse(existing2.content);
+                        orders2[orderIdx2] = { ...orders2[orderIdx2], ...newData };
+                        await saveToGitHub(path2, orders2, existing2.sha);
+                        showMsg('✅ سفارش با موفقیت ویرایش شد!', 'success');
+                        modal.remove();
+                        await loadGlobalOrders();
+                        if (currentMemberId) loadMemberOrders(currentMemberId);
+                    } catch (e) {
+                        showMsg('❌ خطا: ' + e.message, 'error');
+                    }
+                });
+            }
+            
+            modal.addEventListener('click', function(e) { if (e.target === this) this.remove(); });
+        } catch (e) {
+            showMsg('❌ خطا: ' + e.message, 'error');
+        }
+    }
+
+    async function deleteMember(memberId) {
+        if (!memberId) memberId = currentMemberId;
+        if (!memberId) { showMsg('❌ کاربری انتخاب نشده است.', 'error'); return; }
+        const member = membersData.find(m => m.id === memberId);
+        if (!member) { showMsg('❌ کاربر یافت نشد.', 'error'); return; }
+        if (!confirm(`⚠️ آیا از حذف کامل کاربر "${member.name || memberId}" و تمام فایل‌های آن مطمئن هستید؟\nاین عمل غیرقابل بازگشت است.`)) return;
+        
+        try {
+            const infoPath = `member/member${memberId}/info.json`;
+            const infoData = await fetchFromGitHub(infoPath);
+            if (infoData && infoData.sha) await deleteFromGitHub(infoPath, infoData.sha);
+            
+            const orderPath = `member/member${memberId}/orders.json`;
+            const orderData = await fetchFromGitHub(orderPath);
+            if (orderData && orderData.sha) await deleteFromGitHub(orderPath, orderData.sha);
+            
+            const oldOrderPath = `member/member${memberId}/order${memberId}.json`;
+            const oldOrderData = await fetchFromGitHub(oldOrderPath);
+            if (oldOrderData && oldOrderData.sha) await deleteFromGitHub(oldOrderPath, oldOrderData.sha);
+            
+            membersData = membersData.filter(m => m.id !== memberId);
+            renderMembers();
+            closeMemberDetail();
+            await cleanUserFromPending(memberId);
+            
+            showMsg(`✅ کاربر "${member.name || memberId}" و تمام اطلاعات آن با موفقیت حذف شد.`, 'success');
+            logActivity(`کاربر ${member.name || memberId} حذف شد`);
+        } catch (e) {
+            showMsg('❌ خطا در حذف کاربر: ' + e.message, 'error');
+            console.error(e);
+        }
+    }
+
+    async function cleanUserFromPending(userId) {
+        try {
+            const pendingPath = 'member/orders/pendingorder.json';
+            const existing = await fetchFromGitHub(pendingPath);
+            if (!existing) return;
+            const pendingData = JSON.parse(existing.content);
+            pendingData.orders = pendingData.orders.filter(user => user.userId !== userId);
+            pendingData.total_pending = pendingData.orders.reduce((sum, u) => sum + u.orders.length, 0);
+            pendingData.updated = new Date().toISOString();
+            await saveToGitHub(pendingPath, pendingData, existing.sha);
+        } catch (e) { console.warn('⚠️ خطا در پاک‌سازی pending:', e); }
+    }
+
+    function openEditMemberModal(memberId) {
+        if (!memberId) memberId = currentMemberId;
+        if (!memberId) { showMsg('❌ کاربری انتخاب نشده است.', 'error'); return; }
+        const member = membersData.find(m => m.id === memberId);
+        if (!member) { showMsg('❌ کاربر یافت نشد.', 'error'); return; }
+        const idEl = document.getElementById('editMemberId');
+        if (idEl) idEl.value = memberId;
+        const nameEl = document.getElementById('editMemberName');
+        if (nameEl) nameEl.value = member.name || '';
+        const userEl = document.getElementById('editMemberUsername');
+        if (userEl) userEl.value = member.username || '';
+        const emailEl = document.getElementById('editMemberEmail');
+        if (emailEl) emailEl.value = member.email || '';
+        const phoneEl = document.getElementById('editMemberPhone');
+        if (phoneEl) phoneEl.value = member.phone || '';
+        const wappEl = document.getElementById('editMemberWhatsapp');
+        if (wappEl) wappEl.value = member.whatsapp || '';
+        const telEl = document.getElementById('editMemberTelegram');
+        if (telEl) telEl.value = member.telegram || '';
+        const addrEl = document.getElementById('editMemberAddresses');
+        if (addrEl) addrEl.value = (member.addresses || []).join('\n');
+        const modal = document.getElementById('editMemberModal');
+        if (modal) { modal.classList.add('active'); document.body.style.overflow = 'hidden'; }
+    }
+
+    function closeEditMemberModal() {
+        const modal = document.getElementById('editMemberModal');
+        if (modal) modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    const editMemberForm = document.getElementById('editMemberForm');
+    if (editMemberForm) {
+        editMemberForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const memberId = document.getElementById('editMemberId').value;
+            const name = document.getElementById('editMemberName').value.trim();
+            const username = document.getElementById('editMemberUsername').value.trim();
+            const email = document.getElementById('editMemberEmail').value.trim();
+            const phone = document.getElementById('editMemberPhone').value.trim();
+            const whatsapp = document.getElementById('editMemberWhatsapp').value.trim();
+            const telegram = document.getElementById('editMemberTelegram').value.trim();
+            const addressesText = document.getElementById('editMemberAddresses').value.trim();
+            const addresses = addressesText ? addressesText.split('\n').filter(a => a.trim()) : [];
+            try {
+                const path = `member/member${memberId}/info.json`;
+                const existing = await fetchFromGitHub(path);
+                let sha = null;
+                let data = {};
+                if (existing) { data = JSON.parse(existing.content); sha = existing.sha; }
+                data.name = name || data.name || 'کاربر';
+                data.username = username || data.username || '';
+                data.email = email || data.email || '';
+                data.phone = phone || data.phone || '';
+                data.whatsapp = whatsapp || data.whatsapp || '';
+                data.telegram = telegram || data.telegram || '';
+                data.addresses = addresses;
+                await saveToGitHub(path, data, sha);
+                const member = membersData.find(m => m.id === memberId);
+                if (member) {
+                    member.name = data.name;
+                    member.username = data.username;
+                    member.email = data.email;
+                    member.phone = data.phone;
+                    member.whatsapp = data.whatsapp;
+                    member.telegram = data.telegram;
+                    member.addresses = data.addresses;
+                    renderMembers();
+                    if (currentMemberId === memberId) viewMemberDetail(memberId);
+                }
+                showMsg('✅ اطلاعات کاربر با موفقیت ذخیره شد!', 'success');
+                closeEditMemberModal();
+            } catch (e) { showMsg('❌ خطا در ذخیره اطلاعات: ' + e.message, 'error'); }
+        });
+    }
+
+    function closeMemberDetail() {
+        const card = document.getElementById('memberDetailCard');
+        if (card) card.style.display = 'none';
+        currentMemberId = null;
+    }
+
+    function refreshMemberOrders() {
+        if (currentMemberId) loadMemberOrders(currentMemberId);
+    }
+
+    async function refreshMembers() {
+        await loadMembers();
+        showMsg('✅ لیست کاربران به‌روز شد.', 'success');
+    }
+
+    function exportMembersData() {
+        if (membersData.length === 0) { showMsg('⚠️ هیچ کاربری برای خروجی وجود ندارد.', 'error'); return; }
+        const data = {
+            exported: new Date().toISOString(),
+            total_members: membersData.length,
+            members: membersData.map(m => ({
+                id: m.id,
+                name: m.name,
+                username: m.username,
+                email: m.email,
+                phone: m.phone,
+                whatsapp: m.whatsapp,
+                telegram: m.telegram,
+                addresses: m.addresses || [],
+                created: m.created
+            }))
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `members-data-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showMsg('✅ خروجی کاربران دریافت شد.', 'success');
+    }
+
+    function generateCSVWithBOM(csvContent) {
+        const BOM = '\uFEFF';
+        return BOM + csvContent;
+    }
+
+    function exportMembersCSV() {
+        if (membersData.length === 0) { showMsg('⚠️ هیچ کاربری برای خروجی وجود ندارد.', 'error'); return; }
+        let csv = 'شناسه کاربر,نام,نام کاربری,ایمیل,موبایل,واتساپ,تلگرام,آدرس‌ها,تاریخ ثبت\n';
+        membersData.forEach(m => {
+            const addresses = (m.addresses || []).join('|');
+            const created = m.created ? new Date(m.created).toLocaleDateString('fa-IR') : '';
+            csv += `${m.id},"${m.name || ''}","${m.username || ''}","${m.email || ''}","${m.phone || ''}","${m.whatsapp || ''}","${m.telegram || ''}","${addresses}","${created}"\n`;
+        });
+        const blob = new Blob([generateCSVWithBOM(csv)], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `members-data-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showMsg('✅ خروجی CSV کاربران دریافت شد.', 'success');
+    }
+
+    async function exportOrdersCSV() {
+        try {
+            const data = await fetchFromGitHub('member/orders/pendingorder.json');
+            if (!data) {
+                showMsg('⚠️ هیچ سفارشی یافت نشد.', 'error');
+                return;
+            }
+            const pendingData = JSON.parse(data.content);
+            const orders = pendingData.orders || [];
+            
+            let csv = 'شناسه کاربر,نام کاربر,شناسه سفارش,تاریخ,مبلغ کل,وضعیت,محصولات\n';
+            orders.forEach(user => {
+                (user.orders || []).forEach(order => {
+                    const products = (order.items || []).map(item => 
+                        `${item.productName || item.productId} (${item.quantity || 1})`
+                    ).join(' | ');
+                    csv += `"${user.userId}","${user.userName || ''}","${order.id || ''}","${order.date || ''}","${order.total || 0}","${order.status || ''}","${products}"\n`;
+                });
+            });
+            
+            const blob = new Blob([generateCSVWithBOM(csv)], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `orders-export-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showMsg('✅ خروجی CSV سفارشات دریافت شد.', 'success');
+        } catch (e) {
+            showMsg('❌ خطا: ' + e.message, 'error');
+        }
+    }
+
+    function exportCSV() {
+        showMsg('📋 از دکمه‌های اختصاصی هر بخش برای خروجی CSV استفاده کنید.', 'info');
+    }
     // ============================================================
     // 0527 - مدیریت کاربران (Members) و سفارشات
     // ============================================================

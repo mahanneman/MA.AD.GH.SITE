@@ -4630,4 +4630,112 @@ window.sendMessageToUser = sendMessageToUser;
 window.closeSendMessageModal = closeSendMessageModal;
 
 console.log('✅ توابع گم‌شده به window متصل شدند.');
+    // ============================================================
+// 0533 - توابع گم‌شده و اتصالات تکمیلی به window
+// ============================================================
+
+// ---- توابع گم‌شده ----
+function setView(type, view) {
+    const container = document.getElementById('pro' + type.charAt(0).toUpperCase() + type.slice(1) + 'List');
+    if (container) {
+        container.className = 'pro-items ' + view + '-view';
+    }
+    const parent = document.querySelector(`#tab-${type} .pro-view-toggle`);
+    if (parent) {
+        parent.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = parent.querySelector(`button[onclick*="'${view}'"]`);
+        if (activeBtn) activeBtn.classList.add('active');
+    }
+}
+
+function duplicateItem(type) {
+    showMsg('🔧 قابلیت کپی کردن در حال توسعه است.', 'info');
+}
+
+function syncAllMembers() {
+    showMsg('⏳ در حال همگام‌سازی کاربران...', 'info');
+    loadMembers();
+}
+
+function exportAllOrders() {
+    const data = {
+        exported: new Date().toISOString(),
+        total_orders: allOrdersData.length,
+        orders: allOrdersData
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `all-orders-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showMsg('✅ خروجی JSON سفارشات دریافت شد.', 'success');
+}
+
+function closeOrderDetailModal() {
+    const modal = document.getElementById('orderDetailModal');
+    if (modal) modal.classList.remove('active');
+}
+
+function openEditOrderFromDetail() {
+    showMsg('🔧 ویرایش سفارش از طریق دکمه ویرایش در مودال اصلی امکان‌پذیر است.', 'info');
+}
+
+function sendMessageToUser() {
+    const text = document.getElementById('messageText')?.value.trim();
+    if (!text) {
+        showMsg('لطفاً متن پیام را وارد کنید.', 'error');
+        return;
+    }
+    showMsg('✅ پیام با موفقیت ارسال شد (شبیه‌سازی).', 'success');
+    closeSendMessageModal();
+}
+
+function closeSendMessageModal() {
+    const modal = document.getElementById('sendMessageModal');
+    if (modal) modal.classList.remove('active');
+}
+
+// ---- اتصال توابع جدید و تکمیل توابع قبلی ----
+window.setView = setView;
+window.duplicateItem = duplicateItem;
+window.syncAllMembers = syncAllMembers;
+window.exportAllOrders = exportAllOrders;
+window.closeOrderDetailModal = closeOrderDetailModal;
+window.openEditOrderFromDetail = openEditOrderFromDetail;
+window.sendMessageToUser = sendMessageToUser;
+window.closeSendMessageModal = closeSendMessageModal;
+
+// اتصال مجدد توابعی که ممکن است در 0532 جا افتاده باشند
+window.updateOrderStatus = updateOrderStatus;
+window.cleanOldUserOrders = cleanOldUserOrders;
+
+// اتصال توابع ایندکس (تکمیل)
+window.openEditEducationModal = openEditEducationModal;
+window.moveEducationItem = moveEducationItem;
+window.removeEducationItem = removeEducationItem;
+window.openEditCertificateModal = openEditCertificateModal;
+window.moveCertificateItem = moveCertificateItem;
+window.removeCertificateItem = removeCertificateItem;
+window.openEditSkillModal = openEditSkillModal;
+window.moveSkillItem = moveSkillItem;
+window.removeSkillItem = removeSkillItem;
+window.openEditServiceModal = openEditServiceModal;
+window.moveServiceItem = moveServiceItem;
+window.removeServiceItem = removeServiceItem;
+window.openEditTestimonialModal = openEditTestimonialModal;
+window.moveTestimonialItem = moveTestimonialItem;
+window.removeTestimonialItem = removeTestimonialItem;
+window.openEditAwardModal = openEditAwardModal;
+window.moveAwardItem = moveAwardItem;
+window.removeAwardItem = removeAwardItem;
+window.openEditLinkModal = openEditLinkModal;
+window.moveLinkItem = moveLinkItem;
+window.removeLinkItem = removeLinkItem;
+window.openEditSocialModal = openEditSocialModal;
+window.moveSocialItem = moveSocialItem;
+window.removeSocialItem = removeSocialItem;
+
+console.log('✅ توابع گم‌شده و اتصالات تکمیلی بارگذاری شدند.');
 })();

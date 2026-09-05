@@ -1133,203 +1133,236 @@
                 setTimeout(function() { el.className = 'pro-toast'; }, 4000);
             }
 
-            // ===== ۳. override تابع saveArticle برای ایجاد فایل در صورت نبود =====
-            window.saveArticle = async function() {
-                var id = document.getElementById('articleId')?.value;
-                var title = document.getElementById('articleTitle')?.value?.trim() || '';
-                var abstract = document.getElementById('articleAbstract')?.value?.trim() || '';
-                var body = document.getElementById('articleBody')?.value?.trim() || '';
-                var type = document.getElementById('articleType')?.value || 'article';
-                var date = document.getElementById('articleDate')?.value || new Date().toISOString().split('T')[0];
-                var year = document.getElementById('articleYear')?.value?.trim() || new Date().getFullYear().toString();
-                var readTime = parseInt(document.getElementById('articleReadTime')?.value) || 10;
-                var tags = (document.getElementById('articleTags')?.value || '').split(',').map(function(s) { return s
-                    .trim(); }).filter(Boolean);
-                var keywords = (document.getElementById('articleKeywords')?.value || '').split(',').map(function(s) { return s
-                    .trim(); }).filter(Boolean);
-                var references = (document.getElementById('articleReferences')?.value || '').split('\n').map(function(s) { return s
-                    .trim(); }).filter(Boolean);
-                var doi = document.getElementById('articleDoi')?.value?.trim() || '';
-                var difficulty = document.getElementById('articleDifficulty')?.value || 'متوسط';
+       // ===== ۳. override تابع saveArticle برای ایجاد فایل در صورت نبود =====
+window.saveArticle = async function() {
+    var id = document.getElementById('articleId')?.value;
+    var title = document.getElementById('articleTitle')?.value?.trim() || '';
+    var abstract = document.getElementById('articleAbstract')?.value?.trim() || '';
+    var body = document.getElementById('articleBody')?.value?.trim() || '';
+    var type = document.getElementById('articleType')?.value || 'article';
+    var date = document.getElementById('articleDate')?.value || new Date().toISOString().split('T')[0];
+    var year = document.getElementById('articleYear')?.value?.trim() || new Date().getFullYear().toString();
+    var readTime = parseInt(document.getElementById('articleReadTime')?.value) || 10;
+    var tags = (document.getElementById('articleTags')?.value || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+    var keywords = (document.getElementById('articleKeywords')?.value || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+    var references = (document.getElementById('articleReferences')?.value || '').split('\n').map(function(s) { return s.trim(); }).filter(Boolean);
+    var doi = document.getElementById('articleDoi')?.value?.trim() || '';
+    var difficulty = document.getElementById('articleDifficulty')?.value || 'متوسط';
 
-                if (!title || !abstract || !body) {
-                    showMsg('❌ لطفاً عنوان، چکیده و متن کامل مقاله را پر کنید.', 'error');
-                    return;
-                }
+    if (!title || !abstract || !body) {
+        showMsg('❌ لطفاً عنوان، چکیده و متن کامل مقاله را پر کنید.', 'error');
+        return;
+    }
 
-                var token = getToken();
-                if (!token) {
-                    showMsg('❌ لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.', 'error');
-                    return;
-                }
+    var token = getToken();
+    if (!token) {
+        showMsg('❌ لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.', 'error');
+        return;
+    }
 
-                // دریافت تصاویر
-                var coverImg = document.querySelector('#coverPreview img');
-                var coverData = coverImg ? coverImg.src : null;
-                var galleryItems = document.querySelectorAll('#galleryPreview .gallery-item img');
-                var galleryData = Array.from(galleryItems).map(function(img) { return img.src; });
-                var mainFileTag = document.querySelector('#mainFilePreview .file-tag');
-                var mainFileName = mainFileTag ? mainFileTag.querySelector('span')?.textContent : null;
-                var fileTags = document.querySelectorAll('#filesPreview .file-tag');
-                var filesData = Array.from(fileTags).map(function(tag) {
-                    var name = tag.querySelector('span')?.textContent || '';
-                    return name;
-                });
+    // دریافت تصاویر
+    var coverImg = document.querySelector('#coverPreview img');
+    var coverData = coverImg ? coverImg.src : null;
+    var galleryItems = document.querySelectorAll('#galleryPreview .gallery-item img');
+    var galleryData = Array.from(galleryItems).map(function(img) { return img.src; });
+    var mainFileTag = document.querySelector('#mainFilePreview .file-tag');
+    var mainFileName = mainFileTag ? mainFileTag.querySelector('span')?.textContent : null;
+    var fileTags = document.querySelectorAll('#filesPreview .file-tag');
+    var filesData = Array.from(fileTags).map(function(tag) {
+        var name = tag.querySelector('span')?.textContent || '';
+        return name;
+    });
 
-                var articleData = {
-                    title: title,
-                    abstract: abstract,
-                    body: body,
-                    type: type,
-                    date: date,
-                    year: year,
-                    readTime: readTime,
-                    tags: tags,
-                    keywords: keywords,
-                    cover: coverData || '',
-                    images: galleryData,
-                    file: mainFileName || '',
-                    files: filesData,
-                    references: references,
-                    doi: doi,
-                    difficulty: difficulty,
-                    updated: new Date().toISOString()
-                };
+    var articleData = {
+        title: title,
+        abstract: abstract,
+        body: body,
+        type: type,
+        date: date,
+        year: year,
+        readTime: readTime,
+        tags: tags,
+        keywords: keywords,
+        cover: coverData || '',
+        images: galleryData,
+        file: mainFileName || '',
+        files: filesData,
+        references: references,
+        doi: doi,
+        difficulty: difficulty,
+        updated: new Date().toISOString()
+    };
 
-                var key = String(id).padStart(4, '0');
+    var key = String(id).padStart(4, '0');
 
+    try {
+        showMsg('⏳ در حال ذخیره مقاله در گیت‌هاب...', 'info');
+
+        // ===== ۱. ابتدا فایل articles.json را بخوان =====
+        var repoPath = 'repos/mahanneman/MA.AD.GH.SITE/contents/_data/articles.json';
+        var fetchUrl = 'https://api.github.com/' + repoPath;
+        var response = await fetch(fetchUrl, {
+            headers: {
+                'Authorization': 'token ' + token,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+
+        var existingData = {};
+        var sha = null;
+
+        if (response.status === 200) {
+            var data = await response.json();
+            var content = atob(data.content);
+            try {
+                existingData = JSON.parse(content);
+                sha = data.sha;
+            } catch (e) {
+                console.warn('⚠️ فایل articles.json خراب است، بازنشانی به {}:', e);
+                existingData = {};
+                sha = data.sha;
+            }
+        } else if (response.status === 404) {
+            console.log('ℹ️ فایل articles.json وجود ندارد، ایجاد می‌شود...');
+            existingData = {};
+            sha = null;
+        } else {
+            throw new Error('خطا در خواندن فایل: ' + response.status);
+        }
+
+        // ===== ۲. مقاله جدید را اضافه کن =====
+        existingData[key] = articleData;
+
+        // ===== ۳. ذخیره در گیت‌هاب =====
+        var jsonString = JSON.stringify(existingData, null, 2);
+        var encoder = new TextEncoder();
+        var encoded = encoder.encode(jsonString);
+        var binary = '';
+        for (var i = 0; i < encoded.length; i++) {
+            binary += String.fromCharCode(encoded[i]);
+        }
+        var base64Content = btoa(binary);
+
+        var putBody = {
+            message: 'Add article #' + key + ' via admin panel - ' + new Date().toISOString(),
+            content: base64Content,
+            branch: 'main'
+        };
+        if (sha) putBody.sha = sha;
+
+        var putResponse = await fetch(fetchUrl, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify(putBody)
+        });
+
+        if (!putResponse.ok) {
+            var err = await putResponse.json();
+            throw new Error(err.message || 'خطا در ذخیره فایل');
+        }
+
+        // ===== ۴. آپلود فایل‌های ضمیمه (تصاویر و ...) =====
+        var basePath = 'assets/articles/' + key + '/';
+
+        if (coverData && coverData.startsWith('data:')) {
+            try {
+                await uploadFileToGitHub(basePath + 'cover.jpg', coverData.split(',')[1]);
+            } catch (e) { console.warn('⚠️ آپلود کاور ناموفق:', e); }
+        }
+
+        for (var g = 0; g < galleryData.length; g++) {
+            if (galleryData[g].startsWith('data:')) {
                 try {
-                    showMsg('⏳ در حال ذخیره مقاله در گیت‌هاب...', 'info');
+                    await uploadFileToGitHub(basePath + 'gallery_' + (g + 1) + '.jpg', galleryData[g].split(',')[1]);
+                } catch (e) { console.warn('⚠️ آپلود گالری ناموفق:', e); }
+            }
+        }
 
-                    // ===== ۱. ابتدا فایل articles.json را بخوان =====
-                    var repoPath = 'repos/mahanneman/MA.AD.GH.SITE/contents/_data/articles.json';
-                    var fetchUrl = 'https://api.github.com/' + repoPath;
-                    var response = await fetch(fetchUrl, {
-                        headers: {
-                            'Authorization': 'token ' + token,
-                            'Accept': 'application/vnd.github.v3+json'
-                        }
-                    });
+        // فایل اصلی
+        var mainFileInput = document.getElementById('mainFileInput');
+        if (mainFileInput && mainFileInput.files.length > 0) {
+            var file = mainFileInput.files[0];
+            var reader = new FileReader();
+            var fileData = await new Promise(function(resolve) {
+                reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+                reader.readAsDataURL(file);
+            });
+            try {
+                await uploadFileToGitHub(basePath + file.name, fileData);
+            } catch (e) { console.warn('⚠️ آپلود فایل اصلی ناموفق:', e); }
+        }
 
-                    var existingData = {};
-                    var sha = null;
+        // فایل‌های اضافی
+        var extraFiles = document.getElementById('filesFileInput');
+        if (extraFiles && extraFiles.files.length > 0) {
+            for (var f = 0; f < extraFiles.files.length; f++) {
+                var file = extraFiles.files[f];
+                var reader = new FileReader();
+                var fileData = await new Promise(function(resolve) {
+                    reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+                    reader.readAsDataURL(file);
+                });
+                try {
+                    await uploadFileToGitHub(basePath + file.name, fileData);
+                } catch (e) { console.warn('⚠️ آپلود فایل اضافی ناموفق:', e); }
+            }
+        }
 
-                    if (response.status === 200) {
-                        var data = await response.json();
-                        var content = atob(data.content);
-                        try {
-                            existingData = JSON.parse(content);
-                            sha = data.sha;
-                        } catch (e) {
-                            console.warn('⚠️ فایل articles.json خراب است، بازنشانی به {}:', e);
-                            existingData = {};
-                            sha = data.sha;
-                        }
-                    } else if (response.status === 404) {
-                        // فایل وجود ندارد، ایجاد می‌کنیم
-                        console.log('ℹ️ فایل articles.json وجود ندارد، ایجاد می‌شود...');
-                        existingData = {};
-                        sha = null;
-                    } else {
-                        throw new Error('خطا در خواندن فایل: ' + response.status);
-                    }
+        showMsg('✅ مقاله با شماره ART-' + key + ' با موفقیت در گیت‌هاب ذخیره شد.', 'success');
+        showToast('✅ مقاله ذخیره شد', 'success');
 
-                    // ===== ۲. مقاله جدید را اضافه کن =====
-                    existingData[key] = articleData;
+        // ===== ۵. بازنشانی فرم و بارگذاری مجدد =====
+        // اصلاح: استفاده از window. برای توابع
+        if (typeof window.resetArticleForm === 'function') {
+            window.resetArticleForm();
+        } else {
+            // در صورت نبود resetArticleForm، فرم را دستی بازنشانی کن
+            var fields = ['articleTitle', 'articleAbstract', 'articleBody', 'articleDate', 'articleYear', 'articleReadTime',
+                'articleKeywords', 'articleReferences', 'articleDoi'
+            ];
+            fields.forEach(function(fid) {
+                var el = document.getElementById(fid);
+                if (el) el.value = '';
+            });
+            var typeEl = document.getElementById('articleType');
+            if (typeEl) typeEl.value = 'article';
+            var diffEl = document.getElementById('articleDifficulty');
+            if (diffEl) diffEl.value = 'متوسط';
+            var tagsEl = document.getElementById('articleTags');
+            if (tagsEl) tagsEl.value = '';
+            var container = document.getElementById('articleTagsContainer');
+            if (container) container.querySelectorAll('.tag-item').forEach(function(el) { el.remove(); });
+            var previews = ['coverPreview', 'galleryPreview', 'mainFilePreview', 'filesPreview'];
+            previews.forEach(function(pid) {
+                var el = document.getElementById(pid);
+                if (el) el.innerHTML = '';
+            });
+            var inputs = ['coverFileInput', 'galleryFileInput', 'mainFileInput', 'filesFileInput'];
+            inputs.forEach(function(iid) {
+                var el = document.getElementById(iid);
+                if (el) el.value = '';
+            });
+            if (typeof window.generateArticleId === 'function') window.generateArticleId();
+        }
 
-                    // ===== ۳. ذخیره در گیت‌هاب =====
-                    var jsonString = JSON.stringify(existingData, null, 2);
-                    var encoder = new TextEncoder();
-                    var encoded = encoder.encode(jsonString);
-                    var binary = '';
-                    for (var i = 0; i < encoded.length; i++) {
-                        binary += String.fromCharCode(encoded[i]);
-                    }
-                    var base64Content = btoa(binary);
+        // بارگذاری مجدد مقالات با استفاده از window.
+        if (typeof window.loadArticles === 'function') {
+            window.loadArticles();
+        } else {
+            // اگر loadArticles در دسترس نبود، سعی کن از loadAllData استفاده کنی
+            if (typeof loadAllData === 'function') loadAllData();
+        }
 
-                    var putBody = {
-                        message: 'Add article #' + key + ' via admin panel - ' + new Date().toISOString(),
-                        content: base64Content,
-                        branch: 'main'
-                    };
-                    if (sha) putBody.sha = sha;
-
-                    var putResponse = await fetch(fetchUrl, {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': 'token ' + token,
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/vnd.github.v3+json'
-                        },
-                        body: JSON.stringify(putBody)
-                    });
-
-                    if (!putResponse.ok) {
-                        var err = await putResponse.json();
-                        throw new Error(err.message || 'خطا در ذخیره فایل');
-                    }
-
-                    // ===== ۴. آپلود فایل‌های ضمیمه (تصاویر و ...) =====
-                    var basePath = 'assets/articles/' + key + '/';
-
-                    if (coverData && coverData.startsWith('data:')) {
-                        try {
-                            await uploadFileToGitHub(basePath + 'cover.jpg', coverData.split(',')[1]);
-                        } catch (e) { console.warn('⚠️ آپلود کاور ناموفق:', e); }
-                    }
-
-                    for (var g = 0; g < galleryData.length; g++) {
-                        if (galleryData[g].startsWith('data:')) {
-                            try {
-                                await uploadFileToGitHub(basePath + 'gallery_' + (g + 1) + '.jpg', galleryData[g].split(
-                                ',')[1]);
-                            } catch (e) { console.warn('⚠️ آپلود گالری ناموفق:', e); }
-                        }
-                    }
-
-                    // فایل اصلی
-                    var mainFileInput = document.getElementById('mainFileInput');
-                    if (mainFileInput && mainFileInput.files.length > 0) {
-                        var file = mainFileInput.files[0];
-                        var reader = new FileReader();
-                        var fileData = await new Promise(function(resolve) {
-                            reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
-                            reader.readAsDataURL(file);
-                        });
-                        try {
-                            await uploadFileToGitHub(basePath + file.name, fileData);
-                        } catch (e) { console.warn('⚠️ آپلود فایل اصلی ناموفق:', e); }
-                    }
-
-                    // فایل‌های اضافی
-                    var extraFiles = document.getElementById('filesFileInput');
-                    if (extraFiles && extraFiles.files.length > 0) {
-                        for (var f = 0; f < extraFiles.files.length; f++) {
-                            var file = extraFiles.files[f];
-                            var reader = new FileReader();
-                            var fileData = await new Promise(function(resolve) {
-                                reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
-                                reader.readAsDataURL(file);
-                            });
-                            try {
-                                await uploadFileToGitHub(basePath + file.name, fileData);
-                            } catch (e) { console.warn('⚠️ آپلود فایل اضافی ناموفق:', e); }
-                        }
-                    }
-
-                    showMsg('✅ مقاله با شماره ART-' + key + ' با موفقیت در گیت‌هاب ذخیره شد.', 'success');
-                    showToast('✅ مقاله ذخیره شد', 'success');
-
-                    // ===== ۵. بازنشانی فرم =====
-                    resetArticleForm();
-                    loadArticles();
-
-                } catch (e) {
-                    console.error('❌ خطا در ذخیره مقاله:', e);
-                    showMsg('❌ خطا در ذخیره: ' + e.message, 'error');
-                    showToast('❌ ذخیره‌سازی ناموفق', 'error');
-                }
-            };
+    } catch (e) {
+        console.error('❌ خطا در ذخیره مقاله:', e);
+        showMsg('❌ خطا در ذخیره: ' + e.message, 'error');
+        showToast('❌ ذخیره‌سازی ناموفق', 'error');
+    }
+};
 
             // ===== ۴. override توابع بارگذاری =====
             if (typeof window.loadArticles === 'function') {

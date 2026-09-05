@@ -4329,4 +4329,76 @@
     window.removeSocialItem = removeSocialItem;
 
     console.log('✅ تمام توابع به window متصل شدند.');
+    // ============================================================
+// 0532 - توابع گم‌شده handleFiles و handleFilesBlank
+// ============================================================
+
+// تابع handleFiles اصلی
+function handleFiles(files, previewContainer, type, maxItems) {
+    var existingItems = previewContainer.querySelectorAll('.file-tag, .gallery-item');
+    var existingCount = existingItems.length;
+    var remaining = maxItems - existingCount;
+    if (remaining <= 0) {
+        showMsg('حداکثر ' + maxItems + ' فایل مجاز است.', 'error');
+        return;
+    }
+    var toAdd = files.slice(0, remaining);
+    toAdd.forEach(function(file) {
+        var maxSize = (type === 'cover' || type === 'gallery') ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
+        if (file.size > maxSize) {
+            showMsg('فایل ' + file.name + ' بزرگتر از حد مجاز است.', 'error');
+            return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            var dataUrl = ev.target.result;
+            if (type === 'cover' || type === 'gallery') {
+                var container = document.createElement('div');
+                container.className = type === 'cover' ? '' : 'gallery-item';
+                var img = document.createElement('img');
+                img.src = dataUrl;
+                img.className = type === 'cover' ? 'upload-preview-img' : '';
+                img.alt = file.name;
+                if (type === 'cover') {
+                    previewContainer.innerHTML = '';
+                    container.appendChild(img);
+                    previewContainer.appendChild(container);
+                } else {
+                    var removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-btn';
+                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    removeBtn.onclick = function(e) {
+                        e.stopPropagation();
+                        container.remove();
+                    };
+                    container.appendChild(img);
+                    container.appendChild(removeBtn);
+                    previewContainer.appendChild(container);
+                }
+            } else {
+                var tag = document.createElement('span');
+                tag.className = 'file-tag';
+                var icon = file.type.includes('pdf') ? 'fa-file-pdf' :
+                    file.type.includes('zip') ? 'fa-file-archive' : 'fa-file';
+                tag.innerHTML = '<i class="fas ' + icon + '"></i><span>' + file.name +
+                    '</span><button class="remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>';
+                previewContainer.appendChild(tag);
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+    if (toAdd.length < files.length) {
+        showMsg((files.length - toAdd.length) + ' فایل به دلیل محدودیت ' + maxItems + ' عددی اضافه نشدند.', 'error');
+    }
+}
+
+// تابع handleFilesBlank
+function handleFilesBlank(files, previewContainer, type, maxItems) {
+    // همان کد handleFiles با همین منطق (می‌توانید از handleFiles استفاده کنید)
+    handleFiles(files, previewContainer, type, maxItems);
+}
+
+// اتصال به window
+window.handleFiles = handleFiles;
+window.handleFilesBlank = handleFilesBlank;
 })();

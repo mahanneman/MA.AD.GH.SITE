@@ -4434,308 +4434,240 @@ if (sha) {
     console.log('✅ توابع آپلود و ذخیره گیت‌هاب با موفقیت بارگذاری شدند.');
 // ============================================================
 // 0532 - اتصال تمام توابع به window (برای استفاده در onclick)
-// ============================================================
-window.proSaveToken = proSaveToken;
-window.saveAppearance = saveAppearance;
-window.resetAppearanceForm = resetAppearanceForm;
-window.addMenuItem = addMenuItem;
-window.saveMenus = saveMenus;
-window.resetMenusToDefault = resetMenusToDefault;
-window.saveSections = saveSections;
-window.toggleAccordion = toggleAccordion;
-window.addEducationItem = addEducationItem;
-window.saveEducation = saveEducation;
-window.addCertificateItem = addCertificateItem;
-window.saveCertificates = saveCertificates;
-window.addSkillItem = addSkillItem;
-window.saveSkills = saveSkills;
-window.addSocialItem = addSocialItem;
-window.saveSocial = saveSocial;
-window.addServiceItem = addServiceItem;
-window.saveServices = saveServices;
-window.addTestimonialItem = addTestimonialItem;
-window.saveTestimonials = saveTestimonials;
-window.addAwardItem = addAwardItem;
-window.saveAwards = saveAwards;
-window.addLinkItem = addLinkItem;
-window.saveLinks = saveLinks;
-window.exportData = exportData;
-window.clearAllData = clearAllData;
-window.proLogout = proLogout;
-window.changePassword = changePassword;
-window.openEditModal = openEditModal;
-window.closeEditModal = closeEditModal;
-window.toggleFocusMode = toggleFocusMode;
-window.removeEditCover = removeEditCover;
-window.removeEditImage = removeEditImage;
-window.removeEditFile = removeEditFile;
-window.execCmd = execCmd;
-window.insertLink = insertLink;
-window.insertImagePlaceholder = insertImagePlaceholder;
-window.copyId = copyId;
-window.copyIdFromText = copyIdFromText;
-window.removeFileFromList = removeFileFromList;
-window.filterArticles = filterArticles;
-window.filterProducts = filterProducts;
-window.filterArchive = filterArchive;
-window.moveArticle = moveArticle;
-window.moveProduct = moveProduct;
-window.moveArchive = moveArchive;
-window.deleteArticle = deleteArticle;
-window.deleteProduct = deleteProduct;
-window.deleteArchive = deleteArchive;
-window.switchTab = switchTab;
-window.loadMembers = loadMembers;
-window.refreshMembers = refreshMembers;
-window.refreshMemberOrders = refreshMemberOrders;
-window.viewMemberDetail = viewMemberDetail;
-window.closeMemberDetail = closeMemberDetail;
-window.openEditMemberModal = openEditMemberModal;
-window.closeEditMemberModal = closeEditMemberModal;
-window.deleteMember = deleteMember;
-window.syncAllOrdersToGlobal = syncAllOrdersToGlobal;
-window.refreshOrders = refreshOrders;
-window.filterOrders = filterOrders;
-window.exportMembersCSV = exportMembersCSV;
-window.exportOrdersCSV = exportOrdersCSV;
-window.exportMembersData = exportMembersData;
-window.exportCSV = exportCSV;
-window.exportOrderHistory = exportOrderHistory;
-window.openBulkStatusModal = openBulkStatusModal;
-window.viewOrderDetail = viewOrderDetail;
-window.deleteOrder = deleteOrder;
-window.openEditOrderModal = openEditOrderModal;
-window.closeEditOrderModal = closeEditOrderModal;
-window.updateOrderStatus = updateOrderStatus;
-window.openEditMenuModal = openEditMenuModal;
-window.moveMenuItem = moveMenuItem;
-window.removeMenuItem = removeMenuItem;
-window.generateArticleId = generateArticleId;
-window.generateProductId = generateProductId;
-window.generateArchiveId = generateArchiveId;
-window.generateArticleContent = generateArticleContent;
-window.saveArticle = saveArticle;
-window.resetArticleForm = resetArticleForm;
-window.addTag = addTag;
-window.updateTagsHidden = updateTagsHidden;
-window.initArticleUploads = initArticleUploads;
-window.initArticleUploadsBlank = initArticleUploadsBlank;
-window.setupFileUpload = setupFileUpload;
-window.setupFileUploadBlank = setupFileUploadBlank;
-window.handleFiles = handleFiles;
-window.handleFilesBlank = handleFilesBlank;
 
-// حذف توابعی که به صورت داینامیک در setupCoverUpload ساخته می‌شوند
-window.removeArticleCover = removeArticleCover;
-window.removeProductCover = removeProductCover;
-window.removeArchiveCover = removeArchiveCover;
-
-console.log('✅ تمام توابع به window متصل شدند.');
     // ============================================================
-// 0533 - توابع کمکی گم‌شده (برای رفع خطاهای is not defined)
-// ============================================================
-
-// تابع تغییر نمای لیست (grid/list)
-function setView(type, view) {
-    const container = document.getElementById('pro' + type.charAt(0).toUpperCase() + type.slice(1) + 'List');
-    if (container) {
-        container.className = 'pro-items ' + view + '-view';
-    }
-    // به‌روزرسانی دکمه‌های فعال
-    const parent = document.querySelector(`#tab-${type} .pro-view-toggle`);
-    if (parent) {
-        parent.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = parent.querySelector(`button[onclick*="'${view}'"]`);
-        if (activeBtn) activeBtn.classList.add('active');
-    }
-}
-
-// تابع کپی کردن آیتم (placeholder)
-function duplicateItem(type) {
-    showMsg('🔧 قابلیت کپی کردن در حال توسعه است.', 'info');
-}
-
-// همگام‌سازی همه کاربران (placeholder)
-function syncAllMembers() {
-    showMsg('⏳ در حال همگام‌سازی کاربران...', 'info');
-    loadMembers();
-}
-
-// خروجی همه سفارشات به JSON
-function exportAllOrders() {
-    const data = {
-        exported: new Date().toISOString(),
-        total_orders: allOrdersData.length,
-        orders: allOrdersData
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `all-orders-${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showMsg('✅ خروجی JSON سفارشات دریافت شد.', 'success');
-}
-
-// بستن مودال جزئیات سفارش
-function closeOrderDetailModal() {
-    const modal = document.getElementById('orderDetailModal');
-    if (modal) modal.classList.remove('active');
-}
-
-// باز کردن ویرایش سفارش از داخل جزئیات (placeholder)
-function openEditOrderFromDetail() {
-    showMsg('🔧 این قابلیت از طریق دکمه ویرایش در مودال اصلی قابل دسترسی است.', 'info');
-}
-
-// بستن مودال ویرایش سفارش
-function closeEditOrderModal() {
-    const modal = document.getElementById('editOrderModal');
-    if (modal) modal.classList.remove('active');
-}
-
-// ارسال پیام به کاربر (placeholder)
-function sendMessageToUser() {
-    const text = document.getElementById('messageText')?.value.trim();
-    if (!text) {
-        showMsg('لطفاً متن پیام را وارد کنید.', 'error');
-        return;
-    }
-    showMsg('✅ پیام با موفقیت ارسال شد (شبیه‌سازی).', 'success');
-    closeSendMessageModal();
-}
-
-// بستن مودال ارسال پیام
-function closeSendMessageModal() {
-    const modal = document.getElementById('sendMessageModal');
-    if (modal) modal.classList.remove('active');
-}
-
-// پاک‌سازی سفارشات قدیمی (قبلاً تعریف شده، ولی برای اطمینان دوباره اتصال)
-window.cleanOldUserOrders = cleanOldUserOrders;
-
-// به‌روزرسانی وضعیت سفارش (قبلاً تعریف شده، ولی برای اطمینان دوباره اتصال)
-window.updateOrderStatus = updateOrderStatus;
-
-// اتصال توابع جدید به window
-window.setView = setView;
-window.duplicateItem = duplicateItem;
-window.syncAllMembers = syncAllMembers;
-window.exportAllOrders = exportAllOrders;
-window.closeOrderDetailModal = closeOrderDetailModal;
-window.openEditOrderFromDetail = openEditOrderFromDetail;
-window.closeEditOrderModal = closeEditOrderModal;
-window.sendMessageToUser = sendMessageToUser;
-window.closeSendMessageModal = closeSendMessageModal;
-
-console.log('✅ توابع گم‌شده به window متصل شدند.');
+    // 0532 - اتصال تمام توابع به window و تعریف توابع گم‌شده
     // ============================================================
-// 0533 - توابع گم‌شده و اتصالات تکمیلی به window
-// ============================================================
 
-// ---- توابع گم‌شده ----
-function setView(type, view) {
-    const container = document.getElementById('pro' + type.charAt(0).toUpperCase() + type.slice(1) + 'List');
-    if (container) {
-        container.className = 'pro-items ' + view + '-view';
+    // ---- تابع updateOrderStatus (گم‌شده) ----
+    async function updateOrderStatus(userId, orderIdx, newStatus) {
+        if (!userId) { showMsg('❌ شناسه کاربر نامعتبر است.', 'error'); return; }
+        try {
+            const path = `member/member${userId}/orders.json`;
+            const existing = await fetchFromGitHub(path);
+            if (!existing) { showMsg('❌ فایل سفارشات یافت نشد.', 'error'); return; }
+            let orders = JSON.parse(existing.content);
+            if (!Array.isArray(orders) || orderIdx >= orders.length) {
+                showMsg('❌ سفارش یافت نشد.', 'error');
+                return;
+            }
+            orders[orderIdx].status = newStatus;
+            orders[orderIdx].updated = new Date().toISOString();
+            await saveToGitHub(path, orders, existing.sha);
+            let history = JSON.parse(localStorage.getItem('order_status_history') || '[]');
+            history.unshift({
+                orderId: orders[orderIdx].id,
+                userId: userId,
+                status: newStatus,
+                time: new Date().toISOString()
+            });
+            if (history.length > 100) history = history.slice(0, 100);
+            localStorage.setItem('order_status_history', JSON.stringify(history));
+            showMsg('✅ وضعیت سفارش به‌روز شد.', 'success');
+            await loadGlobalOrders();
+            if (currentMemberId) loadMemberOrders(currentMemberId);
+        } catch (e) {
+            showMsg('❌ خطا: ' + e.message, 'error');
+        }
     }
-    const parent = document.querySelector(`#tab-${type} .pro-view-toggle`);
-    if (parent) {
-        parent.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = parent.querySelector(`button[onclick*="'${view}'"]`);
-        if (activeBtn) activeBtn.classList.add('active');
+
+    // ---- توابع view و سایر ----
+    function setView(type, view) {
+        const container = document.getElementById('pro' + type.charAt(0).toUpperCase() + type.slice(1) + 'List');
+        if (container) {
+            container.className = 'pro-items ' + view + '-view';
+        }
+        const parent = document.querySelector(`#tab-${type} .pro-view-toggle`);
+        if (parent) {
+            parent.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = parent.querySelector(`button[onclick*="'${view}'"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+        }
     }
-}
 
-function duplicateItem(type) {
-    showMsg('🔧 قابلیت کپی کردن در حال توسعه است.', 'info');
-}
-
-function syncAllMembers() {
-    showMsg('⏳ در حال همگام‌سازی کاربران...', 'info');
-    loadMembers();
-}
-
-function exportAllOrders() {
-    const data = {
-        exported: new Date().toISOString(),
-        total_orders: allOrdersData.length,
-        orders: allOrdersData
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `all-orders-${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showMsg('✅ خروجی JSON سفارشات دریافت شد.', 'success');
-}
-
-function closeOrderDetailModal() {
-    const modal = document.getElementById('orderDetailModal');
-    if (modal) modal.classList.remove('active');
-}
-
-function openEditOrderFromDetail() {
-    showMsg('🔧 ویرایش سفارش از طریق دکمه ویرایش در مودال اصلی امکان‌پذیر است.', 'info');
-}
-
-function sendMessageToUser() {
-    const text = document.getElementById('messageText')?.value.trim();
-    if (!text) {
-        showMsg('لطفاً متن پیام را وارد کنید.', 'error');
-        return;
+    function duplicateItem(type) {
+        showMsg('🔧 قابلیت کپی کردن در حال توسعه است.', 'info');
     }
-    showMsg('✅ پیام با موفقیت ارسال شد (شبیه‌سازی).', 'success');
-    closeSendMessageModal();
-}
 
-function closeSendMessageModal() {
-    const modal = document.getElementById('sendMessageModal');
-    if (modal) modal.classList.remove('active');
-}
+    function syncAllMembers() {
+        showMsg('⏳ در حال همگام‌سازی کاربران...', 'info');
+        loadMembers();
+    }
 
-// ---- اتصال توابع جدید و تکمیل توابع قبلی ----
-window.setView = setView;
-window.duplicateItem = duplicateItem;
-window.syncAllMembers = syncAllMembers;
-window.exportAllOrders = exportAllOrders;
-window.closeOrderDetailModal = closeOrderDetailModal;
-window.openEditOrderFromDetail = openEditOrderFromDetail;
-window.sendMessageToUser = sendMessageToUser;
-window.closeSendMessageModal = closeSendMessageModal;
+    function exportAllOrders() {
+        const data = {
+            exported: new Date().toISOString(),
+            total_orders: allOrdersData.length,
+            orders: allOrdersData
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `all-orders-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showMsg('✅ خروجی JSON سفارشات دریافت شد.', 'success');
+    }
 
-// اتصال مجدد توابعی که ممکن است در 0532 جا افتاده باشند
-window.updateOrderStatus = updateOrderStatus;
-window.cleanOldUserOrders = cleanOldUserOrders;
+    function closeOrderDetailModal() {
+        const modal = document.getElementById('orderDetailModal');
+        if (modal) modal.classList.remove('active');
+    }
 
-// اتصال توابع ایندکس (تکمیل)
-window.openEditEducationModal = openEditEducationModal;
-window.moveEducationItem = moveEducationItem;
-window.removeEducationItem = removeEducationItem;
-window.openEditCertificateModal = openEditCertificateModal;
-window.moveCertificateItem = moveCertificateItem;
-window.removeCertificateItem = removeCertificateItem;
-window.openEditSkillModal = openEditSkillModal;
-window.moveSkillItem = moveSkillItem;
-window.removeSkillItem = removeSkillItem;
-window.openEditServiceModal = openEditServiceModal;
-window.moveServiceItem = moveServiceItem;
-window.removeServiceItem = removeServiceItem;
-window.openEditTestimonialModal = openEditTestimonialModal;
-window.moveTestimonialItem = moveTestimonialItem;
-window.removeTestimonialItem = removeTestimonialItem;
-window.openEditAwardModal = openEditAwardModal;
-window.moveAwardItem = moveAwardItem;
-window.removeAwardItem = removeAwardItem;
-window.openEditLinkModal = openEditLinkModal;
-window.moveLinkItem = moveLinkItem;
-window.removeLinkItem = removeLinkItem;
-window.openEditSocialModal = openEditSocialModal;
-window.moveSocialItem = moveSocialItem;
-window.removeSocialItem = removeSocialItem;
+    function openEditOrderFromDetail() {
+        showMsg('🔧 ویرایش سفارش از طریق دکمه ویرایش در مودال اصلی امکان‌پذیر است.', 'info');
+    }
 
-console.log('✅ توابع گم‌شده و اتصالات تکمیلی بارگذاری شدند.');
+    function closeEditOrderModal() {
+        const modal = document.getElementById('editOrderModal');
+        if (modal) modal.classList.remove('active');
+    }
+
+    function sendMessageToUser() {
+        const text = document.getElementById('messageText')?.value.trim();
+        if (!text) {
+            showMsg('لطفاً متن پیام را وارد کنید.', 'error');
+            return;
+        }
+        showMsg('✅ پیام با موفقیت ارسال شد (شبیه‌سازی).', 'success');
+        closeSendMessageModal();
+    }
+
+    function closeSendMessageModal() {
+        const modal = document.getElementById('sendMessageModal');
+        if (modal) modal.classList.remove('active');
+    }
+
+    // ---- اتصال تمام توابع به window ----
+    window.proSaveToken = proSaveToken;
+    window.saveAppearance = saveAppearance;
+    window.resetAppearanceForm = resetAppearanceForm;
+    window.addMenuItem = addMenuItem;
+    window.saveMenus = saveMenus;
+    window.resetMenusToDefault = resetMenusToDefault;
+    window.saveSections = saveSections;
+    window.toggleAccordion = toggleAccordion;
+    window.addEducationItem = addEducationItem;
+    window.saveEducation = saveEducation;
+    window.addCertificateItem = addCertificateItem;
+    window.saveCertificates = saveCertificates;
+    window.addSkillItem = addSkillItem;
+    window.saveSkills = saveSkills;
+    window.addSocialItem = addSocialItem;
+    window.saveSocial = saveSocial;
+    window.addServiceItem = addServiceItem;
+    window.saveServices = saveServices;
+    window.addTestimonialItem = addTestimonialItem;
+    window.saveTestimonials = saveTestimonials;
+    window.addAwardItem = addAwardItem;
+    window.saveAwards = saveAwards;
+    window.addLinkItem = addLinkItem;
+    window.saveLinks = saveLinks;
+    window.exportData = exportData;
+    window.clearAllData = clearAllData;
+    window.proLogout = proLogout;
+    window.changePassword = changePassword;
+    window.openEditModal = openEditModal;
+    window.closeEditModal = closeEditModal;
+    window.toggleFocusMode = toggleFocusMode;
+    window.removeEditCover = removeEditCover;
+    window.removeEditImage = removeEditImage;
+    window.removeEditFile = removeEditFile;
+    window.execCmd = execCmd;
+    window.insertLink = insertLink;
+    window.insertImagePlaceholder = insertImagePlaceholder;
+    window.copyId = copyId;
+    window.copyIdFromText = copyIdFromText;
+    window.removeFileFromList = removeFileFromList;
+    window.filterArticles = filterArticles;
+    window.filterProducts = filterProducts;
+    window.filterArchive = filterArchive;
+    window.moveArticle = moveArticle;
+    window.moveProduct = moveProduct;
+    window.moveArchive = moveArchive;
+    window.deleteArticle = deleteArticle;
+    window.deleteProduct = deleteProduct;
+    window.deleteArchive = deleteArchive;
+    window.switchTab = switchTab;
+    window.loadMembers = loadMembers;
+    window.refreshMembers = refreshMembers;
+    window.refreshMemberOrders = refreshMemberOrders;
+    window.viewMemberDetail = viewMemberDetail;
+    window.closeMemberDetail = closeMemberDetail;
+    window.openEditMemberModal = openEditMemberModal;
+    window.closeEditMemberModal = closeEditMemberModal;
+    window.deleteMember = deleteMember;
+    window.syncAllOrdersToGlobal = syncAllOrdersToGlobal;
+    window.refreshOrders = refreshOrders;
+    window.filterOrders = filterOrders;
+    window.exportMembersCSV = exportMembersCSV;
+    window.exportOrdersCSV = exportOrdersCSV;
+    window.exportMembersData = exportMembersData;
+    window.exportCSV = exportCSV;
+    window.exportOrderHistory = exportOrderHistory;
+    window.openBulkStatusModal = openBulkStatusModal;
+    window.viewOrderDetail = viewOrderDetail;
+    window.deleteOrder = deleteOrder;
+    window.openEditOrderModal = openEditOrderModal;
+    window.closeEditOrderModal = closeEditOrderModal;
+    window.updateOrderStatus = updateOrderStatus;
+    window.openEditMenuModal = openEditMenuModal;
+    window.moveMenuItem = moveMenuItem;
+    window.removeMenuItem = removeMenuItem;
+    window.generateArticleId = generateArticleId;
+    window.generateProductId = generateProductId;
+    window.generateArchiveId = generateArchiveId;
+    window.generateArticleContent = generateArticleContent;
+    window.saveArticle = saveArticle;
+    window.resetArticleForm = resetArticleForm;
+    window.addTag = addTag;
+    window.updateTagsHidden = updateTagsHidden;
+    window.initArticleUploads = initArticleUploads;
+    window.initArticleUploadsBlank = initArticleUploadsBlank;
+    window.setupFileUpload = setupFileUpload;
+    window.setupFileUploadBlank = setupFileUploadBlank;
+    window.handleFiles = handleFiles;
+    window.handleFilesBlank = handleFilesBlank;
+    window.removeArticleCover = removeArticleCover;
+    window.removeProductCover = removeProductCover;
+    window.removeArchiveCover = removeArchiveCover;
+    window.setView = setView;
+    window.duplicateItem = duplicateItem;
+    window.syncAllMembers = syncAllMembers;
+    window.exportAllOrders = exportAllOrders;
+    window.closeOrderDetailModal = closeOrderDetailModal;
+    window.openEditOrderFromDetail = openEditOrderFromDetail;
+    window.sendMessageToUser = sendMessageToUser;
+    window.closeSendMessageModal = closeSendMessageModal;
+    window.cleanOldUserOrders = cleanOldUserOrders;
+
+    // ---- توابع ایندکس (اتصال کامل) ----
+    window.openEditEducationModal = openEditEducationModal;
+    window.moveEducationItem = moveEducationItem;
+    window.removeEducationItem = removeEducationItem;
+    window.openEditCertificateModal = openEditCertificateModal;
+    window.moveCertificateItem = moveCertificateItem;
+    window.removeCertificateItem = removeCertificateItem;
+    window.openEditSkillModal = openEditSkillModal;
+    window.moveSkillItem = moveSkillItem;
+    window.removeSkillItem = removeSkillItem;
+    window.openEditServiceModal = openEditServiceModal;
+    window.moveServiceItem = moveServiceItem;
+    window.removeServiceItem = removeServiceItem;
+    window.openEditTestimonialModal = openEditTestimonialModal;
+    window.moveTestimonialItem = moveTestimonialItem;
+    window.removeTestimonialItem = removeTestimonialItem;
+    window.openEditAwardModal = openEditAwardModal;
+    window.moveAwardItem = moveAwardItem;
+    window.removeAwardItem = removeAwardItem;
+    window.openEditLinkModal = openEditLinkModal;
+    window.moveLinkItem = moveLinkItem;
+    window.removeLinkItem = removeLinkItem;
+    window.openEditSocialModal = openEditSocialModal;
+    window.moveSocialItem = moveSocialItem;
+    window.removeSocialItem = removeSocialItem;
+
+    console.log('✅ تمام توابع به window متصل شدند.');
+})();
 })();

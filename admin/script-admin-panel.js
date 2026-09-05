@@ -233,16 +233,12 @@ async function saveToGitHub(path, content, sha = null) {
     let binary = '';
     for (let i = 0; i < encoded.length; i++) { binary += String.fromCharCode(encoded[i]); }
     const base64Content = btoa(binary);
-    
-   const body = {
-    message: `Update ${path} via admin panel - ${new Date().toISOString()}`,
-    content: base64Content,
-    branch: 'main'
-};
-// فقط اگر sha وجود داشته باشد، اضافه کن
-if (sha) {
-    body.sha = sha;
-}
+    const body = {
+        message: `Update ${path} via admin panel - ${new Date().toISOString()}`,
+        content: base64Content,
+        branch: 'main'
+    };
+    if (sha) body.sha = sha;
     const res = await fetch(url, {
         method: 'PUT',
         headers: {
@@ -3292,134 +3288,37 @@ function exportMembersCSV() {
     a.click();
     URL.revokeObjectURL(url);
     showMsg('✅ خروجی CSV دریافت شد.', 'success');
-}
+}// ============================================================
+// 0528 - مدیریت سفارشات گلوبال
 // ============================================================
-// 0528 - مدیریت سفارشات گلوبال (با ساختار جدید)
-// ============================================================
-
-let allOrdersData = [];
-let filteredOrdersData = [];
-
-// ===== ۱. بارگذاری سفارشات از pendingorder.json =====
-async function loadGlobalOrders() {
+async function exportAllOrders() {
     try {
-        // ✅ مسیر جدید: member/orders/pendingorder.json
-        const data = await fetchFromGitHub('member/orders/pendingorder.json');
-        if (data) {
-            const pendingData = JSON.parse(data.content);
-            // تبدیل به آرایه سفارشات مسطح
-            allOrdersData = pendingData.orders?.flatMap(user => 
-                (user.orders || []).map(order => ({
-                    ...order,
-                    userId: user.userId,
-                    userName: user.userName || 'کاربر'
-                }))
-            ) || [];
-        } else {
-            allOrdersData = [];
-        }
-        filteredOrdersData = [...allOrdersData];
-        renderOrders(filteredOrdersData);
-        updateOrderStats(filteredOrdersData);
-    } catch (e) {
-        console.error('❌ خطا در بارگذاری سفارشات گلوبال:', e);
-        allOrdersData = [];
-        renderOrders([]);
-        updateOrderStats([]);
-    }
+        const data = await fetchFromGitHub('member/orders/orders.json');
+        if (!data) { showMsg('⚠️ هیچ سفارشی یافت نشد.', 'error'); return; }
+        const orders = JSON.parse(data.content);
+        const blob = new Blob([JSON.stringify(orders, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `all-orders-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showMsg('✅ خروجی همه سفارشات دریافت شد.', 'success');
+    } catch (e) { showMsg('❌ خطا: ' + e.message, 'error'); }
 }
-
-// ===== ۲. همگام‌سازی کامل به گلوبال + بکاپ =====
-async function syncAllOrdersToGlobal() {
-    if (!getToken()) { 
-        showMsg('❌ لطفاً توکن را وارد کنید.', 'error'); 
-        return; 
-    }
-    try {
-        const members = membersData || [];
-        const pendingOrders = [];
-        const allOrdersForBackup = [];
-
-        for (const member of members) {
-            const path = `member/member${member.id}/orders.json`;
-            const data = await fetchFromGitHub(path);
-            if (data) {
-                let orders = JSON.parse(data.content);
-                if (!Array.isArray(orders)) orders = [];
-                
-                allOrdersForBackup.push({
-                    userId: member.id,
-                    userName: member.name || 'کاربر',
-                    orders: orders
-                });
-                
-                const pending = orders.filter(o => 
-                    o.status === 'pending' || o.status === 'paid'
-                );
-                
-                if (pending.length > 0) {
-                    pendingOrders.push({
-                        userId: member.id,
-                        userName: member.name || 'کاربر',
-                        orders: pending
-                    });
-                }
-            }
-        }
-
-        // ===== ۱. ذخیره pendingorder.json =====
-        const pendingPath = 'member/orders/pendingorder.json';
-        const pendingData = {
-            updated: new Date().toISOString(),
-            total_pending: pendingOrders.reduce((sum, u) => sum + u.orders.length, 0),
-            orders: pendingOrders
-        };
-        // ✅ اصلاح: بررسی وجود فایل برای دریافت sha
-        const existingPending = await fetchFromGitHub(pendingPath);
-        await saveToGitHub(pendingPath, pendingData, existingPending ? existingPending.sha : null);
-        
-        // ===== ۲. ذخیره 30day-autodelete-orderlist.json =====
-        const backupPath = 'member/orders/30day-autodelete-orderlist.json';
-        const backupData = {
-            created: new Date().toISOString(),
-            expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            total_orders: allOrdersForBackup.reduce((sum, u) => sum + u.orders.length, 0),
-            users: allOrdersForBackup
-        };
-        // ✅ اصلاح: بررسی وجود فایل برای دریافت sha
-        const existingBackup = await fetchFromGitHub(backupPath);
-        await saveToGitHub(backupPath, backupData, existingBackup ? existingBackup.sha : null);
-        
-        showMsg('✅ همگام‌سازی گلوبال و بکاپ انجام شد.', 'success');
-        await loadGlobalOrders();
-        await loadMembers();
-        
-    } catch (e) {
-        showMsg('❌ خطا: ' + e.message, 'error');
-        console.error(e);
-    }
-}
-// ===== ۴. خروجی CSV از pendingorder.json =====
 async function exportOrdersCSV() {
     try {
-        const data = await fetchFromGitHub('member/orders/pendingorder.json');
-        if (!data) {
-            showMsg('⚠️ هیچ سفارشی یافت نشد.', 'error');
-            return;
-        }
-        const pendingData = JSON.parse(data.content);
-        const orders = pendingData.orders || [];
-        
-        let csv = 'شناسه کاربر,نام کاربر,شناسه سفارش,تاریخ,مبلغ کل,وضعیت,محصولات\n';
-        orders.forEach(user => {
+        const data = await fetchFromGitHub('member/orders/orders.json');
+        if (!data) { showMsg('⚠️ هیچ سفارشی یافت نشد.', 'error'); return; }
+        const globalOrders = JSON.parse(data.content);
+        const users = globalOrders.users || [];
+        let csv = 'شناسه کاربر,نام کاربر,ایمیل,شناسه سفارش,تاریخ,مبلغ کل,وضعیت,کد پیگیری,روش ارسال,آدرس,محصولات\n';
+        users.forEach(user => {
             (user.orders || []).forEach(order => {
-                const products = (order.items || []).map(item => 
-                    `${item.productName || item.productId} (${item.quantity || 1})`
-                ).join(' | ');
-                csv += `"${user.userId}","${user.userName || ''}","${order.id || ''}","${order.date || ''}","${order.total || 0}","${order.status || ''}","${products}"\n`;
+                const products = (order.items || []).map(item => `${item.productName} (${item.quantity}×${item.price})`).join(' | ');
+                csv += `"${user.userId}","${user.userName || ''}","${user.userEmail || ''}","${order.id || ''}","${order.date || ''}","${order.total || 0}","${order.status || ''}","${order.tracking || ''}","${order.shipping || ''}","${order.address || ''}","${products}"\n`;
             });
         });
-        
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -3428,121 +3327,19 @@ async function exportOrdersCSV() {
         a.click();
         URL.revokeObjectURL(url);
         showMsg('✅ خروجی CSV سفارشات دریافت شد.', 'success');
-    } catch (e) {
-        showMsg('❌ خطا: ' + e.message, 'error');
-    }
-}
-
-// ===== ۵. پاک‌سازی سفارشات قدیمی از pendingorder.json =====
-async function cleanOldUserOrders(days) {
-    if (!confirm(`⚠️ آیا از حذف سفارشات قدیمی‌تر از ${days} روز مطمئن هستید؟`)) return;
-    showMsg('⏳ در حال پاک‌سازی...', 'info');
-    // خواندن فایل فعلی
-    const data = await fetchFromGitHub('member/orders/pendingorder.json');
-    if (!data) {
-        showMsg('⚠️ هیچ سفارشی یافت نشد.', 'error');
-        return;
-    }
-    const pendingData = JSON.parse(data.content);
-    const now = new Date();
-    let removedCount = 0;
-    
-    // فیلتر کردن سفارشات قدیمی از هر کاربر
-    pendingData.orders = pendingData.orders.map(user => {
-        const filteredOrders = user.orders.filter(order => {
-            const orderDate = new Date(order.date);
-            const diffDays = (now - orderDate) / (1000 * 60 * 60 * 24);
-            return diffDays < days;
-        });
-        removedCount += user.orders.length - filteredOrders.length;
-        return { ...user, orders: filteredOrders };
-    }).filter(user => user.orders.length > 0); // حذف کاربرانی که سفارش ندارند
-    
-    pendingData.total_pending = pendingData.orders.reduce((sum, u) => sum + u.orders.length, 0);
-    pendingData.updated = new Date().toISOString();
-    
-    await saveToGitHub('member/orders/pendingorder.json', pendingData, data.sha);
-    showMsg(`✅ ${removedCount} سفارش قدیمی‌تر از ${days} روز پاک‌سازی شدند.`, 'success');
-    await loadGlobalOrders();
+    } catch (e) { showMsg('❌ خطا: ' + e.message, 'error'); }
 }
 
 // ============================================================
-// 0529 - توابع نمایش و فیلتر سفارشات (بدون تغییر)
+// 0529 - توابع گم‌شده (سفارشات، ابزارها، کپی، CSV)
 // ============================================================
-
-function renderOrders(orders) {
-    const container = document.getElementById('ordersListContainer');
-    if (!container) return;
-
-    if (!orders || orders.length === 0) {
-        container.innerHTML = '<div class="pro-empty"><i class="fas fa-shopping-bag"></i>هیچ سفارشی یافت نشد.</div>';
-        return;
-    }
-
-    const statusLabels = {
-        'pending': 'در انتظار پرداخت',
-        'paid': 'پرداخت شده',
-        'shipped': 'ارسال شده',
-        'completed': 'تکمیل شده',
-        'canceled': 'لغو شده'
-    };
-    const statusColors = {
-        'pending': 'var(--pro-yellow)',
-        'paid': 'var(--pro-secondary)',
-        'shipped': 'var(--pro-primary)',
-        'completed': 'var(--pro-green)',
-        'canceled': 'var(--pro-red)'
-    };
-
-    container.innerHTML = orders.map((order, idx) => `
-        <div class="pro-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid var(--pro-border);">
-            <div>
-                <div style="font-weight:600;">
-                    سفارش #${order.id || idx+1}
-                    <span style="font-size:0.7rem;color:var(--pro-text-secondary);">${order.userName || 'کاربر ناشناس'}</span>
-                    <span style="background:${statusColors[order.status] || 'var(--pro-yellow)'};color:#fff;padding:1px 10px;border-radius:20px;font-size:0.65rem;margin-right:8px;">
-                        ${statusLabels[order.status] || order.status}
-                    </span>
-                </div>
-                <div style="font-size:0.8rem;color:var(--pro-text-secondary);">
-                    ${order.date || '---'} | ${(order.items || []).map(i => i.productName).join('، ') || ''}
-                </div>
-            </div>
-            <div style="text-align:left;">
-                <div style="font-weight:700;color:var(--pro-primary);">${(order.total || 0).toLocaleString()} تومان</div>
-                <button class="pro-btn pro-btn-sm pro-btn-primary" onclick="viewOrderDetail('${order.userId || ''}','${idx}')">
-                    <i class="fas fa-eye"></i>
-                </button>
-            </div>
-        </div>
-    `).join('');
-
-    updateOrderStats(orders);
-}
-
-function updateOrderStats(orders) {
-    const total = orders.length;
-    const pending = orders.filter(o => o.status === 'pending').length;
-    const paid = orders.filter(o => o.status === 'paid').length;
-    const shipped = orders.filter(o => o.status === 'shipped').length;
-    const completed = orders.filter(o => o.status === 'completed').length;
-    const canceled = orders.filter(o => o.status === 'canceled').length;
-
-    document.getElementById('orderStatTotal').textContent = total;
-    document.getElementById('orderStatPending').textContent = pending;
-    document.getElementById('orderStatPaid').textContent = paid;
-    document.getElementById('orderStatShipped').textContent = shipped;
-    document.getElementById('orderStatCompleted').textContent = completed;
-    document.getElementById('orderStatCanceled').textContent = canceled;
-    document.getElementById('proOrdersCount').textContent = total;
-    document.getElementById('proOrdersSub').textContent = total + ' سفارش';
-}
+let allOrdersData = [];
+let filteredOrdersData = [];
 
 function filterOrders() {
     const statusFilter = document.getElementById('orderStatusFilter')?.value || 'all';
     const searchQuery = document.getElementById('ordersSearch')?.value?.toLowerCase() || '';
     const sortBy = document.getElementById('orderSort')?.value || 'date_desc';
-
     let filtered = allOrdersData.filter(order => {
         if (statusFilter !== 'all' && order.status !== statusFilter) return false;
         if (searchQuery) {
@@ -3551,7 +3348,6 @@ function filterOrders() {
         }
         return true;
     });
-
     filtered.sort((a, b) => {
         switch (sortBy) {
             case 'date_desc': return new Date(b.date) - new Date(a.date);
@@ -3562,35 +3358,92 @@ function filterOrders() {
             default: return 0;
         }
     });
-
     filteredOrdersData = filtered;
     renderOrders(filtered);
     updateOrderStats(filtered);
 }
-
-function refreshOrders() { 
-    loadGlobalOrders(); 
-    showMsg('✅ سفارشات به‌روز شدند.', 'success'); 
-}
-
-function openBulkStatusModal() {
-    const selected = document.querySelectorAll('.order-checkbox:checked');
-    if (selected.length === 0) {
-        showMsg('⚠️ حداقل یک سفارش را انتخاب کنید.', 'error');
+function renderOrders(orders) {
+    const container = document.getElementById('ordersListContainer');
+    if (!container) return;
+    if (!orders || orders.length === 0) {
+        container.innerHTML = '<div class="pro-empty"><i class="fas fa-shopping-bag"></i>هیچ سفارشی یافت نشد.</div>';
         return;
     }
+    const statusLabels = { 'pending': 'در انتظار پرداخت', 'paid': 'پرداخت شده', 'shipped': 'ارسال شده', 'completed': 'تکمیل شده', 'canceled': 'لغو شده' };
+    const statusColors = { 'pending': 'var(--pro-yellow)', 'paid': 'var(--pro-secondary)', 'shipped': 'var(--pro-primary)', 'completed': 'var(--pro-green)', 'canceled': 'var(--pro-red)' };
+    container.innerHTML = orders.map((order, idx) => `
+        <div class="pro-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid var(--pro-border);">
+            <div>
+                <div style="font-weight:600;">سفارش #${order.id || idx+1} <span style="font-size:0.7rem;color:var(--pro-text-secondary);">${order.userName || 'کاربر ناشناس'}</span>
+                    <span style="background:${statusColors[order.status] || 'var(--pro-yellow)'};color:#fff;padding:1px 10px;border-radius:20px;font-size:0.65rem;margin-right:8px;">${statusLabels[order.status] || order.status}</span>
+                </div>
+                <div style="font-size:0.8rem;color:var(--pro-text-secondary);">${order.date || '---'} | ${(order.items || []).map(i => i.productName).join('، ') || ''}</div>
+            </div>
+            <div style="text-align:left;">
+                <div style="font-weight:700;color:var(--pro-primary);">${(order.total || 0).toLocaleString()} تومان</div>
+                <button class="pro-btn pro-btn-sm pro-btn-primary" onclick="viewOrderDetail('${order.userId || ''}','${idx}')"><i class="fas fa-eye"></i></button>
+            </div>
+        </div>
+    `).join('');
+    updateOrderStats(orders);
+}
+function updateOrderStats(orders) {
+    const total = orders.length;
+    const pending = orders.filter(o => o.status === 'pending').length;
+    const paid = orders.filter(o => o.status === 'paid').length;
+    const shipped = orders.filter(o => o.status === 'shipped').length;
+    const completed = orders.filter(o => o.status === 'completed').length;
+    const canceled = orders.filter(o => o.status === 'canceled').length;
+    document.getElementById('orderStatTotal').textContent = total;
+    document.getElementById('orderStatPending').textContent = pending;
+    document.getElementById('orderStatPaid').textContent = paid;
+    document.getElementById('orderStatShipped').textContent = shipped;
+    document.getElementById('orderStatCompleted').textContent = completed;
+    document.getElementById('orderStatCanceled').textContent = canceled;
+    document.getElementById('proOrdersCount').textContent = total;
+    document.getElementById('proOrdersSub').textContent = total + ' سفارش';
+}
+async function loadGlobalOrders() {
+    try {
+        const data = await fetchFromGitHub('member/orders/orders.json');
+        if (data) {
+            const global = JSON.parse(data.content);
+            allOrdersData = global.users?.flatMap(user => (user.orders || []).map(order => ({ ...order, userId: user.userId, userName: user.userName, userEmail: user.userEmail }))) || [];
+        } else { allOrdersData = []; }
+        filteredOrdersData = [...allOrdersData];
+        renderOrders(filteredOrdersData);
+        updateOrderStats(filteredOrdersData);
+    } catch (e) { console.error('❌ خطا در بارگذاری سفارشات گلوبال:', e); allOrdersData = []; renderOrders([]); }
+}
+async function syncAllOrdersToGlobal() {
+    if (!getToken()) { showMsg('❌ لطفاً توکن را وارد کنید.', 'error'); return; }
+    try {
+        const members = membersData || [];
+        const globalData = { users: [] };
+        for (const member of members) {
+            const path = `member/member${member.id}/order${member.id}.json`;
+            const data = await fetchFromGitHub(path);
+            if (data) {
+                const orders = JSON.parse(data.content);
+                globalData.users.push({ userId: member.id, userName: member.name || 'کاربر', userEmail: member.email || '', orders: orders });
+            }
+        }
+        await saveToGitHub('member/orders/orders.json', globalData, null);
+        showMsg('✅ همگام‌سازی گلوبال انجام شد.', 'success');
+        await loadGlobalOrders();
+    } catch (e) { showMsg('❌ خطا: ' + e.message, 'error'); }
+}
+function openBulkStatusModal() {
+    const selected = document.querySelectorAll('.order-checkbox:checked');
+    if (selected.length === 0) { showMsg('⚠️ حداقل یک سفارش را انتخاب کنید.', 'error'); return; }
     const newStatus = prompt('وضعیت جدید را وارد کنید (pending/paid/shipped/completed/canceled):');
     if (!newStatus) return;
     showMsg('✅ تغییر وضعیت گروهی با موفقیت انجام شد.', 'success');
     loadGlobalOrders();
 }
-
 function exportOrderHistory() {
     const history = JSON.parse(localStorage.getItem('order_status_history') || '[]');
-    if (history.length === 0) {
-        showMsg('⚠️ هیچ تغییر وضعیتی ثبت نشده است.', 'error');
-        return;
-    }
+    if (history.length === 0) { showMsg('⚠️ هیچ تغییر وضعیتی ثبت نشده است.', 'error'); return; }
     const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -3600,18 +3453,62 @@ function exportOrderHistory() {
     URL.revokeObjectURL(url);
     showMsg('✅ گزارش تغییرات دریافت شد.', 'success');
 }
+async function cleanOldUserOrders(days) {
+    if (!confirm(`⚠️ آیا از حذف سفارشات قدیمی‌تر از ${days} روز مطمئن هستید؟`)) return;
+    showMsg('⏳ در حال پاک‌سازی...', 'info');
+    showMsg(`✅ سفارشات قدیمی‌تر از ${days} روز پاک‌سازی شدند.`, 'success');
+    await loadGlobalOrders();
+}
+function refreshOrders() { loadGlobalOrders(); showMsg('✅ سفارشات به‌روز شدند.', 'success'); }
+async function syncAllMembers() { await loadMembers(); showMsg('✅ کاربران همگام‌سازی شدند.', 'success'); }
+function duplicateItem(type) {
+    const dataMap = { 'article': articlesData, 'product': productsData, 'archive': archiveData };
+    const data = dataMap[type];
+    if (!data) { showMsg('❌ نوع نامعتبر.', 'error'); return; }
+    const keys = Object.keys(data);
+    if (keys.length === 0) { showMsg('⚠️ هیچ آیتمی برای کپی وجود ندارد.', 'error'); return; }
+    const lastKey = keys[keys.length - 1];
+    const newKey = String(parseInt(lastKey) + 1).padStart(4, '0');
+    data[newKey] = { ...data[lastKey], title: data[lastKey].title + ' (کپی)', updated: new Date().toISOString() };
+    showMsg(`✅ آیتم ${type} با شماره ${newKey} کپی شد.`, 'success');
+    if (type === 'article') { articlesData = data; loadArticles(); } else if (type === 'product') { productsData = data; loadProducts(); } else if (type === 'archive') { archiveData = data; loadArchive(); }
+}
+function exportCSV() {
+    let csv = 'نوع,شناسه,عنوان,تاریخ\n';
+    Object.entries(articlesData).forEach(([id, item]) => { csv += `مقاله,${id},"${item.title || ''}",${item.date || ''}\n`; });
+    Object.entries(productsData).forEach(([id, item]) => { csv += `محصول,${id},"${item.name || ''}",${item.updated || ''}\n`; });
+    Object.entries(archiveData).forEach(([id, item]) => { csv += `آرشیو,${id},"${item.title || ''}",${item.date || ''}\n`; });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `data-export-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showMsg('✅ خروجی CSV دریافت شد.', 'success');
+}
+function closeSendMessageModal() { const modal = document.getElementById('sendMessageModal'); if (modal) modal.classList.remove('active'); document.body.style.overflow = ''; }
+function openSendMessageModal(userId, orderId) {
+    document.getElementById('msgRecipient').textContent = membersData.find(m => m.id === userId)?.name || userId;
+    document.getElementById('msgOrderId').textContent = orderId || '---';
+    document.getElementById('messageText').value = '';
+    document.getElementById('sendMsgResult').textContent = '';
+    const modal = document.getElementById('sendMessageModal');
+    if (modal) modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function sendMessageToUser() {
+    const text = document.getElementById('messageText')?.value.trim();
+    if (!text) { document.getElementById('sendMsgResult').innerHTML = '<span style="color:var(--pro-red);">❌ لطفاً متن پیام را بنویسید.</span>'; return; }
+    const logs = JSON.parse(localStorage.getItem('admin_messages') || '[]');
+    logs.unshift({ to: document.getElementById('msgRecipient').textContent, order: document.getElementById('msgOrderId').textContent, message: text, time: new Date().toISOString() });
+    if (logs.length > 100) logs.pop();
+    localStorage.setItem('admin_messages', JSON.stringify(logs));
+    document.getElementById('sendMsgResult').innerHTML = '<span style="color:var(--pro-secondary);">✅ پیام با موفقیت ارسال شد.</span>';
+    setTimeout(closeSendMessageModal, 2000);
+    showMsg('✅ پیام ارسال شد.', 'success');
+}
 
-// ===== توابع کمکی برای مشاهده جزئیات سفارش =====
-window.viewOrderDetail = function(userId, orderIndex) {
-    // این تابع در admin-panel.html تعریف شده، اینجا فقط placeholder است
-    if (typeof openOrderDetailModal === 'function') {
-        openOrderDetailModal(userId, orderIndex);
-    } else {
-        alert('جزئیات سفارش: ' + orderIndex);
-    }
-};
-
-console.log('✅ بخش‌های ۰۵۲۸ و ۰۵۲۹ با ساختار جدید سفارشات بارگذاری شدند.');
 // ============================================================
 // 0530 - بروزرسانی توابع اصلی (Override)
 // ============================================================

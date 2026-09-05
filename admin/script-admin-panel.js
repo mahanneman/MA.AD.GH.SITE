@@ -1080,6 +1080,8 @@
     }
 
     async function saveEdit() {
+            console.log('✅ تابع saveEdit اجرا شد!');  // ← این خط را اضافه کنید
+
         var key = document.getElementById('editKey').value;
         var type = document.getElementById('editType').value;
         try {

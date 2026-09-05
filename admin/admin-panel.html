@@ -11,7 +11,7 @@
 
     <!-- فایل‌های CSS جداگانه -->
     <link rel="stylesheet" href="../style.css" />
-    <link rel="stylesheet" href="../admin/style-admin-panel.css" />
+    <link rel="stylesheet" href="style-admin-panel.css" />
 
     <!-- استایل‌های تکمیلی -->
     <style>
@@ -229,7 +229,10 @@
                 grid-template-columns: 1fr;
             }
         }
-        /* دکمه‌ای برای نمایش لاگین (اگر نیاز شد) */
+        /* صفحه لاگین مخفی (فقط برای جلوگیری از خطای JS) */
+        #loginPage {
+            display: none !important;
+        }
         .btn-show-login {
             background: var(--pro-yellow);
             color: #0a0f1a;
@@ -247,7 +250,30 @@
 </head>
 <body>
 
-    <!-- ===== پنل مدیریت (نمایش مستقیم) ===== -->
+    <!-- ===== صفحه لاگین مخفی (فقط برای جلوگیری از خطای JS) ===== -->
+    <div id="loginPage" style="display:none !important;">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="logo"><i class="fas fa-cogs"></i></div>
+                <h2>ورود به پنل مدیریت</h2>
+                <p>برای مدیریت محتوای سایت وارد شوید</p>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginUsername">نام کاربری</label>
+                        <input type="text" id="loginUsername" placeholder="نام کاربری خود را وارد کنید" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">رمز عبور</label>
+                        <input type="password" id="loginPassword" placeholder="رمز عبور خود را وارد کنید" required />
+                    </div>
+                    <button type="submit" class="btn-login"><i class="fas fa-sign-in-alt"></i> ورود</button>
+                    <div id="loginError" class="error-msg"><i class="fas fa-exclamation-circle"></i> نام کاربری یا رمز عبور اشتباه است.</div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== پنل مدیریت ===== -->
     <div id="adminPanel" style="display:block;">
 
         <!-- ===== هدر ===== -->
@@ -1038,9 +1064,9 @@
     ============================================================ -->
 
     <!-- بارگذاری فایل JS با defer -->
-    <script src="../admin/script-admin-panel.js" defer></script>
+    <script src="script-admin-panel.js" defer></script>
 
-    <!-- اسکریپت راه‌اندازی و اتصال رویدادها -->
+    <!-- اسکریپت اصلی راه‌اندازی و اصلاح توابع -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
@@ -1048,6 +1074,7 @@
             sessionStorage.setItem('admin_logged_in', 'true');
             sessionStorage.setItem('admin_username', 'ادمین');
 
+            // اطمینان از وجود المنت‌های لازم
             var loginPage = document.getElementById('loginPage');
             var adminPanel = document.getElementById('adminPanel');
             if (loginPage) loginPage.style.display = 'none';
@@ -1058,18 +1085,77 @@
             var infoNameEl = document.getElementById('proInfoUsername');
             if (infoNameEl) infoNameEl.textContent = 'ادمین';
 
-            // بارگذاری داده‌ها با تاخیر تا مطمئن شویم JS کامل بارگذاری شده
+            // ===== ۲. اصلاح توابع مشکل‌دار =====
+
+            // ۲-۱. override کردن checkLogin (برای جلوگیری از خطای null)
+            if (typeof window.checkLogin === 'function') {
+                window.checkLogin = function() {
+                    // کاری نمیکند، فقط از خطا جلوگیری میکند
+                };
+            }
+
+            // ۲-۲. override کردن updateDashboard با نسخه‌ی امن
+            if (typeof window.updateDashboard === 'function') {
+                window.updateDashboard = function() {
+                    try {
+                        // استفاده از داده‌های گلوبال یا خالی
+                        var articles = Object.values(window.articlesData || {});
+                        var products = Object.values(window.productsData || {});
+                        var archive = Object.values(window.archiveData || {});
+
+                        var fileCount = 0;
+                        articles.forEach(function(a) {
+                            if (a && a.files && Array.isArray(a.files)) fileCount += a.files.length;
+                        });
+                        products.forEach(function(p) {
+                            if (p && p.files && Array.isArray(p.files)) fileCount += p.files.length;
+                        });
+                        archive.forEach(function(a) {
+                            if (a && a.files && Array.isArray(a.files)) fileCount += a.files.length;
+                        });
+
+                        // به‌روزرسانی المان‌ها
+                        var dashArticles = document.getElementById('dashArticles');
+                        if (dashArticles) dashArticles.textContent = articles.length;
+                        var dashProducts = document.getElementById('dashProducts');
+                        if (dashProducts) dashProducts.textContent = products.length;
+                        var dashArchive = document.getElementById('dashArchive');
+                        if (dashArchive) dashArchive.textContent = archive.length;
+                        var dashFiles = document.getElementById('dashFiles');
+                        if (dashFiles) dashFiles.textContent = fileCount;
+                        var lastUpdate = document.getElementById('proLastUpdate');
+                        if (lastUpdate) lastUpdate.textContent = new Date().toLocaleString('fa-IR');
+
+                        var dashMembers = document.getElementById('dashMembers');
+                        if (dashMembers) dashMembers.textContent = (window.membersData || []).length || 0;
+                    } catch (e) {
+                        console.warn('⚠️ خطا در به‌روزرسانی داشبورد:', e);
+                    }
+                };
+            }
+
+            // ۲-۳. مقداردهی اولیه داده‌ها
+            if (typeof window.articlesData === 'undefined') window.articlesData = {};
+            if (typeof window.productsData === 'undefined') window.productsData = {};
+            if (typeof window.archiveData === 'undefined') window.archiveData = {};
+            if (typeof window.membersData === 'undefined') window.membersData = [];
+
+            // ===== ۳. بارگذاری داده‌ها =====
             setTimeout(function() {
-                if (typeof loadAllData === 'function') loadAllData();
-                if (typeof loadAppearanceSettings === 'function') loadAppearanceSettings();
-                if (typeof loadMenuData === 'function') loadMenuData();
-                if (typeof loadSectionsData === 'function') loadSectionsData();
-                if (typeof loadAllIndexContent === 'function') loadAllIndexContent();
-                if (typeof loadMembers === 'function') loadMembers();
-                if (typeof loadGlobalOrders === 'function') loadGlobalOrders();
+                try {
+                    if (typeof loadAllData === 'function') loadAllData();
+                    if (typeof loadAppearanceSettings === 'function') loadAppearanceSettings();
+                    if (typeof loadMenuData === 'function') loadMenuData();
+                    if (typeof loadSectionsData === 'function') loadSectionsData();
+                    if (typeof loadAllIndexContent === 'function') loadAllIndexContent();
+                    if (typeof loadMembers === 'function') loadMembers();
+                    if (typeof loadGlobalOrders === 'function') loadGlobalOrders();
+                } catch (e) {
+                    console.warn('⚠️ خطا در بارگذاری داده‌ها:', e);
+                }
             }, 500);
 
-            // ===== ۲. اتصال رویدادها به دکمه‌ها =====
+            // ===== ۴. اتصال رویدادها به دکمه‌ها =====
 
             // ---- خروج ----
             var logoutBtn = document.getElementById('logoutBtn');
@@ -1445,7 +1531,6 @@
                     if (type && view && typeof setView === 'function') {
                         setView(type, view);
                     }
-                    // فعال‌سازی دکمه
                     var parent = this.closest('.pro-view-toggle');
                     if (parent) {
                         parent.querySelectorAll('button').forEach(function(b) {
@@ -1456,10 +1541,7 @@
                 });
             });
 
-            // ---- آپلود فایل‌ها ----
-            // (توابع آپلود قبلاً در JS راه‌اندازی می‌شوند، فقط اگر نیاز به تنظیم اضافی بود)
-
-            console.log('✅ پنل مدیریت با موفقیت راه‌اندازی شد.');
+            console.log('✅ پنل مدیریت با موفقیت راه‌اندازی شد (نسخه اصلاح‌شده).');
         });
     </script>
 

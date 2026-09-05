@@ -1,6 +1,6 @@
 // ============================================================
 // script-admin-panel.js - پنل مدیریت کامل (هماهنگ با admin-panel.html)
-// نسخه اصلاح‌شده - رفع تداخلات توابع - بدون حذف هیچ خطی
+// نسخه اصلاح‌شده - رفع تداخلات توابع + ایمن‌سازی addEventListener
 // ============================================================
 
 (function() {
@@ -1279,246 +1279,257 @@ if (sha) {
         const sel = window.getSelection();
         sel.removeAllRanges();
         sel.addRange(range);
-    }// ============================================================
-    // 0516 - افزودن مقاله (Submit)
-    // ============================================================
-    document.getElementById('addArticleForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const id = parseInt(document.getElementById('articleId').value);
-        const title = document.getElementById('articleTitle').value.trim();
-        const excerpt = document.getElementById('articleExcerpt').value.trim();
-        const type = document.getElementById('articleType').value;
-        const date = document.getElementById('articleDate').value || new Date().toISOString().split('T')[0];
-        const tags = document.getElementById('articleTags').value.split(',').map(t => t.trim()).filter(Boolean);
-        const readTime = parseInt(document.getElementById('articleReadTime').value) || 5;
-        const body = document.getElementById('articleBody').innerHTML.trim();
-
-        if (!title || !excerpt || !body) {
-            showMsg('❌ لطفاً عنوان، چکیده و متن کامل را پر کنید.', 'error');
-            return;
-        }
-        if (!getToken()) { showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error'); return; }
-
-        let cover = null;
-        const coverImg = document.getElementById('articleCoverPreviewImg');
-        if (coverImg.src && coverImg.src.startsWith('data:')) {
-            cover = coverImg.src;
-        }
-
-        const galleryFiles = window._pendingFiles?.article_gallery || [];
-        const imageData = galleryFiles.map(f => f.data);
-        const files = window._pendingFiles?.article || [];
-
-        try {
-            const existing = await fetchFromGitHub('_data/articles.json');
-            if (existing) {
-                articlesData = JSON.parse(existing.content);
-                articlesSha = existing.sha;
-            } else {
-                articlesData = {};
-                articlesSha = null;
-            }
-            const key = String(id).padStart(4, '0');
-            articlesData[key] = {
-                title, excerpt, type, date, tags, readTime, body,
-                cover: cover,
-                images: imageData,
-                files: files.map(f => f.name),
-                updated: new Date().toISOString()
-            };
-            const newSha = await saveToGitHub('_data/articles.json', articlesData, articlesSha);
-            articlesSha = newSha;
-
-            for (const file of files) {
-                const path = `assets/articles/${key}/${file.name}`;
-                try { await uploadFileToGitHub(path, file.data); } catch (e) { console.error(e); }
-            }
-            for (let i = 0; i < imageData.length; i++) {
-                const path = `assets/articles/${key}/img_${i+1}.jpg`;
-                try { await uploadFileToGitHub(path, imageData[i].split(',')[1]); } catch (e) { console.error(e); }
-            }
-            if (cover) {
-                const coverPath = `assets/articles/${key}/cover.jpg`;
-                try { await uploadFileToGitHub(coverPath, cover.split(',')[1]); } catch (e) { console.error(e); }
-            }
-
-            showMsg('✅ مقاله با موفقیت منتشر شد!', 'success');
-            showToast('✅ مقاله ذخیره شد', 'success');
-            logActivity(`مقاله جدید: ${title} (#${key})`);
-            this.reset();
-            document.getElementById('articleBody').innerHTML = '';
-            document.getElementById('articleFilesList').innerHTML = '';
-            document.getElementById('articleGalleryList').innerHTML = '';
-            document.getElementById('articleCoverPreview').style.display = 'none';
-            window._pendingFiles = null;
-            window._coverImage = null;
-            generateArticleId();
-            loadArticles();
-        } catch (e) {
-            showMsg('❌ خطا: ' + e.message, 'error');
-            showToast('❌ ذخیره‌سازی ناموفق', 'error');
-        }
-    });
+    }
 
     // ============================================================
-    // 0517 - افزودن محصول (Submit)
+    // 0516 - افزودن مقاله (Submit) - با ایمن‌سازی
     // ============================================================
-    document.getElementById('addProductForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const id = parseInt(document.getElementById('productId').value);
-        const name = document.getElementById('productName').value.trim();
-        const desc = document.getElementById('productDesc').value.trim();
-        const price = document.getElementById('productPrice').value.trim() || 'رایگان';
-        const icon = document.getElementById('productIcon').value.trim() || 'fa-cube';
-        const tag = document.getElementById('productTag').value.trim() || 'جدید';
-        const category = document.getElementById('productCategory').value.trim();
-        const stock = document.getElementById('productStock').value;
+    const addArticleForm = document.getElementById('addArticleForm');
+    if (addArticleForm) {
+        addArticleForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('articleId').value);
+            const title = document.getElementById('articleTitle').value.trim();
+            const excerpt = document.getElementById('articleExcerpt').value.trim();
+            const type = document.getElementById('articleType').value;
+            const date = document.getElementById('articleDate').value || new Date().toISOString().split('T')[0];
+            const tags = document.getElementById('articleTags').value.split(',').map(t => t.trim()).filter(Boolean);
+            const readTime = parseInt(document.getElementById('articleReadTime').value) || 5;
+            const body = document.getElementById('articleBody').innerHTML.trim();
 
-        if (!name || !desc) {
-            showMsg('❌ لطفاً نام و توضیحات را پر کنید.', 'error');
-            return;
-        }
-        if (!getToken()) { showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error'); return; }
-
-        let cover = null;
-        const coverImg = document.getElementById('productCoverPreviewImg');
-        if (coverImg.src && coverImg.src.startsWith('data:')) {
-            cover = coverImg.src;
-        }
-
-        const galleryFiles = window._pendingFiles?.product_gallery || [];
-        const imageData = galleryFiles.map(f => f.data);
-        const files = window._pendingFiles?.product || [];
-
-        try {
-            const existing = await fetchFromGitHub('_data/products.json');
-            if (existing) {
-                productsData = JSON.parse(existing.content);
-                productsSha = existing.sha;
-            } else {
-                productsData = {};
-                productsSha = null;
+            if (!title || !excerpt || !body) {
+                showMsg('❌ لطفاً عنوان، چکیده و متن کامل را پر کنید.', 'error');
+                return;
             }
-            const key = String(id).padStart(4, '0');
-            productsData[key] = {
-                name, desc, price, icon, tag, category, stock,
-                cover: cover,
-                images: imageData,
-                files: files.map(f => f.name),
-                updated: new Date().toISOString()
-            };
-            const newSha = await saveToGitHub('_data/products.json', productsData, productsSha);
-            productsSha = newSha;
+            if (!getToken()) { showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error'); return; }
 
-            for (const file of files) {
-                const path = `assets/products/${key}/${file.name}`;
-                try { await uploadFileToGitHub(path, file.data); } catch (e) { console.error(e); }
-            }
-            for (let i = 0; i < imageData.length; i++) {
-                const path = `assets/products/${key}/img_${i+1}.jpg`;
-                try { await uploadFileToGitHub(path, imageData[i].split(',')[1]); } catch (e) { console.error(e); }
-            }
-            if (cover) {
-                const coverPath = `assets/products/${key}/cover.jpg`;
-                try { await uploadFileToGitHub(coverPath, cover.split(',')[1]); } catch (e) { console.error(e); }
+            let cover = null;
+            const coverImg = document.getElementById('articleCoverPreviewImg');
+            if (coverImg.src && coverImg.src.startsWith('data:')) {
+                cover = coverImg.src;
             }
 
-            showMsg('✅ محصول با موفقیت ذخیره شد!', 'success');
-            showToast('✅ محصول ذخیره شد', 'success');
-            logActivity(`محصول جدید: ${name} (#${key})`);
-            this.reset();
-            document.getElementById('productFilesList').innerHTML = '';
-            document.getElementById('productGalleryList').innerHTML = '';
-            document.getElementById('productCoverPreview').style.display = 'none';
-            window._pendingFiles = null;
-            window._coverImage = null;
-            generateProductId();
-            loadProducts();
-        } catch (e) {
-            showMsg('❌ خطا: ' + e.message, 'error');
-            showToast('❌ ذخیره‌سازی ناموفق', 'error');
-        }
-    });
+            const galleryFiles = window._pendingFiles?.article_gallery || [];
+            const imageData = galleryFiles.map(f => f.data);
+            const files = window._pendingFiles?.article || [];
+
+            try {
+                const existing = await fetchFromGitHub('_data/articles.json');
+                if (existing) {
+                    articlesData = JSON.parse(existing.content);
+                    articlesSha = existing.sha;
+                } else {
+                    articlesData = {};
+                    articlesSha = null;
+                }
+                const key = String(id).padStart(4, '0');
+                articlesData[key] = {
+                    title, excerpt, type, date, tags, readTime, body,
+                    cover: cover,
+                    images: imageData,
+                    files: files.map(f => f.name),
+                    updated: new Date().toISOString()
+                };
+                const newSha = await saveToGitHub('_data/articles.json', articlesData, articlesSha);
+                articlesSha = newSha;
+
+                for (const file of files) {
+                    const path = `assets/articles/${key}/${file.name}`;
+                    try { await uploadFileToGitHub(path, file.data); } catch (e) { console.error(e); }
+                }
+                for (let i = 0; i < imageData.length; i++) {
+                    const path = `assets/articles/${key}/img_${i+1}.jpg`;
+                    try { await uploadFileToGitHub(path, imageData[i].split(',')[1]); } catch (e) { console.error(e); }
+                }
+                if (cover) {
+                    const coverPath = `assets/articles/${key}/cover.jpg`;
+                    try { await uploadFileToGitHub(coverPath, cover.split(',')[1]); } catch (e) { console.error(e); }
+                }
+
+                showMsg('✅ مقاله با موفقیت منتشر شد!', 'success');
+                showToast('✅ مقاله ذخیره شد', 'success');
+                logActivity(`مقاله جدید: ${title} (#${key})`);
+                this.reset();
+                document.getElementById('articleBody').innerHTML = '';
+                document.getElementById('articleFilesList').innerHTML = '';
+                document.getElementById('articleGalleryList').innerHTML = '';
+                document.getElementById('articleCoverPreview').style.display = 'none';
+                window._pendingFiles = null;
+                window._coverImage = null;
+                generateArticleId();
+                loadArticles();
+            } catch (e) {
+                showMsg('❌ خطا: ' + e.message, 'error');
+                showToast('❌ ذخیره‌سازی ناموفق', 'error');
+            }
+        });
+    }
 
     // ============================================================
-    // 0518 - افزودن آرشیو (Submit)
+    // 0517 - افزودن محصول (Submit) - با ایمن‌سازی
     // ============================================================
-    document.getElementById('addArchiveForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const id = parseInt(document.getElementById('archiveId').value);
-        const title = document.getElementById('archiveTitle').value.trim();
-        const excerpt = document.getElementById('archiveExcerpt').value.trim();
-        const type = document.getElementById('archiveType').value;
-        const date = document.getElementById('archiveDate').value || new Date().toISOString().split('T')[0];
-        const tags = document.getElementById('archiveTags').value.split(',').map(t => t.trim()).filter(Boolean);
-        const status = document.getElementById('archiveStatus').value;
-        const body = document.getElementById('archiveBody').innerHTML.trim();
+    const addProductForm = document.getElementById('addProductForm');
+    if (addProductForm) {
+        addProductForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('productId').value);
+            const name = document.getElementById('productName').value.trim();
+            const desc = document.getElementById('productDesc').value.trim();
+            const price = document.getElementById('productPrice').value.trim() || 'رایگان';
+            const icon = document.getElementById('productIcon').value.trim() || 'fa-cube';
+            const tag = document.getElementById('productTag').value.trim() || 'جدید';
+            const category = document.getElementById('productCategory').value.trim();
+            const stock = document.getElementById('productStock').value;
 
-        if (!title || !excerpt) {
-            showMsg('❌ لطفاً عنوان و توضیحات کوتاه را پر کنید.', 'error');
-            return;
-        }
-        if (!getToken()) { showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error'); return; }
-
-        let cover = null;
-        const coverImg = document.getElementById('archiveCoverPreviewImg');
-        if (coverImg.src && coverImg.src.startsWith('data:')) {
-            cover = coverImg.src;
-        }
-
-        const galleryFiles = window._pendingFiles?.archive_gallery || [];
-        const imageData = galleryFiles.map(f => f.data);
-        const files = window._pendingFiles?.archive || [];
-
-        try {
-            const existing = await fetchFromGitHub('_data/archive.json');
-            if (existing) {
-                archiveData = JSON.parse(existing.content);
-                archiveSha = existing.sha;
-            } else {
-                archiveData = {};
-                archiveSha = null;
+            if (!name || !desc) {
+                showMsg('❌ لطفاً نام و توضیحات را پر کنید.', 'error');
+                return;
             }
-            const key = String(id).padStart(4, '0');
-            archiveData[key] = {
-                title, excerpt, type, date, tags, status, body,
-                cover: cover,
-                images: imageData,
-                files: files.map(f => f.name),
-                updated: new Date().toISOString()
-            };
-            const newSha = await saveToGitHub('_data/archive.json', archiveData, archiveSha);
-            archiveSha = newSha;
+            if (!getToken()) { showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error'); return; }
 
-            for (const file of files) {
-                const path = `assets/archive/${key}/${file.name}`;
-                try { await uploadFileToGitHub(path, file.data); } catch (e) { console.error(e); }
-            }
-            for (let i = 0; i < imageData.length; i++) {
-                const path = `assets/archive/${key}/img_${i+1}.jpg`;
-                try { await uploadFileToGitHub(path, imageData[i].split(',')[1]); } catch (e) { console.error(e); }
-            }
-            if (cover) {
-                const coverPath = `assets/archive/${key}/cover.jpg`;
-                try { await uploadFileToGitHub(coverPath, cover.split(',')[1]); } catch (e) { console.error(e); }
+            let cover = null;
+            const coverImg = document.getElementById('productCoverPreviewImg');
+            if (coverImg.src && coverImg.src.startsWith('data:')) {
+                cover = coverImg.src;
             }
 
-            showMsg('✅ آیتم آرشیو با موفقیت ذخیره شد!', 'success');
-            showToast('✅ آرشیو ذخیره شد', 'success');
-            logActivity(`آیتم آرشیو جدید: ${title} (#${key})`);
-            this.reset();
-            document.getElementById('archiveFilesList').innerHTML = '';
-            document.getElementById('archiveGalleryList').innerHTML = '';
-            document.getElementById('archiveCoverPreview').style.display = 'none';
-            window._pendingFiles = null;
-            window._coverImage = null;
-            generateArchiveId();
-            loadArchive();
-        } catch (e) {
-            showMsg('❌ خطا: ' + e.message, 'error');
-            showToast('❌ ذخیره‌سازی ناموفق', 'error');
-        }
-    });
+            const galleryFiles = window._pendingFiles?.product_gallery || [];
+            const imageData = galleryFiles.map(f => f.data);
+            const files = window._pendingFiles?.product || [];
+
+            try {
+                const existing = await fetchFromGitHub('_data/products.json');
+                if (existing) {
+                    productsData = JSON.parse(existing.content);
+                    productsSha = existing.sha;
+                } else {
+                    productsData = {};
+                    productsSha = null;
+                }
+                const key = String(id).padStart(4, '0');
+                productsData[key] = {
+                    name, desc, price, icon, tag, category, stock,
+                    cover: cover,
+                    images: imageData,
+                    files: files.map(f => f.name),
+                    updated: new Date().toISOString()
+                };
+                const newSha = await saveToGitHub('_data/products.json', productsData, productsSha);
+                productsSha = newSha;
+
+                for (const file of files) {
+                    const path = `assets/products/${key}/${file.name}`;
+                    try { await uploadFileToGitHub(path, file.data); } catch (e) { console.error(e); }
+                }
+                for (let i = 0; i < imageData.length; i++) {
+                    const path = `assets/products/${key}/img_${i+1}.jpg`;
+                    try { await uploadFileToGitHub(path, imageData[i].split(',')[1]); } catch (e) { console.error(e); }
+                }
+                if (cover) {
+                    const coverPath = `assets/products/${key}/cover.jpg`;
+                    try { await uploadFileToGitHub(coverPath, cover.split(',')[1]); } catch (e) { console.error(e); }
+                }
+
+                showMsg('✅ محصول با موفقیت ذخیره شد!', 'success');
+                showToast('✅ محصول ذخیره شد', 'success');
+                logActivity(`محصول جدید: ${name} (#${key})`);
+                this.reset();
+                document.getElementById('productFilesList').innerHTML = '';
+                document.getElementById('productGalleryList').innerHTML = '';
+                document.getElementById('productCoverPreview').style.display = 'none';
+                window._pendingFiles = null;
+                window._coverImage = null;
+                generateProductId();
+                loadProducts();
+            } catch (e) {
+                showMsg('❌ خطا: ' + e.message, 'error');
+                showToast('❌ ذخیره‌سازی ناموفق', 'error');
+            }
+        });
+    }
+
+    // ============================================================
+    // 0518 - افزودن آرشیو (Submit) - با ایمن‌سازی
+    // ============================================================
+    const addArchiveForm = document.getElementById('addArchiveForm');
+    if (addArchiveForm) {
+        addArchiveForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('archiveId').value);
+            const title = document.getElementById('archiveTitle').value.trim();
+            const excerpt = document.getElementById('archiveExcerpt').value.trim();
+            const type = document.getElementById('archiveType').value;
+            const date = document.getElementById('archiveDate').value || new Date().toISOString().split('T')[0];
+            const tags = document.getElementById('archiveTags').value.split(',').map(t => t.trim()).filter(Boolean);
+            const status = document.getElementById('archiveStatus').value;
+            const body = document.getElementById('archiveBody').innerHTML.trim();
+
+            if (!title || !excerpt) {
+                showMsg('❌ لطفاً عنوان و توضیحات کوتاه را پر کنید.', 'error');
+                return;
+            }
+            if (!getToken()) { showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error'); return; }
+
+            let cover = null;
+            const coverImg = document.getElementById('archiveCoverPreviewImg');
+            if (coverImg.src && coverImg.src.startsWith('data:')) {
+                cover = coverImg.src;
+            }
+
+            const galleryFiles = window._pendingFiles?.archive_gallery || [];
+            const imageData = galleryFiles.map(f => f.data);
+            const files = window._pendingFiles?.archive || [];
+
+            try {
+                const existing = await fetchFromGitHub('_data/archive.json');
+                if (existing) {
+                    archiveData = JSON.parse(existing.content);
+                    archiveSha = existing.sha;
+                } else {
+                    archiveData = {};
+                    archiveSha = null;
+                }
+                const key = String(id).padStart(4, '0');
+                archiveData[key] = {
+                    title, excerpt, type, date, tags, status, body,
+                    cover: cover,
+                    images: imageData,
+                    files: files.map(f => f.name),
+                    updated: new Date().toISOString()
+                };
+                const newSha = await saveToGitHub('_data/archive.json', archiveData, archiveSha);
+                archiveSha = newSha;
+
+                for (const file of files) {
+                    const path = `assets/archive/${key}/${file.name}`;
+                    try { await uploadFileToGitHub(path, file.data); } catch (e) { console.error(e); }
+                }
+                for (let i = 0; i < imageData.length; i++) {
+                    const path = `assets/archive/${key}/img_${i+1}.jpg`;
+                    try { await uploadFileToGitHub(path, imageData[i].split(',')[1]); } catch (e) { console.error(e); }
+                }
+                if (cover) {
+                    const coverPath = `assets/archive/${key}/cover.jpg`;
+                    try { await uploadFileToGitHub(coverPath, cover.split(',')[1]); } catch (e) { console.error(e); }
+                }
+
+                showMsg('✅ آیتم آرشیو با موفقیت ذخیره شد!', 'success');
+                showToast('✅ آرشیو ذخیره شد', 'success');
+                logActivity(`آیتم آرشیو جدید: ${title} (#${key})`);
+                this.reset();
+                document.getElementById('archiveFilesList').innerHTML = '';
+                document.getElementById('archiveGalleryList').innerHTML = '';
+                document.getElementById('archiveCoverPreview').style.display = 'none';
+                window._pendingFiles = null;
+                window._coverImage = null;
+                generateArchiveId();
+                loadArchive();
+            } catch (e) {
+                showMsg('❌ خطا: ' + e.message, 'error');
+                showToast('❌ ذخیره‌سازی ناموفق', 'error');
+            }
+        });
+    }
 
     // ===== 0519 - تغییر رمز عبور =====
     function changePassword() {

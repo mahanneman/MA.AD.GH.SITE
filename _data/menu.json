@@ -1,14 +1,14 @@
 {
   "header": [
     {
-      "title": "مقالات",
-      "link": "articles.html",
-      "icon": "fa-newspaper"
-    },
-    {
       "title": "خانه",
       "link": "index.html",
       "icon": "fa-home"
+    },
+    {
+      "title": "مقالات",
+      "link": "articles.html",
+      "icon": "fa-newspaper"
     },
     {
       "title": "محصولات",

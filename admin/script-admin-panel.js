@@ -1094,11 +1094,21 @@ async function saveEdit() {
                 body: document.getElementById('editBody').value.trim(),
                 updated: new Date().toISOString()
             };
+            // به‌روزرسانی داده‌های محلی
             articlesData[key] = { ...articlesData[key], ...data };
-            // ذخیره در localStorage برای تست
-            localStorage.setItem('test_article_' + key, JSON.stringify(articlesData[key]));
-            showMsg('✅ مقاله در حافظه موقت ذخیره شد (گیت‌هاب غیرفعال).', 'success');
+            
+            // ========== اصلاح اصلی: ذخیره در گیت‌هاب ==========
+            if (!getToken()) {
+                showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error');
+                return;
+            }
+            const newSha = await saveToGitHub('_data/articles.json', articlesData, articlesSha);
+            articlesSha = newSha; // به‌روزرسانی sha برای دفعات بعد
+            // ===================================================
+            
+            showMsg('✅ مقاله با موفقیت در گیت‌هاب ذخیره شد.', 'success');
             loadArticles();
+            
         } else if (type === 'product') {
             data = {
                 name: document.getElementById('editName').value.trim(),
@@ -1111,9 +1121,17 @@ async function saveEdit() {
                 updated: new Date().toISOString()
             };
             productsData[key] = { ...productsData[key], ...data };
-            localStorage.setItem('test_product_' + key, JSON.stringify(productsData[key]));
-            showMsg('✅ محصول در حافظه موقت ذخیره شد.', 'success');
+            
+            if (!getToken()) {
+                showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error');
+                return;
+            }
+            const newSha = await saveToGitHub('_data/products.json', productsData, productsSha);
+            productsSha = newSha;
+            
+            showMsg('✅ محصول با موفقیت در گیت‌هاب ذخیره شد.', 'success');
             loadProducts();
+            
         } else if (type === 'archive') {
             data = {
                 title: document.getElementById('editTitle').value.trim(),
@@ -1125,15 +1143,26 @@ async function saveEdit() {
                 updated: new Date().toISOString()
             };
             archiveData[key] = { ...archiveData[key], ...data };
-            localStorage.setItem('test_archive_' + key, JSON.stringify(archiveData[key]));
-            showMsg('✅ آرشیو در حافظه موقت ذخیره شد.', 'success');
+            
+            if (!getToken()) {
+                showMsg('❌ لطفاً توکن گیت‌هاب را وارد کنید.', 'error');
+                return;
+            }
+            const newSha = await saveToGitHub('_data/archive.json', archiveData, archiveSha);
+            archiveSha = newSha;
+            
+            showMsg('✅ آیتم آرشیو با موفقیت در گیت‌هاب ذخیره شد.', 'success');
             loadArchive();
         }
+        
         closeEditModal();
-        showToast('✅ ذخیره شد (محلی)', 'success');
+        showToast('✅ ذخیره‌سازی در گیت‌هاب با موفقیت انجام شد.', 'success');
+        logActivity('ویرایش و ذخیره‌سازی ' + type + ' #' + key);
+        
     } catch (e) {
-        showMsg('❌ خطا: ' + e.message, 'error');
+        showMsg('❌ خطا در ذخیره‌سازی: ' + e.message, 'error');
         console.error(e);
+        showToast('❌ ذخیره‌سازی ناموفق', 'error');
     }
 }
     // ============================================================

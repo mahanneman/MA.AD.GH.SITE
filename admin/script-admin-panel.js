@@ -2284,29 +2284,38 @@
     // ============================================================
     // 0025 - بارگذاری اولیه (Initial Load)
     // ============================================================
-    checkLogin();
-    if (sessionStorage.getItem('admin_logged_in') === 'true' || !document.getElementById('loginPage')) {
-        if (getToken()) {
+// ============================================================
+// 0525 - بارگذاری اولیه (Initial Load)
+// ============================================================
+checkLogin();
+if (sessionStorage.getItem('admin_logged_in') === 'true' || !document.getElementById('loginPage')) {
+    if (getToken()) {
+        // ✅ بررسی وجود تابع قبل از فراخوانی
+        if (typeof loadAllData === 'function') {
             loadAllData();
-            setInterval(function() {
-                if (document.querySelector('.pro-tab-content.active#tab-articles')) loadArticles();
-                if (document.querySelector('.pro-tab-content.active#tab-products')) loadProducts();
-                if (document.querySelector('.pro-tab-content.active#tab-archive')) loadArchive();
-            }, 30000);
         } else {
-            var articlesList = document.getElementById('proArticlesList');
-            if (articlesList) articlesList.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
-            var productsList = document.getElementById('proProductsList');
-            if (productsList) productsList.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
-            var archiveList = document.getElementById('proArchiveList');
-            if (archiveList) archiveList.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
+            console.warn('⚠️ تابع loadAllData هنوز تعریف نشده است.');
         }
-        console.log('✅ پنل مدیریت فوق‌حرفه‌ای با موفقیت بارگذاری شد.');
-        loadAppearanceSettings();
-        loadMenuData();
-        loadSectionsData();
+        setInterval(function() {
+            if (document.querySelector('.pro-tab-content.active#tab-articles')) loadArticles();
+            if (document.querySelector('.pro-tab-content.active#tab-products')) loadProducts();
+            if (document.querySelector('.pro-tab-content.active#tab-archive')) loadArchive();
+        }, 30000);
+    } else {
+        var articlesList = document.getElementById('proArticlesList');
+        if (articlesList) articlesList.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
+        var productsList = document.getElementById('proProductsList');
+        if (productsList) productsList.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
+        var archiveList = document.getElementById('proArchiveList');
+        if (archiveList) archiveList.innerHTML = '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.</div>';
     }
-
+    console.log('✅ پنل مدیریت فوق‌حرفه‌ای با موفقیت بارگذاری شد.');
+    
+    // ✅ بررسی وجود توابع قبل از فراخوانی
+    if (typeof loadAppearanceSettings === 'function') loadAppearanceSettings();
+    if (typeof loadMenuData === 'function') loadMenuData();
+    if (typeof loadSectionsData === 'function') loadSectionsData();
+}
     // ============================================================
     // 0026 - محتوای ایندکس (Index Content)
     // ============================================================

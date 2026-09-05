@@ -145,7 +145,7 @@
         const tokenInput = document.getElementById('proToken');
         if (tokenInput) tokenInput.value = PRO_TOKEN;
         updateTokenStatus(true);
-    } else { updateTokenStatus(false); }
+     else { updateTokenStatus(false); }
 
 function proSaveToken() {
     const tokenInput = document.getElementById('proToken');

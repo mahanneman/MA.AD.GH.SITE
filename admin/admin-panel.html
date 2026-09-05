@@ -13,9 +13,8 @@
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="style-admin-panel.css" />
 
-    <!-- استایل‌های تکمیلی که در فایل‌های CSS وجود ندارند -->
+    <!-- استایل‌های تکمیلی -->
     <style>
-        /* کلاس‌هایی که در style-admin-panel.css تعریف نشده‌اند */
         .pro-key-hint {
             display: inline-block;
             padding: 0 6px;
@@ -230,16 +229,28 @@
                 grid-template-columns: 1fr;
             }
         }
+        /* دکمه‌ای برای نمایش لاگین (اگر نیاز شد) */
+        .btn-show-login {
+            background: var(--pro-yellow);
+            color: #0a0f1a;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .btn-show-login:hover {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ============================================================
-    پنل مدیریت (نمایش مستقیم - بدون لاگین)
-    ============================================================ -->
+    <!-- ===== پنل مدیریت (نمایش مستقیم) ===== -->
     <div id="adminPanel" style="display:block;">
 
-        <!-- ===== هدر پنل ===== -->
+        <!-- ===== هدر ===== -->
         <header class="pro-header">
             <div class="logo">
                 <i class="fas fa-cogs"></i>
@@ -252,7 +263,7 @@
             <div class="user-area">
                 <span class="name"><i class="fas fa-user"></i> <span id="proAdminName">ادمین</span></span>
                 <span class="pro-key-hint">Ctrl+S</span>
-                <button class="btn-logout" onclick="proLogout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
+                <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> خروج</button>
             </div>
         </header>
 
@@ -260,13 +271,13 @@
         <div class="pro-token-bar">
             <label><i class="fas fa-key"></i> توکن گیت‌هاب:</label>
             <input type="password" id="proToken" placeholder="توکن خود را وارد کنید..." />
-            <button class="btn-token" onclick="proSaveToken()"><i class="fas fa-save"></i> ذخیره</button>
+            <button class="btn-token" id="saveTokenBtn"><i class="fas fa-save"></i> ذخیره</button>
             <span class="token-status" id="proTokenStatus">⚠️ توکن ذخیره نشده</span>
             <span style="font-size:0.7rem;color:var(--pro-text-secondary);">
                 <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--pro-primary);">ساخت توکن جدید</a>
                 (نیاز به دسترسی repo)
             </span>
-            <button class="pro-export-csv" onclick="exportCSV()"><i class="fas fa-file-csv"></i> خروجی CSV</button>
+            <button class="pro-export-csv" id="exportCsvBtn"><i class="fas fa-file-csv"></i> خروجی CSV</button>
         </div>
 
         <!-- ===== پیام‌ها ===== -->
@@ -355,8 +366,8 @@
                         <div class="pro-field full"><label>تصویر پس‌زمینه (لینک)</label><input type="text" id="appBgImage" placeholder="https://example.com/bg.jpg" /></div>
                     </div>
                     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
-                        <button type="button" class="pro-btn pro-btn-primary pro-btn-lg" onclick="saveAppearance()"><i class="fas fa-save"></i> ذخیره</button>
-                        <button type="reset" class="pro-btn pro-btn-outline" onclick="resetAppearanceForm()"><i class="fas fa-undo"></i> بازنشانی</button>
+                        <button type="button" class="pro-btn pro-btn-primary pro-btn-lg" id="saveAppearanceBtn"><i class="fas fa-save"></i> ذخیره</button>
+                        <button type="reset" class="pro-btn pro-btn-outline" id="resetAppearanceBtn"><i class="fas fa-undo"></i> بازنشانی</button>
                     </div>
                 </form>
             </div>
@@ -373,12 +384,12 @@
                 <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
                     <div class="pro-field" style="flex:1;min-width:150px;"><input type="text" id="newHeaderTitle" placeholder="عنوان" /></div>
                     <div class="pro-field" style="flex:1;min-width:150px;"><input type="text" id="newHeaderLink" placeholder="لینک" /></div>
-                    <button class="pro-btn pro-btn-secondary" onclick="addMenuItem('header')"><i class="fas fa-plus"></i> افزودن</button>
+                    <button class="pro-btn pro-btn-secondary" id="addHeaderMenuBtn"><i class="fas fa-plus"></i> افزودن</button>
                 </div>
                 <div id="headerMenuList" class="menu-list"><div class="pro-empty"><i class="fas fa-list"></i>هیچ آیتمی وجود ندارد.</div></div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
-                    <button class="pro-btn pro-btn-primary" onclick="saveMenus()"><i class="fas fa-save"></i> ذخیره</button>
-                    <button class="pro-btn pro-btn-outline" onclick="resetMenusToDefault()"><i class="fas fa-undo"></i> بازنشانی</button>
+                    <button class="pro-btn pro-btn-primary" id="saveMenusBtn"><i class="fas fa-save"></i> ذخیره</button>
+                    <button class="pro-btn pro-btn-outline" id="resetMenusBtn"><i class="fas fa-undo"></i> بازنشانی</button>
                 </div>
             </div>
             <div class="pro-card">
@@ -386,10 +397,10 @@
                 <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
                     <div class="pro-field" style="flex:1;min-width:150px;"><input type="text" id="newSlideTitle" placeholder="عنوان" /></div>
                     <div class="pro-field" style="flex:1;min-width:150px;"><input type="text" id="newSlideLink" placeholder="لینک" /></div>
-                    <button class="pro-btn pro-btn-secondary" onclick="addMenuItem('slide')"><i class="fas fa-plus"></i> افزودن</button>
+                    <button class="pro-btn pro-btn-secondary" id="addSlideMenuBtn"><i class="fas fa-plus"></i> افزودن</button>
                 </div>
                 <div id="slideMenuList" class="menu-list"><div class="pro-empty"><i class="fas fa-list"></i>هیچ آیتمی وجود ندارد.</div></div>
-                <button class="pro-btn pro-btn-primary" onclick="saveMenus()"><i class="fas fa-save"></i> ذخیره</button>
+                <button class="pro-btn pro-btn-primary" id="saveMenusBtn2"><i class="fas fa-save"></i> ذخیره</button>
             </div>
         </div>
 
@@ -458,7 +469,7 @@
                         </div>
                     </div>
                     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
-                        <button type="button" class="pro-btn pro-btn-primary pro-btn-lg" onclick="saveSections()"><i class="fas fa-save"></i> ذخیره همه</button>
+                        <button type="button" class="pro-btn pro-btn-primary pro-btn-lg" id="saveSectionsBtn"><i class="fas fa-save"></i> ذخیره همه</button>
                     </div>
                 </form>
             </div>
@@ -484,8 +495,8 @@
                     <div class="pro-field"><input type="text" id="newEduCert" placeholder="لینک مدرک" /></div>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
-                    <button class="pro-btn pro-btn-secondary" onclick="addEducationItem()"><i class="fas fa-plus"></i> افزودن</button>
-                    <button class="pro-btn pro-btn-primary" onclick="saveEducation()"><i class="fas fa-save"></i> ذخیره</button>
+                    <button class="pro-btn pro-btn-secondary" id="addEduBtn"><i class="fas fa-plus"></i> افزودن</button>
+                    <button class="pro-btn pro-btn-primary" id="saveEduBtn"><i class="fas fa-save"></i> ذخیره</button>
                 </div>
             </div>
 
@@ -503,8 +514,8 @@
                     <div class="pro-field"><input type="text" id="newCertLink" placeholder="لینک مدرک" /></div>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
-                    <button class="pro-btn pro-btn-secondary" onclick="addCertificateItem()"><i class="fas fa-plus"></i> افزودن</button>
-                    <button class="pro-btn pro-btn-primary" onclick="saveCertificates()"><i class="fas fa-save"></i> ذخیره</button>
+                    <button class="pro-btn pro-btn-secondary" id="addCertBtn"><i class="fas fa-plus"></i> افزودن</button>
+                    <button class="pro-btn pro-btn-primary" id="saveCertBtn"><i class="fas fa-save"></i> ذخیره</button>
                 </div>
             </div>
 
@@ -525,8 +536,8 @@
                     <div class="pro-field"><input type="color" id="newSkillColor" value="#2563eb" /></div>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
-                    <button class="pro-btn pro-btn-secondary" onclick="addSkillItem()"><i class="fas fa-plus"></i> افزودن</button>
-                    <button class="pro-btn pro-btn-primary" onclick="saveSkills()"><i class="fas fa-save"></i> ذخیره</button>
+                    <button class="pro-btn pro-btn-secondary" id="addSkillBtn"><i class="fas fa-plus"></i> افزودن</button>
+                    <button class="pro-btn pro-btn-primary" id="saveSkillBtn"><i class="fas fa-save"></i> ذخیره</button>
                 </div>
             </div>
 
@@ -544,8 +555,8 @@
                     <div class="pro-field"><input type="color" id="newSocialColor" value="#0088cc" /></div>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
-                    <button class="pro-btn pro-btn-secondary" onclick="addSocialItem()"><i class="fas fa-plus"></i> افزودن</button>
-                    <button class="pro-btn pro-btn-primary" onclick="saveSocial()"><i class="fas fa-save"></i> ذخیره</button>
+                    <button class="pro-btn pro-btn-secondary" id="addSocialBtn"><i class="fas fa-plus"></i> افزودن</button>
+                    <button class="pro-btn pro-btn-primary" id="saveSocialBtn"><i class="fas fa-save"></i> ذخیره</button>
                 </div>
             </div>
 
@@ -563,8 +574,8 @@
                     <div class="pro-field"><input type="text" id="newServiceDesc" placeholder="توضیحات" /></div>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
-                    <button class="pro-btn pro-btn-secondary" onclick="addServiceItem()"><i class="fas fa-plus"></i> افزودن</button>
-                    <button class="pro-btn pro-btn-primary" onclick="saveServices()"><i class="fas fa-save"></i> ذخیره</button>
+                    <button class="pro-btn pro-btn-secondary" id="addServiceBtn"><i class="fas fa-plus"></i> افزودن</button>
+                    <button class="pro-btn pro-btn-primary" id="saveServiceBtn"><i class="fas fa-save"></i> ذخیره</button>
                 </div>
             </div>
 
@@ -583,8 +594,8 @@
                     <div class="pro-field"><input type="text" id="newTestiImage" placeholder="لینک تصویر" /></div>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
-                    <button class="pro-btn pro-btn-secondary" onclick="addTestimonialItem()"><i class="fas fa-plus"></i> افزودن</button>
-                    <button class="pro-btn pro-btn-primary" onclick="saveTestimonials()"><i class="fas fa-save"></i> ذخیره</button>
+                    <button class="pro-btn pro-btn-secondary" id="addTestiBtn"><i class="fas fa-plus"></i> افزودن</button>
+                    <button class="pro-btn pro-btn-primary" id="saveTestiBtn"><i class="fas fa-save"></i> ذخیره</button>
                 </div>
             </div>
 
@@ -602,8 +613,8 @@
                     <div class="pro-field"><input type="text" id="newAwardDesc" placeholder="توضیحات" /></div>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
-                    <button class="pro-btn pro-btn-secondary" onclick="addAwardItem()"><i class="fas fa-plus"></i> افزودن</button>
-                    <button class="pro-btn pro-btn-primary" onclick="saveAwards()"><i class="fas fa-save"></i> ذخیره</button>
+                    <button class="pro-btn pro-btn-secondary" id="addAwardBtn"><i class="fas fa-plus"></i> افزودن</button>
+                    <button class="pro-btn pro-btn-primary" id="saveAwardBtn"><i class="fas fa-save"></i> ذخیره</button>
                 </div>
             </div>
 
@@ -620,8 +631,8 @@
                     <div class="pro-field"><input type="text" id="newLinkIcon" placeholder="آیکون" /></div>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
-                    <button class="pro-btn pro-btn-secondary" onclick="addLinkItem()"><i class="fas fa-plus"></i> افزودن</button>
-                    <button class="pro-btn pro-btn-primary" onclick="saveLinks()"><i class="fas fa-save"></i> ذخیره</button>
+                    <button class="pro-btn pro-btn-secondary" id="addLinkBtn"><i class="fas fa-plus"></i> افزودن</button>
+                    <button class="pro-btn pro-btn-primary" id="saveLinkBtn"><i class="fas fa-save"></i> ذخیره</button>
                 </div>
             </div>
         </div>
@@ -633,18 +644,18 @@
                     <h3><i class="fas fa-newspaper"></i> مدیریت مقالات</h3>
                     <span class="sub" id="proArticlesSub">۰ مقاله</span>
                     <div class="pro-view-toggle">
-                        <button class="active" onclick="setView('articles','grid')"><i class="fas fa-th"></i></button>
-                        <button onclick="setView('articles','list')"><i class="fas fa-list"></i></button>
+                        <button class="active" data-view="grid" data-type="articles"><i class="fas fa-th"></i></button>
+                        <button data-view="list" data-type="articles"><i class="fas fa-list"></i></button>
                     </div>
                 </div>
                 <div class="pro-search">
-                    <input type="text" id="articlesSearch" placeholder="جستجو در مقالات..." oninput="filterArticles(this.value)" />
-                    <button class="pro-btn pro-btn-secondary" onclick="switchTab('add-article')"><i class="fas fa-plus"></i> افزودن جدید</button>
+                    <input type="text" id="articlesSearch" placeholder="جستجو در مقالات..." />
+                    <button class="pro-btn pro-btn-secondary" id="addArticleBtn"><i class="fas fa-plus"></i> افزودن جدید</button>
                 </div>
                 <div id="proArticlesList" class="pro-items"><div class="pro-empty"><i class="fas fa-newspaper"></i>در حال بارگذاری...</div></div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
                     <a href="blank-article.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
-                    <button class="pro-duplicate-btn" onclick="duplicateItem('article')"><i class="fas fa-copy"></i> کپی از روی</button>
+                    <button class="pro-duplicate-btn" id="duplicateArticleBtn"><i class="fas fa-copy"></i> کپی از روی</button>
                 </div>
             </div>
         </div>
@@ -684,7 +695,7 @@
                 </div>
                 <div class="form-section">
                     <h4><i class="fas fa-tags"></i> برچسب‌ها و کلمات کلیدی</h4>
-                    <div class="pro-field"><label><i class="fas fa-tags"></i> برچسب‌ها</label><div class="tags-input" id="articleTagsContainer"><input type="text" id="articleTagInput" placeholder="تایپ کنید و Enter بزنید..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('articleTagsContainer','articleTagInput');}" /></div><input type="hidden" id="articleTags" value="" /></div>
+                    <div class="pro-field"><label><i class="fas fa-tags"></i> برچسب‌ها</label><div class="tags-input" id="articleTagsContainer"><input type="text" id="articleTagInput" placeholder="تایپ کنید و Enter بزنید..." /></div><input type="hidden" id="articleTags" value="" /></div>
                     <div class="pro-field"><label><i class="fas fa-key"></i> کلمات کلیدی (با کاما جدا کنید)</label><input type="text" id="articleKeywords" placeholder="CFD, توربولانس, انتقال حرارت" /></div>
                 </div>
                 <div class="form-section">
@@ -703,9 +714,9 @@
                     <div class="pro-field"><label><i class="fas fa-link"></i> لینک DOI</label><input type="text" id="articleDoi" placeholder="10.xxxx/xxxxxx" /></div>
                 </div>
                 <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
-                    <button type="button" class="pro-btn pro-btn-primary pro-btn-lg" onclick="saveArticle()"><i class="fas fa-save"></i> انتشار</button>
-                    <button type="reset" class="pro-btn pro-btn-outline" onclick="resetArticleForm()"><i class="fas fa-undo"></i> بازنشانی</button>
-                    <button type="button" class="pro-btn-ai" onclick="generateArticleContent()"><i class="fas fa-wand-magic-sparkles"></i> تولید با هوش مصنوعی</button>
+                    <button type="button" class="pro-btn pro-btn-primary pro-btn-lg" id="saveArticleBtn"><i class="fas fa-save"></i> انتشار</button>
+                    <button type="reset" class="pro-btn pro-btn-outline" id="resetArticleBtn"><i class="fas fa-undo"></i> بازنشانی</button>
+                    <button type="button" class="pro-btn-ai" id="generateArticleBtn"><i class="fas fa-wand-magic-sparkles"></i> تولید با هوش مصنوعی</button>
                     <a href="blank-article.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
                 </div>
             </div>
@@ -718,13 +729,13 @@
                     <h3><i class="fas fa-cube"></i> مدیریت محصولات</h3>
                     <span class="sub" id="proProductsSub">۰ محصول</span>
                     <div class="pro-view-toggle">
-                        <button class="active" onclick="setView('products','grid')"><i class="fas fa-th"></i></button>
-                        <button onclick="setView('products','list')"><i class="fas fa-list"></i></button>
+                        <button class="active" data-view="grid" data-type="products"><i class="fas fa-th"></i></button>
+                        <button data-view="list" data-type="products"><i class="fas fa-list"></i></button>
                     </div>
                 </div>
                 <div class="pro-search">
-                    <input type="text" id="productsSearch" placeholder="جستجو در محصولات..." oninput="filterProducts(this.value)" />
-                    <button class="pro-btn pro-btn-secondary" onclick="switchTab('add-product')"><i class="fas fa-plus"></i> افزودن جدید</button>
+                    <input type="text" id="productsSearch" placeholder="جستجو در محصولات..." />
+                    <button class="pro-btn pro-btn-secondary" id="addProductBtn"><i class="fas fa-plus"></i> افزودن جدید</button>
                 </div>
                 <div id="proProductsList" class="pro-items"><div class="pro-empty"><i class="fas fa-cube"></i>در حال بارگذاری...</div></div>
                 <a href="blank-product.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
@@ -750,7 +761,7 @@
                     <div class="pro-grid"><div class="pro-field full"><label>گالری (۴ عدد)</label><div class="pro-upload-zone" id="productGalleryZone"><i class="fas fa-plus-circle"></i><p>کلیک کنید</p><input type="file" id="productGalleryInput" accept="image/*" multiple style="display:none;"><div id="productGalleryList" class="file-list"></div></div></div></div>
                     <div class="pro-grid"><div class="pro-field full"><label>فایل‌های پیوست</label><div class="pro-upload-zone" id="productFilesZone"><i class="fas fa-cloud-upload-alt"></i><p>کلیک کنید</p><input type="file" id="productFilesInput" multiple style="display:none;"><div id="productFilesList" class="file-list"></div></div></div></div>
                     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
-                        <button type="submit" class="pro-btn pro-btn-secondary pro-btn-lg"><i class="fas fa-save"></i> ذخیره</button>
+                        <button type="submit" class="pro-btn pro-btn-secondary pro-btn-lg" id="submitProductBtn"><i class="fas fa-save"></i> ذخیره</button>
                         <button type="reset" class="pro-btn pro-btn-outline"><i class="fas fa-undo"></i> بازنشانی</button>
                         <a href="blank-product.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
                     </div>
@@ -763,8 +774,8 @@
             <div class="pro-card">
                 <div class="pro-card-header"><h3><i class="fas fa-archive"></i> مدیریت آرشیو</h3><span class="sub" id="proArchiveSub">۰ آیتم</span></div>
                 <div class="pro-search">
-                    <input type="text" id="archiveSearch" placeholder="جستجو..." oninput="filterArchive(this.value)" />
-                    <button class="pro-btn pro-btn-purple" onclick="switchTab('add-archive')"><i class="fas fa-plus"></i> افزودن جدید</button>
+                    <input type="text" id="archiveSearch" placeholder="جستجو..." />
+                    <button class="pro-btn pro-btn-purple" id="addArchiveBtn"><i class="fas fa-plus"></i> افزودن جدید</button>
                 </div>
                 <div id="proArchiveList" class="pro-items"><div class="pro-empty"><i class="fas fa-archive"></i>در حال بارگذاری...</div></div>
                 <a href="blank-archive.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
@@ -789,7 +800,7 @@
                     <div class="pro-grid"><div class="pro-field full"><label>گالری (۴ عدد)</label><div class="pro-upload-zone" id="archiveGalleryZone"><i class="fas fa-plus-circle"></i><p>کلیک کنید</p><input type="file" id="archiveGalleryInput" accept="image/*" multiple style="display:none;"><div id="archiveGalleryList" class="file-list"></div></div></div></div>
                     <div class="pro-grid"><div class="pro-field full"><label>فایل‌های پیوست</label><div class="pro-upload-zone" id="archiveFilesZone"><i class="fas fa-cloud-upload-alt"></i><p>کلیک کنید</p><input type="file" id="archiveFilesInput" multiple style="display:none;"><div id="archiveFilesList" class="file-list"></div></div></div></div>
                     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
-                        <button type="submit" class="pro-btn pro-btn-purple pro-btn-lg"><i class="fas fa-save"></i> ذخیره</button>
+                        <button type="submit" class="pro-btn pro-btn-purple pro-btn-lg" id="submitArchiveBtn"><i class="fas fa-save"></i> ذخیره</button>
                         <button type="reset" class="pro-btn pro-btn-outline"><i class="fas fa-undo"></i> بازنشانی</button>
                         <a href="blank-archive.html" target="_blank" class="pro-btn pro-btn-blank"><i class="fas fa-external-link-alt"></i> صفحه خالی</a>
                     </div>
@@ -804,32 +815,28 @@
                     <h3><i class="fas fa-users"></i> لیست کاربران</h3>
                     <span class="sub" id="proMembersSub">۰ کاربر</span>
                     <div style="display:flex;gap:8px;">
-                        <button class="pro-btn pro-btn-sm pro-btn-secondary" onclick="refreshMembers()"><i class="fas fa-sync"></i></button>
-                        <button class="pro-btn pro-btn-sm pro-btn-purple" onclick="exportMembersData()"><i class="fas fa-file-export"></i> خروجی</button>
+                        <button class="pro-btn pro-btn-sm pro-btn-secondary" id="refreshMembersBtn"><i class="fas fa-sync"></i></button>
+                        <button class="pro-btn pro-btn-sm pro-btn-purple" id="exportMembersBtn"><i class="fas fa-file-export"></i> خروجی</button>
                     </div>
                 </div>
                 <div class="pro-advanced-filter">
-                    <select id="memberStatusFilter" onchange="filterMembers()">
-                        <option value="all">همه کاربران</option>
-                        <option value="active">فعال</option>
-                        <option value="inactive">غیرفعال</option>
-                    </select>
-                    <input type="text" id="membersSearch" placeholder="جستجو..." oninput="filterMembers()" />
-                    <button class="pro-btn pro-btn-sm pro-btn-primary" onclick="filterMembers()"><i class="fas fa-search"></i></button>
+                    <select id="memberStatusFilter"><option value="all">همه کاربران</option><option value="active">فعال</option><option value="inactive">غیرفعال</option></select>
+                    <input type="text" id="membersSearch" placeholder="جستجو..." />
+                    <button class="pro-btn pro-btn-sm pro-btn-primary" id="searchMembersBtn"><i class="fas fa-search"></i></button>
                 </div>
                 <div id="membersList" class="pro-items"><div class="pro-empty"><i class="fas fa-users"></i>در حال بارگذاری کاربران...</div></div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
-                    <button class="pro-btn pro-btn-secondary" onclick="syncAllMembers()"><i class="fas fa-sync"></i> همگام‌سازی با گیت‌هاب</button>
-                    <button class="pro-export-csv" onclick="exportMembersCSV()"><i class="fas fa-file-csv"></i> خروجی CSV کاربران</button>
+                    <button class="pro-btn pro-btn-secondary" id="syncMembersBtn"><i class="fas fa-sync"></i> همگام‌سازی با گیت‌هاب</button>
+                    <button class="pro-export-csv" id="exportMembersCsvBtn"><i class="fas fa-file-csv"></i> خروجی CSV کاربران</button>
                 </div>
             </div>
             <div class="pro-card" id="memberDetailCard" style="display:none;">
                 <div class="pro-card-header">
                     <h3><i class="fas fa-user-circle"></i> <span id="memberDetailName">کاربر</span> <span style="font-size:0.8rem;color:var(--pro-text-secondary);">#<span id="memberDetailId">---</span></span></h3>
                     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                        <button class="pro-btn pro-btn-warning pro-btn-sm" onclick="openEditMemberModal()"><i class="fas fa-edit"></i> ویرایش</button>
-                        <button class="pro-btn pro-btn-danger pro-btn-sm" onclick="deleteMember()"><i class="fas fa-trash"></i> حذف کاربر</button>
-                        <button class="pro-btn pro-btn-outline pro-btn-sm" onclick="closeMemberDetail()"><i class="fas fa-times"></i> بستن</button>
+                        <button class="pro-btn pro-btn-warning pro-btn-sm" id="editMemberBtn"><i class="fas fa-edit"></i> ویرایش</button>
+                        <button class="pro-btn pro-btn-danger pro-btn-sm" id="deleteMemberBtn"><i class="fas fa-trash"></i> حذف کاربر</button>
+                        <button class="pro-btn pro-btn-outline pro-btn-sm" id="closeMemberDetailBtn"><i class="fas fa-times"></i> بستن</button>
                     </div>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:12px;background:var(--pro-bg);border-radius:var(--pro-radius);border:1px solid var(--pro-border);">
@@ -843,7 +850,7 @@
                 <div style="margin-top:16px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
                         <h4 style="font-size:0.95rem;"><i class="fas fa-shopping-bag"></i> سفارشات</h4>
-                        <button class="pro-btn pro-btn-sm pro-btn-secondary" onclick="refreshMemberOrders()"><i class="fas fa-sync"></i> به‌روزرسانی</button>
+                        <button class="pro-btn pro-btn-sm pro-btn-secondary" id="refreshMemberOrdersBtn"><i class="fas fa-sync"></i> به‌روزرسانی</button>
                     </div>
                     <div id="memberOrdersList" class="pro-items"><div class="pro-empty"><i class="fas fa-box"></i>در حال بارگذاری سفارشات...</div></div>
                 </div>
@@ -857,40 +864,27 @@
                     <h3><i class="fas fa-shopping-bag"></i> مدیریت سفارشات</h3>
                     <span class="sub" id="proOrdersSub">۰ سفارش</span>
                     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                        <button class="pro-btn pro-btn-sm pro-btn-secondary" onclick="refreshOrders()" title="به‌روزرسانی"><i class="fas fa-sync"></i></button>
-                        <button class="pro-export-csv" onclick="exportOrdersCSV()"><i class="fas fa-file-csv"></i> خروجی CSV</button>
-                        <button class="pro-btn pro-btn-sm pro-btn-outline" onclick="exportAllOrders()"><i class="fas fa-file-export"></i> JSON</button>
+                        <button class="pro-btn pro-btn-sm pro-btn-secondary" id="refreshOrdersBtn"><i class="fas fa-sync"></i></button>
+                        <button class="pro-export-csv" id="exportOrdersCsvBtn"><i class="fas fa-file-csv"></i> خروجی CSV</button>
+                        <button class="pro-btn pro-btn-sm pro-btn-outline" id="exportOrdersJsonBtn"><i class="fas fa-file-export"></i> JSON</button>
                     </div>
                 </div>
                 <div class="pro-advanced-filter">
-                    <select id="orderStatusFilter" onchange="filterOrders()">
-                        <option value="all">همه وضعیت‌ها</option>
-                        <option value="pending">در انتظار پرداخت</option>
-                        <option value="paid">پرداخت شده</option>
-                        <option value="shipped">ارسال شده</option>
-                        <option value="completed">تکمیل شده</option>
-                        <option value="canceled">لغو شده</option>
-                    </select>
-                    <select id="orderSort" onchange="filterOrders()">
-                        <option value="date_desc">جدیدترین</option>
-                        <option value="date_asc">قدیمی‌ترین</option>
-                        <option value="total_desc">بیشترین مبلغ</option>
-                        <option value="total_asc">کمترین مبلغ</option>
-                        <option value="status">بر اساس وضعیت</option>
-                    </select>
-                    <input type="text" id="ordersSearch" placeholder="جستجو (شناسه، کاربر، محصول...)" oninput="filterOrders()" />
-                    <button class="pro-btn pro-btn-sm pro-btn-primary" onclick="filterOrders()"><i class="fas fa-search"></i></button>
+                    <select id="orderStatusFilter"><option value="all">همه وضعیت‌ها</option><option value="pending">در انتظار پرداخت</option><option value="paid">پرداخت شده</option><option value="shipped">ارسال شده</option><option value="completed">تکمیل شده</option><option value="canceled">لغو شده</option></select>
+                    <select id="orderSort"><option value="date_desc">جدیدترین</option><option value="date_asc">قدیمی‌ترین</option><option value="total_desc">بیشترین مبلغ</option><option value="total_asc">کمترین مبلغ</option><option value="status">بر اساس وضعیت</option></select>
+                    <input type="text" id="ordersSearch" placeholder="جستجو (شناسه، کاربر، محصول...)" />
+                    <button class="pro-btn pro-btn-sm pro-btn-primary" id="filterOrdersBtn"><i class="fas fa-search"></i></button>
                 </div>
                 <div id="ordersListContainer" class="pro-items"><div class="pro-empty"><i class="fas fa-shopping-bag"></i>در حال بارگذاری سفارشات...</div></div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
-                    <button class="pro-btn pro-btn-secondary" onclick="syncAllOrdersToGlobal()"><i class="fas fa-sync"></i> همگام‌سازی گلوبال</button>
-                    <button class="pro-btn pro-btn-warning" id="bulkActionBtn" onclick="openBulkStatusModal()" disabled><i class="fas fa-layer-group"></i> تغییر وضعیت گروهی</button>
-                    <button class="pro-btn pro-btn-info" onclick="exportOrderHistory()"><i class="fas fa-file-alt"></i> گزارش تغییرات</button>
-                    <button class="pro-btn pro-btn-danger" onclick="cleanOldUserOrders(30)"><i class="fas fa-broom"></i> پاک‌سازی ۳۰ روز</button>
-                    <button class="pro-btn pro-btn-danger" onclick="cleanOldUserOrders(60)"><i class="fas fa-broom"></i> پاک‌سازی ۶۰ روز</button>
-                    <button class="pro-export-csv" onclick="exportOrdersCSV()"><i class="fas fa-file-csv"></i> خروجی CSV</button>
-                    <button class="pro-btn pro-btn-outline" onclick="exportAllOrders()"><i class="fas fa-file-export"></i> خروجی JSON</button>
-                    <button class="pro-btn pro-btn-primary" onclick="refreshOrders()"><i class="fas fa-sync-alt"></i> رفرش</button>
+                    <button class="pro-btn pro-btn-secondary" id="syncOrdersBtn"><i class="fas fa-sync"></i> همگام‌سازی گلوبال</button>
+                    <button class="pro-btn pro-btn-warning" id="bulkActionBtn" disabled><i class="fas fa-layer-group"></i> تغییر وضعیت گروهی</button>
+                    <button class="pro-btn pro-btn-info" id="exportOrderHistoryBtn"><i class="fas fa-file-alt"></i> گزارش تغییرات</button>
+                    <button class="pro-btn pro-btn-danger" id="clean30Btn"><i class="fas fa-broom"></i> پاک‌سازی ۳۰ روز</button>
+                    <button class="pro-btn pro-btn-danger" id="clean60Btn"><i class="fas fa-broom"></i> پاک‌سازی ۶۰ روز</button>
+                    <button class="pro-export-csv" id="exportOrdersCsvBtn2"><i class="fas fa-file-csv"></i> خروجی CSV</button>
+                    <button class="pro-btn pro-btn-outline" id="exportOrdersJsonBtn2"><i class="fas fa-file-export"></i> خروجی JSON</button>
+                    <button class="pro-btn pro-btn-primary" id="refreshOrdersBtn2"><i class="fas fa-sync-alt"></i> رفرش</button>
                 </div>
                 <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;padding:12px;background:var(--pro-bg);border-radius:var(--pro-radius);border:1px solid var(--pro-border);">
                     <span><strong>مجموع:</strong> <span id="orderStatTotal">۰</span></span>
@@ -911,7 +905,7 @@
                     <div class="pro-field"><label>رمز فعلی</label><input type="password" id="proCurrentPass" /></div>
                     <div class="pro-field"><label>رمز جدید</label><input type="password" id="proNewPass" /></div>
                     <div class="pro-field"><label>تکرار</label><input type="password" id="proConfirmPass" /></div>
-                    <button class="pro-btn pro-btn-primary" onclick="changePassword()"><i class="fas fa-save"></i> تغییر</button>
+                    <button class="pro-btn pro-btn-primary" id="changePassBtn"><i class="fas fa-save"></i> تغییر</button>
                     <div id="proPassMsg" style="margin-top:10px;"></div>
                 </div>
             </div>
@@ -924,9 +918,9 @@
             <div class="pro-card">
                 <div class="pro-card-header"><h3><i class="fas fa-database"></i> مدیریت داده‌ها</h3></div>
                 <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                    <button class="pro-btn pro-btn-warning" onclick="exportData()"><i class="fas fa-download"></i> خروجی JSON</button>
-                    <button class="pro-export-csv" onclick="exportCSV()"><i class="fas fa-file-csv"></i> خروجی CSV</button>
-                    <button class="pro-btn pro-btn-danger" onclick="clearAllData()"><i class="fas fa-trash-alt"></i> حذف همه</button>
+                    <button class="pro-btn pro-btn-warning" id="exportDataBtn"><i class="fas fa-download"></i> خروجی JSON</button>
+                    <button class="pro-export-csv" id="exportCsvDataBtn"><i class="fas fa-file-csv"></i> خروجی CSV</button>
+                    <button class="pro-btn pro-btn-danger" id="clearAllDataBtn"><i class="fas fa-trash-alt"></i> حذف همه</button>
                 </div>
             </div>
         </div>
@@ -937,8 +931,8 @@
                 <div class="pro-modal-header">
                     <h3 id="editModalTitle"><i class="fas fa-edit"></i> ویرایش</h3>
                     <div class="header-actions">
-                        <button class="btn-focus-mode" onclick="toggleFocusMode()"><i class="fas fa-expand"></i></button>
-                        <button class="pro-modal-close" onclick="closeEditModal()"><i class="fas fa-times"></i></button>
+                        <button class="btn-focus-mode" id="focusModeBtn"><i class="fas fa-expand"></i></button>
+                        <button class="pro-modal-close" id="closeEditModalBtn"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
                 <div id="editModalBody"></div>
@@ -948,7 +942,7 @@
         <!-- ===== مودال ویرایش کاربر ===== -->
         <div class="pro-modal-overlay" id="editMemberModal">
             <div class="pro-modal" style="max-width:700px;">
-                <div class="pro-modal-header"><h3><i class="fas fa-user-edit"></i> ویرایش کاربر</h3><button class="pro-modal-close" onclick="closeEditMemberModal()"><i class="fas fa-times"></i></button></div>
+                <div class="pro-modal-header"><h3><i class="fas fa-user-edit"></i> ویرایش کاربر</h3><button class="pro-modal-close" id="closeEditMemberModalBtn"><i class="fas fa-times"></i></button></div>
                 <form id="editMemberForm">
                     <input type="hidden" id="editMemberId" />
                     <div class="pro-grid">
@@ -964,8 +958,8 @@
                         <textarea id="editMemberAddresses" rows="3" placeholder="تهران خیابان آزادی پلاک ۱۲&#10;اصفهان خیابان سپاه پلاک ۵"></textarea>
                     </div>
                     <div style="display:flex;gap:12px;margin-top:18px;">
-                        <button type="submit" class="pro-btn pro-btn-primary"><i class="fas fa-save"></i> ذخیره تغییرات</button>
-                        <button type="button" class="pro-btn pro-btn-outline" onclick="closeEditMemberModal()">انصراف</button>
+                        <button type="submit" class="pro-btn pro-btn-primary" id="saveEditMemberBtn"><i class="fas fa-save"></i> ذخیره تغییرات</button>
+                        <button type="button" class="pro-btn pro-btn-outline" id="cancelEditMemberBtn">انصراف</button>
                     </div>
                 </form>
             </div>
@@ -977,8 +971,8 @@
                 <div class="pro-modal-header">
                     <h3><i class="fas fa-receipt"></i> جزئیات سفارش #<span id="orderDetailId">---</span></h3>
                     <div style="display:flex;gap:8px;">
-                        <button class="pro-btn pro-btn-sm pro-btn-warning" id="orderDetailEditBtn" style="display:none;" onclick="openEditOrderFromDetail()"><i class="fas fa-edit"></i> ویرایش</button>
-                        <button class="pro-modal-close" onclick="closeOrderDetailModal()"><i class="fas fa-times"></i></button>
+                        <button class="pro-btn pro-btn-sm pro-btn-warning" id="orderDetailEditBtn" style="display:none;"><i class="fas fa-edit"></i> ویرایش</button>
+                        <button class="pro-modal-close" id="closeOrderDetailBtn"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
                 <div id="orderDetailBody"></div>
@@ -990,7 +984,7 @@
             <div class="pro-modal" style="max-width:700px;">
                 <div class="pro-modal-header">
                     <h3><i class="fas fa-edit"></i> ویرایش سفارش #<span id="editOrderModalId">---</span></h3>
-                    <button class="pro-modal-close" onclick="closeEditOrderModal()"><i class="fas fa-times"></i></button>
+                    <button class="pro-modal-close" id="closeEditOrderModalBtn"><i class="fas fa-times"></i></button>
                 </div>
                 <div id="editOrderModalBody"><div class="pro-empty"><i class="fas fa-spinner fa-spin"></i> در حال بارگذاری...</div></div>
             </div>
@@ -1001,7 +995,7 @@
             <div class="pro-modal" style="max-width:500px;">
                 <div class="pro-modal-header">
                     <h3><i class="fas fa-envelope"></i> ارسال پیام به کاربر</h3>
-                    <button class="pro-modal-close" onclick="closeSendMessageModal()"><i class="fas fa-times"></i></button>
+                    <button class="pro-modal-close" id="closeSendMessageBtn"><i class="fas fa-times"></i></button>
                 </div>
                 <div id="sendMessageBody">
                     <div style="margin-bottom:12px;">
@@ -1023,8 +1017,8 @@
                         </select>
                     </div>
                     <div style="display:flex;gap:12px;margin-top:16px;">
-                        <button class="pro-btn pro-btn-primary" onclick="sendMessageToUser()"><i class="fas fa-paper-plane"></i> ارسال</button>
-                        <button class="pro-btn pro-btn-outline" onclick="closeSendMessageModal()">انصراف</button>
+                        <button class="pro-btn pro-btn-primary" id="sendMessageBtn"><i class="fas fa-paper-plane"></i> ارسال</button>
+                        <button class="pro-btn pro-btn-outline" id="cancelSendMessageBtn">انصراف</button>
                     </div>
                     <div id="sendMsgResult" style="margin-top:10px;"></div>
                 </div>
@@ -1043,45 +1037,430 @@
     اسکریپت‌ها
     ============================================================ -->
 
-    <!-- ===== فایل اصلی JS ===== -->
-    <script src="script-admin-panel.js"></script>
+    <!-- بارگذاری فایل JS با defer -->
+    <script src="script-admin-panel.js" defer></script>
 
-    <!-- ===== اسکریپت فعال‌سازی پنل (بدون لاگین) ===== -->
+    <!-- اسکریپت راه‌اندازی و اتصال رویدادها -->
     <script>
-        // مقداردهی اولیه برای نمایش پنل بدون لاگین
-        (function() {
-            // تنظیم sessionStorage برای دور زدن لاگین
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ===== ۱. مقداردهی اولیه پنل =====
             sessionStorage.setItem('admin_logged_in', 'true');
             sessionStorage.setItem('admin_username', 'ادمین');
 
-            // نمایش پنل و مخفی کردن لاگین
             var loginPage = document.getElementById('loginPage');
             var adminPanel = document.getElementById('adminPanel');
             if (loginPage) loginPage.style.display = 'none';
             if (adminPanel) adminPanel.style.display = 'block';
 
-            // تنظیم نام کاربری
             var nameEl = document.getElementById('proAdminName');
             if (nameEl) nameEl.textContent = 'ادمین';
             var infoNameEl = document.getElementById('proInfoUsername');
             if (infoNameEl) infoNameEl.textContent = 'ادمین';
 
-            // بارگذاری اولیه داده‌ها
-            if (typeof loadAllData === 'function') {
-                setTimeout(loadAllData, 300);
-            }
-            if (typeof loadAppearanceSettings === 'function') {
-                setTimeout(loadAppearanceSettings, 400);
-            }
-            if (typeof loadMenuData === 'function') {
-                setTimeout(loadMenuData, 500);
-            }
-            if (typeof loadSectionsData === 'function') {
-                setTimeout(loadSectionsData, 600);
+            // بارگذاری داده‌ها با تاخیر تا مطمئن شویم JS کامل بارگذاری شده
+            setTimeout(function() {
+                if (typeof loadAllData === 'function') loadAllData();
+                if (typeof loadAppearanceSettings === 'function') loadAppearanceSettings();
+                if (typeof loadMenuData === 'function') loadMenuData();
+                if (typeof loadSectionsData === 'function') loadSectionsData();
+                if (typeof loadAllIndexContent === 'function') loadAllIndexContent();
+                if (typeof loadMembers === 'function') loadMembers();
+                if (typeof loadGlobalOrders === 'function') loadGlobalOrders();
+            }, 500);
+
+            // ===== ۲. اتصال رویدادها به دکمه‌ها =====
+
+            // ---- خروج ----
+            var logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn && typeof proLogout === 'function') {
+                logoutBtn.addEventListener('click', proLogout);
             }
 
-            console.log('✅ پنل مدیریت بدون لاگین فعال شد.');
-        })();
+            // ---- توکن ----
+            var saveTokenBtn = document.getElementById('saveTokenBtn');
+            if (saveTokenBtn && typeof proSaveToken === 'function') {
+                saveTokenBtn.addEventListener('click', proSaveToken);
+            }
+
+            // ---- CSV خروجی ----
+            var exportCsvBtn = document.getElementById('exportCsvBtn');
+            if (exportCsvBtn && typeof exportCSV === 'function') {
+                exportCsvBtn.addEventListener('click', exportCSV);
+            }
+
+            // ---- ظاهر ----
+            var saveAppearanceBtn = document.getElementById('saveAppearanceBtn');
+            if (saveAppearanceBtn && typeof saveAppearance === 'function') {
+                saveAppearanceBtn.addEventListener('click', saveAppearance);
+            }
+            var resetAppearanceBtn = document.getElementById('resetAppearanceBtn');
+            if (resetAppearanceBtn && typeof resetAppearanceForm === 'function') {
+                resetAppearanceBtn.addEventListener('click', resetAppearanceForm);
+            }
+
+            // ---- منوها ----
+            var addHeaderMenuBtn = document.getElementById('addHeaderMenuBtn');
+            if (addHeaderMenuBtn && typeof addMenuItem === 'function') {
+                addHeaderMenuBtn.addEventListener('click', function() { addMenuItem('header'); });
+            }
+            var addSlideMenuBtn = document.getElementById('addSlideMenuBtn');
+            if (addSlideMenuBtn && typeof addMenuItem === 'function') {
+                addSlideMenuBtn.addEventListener('click', function() { addMenuItem('slide'); });
+            }
+            var saveMenusBtn = document.getElementById('saveMenusBtn');
+            if (saveMenusBtn && typeof saveMenus === 'function') {
+                saveMenusBtn.addEventListener('click', saveMenus);
+            }
+            var saveMenusBtn2 = document.getElementById('saveMenusBtn2');
+            if (saveMenusBtn2 && typeof saveMenus === 'function') {
+                saveMenusBtn2.addEventListener('click', saveMenus);
+            }
+            var resetMenusBtn = document.getElementById('resetMenusBtn');
+            if (resetMenusBtn && typeof resetMenusToDefault === 'function') {
+                resetMenusBtn.addEventListener('click', resetMenusToDefault);
+            }
+
+            // ---- بخش‌ها ----
+            var saveSectionsBtn = document.getElementById('saveSectionsBtn');
+            if (saveSectionsBtn && typeof saveSections === 'function') {
+                saveSectionsBtn.addEventListener('click', saveSections);
+            }
+
+            // ---- ایندکس: سوابق تحصیلی ----
+            var addEduBtn = document.getElementById('addEduBtn');
+            if (addEduBtn && typeof addEducationItem === 'function') {
+                addEduBtn.addEventListener('click', addEducationItem);
+            }
+            var saveEduBtn = document.getElementById('saveEduBtn');
+            if (saveEduBtn && typeof saveEducation === 'function') {
+                saveEduBtn.addEventListener('click', saveEducation);
+            }
+
+            // ---- ایندکس: گواهی‌نامه‌ها ----
+            var addCertBtn = document.getElementById('addCertBtn');
+            if (addCertBtn && typeof addCertificateItem === 'function') {
+                addCertBtn.addEventListener('click', addCertificateItem);
+            }
+            var saveCertBtn = document.getElementById('saveCertBtn');
+            if (saveCertBtn && typeof saveCertificates === 'function') {
+                saveCertBtn.addEventListener('click', saveCertificates);
+            }
+
+            // ---- ایندکس: مهارت‌ها ----
+            var addSkillBtn = document.getElementById('addSkillBtn');
+            if (addSkillBtn && typeof addSkillItem === 'function') {
+                addSkillBtn.addEventListener('click', addSkillItem);
+            }
+            var saveSkillBtn = document.getElementById('saveSkillBtn');
+            if (saveSkillBtn && typeof saveSkills === 'function') {
+                saveSkillBtn.addEventListener('click', saveSkills);
+            }
+
+            // ---- ایندکس: شبکه‌های اجتماعی ----
+            var addSocialBtn = document.getElementById('addSocialBtn');
+            if (addSocialBtn && typeof addSocialItem === 'function') {
+                addSocialBtn.addEventListener('click', addSocialItem);
+            }
+            var saveSocialBtn = document.getElementById('saveSocialBtn');
+            if (saveSocialBtn && typeof saveSocial === 'function') {
+                saveSocialBtn.addEventListener('click', saveSocial);
+            }
+
+            // ---- ایندکس: خدمات ----
+            var addServiceBtn = document.getElementById('addServiceBtn');
+            if (addServiceBtn && typeof addServiceItem === 'function') {
+                addServiceBtn.addEventListener('click', addServiceItem);
+            }
+            var saveServiceBtn = document.getElementById('saveServiceBtn');
+            if (saveServiceBtn && typeof saveServices === 'function') {
+                saveServiceBtn.addEventListener('click', saveServices);
+            }
+
+            // ---- ایندکس: نظرات ----
+            var addTestiBtn = document.getElementById('addTestiBtn');
+            if (addTestiBtn && typeof addTestimonialItem === 'function') {
+                addTestiBtn.addEventListener('click', addTestimonialItem);
+            }
+            var saveTestiBtn = document.getElementById('saveTestiBtn');
+            if (saveTestiBtn && typeof saveTestimonials === 'function') {
+                saveTestiBtn.addEventListener('click', saveTestimonials);
+            }
+
+            // ---- ایندکس: جوایز ----
+            var addAwardBtn = document.getElementById('addAwardBtn');
+            if (addAwardBtn && typeof addAwardItem === 'function') {
+                addAwardBtn.addEventListener('click', addAwardItem);
+            }
+            var saveAwardBtn = document.getElementById('saveAwardBtn');
+            if (saveAwardBtn && typeof saveAwards === 'function') {
+                saveAwardBtn.addEventListener('click', saveAwards);
+            }
+
+            // ---- ایندکس: لینک‌ها ----
+            var addLinkBtn = document.getElementById('addLinkBtn');
+            if (addLinkBtn && typeof addLinkItem === 'function') {
+                addLinkBtn.addEventListener('click', addLinkItem);
+            }
+            var saveLinkBtn = document.getElementById('saveLinkBtn');
+            if (saveLinkBtn && typeof saveLinks === 'function') {
+                saveLinkBtn.addEventListener('click', saveLinks);
+            }
+
+            // ---- مقالات ----
+            var addArticleBtn = document.getElementById('addArticleBtn');
+            if (addArticleBtn && typeof switchTab === 'function') {
+                addArticleBtn.addEventListener('click', function() { switchTab('add-article'); });
+            }
+            var searchArticles = document.getElementById('articlesSearch');
+            if (searchArticles && typeof filterArticles === 'function') {
+                searchArticles.addEventListener('input', function() { filterArticles(this.value); });
+            }
+            var duplicateArticleBtn = document.getElementById('duplicateArticleBtn');
+            if (duplicateArticleBtn && typeof duplicateItem === 'function') {
+                duplicateArticleBtn.addEventListener('click', function() { duplicateItem('article'); });
+            }
+
+            // ---- افزودن مقاله ----
+            var saveArticleBtn = document.getElementById('saveArticleBtn');
+            if (saveArticleBtn && typeof saveArticle === 'function') {
+                saveArticleBtn.addEventListener('click', saveArticle);
+            }
+            var resetArticleBtn = document.getElementById('resetArticleBtn');
+            if (resetArticleBtn && typeof resetArticleForm === 'function') {
+                resetArticleBtn.addEventListener('click', resetArticleForm);
+            }
+            var generateArticleBtn = document.getElementById('generateArticleBtn');
+            if (generateArticleBtn && typeof generateArticleContent === 'function') {
+                generateArticleBtn.addEventListener('click', generateArticleContent);
+            }
+            // تگ‌ها
+            var tagInput = document.getElementById('articleTagInput');
+            if (tagInput && typeof addTag === 'function') {
+                tagInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addTag('articleTagsContainer', 'articleTagInput');
+                    }
+                });
+            }
+
+            // ---- محصولات ----
+            var searchProducts = document.getElementById('productsSearch');
+            if (searchProducts && typeof filterProducts === 'function') {
+                searchProducts.addEventListener('input', function() { filterProducts(this.value); });
+            }
+            var addProductBtn = document.getElementById('addProductBtn');
+            if (addProductBtn && typeof switchTab === 'function') {
+                addProductBtn.addEventListener('click', function() { switchTab('add-product'); });
+            }
+
+            // ---- آرشیو ----
+            var searchArchive = document.getElementById('archiveSearch');
+            if (searchArchive && typeof filterArchive === 'function') {
+                searchArchive.addEventListener('input', function() { filterArchive(this.value); });
+            }
+            var addArchiveBtn = document.getElementById('addArchiveBtn');
+            if (addArchiveBtn && typeof switchTab === 'function') {
+                addArchiveBtn.addEventListener('click', function() { switchTab('add-archive'); });
+            }
+
+            // ---- کاربران ----
+            var refreshMembersBtn = document.getElementById('refreshMembersBtn');
+            if (refreshMembersBtn && typeof refreshMembers === 'function') {
+                refreshMembersBtn.addEventListener('click', refreshMembers);
+            }
+            var exportMembersBtn = document.getElementById('exportMembersBtn');
+            if (exportMembersBtn && typeof exportMembersData === 'function') {
+                exportMembersBtn.addEventListener('click', exportMembersData);
+            }
+            var searchMembers = document.getElementById('membersSearch');
+            if (searchMembers && typeof filterMembers === 'function') {
+                searchMembers.addEventListener('input', filterMembers);
+            }
+            var searchMembersBtn = document.getElementById('searchMembersBtn');
+            if (searchMembersBtn && typeof filterMembers === 'function') {
+                searchMembersBtn.addEventListener('click', filterMembers);
+            }
+            var syncMembersBtn = document.getElementById('syncMembersBtn');
+            if (syncMembersBtn && typeof syncAllMembers === 'function') {
+                syncMembersBtn.addEventListener('click', syncAllMembers);
+            }
+            var exportMembersCsvBtn = document.getElementById('exportMembersCsvBtn');
+            if (exportMembersCsvBtn && typeof exportMembersCSV === 'function') {
+                exportMembersCsvBtn.addEventListener('click', exportMembersCSV);
+            }
+            var editMemberBtn = document.getElementById('editMemberBtn');
+            if (editMemberBtn && typeof openEditMemberModal === 'function') {
+                editMemberBtn.addEventListener('click', openEditMemberModal);
+            }
+            var deleteMemberBtn = document.getElementById('deleteMemberBtn');
+            if (deleteMemberBtn && typeof deleteMember === 'function') {
+                deleteMemberBtn.addEventListener('click', deleteMember);
+            }
+            var closeMemberDetailBtn = document.getElementById('closeMemberDetailBtn');
+            if (closeMemberDetailBtn && typeof closeMemberDetail === 'function') {
+                closeMemberDetailBtn.addEventListener('click', closeMemberDetail);
+            }
+            var refreshMemberOrdersBtn = document.getElementById('refreshMemberOrdersBtn');
+            if (refreshMemberOrdersBtn && typeof refreshMemberOrders === 'function') {
+                refreshMemberOrdersBtn.addEventListener('click', refreshMemberOrders);
+            }
+
+            // ---- سفارشات ----
+            var refreshOrdersBtn = document.getElementById('refreshOrdersBtn');
+            if (refreshOrdersBtn && typeof refreshOrders === 'function') {
+                refreshOrdersBtn.addEventListener('click', refreshOrders);
+            }
+            var refreshOrdersBtn2 = document.getElementById('refreshOrdersBtn2');
+            if (refreshOrdersBtn2 && typeof refreshOrders === 'function') {
+                refreshOrdersBtn2.addEventListener('click', refreshOrders);
+            }
+            var exportOrdersCsvBtn = document.getElementById('exportOrdersCsvBtn');
+            if (exportOrdersCsvBtn && typeof exportOrdersCSV === 'function') {
+                exportOrdersCsvBtn.addEventListener('click', exportOrdersCSV);
+            }
+            var exportOrdersCsvBtn2 = document.getElementById('exportOrdersCsvBtn2');
+            if (exportOrdersCsvBtn2 && typeof exportOrdersCSV === 'function') {
+                exportOrdersCsvBtn2.addEventListener('click', exportOrdersCSV);
+            }
+            var exportOrdersJsonBtn = document.getElementById('exportOrdersJsonBtn');
+            if (exportOrdersJsonBtn && typeof exportAllOrders === 'function') {
+                exportOrdersJsonBtn.addEventListener('click', exportAllOrders);
+            }
+            var exportOrdersJsonBtn2 = document.getElementById('exportOrdersJsonBtn2');
+            if (exportOrdersJsonBtn2 && typeof exportAllOrders === 'function') {
+                exportOrdersJsonBtn2.addEventListener('click', exportAllOrders);
+            }
+            var filterOrdersBtn = document.getElementById('filterOrdersBtn');
+            if (filterOrdersBtn && typeof filterOrders === 'function') {
+                filterOrdersBtn.addEventListener('click', filterOrders);
+            }
+            var orderStatusFilter = document.getElementById('orderStatusFilter');
+            if (orderStatusFilter && typeof filterOrders === 'function') {
+                orderStatusFilter.addEventListener('change', filterOrders);
+            }
+            var orderSort = document.getElementById('orderSort');
+            if (orderSort && typeof filterOrders === 'function') {
+                orderSort.addEventListener('change', filterOrders);
+            }
+            var ordersSearch = document.getElementById('ordersSearch');
+            if (ordersSearch && typeof filterOrders === 'function') {
+                ordersSearch.addEventListener('input', filterOrders);
+            }
+            var syncOrdersBtn = document.getElementById('syncOrdersBtn');
+            if (syncOrdersBtn && typeof syncAllOrdersToGlobal === 'function') {
+                syncOrdersBtn.addEventListener('click', syncAllOrdersToGlobal);
+            }
+            var bulkActionBtn = document.getElementById('bulkActionBtn');
+            if (bulkActionBtn && typeof openBulkStatusModal === 'function') {
+                bulkActionBtn.addEventListener('click', openBulkStatusModal);
+            }
+            var exportOrderHistoryBtn = document.getElementById('exportOrderHistoryBtn');
+            if (exportOrderHistoryBtn && typeof exportOrderHistory === 'function') {
+                exportOrderHistoryBtn.addEventListener('click', exportOrderHistory);
+            }
+            var clean30Btn = document.getElementById('clean30Btn');
+            if (clean30Btn && typeof cleanOldUserOrders === 'function') {
+                clean30Btn.addEventListener('click', function() { cleanOldUserOrders(30); });
+            }
+            var clean60Btn = document.getElementById('clean60Btn');
+            if (clean60Btn && typeof cleanOldUserOrders === 'function') {
+                clean60Btn.addEventListener('click', function() { cleanOldUserOrders(60); });
+            }
+
+            // ---- تنظیمات ----
+            var changePassBtn = document.getElementById('changePassBtn');
+            if (changePassBtn && typeof changePassword === 'function') {
+                changePassBtn.addEventListener('click', changePassword);
+            }
+            var exportDataBtn = document.getElementById('exportDataBtn');
+            if (exportDataBtn && typeof exportData === 'function') {
+                exportDataBtn.addEventListener('click', exportData);
+            }
+            var exportCsvDataBtn = document.getElementById('exportCsvDataBtn');
+            if (exportCsvDataBtn && typeof exportCSV === 'function') {
+                exportCsvDataBtn.addEventListener('click', exportCSV);
+            }
+            var clearAllDataBtn = document.getElementById('clearAllDataBtn');
+            if (clearAllDataBtn && typeof clearAllData === 'function') {
+                clearAllDataBtn.addEventListener('click', clearAllData);
+            }
+
+            // ---- مودال‌ها ----
+            var closeEditModalBtn = document.getElementById('closeEditModalBtn');
+            if (closeEditModalBtn && typeof closeEditModal === 'function') {
+                closeEditModalBtn.addEventListener('click', closeEditModal);
+            }
+            var focusModeBtn = document.getElementById('focusModeBtn');
+            if (focusModeBtn && typeof toggleFocusMode === 'function') {
+                focusModeBtn.addEventListener('click', toggleFocusMode);
+            }
+            var closeEditMemberModalBtn = document.getElementById('closeEditMemberModalBtn');
+            if (closeEditMemberModalBtn && typeof closeEditMemberModal === 'function') {
+                closeEditMemberModalBtn.addEventListener('click', closeEditMemberModal);
+            }
+            var cancelEditMemberBtn = document.getElementById('cancelEditMemberBtn');
+            if (cancelEditMemberBtn && typeof closeEditMemberModal === 'function') {
+                cancelEditMemberBtn.addEventListener('click', closeEditMemberModal);
+            }
+            var saveEditMemberBtn = document.getElementById('saveEditMemberBtn');
+            if (saveEditMemberBtn) {
+                var editMemberForm = document.getElementById('editMemberForm');
+                if (editMemberForm) {
+                    saveEditMemberBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (typeof editMemberForm.submit === 'function') {
+                            editMemberForm.dispatchEvent(new Event('submit'));
+                        }
+                    });
+                }
+            }
+            var closeOrderDetailBtn = document.getElementById('closeOrderDetailBtn');
+            if (closeOrderDetailBtn && typeof closeOrderDetailModal === 'function') {
+                closeOrderDetailBtn.addEventListener('click', closeOrderDetailModal);
+            }
+            var closeEditOrderModalBtn = document.getElementById('closeEditOrderModalBtn');
+            if (closeEditOrderModalBtn && typeof closeEditOrderModal === 'function') {
+                closeEditOrderModalBtn.addEventListener('click', closeEditOrderModal);
+            }
+            var closeSendMessageBtn = document.getElementById('closeSendMessageBtn');
+            if (closeSendMessageBtn && typeof closeSendMessageModal === 'function') {
+                closeSendMessageBtn.addEventListener('click', closeSendMessageModal);
+            }
+            var cancelSendMessageBtn = document.getElementById('cancelSendMessageBtn');
+            if (cancelSendMessageBtn && typeof closeSendMessageModal === 'function') {
+                cancelSendMessageBtn.addEventListener('click', closeSendMessageModal);
+            }
+            var sendMessageBtn = document.getElementById('sendMessageBtn');
+            if (sendMessageBtn && typeof sendMessageToUser === 'function') {
+                sendMessageBtn.addEventListener('click', sendMessageToUser);
+            }
+
+            // ---- ویو تغییر ----
+            document.querySelectorAll('.pro-view-toggle button').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var type = this.dataset.type;
+                    var view = this.dataset.view;
+                    if (type && view && typeof setView === 'function') {
+                        setView(type, view);
+                    }
+                    // فعال‌سازی دکمه
+                    var parent = this.closest('.pro-view-toggle');
+                    if (parent) {
+                        parent.querySelectorAll('button').forEach(function(b) {
+                            b.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            // ---- آپلود فایل‌ها ----
+            // (توابع آپلود قبلاً در JS راه‌اندازی می‌شوند، فقط اگر نیاز به تنظیم اضافی بود)
+
+            console.log('✅ پنل مدیریت با موفقیت راه‌اندازی شد.');
+        });
     </script>
 
 </body>

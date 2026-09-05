@@ -268,63 +268,34 @@
     // ============================================================
     // 0006 - عملیات گیت‌هاب (GitHub API)
     // ============================================================
-    async function fetchFromGitHub(path) {
-        var token = getToken();
-        if (!token) throw new Error('توکن وارد نشده است.');
-        var url = 'https://api.github.com/' + REPO_PATH + '/' + path;
-        var res = await fetch(url, {
-            headers: {
-                'Authorization': 'token ' + token,
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        });
-        if (res.status === 404) return null;
-        if (!res.ok) throw new Error('خطا در خواندن فایل: ' + res.status);
-        var data = await res.json();
-        var binaryString = atob(data.content);
-        var bytes = new Uint8Array(binaryString.length);
-        for (var i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
+async function fetchFromGitHub(path) {
+    var token = getToken();
+    if (!token) throw new Error('توکن وارد نشده است.');
+    // اضافه کردن ?t=Date.now() برای جلوگیری از کش
+    var url = 'https://api.github.com/' + REPO_PATH + '/' + path + '?t=' + Date.now();
+    var res = await fetch(url, {
+        headers: {
+            'Authorization': 'token ' + token,
+            'Accept': 'application/vnd.github.v3+json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
         }
-        var decoder = new TextDecoder('utf-8');
-        var content = decoder.decode(bytes).replace(/^\uFEFF/, '');
-        return { ...data, content: content };
+    });
+    if (res.status === 404) return null;
+    if (!res.ok) {
+        var errText = await res.text();
+        throw new Error('خطا در خواندن فایل: ' + res.status + ' - ' + errText);
     }
-
-    async function saveToGitHub(path, content, sha) {
-        var token = getToken();
-        if (!token) throw new Error('توکن وارد نشده است.');
-        var url = 'https://api.github.com/' + REPO_PATH + '/' + path;
-        var jsonString = JSON.stringify(content, null, 2);
-        var encoder = new TextEncoder();
-        var encoded = encoder.encode(jsonString);
-        var binary = '';
-        for (var i = 0; i < encoded.length; i++) {
-            binary += String.fromCharCode(encoded[i]);
-        }
-        var base64Content = btoa(binary);
-        var body = {
-            message: 'Update ' + path + ' via admin panel - ' + new Date().toISOString(),
-            content: base64Content,
-            branch: 'main'
-        };
-        if (sha) body.sha = sha;
-        var res = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Authorization': 'token ' + token,
-                'Content-Type': 'application/json',
-                'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify(body)
-        });
-        if (!res.ok) {
-            var err = await res.json();
-            throw new Error(err.message || 'خطا در ذخیره‌سازی');
-        }
-        var data = await res.json();
-        return data.content.sha;
+    var data = await res.json();
+    var binaryString = atob(data.content);
+    var bytes = new Uint8Array(binaryString.length);
+    for (var i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
     }
+    var decoder = new TextDecoder('utf-8');
+    var content = decoder.decode(bytes).replace(/^\uFEFF/, '');
+    return { ...data, content: content };
+}
 
     async function deleteFromGitHub(path, sha) {
         var token = getToken();

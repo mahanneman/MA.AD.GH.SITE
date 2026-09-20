@@ -1854,6 +1854,14 @@ window.saveArticle = async function() {
 
             console.log('✅ پنل مدیریت با موفقیت راه‌اندازی شد (نسخه اصلاح‌شده برای مقالات).');
         });
+        function b64ToUtf8(b64) {
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+    }
+    return new TextDecoder('utf-8').decode(bytes);
+}
     </script>
 
 </body>

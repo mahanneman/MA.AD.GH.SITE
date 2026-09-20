@@ -4383,4 +4383,232 @@
     window.removeSocialItem = removeSocialItem;
 
     console.log('✅ تمام توابع به window متصل شدند.');
+    /* ============================================================
+   توابع گم‌شده - به انتهای script-admin-panel.js اضافه کن
+   ============================================================ */
+
+// ---------- حذف کاور مقاله ----------
+function removeArticleCover() {
+    var input = document.getElementById('coverFileInput');
+    var preview = document.getElementById('coverPreview');
+    if (input) input.value = '';
+    if (preview) preview.innerHTML = '';
+    showToastSafe('🗑️ کاور حذف شد', 'info');
+}
+
+// ---------- حذف کاور محصول ----------
+function removeProductCover() {
+    var input = document.getElementById('productCoverInput');
+    var preview = document.getElementById('productCoverPreview');
+    var previewImg = document.getElementById('productCoverPreviewImg');
+    if (input) input.value = '';
+    if (preview) preview.style.display = 'none';
+    if (previewImg) previewImg.src = '';
+    showToastSafe('🗑️ کاور محصول حذف شد', 'info');
+}
+
+// ---------- حذف کاور آرشیو ----------
+function removeArchiveCover() {
+    var input = document.getElementById('archiveCoverInput');
+    var preview = document.getElementById('archiveCoverPreview');
+    var previewImg = document.getElementById('archiveCoverPreviewImg');
+    if (input) input.value = '';
+    if (preview) preview.style.display = 'none';
+    if (previewImg) previewImg.src = '';
+    showToastSafe('🗑️ کاور آرشیو حذف شد', 'info');
+}
+
+// ---------- کپی شناسه ----------
+function copyId(elementId) {
+    var el = document.getElementById(elementId);
+    if (!el) return;
+    var text = el.textContent || el.innerText;
+    navigator.clipboard.writeText(text).then(function() {
+        showToastSafe('📋 کپی شد: ' + text, 'success');
+    });
+}
+
+// ---------- باز کردن مودال ویرایش تحصیلات ----------
+function openEditEducationModal(indexOrKey) {
+    // باز کردن مودال اصلی ویرایش و پر کردن فرم با داده‌های تحصیلات
+    var item = null;
+    if (typeof window.educationData !== 'undefined' && window.educationData) {
+        if (Array.isArray(window.educationData)) {
+            item = window.educationData[indexOrKey];
+        } else {
+            item = window.educationData[indexOrKey];
+        }
+    }
+    if (!item) {
+        console.warn('⚠️ آیتم تحصیلی پیدا نشد:', indexOrKey);
+        return;
+    }
+    openGenericEditModal('education', indexOrKey, item);
+}
+
+// ---------- باز کردن مودال ویرایش گواهی‌نامه ----------
+function openEditCertificateModal(indexOrKey) {
+    var item = null;
+    if (typeof window.certificatesData !== 'undefined' && window.certificatesData) {
+        item = window.certificatesData[indexOrKey];
+    }
+    if (!item) return;
+    openGenericEditModal('certificate', indexOrKey, item);
+}
+
+// ---------- باز کردن مودال ویرایش مهارت ----------
+function openEditSkillModal(indexOrKey) {
+    var item = null;
+    if (typeof window.skillsData !== 'undefined' && window.skillsData) {
+        item = window.skillsData[indexOrKey];
+    }
+    if (!item) return;
+    openGenericEditModal('skill', indexOrKey, item);
+}
+
+// ---------- باز کردن مودال ویرایش شبکه اجتماعی ----------
+function openEditSocialModal(indexOrKey) {
+    var item = null;
+    if (typeof window.socialData !== 'undefined' && window.socialData) {
+        item = window.socialData[indexOrKey];
+    }
+    if (!item) return;
+    openGenericEditModal('social', indexOrKey, item);
+}
+
+// ---------- باز کردن مودال ویرایش خدمت ----------
+function openEditServiceModal(indexOrKey) {
+    var item = null;
+    if (typeof window.servicesData !== 'undefined' && window.servicesData) {
+        item = window.servicesData[indexOrKey];
+    }
+    if (!item) return;
+    openGenericEditModal('service', indexOrKey, item);
+}
+
+// ---------- باز کردن مودال ویرایش نظر مشتری ----------
+function openEditTestimonialModal(indexOrKey) {
+    var item = null;
+    if (typeof window.testimonialsData !== 'undefined' && window.testimonialsData) {
+        item = window.testimonialsData[indexOrKey];
+    }
+    if (!item) return;
+    openGenericEditModal('testimonial', indexOrKey, item);
+}
+
+// ---------- باز کردن مودال ویرایش جایزه ----------
+function openEditAwardModal(indexOrKey) {
+    var item = null;
+    if (typeof window.awardsData !== 'undefined' && window.awardsData) {
+        item = window.awardsData[indexOrKey];
+    }
+    if (!item) return;
+    openGenericEditModal('award', indexOrKey, item);
+}
+
+// ---------- باز کردن مودال ویرایش لینک ----------
+function openEditLinkModal(indexOrKey) {
+    var item = null;
+    if (typeof window.linksData !== 'undefined' && window.linksData) {
+        item = window.linksData[indexOrKey];
+    }
+    if (!item) return;
+    openGenericEditModal('link', indexOrKey, item);
+}
+
+// ---------- تابع کمکی برای باز کردن مودال ویرایش عمومی ----------
+function openGenericEditModal(type, key, data) {
+    var modal = document.getElementById('editModal');
+    var title = document.getElementById('editModalTitle');
+    var body = document.getElementById('editModalBody');
+    if (!modal || !body) return;
+
+    if (title) {
+        title.innerHTML = '<i class="fas fa-edit"></i> ویرایش ' + getTypeLabel(type) + ' #' + key;
+    }
+
+    // ساخت فرم ساده بر اساس کلیدهای داده
+    var html = '<form id="genericEditForm"><div class="pro-grid">';
+    for (var field in data) {
+        if (!data.hasOwnProperty(field)) continue;
+        var val = data[field];
+        if (typeof val === 'object') val = JSON.stringify(val);
+        html += '<div class="pro-field"><label>' + field + '</label>' +
+                '<input type="text" data-field="' + field + '" value="' +
+                String(val).replace(/"/g, '&quot;') + '" /></div>';
+    }
+    html += '</div>' +
+        '<div style="display:flex;gap:12px;margin-top:18px;">' +
+        '<button type="button" class="pro-btn pro-btn-primary" onclick="saveGenericEdit(\'' +
+        type + '\',\'' + key + '\')"><i class="fas fa-save"></i> ذخیره</button>' +
+        '<button type="button" class="pro-btn pro-btn-outline" onclick="closeEditModal()">انصراف</button>' +
+        '</div></form>';
+
+    body.innerHTML = html;
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+}
+
+function getTypeLabel(type) {
+    var labels = {
+        education: 'تحصیلات',
+        certificate: 'گواهی‌نامه',
+        skill: 'مهارت',
+        social: 'شبکه اجتماعی',
+        service: 'خدمت',
+        testimonial: 'نظر مشتری',
+        award: 'جایزه',
+        link: 'لینک'
+    };
+    return labels[type] || type;
+}
+
+function saveGenericEdit(type, key) {
+    var form = document.getElementById('genericEditForm');
+    if (!form) return;
+    var inputs = form.querySelectorAll('input[data-field]');
+    var updated = {};
+    inputs.forEach(function(inp) {
+        updated[inp.dataset.field] = inp.value;
+    });
+
+    // بر اساس type، داده‌ها رو توی آرایه‌ی مربوطه به‌روزرسانی کن
+    var globalName = type + 'sData';
+    if (type === 'education') globalName = 'educationData';
+    if (type === 'certificate') globalName = 'certificatesData';
+    if (type === 'skill') globalName = 'skillsData';
+    if (type === 'social') globalName = 'socialData';
+    if (type === 'service') globalName = 'servicesData';
+    if (type === 'testimonial') globalName = 'testimonialsData';
+    if (type === 'award') globalName = 'awardsData';
+    if (type === 'link') globalName = 'linksData';
+
+    if (window[globalName]) {
+        window[globalName][key] = Object.assign({}, window[globalName][key], updated);
+    }
+
+    showToastSafe('✅ تغییرات ذخیره شد (محلی)', 'success');
+    closeEditModal();
+}
+
+// ---------- تابع کمکی برای نمایش توست بدون خطا ----------
+function showToastSafe(msg, type) {
+    var el = document.getElementById('proToast');
+    if (el) {
+        el.textContent = msg;
+        el.className = 'pro-toast ' + (type || 'success');
+        setTimeout(function() { el.className = 'pro-toast'; }, 4000);
+    } else {
+        console.log('[Toast]', type, msg);
+    }
+}
+
+// ---------- تابع کمکی برای بستن مودال ----------
+function closeEditModal() {
+    var modal = document.getElementById('editModal');
+    if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+    }
+}
 })();

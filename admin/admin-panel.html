@@ -1862,94 +1862,165 @@ window.saveArticle = async function() {
     return new TextDecoder('utf-8').decode(bytes);
 }
     </script>
-<script>
+    <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // باز کردن مودال ویرایش
-    window.openEditItem = function (type, index) {
-        var arrNames = {
-            education: 'educationData', certificate: 'certificatesData',
-            skill: 'skillsData', social: 'socialData', service: 'servicesData',
-            testimonial: 'testimonialsData', award: 'awardsData', link: 'linksData'
-        };
-        var arr = window[arrNames[type]];
-        if (!arr || !arr[index]) { alert('داده پیدا نشد'); return; }
+    // فایل‌های مربوطه
+    var FILES = {
+        education:   { path: '_data/education.json',   wrapper: 'items' },
+        certificate: { path: '_data/certificates.json', wrapper: 'items' },
+        skill:       { path: '_data/skills.json',       wrapper: 'items' },
+        social:      { path: '_data/social.json',       wrapper: 'items' },
+        service:     { path: '_data/services.json',     wrapper: 'items' },
+        testimonial: { path: '_data/testimonials.json', wrapper: 'items' },
+        award:       { path: '_data/awards.json',       wrapper: 'items' },
+        link:        { path: '_data/links.json',        wrapper: 'items' }
+    };
 
-        var data = arr[index];
+    function b64ToUtf8(b64) {
+        var bin = atob(b64), bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return new TextDecoder('utf-8').decode(bytes);
+    }
+
+    function getToken() {
+        return document.getElementById('proToken')?.value?.trim() ||
+               localStorage.getItem('github_token') || '';
+    }
+
+    function apiUrl(path) {
+        return 'https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/' + path;
+    }
+
+    async function readFile(path) {
+        var r = await fetch(apiUrl(path), {
+            headers: { 'Authorization': 'token ' + getToken(),
+                       'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (r.status === 404) return { data: null, sha: null };
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        var j = await r.json();
+        var txt = b64ToUtf8(j.content);
+        return { data: JSON.parse(txt), sha: j.sha };
+    }
+
+    async function writeFile(path, obj, sha, msg) {
+        var json = JSON.stringify(obj, null, 2);
+        var bin = new TextEncoder().encode(json);
+        var s = ''; for (var i = 0; i < bin.length; i++) s += String.fromCharCode(bin[i]);
+        var b64 = btoa(s);
+        var body = { message: msg, content: b64, branch: 'main' };
+        if (sha) body.sha = sha;
+        var r = await fetch(apiUrl(path), {
+            method: 'PUT',
+            headers: { 'Authorization': 'token ' + getToken(),
+                       'Content-Type': 'application/json',
+                       'Accept': 'application/vnd.github.v3+json' },
+            body: JSON.stringify(body)
+        });
+        if (!r.ok) {
+            var e = await r.json().catch(function () { return {}; });
+            throw new Error(e.message || 'HTTP ' + r.status);
+        }
+    }
+
+    // باز کردن مودال ویرایش
+    window.openEditItem = async function (type, index) {
+        var info = FILES[type];
+        if (!info) return alert('نوع نامعتبر: ' + type);
+
         var modal = document.getElementById('editModal');
         var title = document.getElementById('editModalTitle');
         var body  = document.getElementById('editModalBody');
 
-        title.innerHTML = '<i class="fas fa-edit"></i> ویرایش ' + type + ' #' + index;
-
-        var html = '<form id="dynEditForm"><div class="pro-grid">';
-        for (var f in data) {
-            if (!data.hasOwnProperty(f)) continue;
-            var v = data[f];
-            if (typeof v === 'object') v = JSON.stringify(v);
-            html += '<div class="pro-field"><label>' + f + '</label>' +
-                    '<input type="text" data-field="' + f + '" value="' +
-                    String(v == null ? '' : v).replace(/"/g, '&quot;') + '"></div>';
-        }
-        html += '</div><div style="display:flex;gap:12px;margin-top:18px;">' +
-                '<button type="button" class="pro-btn pro-btn-primary" id="dynSave">ذخیره</button>' +
-                '<button type="button" class="pro-btn pro-btn-outline" id="dynCancel">انصراف</button>' +
-                '</div></form>';
-        body.innerHTML = html;
+        title.textContent = 'در حال بارگذاری...';
+        body.innerHTML = '<div style="padding:20px;text-align:center;">⏳ ...</div>';
         modal.style.display = 'flex';
         modal.classList.add('active');
 
-        document.getElementById('dynCancel').onclick = function () {
-            modal.style.display = 'none';
-            modal.classList.remove('active');
-        };
+        try {
+            var res = await readFile(info.path);
+            if (!res.data) throw new Error('فایل ' + info.path + ' وجود ندارد');
 
-        document.getElementById('dynSave').onclick = function () {
-            var inputs = body.querySelectorAll('input[data-field]');
-            inputs.forEach(function (inp) {
-                window[arrNames[type]][index][inp.dataset.field] = inp.value;
-            });
-            modal.style.display = 'none';
-            modal.classList.remove('active');
-            var t = document.getElementById('proToast');
-            if (t) { t.textContent = '✅ ذخیره شد'; t.className = 'pro-toast success';
-                setTimeout(function(){ t.className = 'pro-toast'; }, 3000); }
-        };
+            // استخراج آرایه - چه فایل آرایه باشه چه آبجکت با items
+            var items = Array.isArray(res.data) ? res.data
+                      : (res.data[info.wrapper] || res.data.items || []);
+            var item = items[index];
+            if (!item) throw new Error('آیتم شماره ' + index + ' پیدا نشد (' + items.length + ' آیتم موجود)');
+
+            title.innerHTML = '<i class="fas fa-edit"></i> ویرایش ' + type + ' #' + index;
+
+            var html = '<form id="dynEditForm"><div class="pro-grid">';
+            for (var f in item) {
+                if (!item.hasOwnProperty(f)) continue;
+                var v = item[f];
+                if (typeof v === 'object') v = JSON.stringify(v);
+                var safe = String(v == null ? '' : v).replace(/"/g, '&quot;');
+                html += '<div class="pro-field"><label>' + f + '</label>' +
+                        '<input type="text" data-field="' + f + '" value="' + safe + '"></div>';
+            }
+            html += '</div><div style="display:flex;gap:12px;margin-top:18px;">' +
+                    '<button type="button" class="pro-btn pro-btn-primary" id="dynSave">ذخیره در گیت‌هاب</button>' +
+                    '<button type="button" class="pro-btn pro-btn-outline" id="dynCancel">انصراف</button>' +
+                    '</div><div id="dynMsg" style="margin-top:10px;"></div></form>';
+            body.innerHTML = html;
+
+            document.getElementById('dynCancel').onclick = function () {
+                modal.style.display = 'none'; modal.classList.remove('active');
+            };
+
+            document.getElementById('dynSave').onclick = async function () {
+                var inputs = body.querySelectorAll('input[data-field]');
+                inputs.forEach(function (inp) { item[inp.dataset.field] = inp.value; });
+                if (Array.isArray(res.data)) res.data[index] = item;
+                else items[index] = item;
+
+                var payload = Array.isArray(res.data) ? res.data
+                            : (function () { res.data[info.wrapper || 'items'] = items; return res.data; })();
+
+                document.getElementById('dynMsg').textContent = '⏳ در حال ذخیره...';
+                try {
+                    await writeFile(info.path, payload, res.sha,
+                        'Update ' + type + ' #' + index + ' via admin panel');
+                    document.getElementById('dynMsg').innerHTML =
+                        '<span style="color:#10b981;">✅ ذخیره شد در گیت‌هاب</span>';
+                } catch (e) {
+                    document.getElementById('dynMsg').innerHTML =
+                        '<span style="color:#ef4444;">❌ خطا: ' + e.message + '</span>';
+                }
+            };
+
+        } catch (e) {
+            body.innerHTML = '<div style="padding:20px;color:#ef4444;">❌ ' + e.message + '</div>';
+        }
     };
 
-    // تعریف توابع گم‌شده که onclick صداشون می‌زنه
-    ['Education','Certificate','Skill','Social','Service','Testimonial','Award','Link'].forEach(function (n) {
-        window['openEdit' + n + 'Modal'] = function (i) {
-            var map = { Education:'education', Certificate:'certificate', Skill:'skill',
+    // توابع گم‌شده
+    var MAP = { Education:'education', Certificate:'certificate', Skill:'skill',
                 Social:'social', Service:'service', Testimonial:'testimonial',
                 Award:'award', Link:'link' };
-            window.openEditItem(map[n], i);
-        };
+    Object.keys(MAP).forEach(function (n) {
+        window['openEdit' + n + 'Modal'] = function (i) { window.openEditItem(MAP[n], i); };
     });
 
     // حذف کاورها
     window.removeArticleCover = function () {
-        var i = document.getElementById('coverFileInput'),
-            p = document.getElementById('coverPreview');
+        var i = document.getElementById('coverFileInput'), p = document.getElementById('coverPreview');
         if (i) i.value = ''; if (p) p.innerHTML = '';
     };
     window.removeProductCover = function () {
-        var i = document.getElementById('productCoverInput'),
-            p = document.getElementById('productCoverPreview'),
+        var i = document.getElementById('productCoverInput'), p = document.getElementById('productCoverPreview'),
             g = document.getElementById('productCoverPreviewImg');
         if (i) i.value = ''; if (p) p.style.display = 'none'; if (g) g.src = '';
     };
     window.removeArchiveCover = function () {
-        var i = document.getElementById('archiveCoverInput'),
-            p = document.getElementById('archiveCoverPreview'),
+        var i = document.getElementById('archiveCoverInput'), p = document.getElementById('archiveCoverPreview'),
             g = document.getElementById('archiveCoverPreviewImg');
         if (i) i.value = ''; if (p) p.style.display = 'none'; if (g) g.src = '';
     };
-
     window.copyId = function (id) {
         var el = document.getElementById(id);
-        if (el && navigator.clipboard)
-            navigator.clipboard.writeText(el.textContent || el.innerText || '');
+        if (el && navigator.clipboard) navigator.clipboard.writeText(el.textContent || '');
     };
 });
 </script>

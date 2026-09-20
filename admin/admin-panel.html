@@ -1097,10 +1097,775 @@
     <!-- ============================================================
     اسکریپت‌ها
     ============================================================ -->
-<script>
+    <script src="script-admin-panel.js" defer></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ===== ۱. مقداردهی اولیه =====
+            sessionStorage.setItem('admin_logged_in', 'true');
+            sessionStorage.setItem('admin_username', 'ادمین');
+
+            var loginPage = document.getElementById('loginPage');
+            var adminPanel = document.getElementById('adminPanel');
+            if (loginPage) loginPage.style.display = 'none';
+            if (adminPanel) adminPanel.style.display = 'block';
+
+            var nameEl = document.getElementById('proAdminName');
+            if (nameEl) nameEl.textContent = 'ادمین';
+            var infoNameEl = document.getElementById('proInfoUsername');
+            if (infoNameEl) infoNameEl.textContent = 'ادمین';
+
+            // ===== ۲. توابع کمکی =====
+            function getToken() {
+                return document.getElementById('proToken')?.value?.trim() || localStorage.getItem('github_token') || '';
+            }
+
+            function showMsg(msg, type) {
+                var el = document.getElementById('proMsg');
+                if (!el) return;
+                el.textContent = msg;
+                el.className = 'pro-msg ' + (type || 'success');
+                setTimeout(function() { el.className = 'pro-msg'; }, 6000);
+            }
+
+            function showToast(msg, type) {
+                var el = document.getElementById('proToast');
+                if (!el) return;
+                el.textContent = msg;
+                el.className = 'pro-toast ' + (type || 'success');
+                setTimeout(function() { el.className = 'pro-toast'; }, 4000);
+            }
+
+       // ===== ۳. override تابع saveArticle برای ایجاد فایل در صورت نبود =====
+window.saveArticle = async function() {
+    var id = document.getElementById('articleId')?.value;
+    var title = document.getElementById('articleTitle')?.value?.trim() || '';
+    var abstract = document.getElementById('articleAbstract')?.value?.trim() || '';
+    var body = document.getElementById('articleBody')?.value?.trim() || '';
+    var type = document.getElementById('articleType')?.value || 'article';
+    var date = document.getElementById('articleDate')?.value || new Date().toISOString().split('T')[0];
+    var year = document.getElementById('articleYear')?.value?.trim() || new Date().getFullYear().toString();
+    var readTime = parseInt(document.getElementById('articleReadTime')?.value) || 10;
+    var tags = (document.getElementById('articleTags')?.value || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+    var keywords = (document.getElementById('articleKeywords')?.value || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+    var references = (document.getElementById('articleReferences')?.value || '').split('\n').map(function(s) { return s.trim(); }).filter(Boolean);
+    var doi = document.getElementById('articleDoi')?.value?.trim() || '';
+    var difficulty = document.getElementById('articleDifficulty')?.value || 'متوسط';
+
+    if (!title || !abstract || !body) {
+        showMsg('❌ لطفاً عنوان، چکیده و متن کامل مقاله را پر کنید.', 'error');
+        return;
+    }
+
+    var token = getToken();
+    if (!token) {
+        showMsg('❌ لطفاً توکن گیت‌هاب را در قسمت بالای صفحه وارد کنید.', 'error');
+        return;
+    }
+
+    // دریافت تصاویر
+    var coverImg = document.querySelector('#coverPreview img');
+    var coverData = coverImg ? coverImg.src : null;
+    var galleryItems = document.querySelectorAll('#galleryPreview .gallery-item img');
+    var galleryData = Array.from(galleryItems).map(function(img) { return img.src; });
+    var mainFileTag = document.querySelector('#mainFilePreview .file-tag');
+    var mainFileName = mainFileTag ? mainFileTag.querySelector('span')?.textContent : null;
+    var fileTags = document.querySelectorAll('#filesPreview .file-tag');
+    var filesData = Array.from(fileTags).map(function(tag) {
+        var name = tag.querySelector('span')?.textContent || '';
+        return name;
+    });
+
+    var articleData = {
+        title: title,
+        abstract: abstract,
+        body: body,
+        type: type,
+        date: date,
+        year: year,
+        readTime: readTime,
+        tags: tags,
+        keywords: keywords,
+        cover: coverData || '',
+        images: galleryData,
+        file: mainFileName || '',
+        files: filesData,
+        references: references,
+        doi: doi,
+        difficulty: difficulty,
+        updated: new Date().toISOString()
+    };
+
+    var key = String(id).padStart(4, '0');
+
+    try {
+        showMsg('⏳ در حال ذخیره مقاله در گیت‌هاب...', 'info');
+
+        // ===== ۱. ابتدا فایل articles.json را بخوان =====
+        var repoPath = 'repos/mahanneman/MA.AD.GH.SITE/contents/_data/articles.json';
+        var fetchUrl = 'https://api.github.com/' + repoPath;
+        var response = await fetch(fetchUrl, {
+            headers: {
+                'Authorization': 'token ' + token,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+
+        var existingData = {};
+        var sha = null;
+
+        if (response.status === 200) {
+            var data = await response.json();
+            var content = atob(data.content);
+            try {
+                existingData = JSON.parse(content);
+                sha = data.sha;
+            } catch (e) {
+                console.warn('⚠️ فایل articles.json خراب است، بازنشانی به {}:', e);
+                existingData = {};
+                sha = data.sha;
+            }
+        } else if (response.status === 404) {
+            console.log('ℹ️ فایل articles.json وجود ندارد، ایجاد می‌شود...');
+            existingData = {};
+            sha = null;
+        } else {
+            throw new Error('خطا در خواندن فایل: ' + response.status);
+        }
+
+        // ===== ۲. مقاله جدید را اضافه کن =====
+        existingData[key] = articleData;
+
+        // ===== ۳. ذخیره در گیت‌هاب =====
+        var jsonString = JSON.stringify(existingData, null, 2);
+        var encoder = new TextEncoder();
+        var encoded = encoder.encode(jsonString);
+        var binary = '';
+        for (var i = 0; i < encoded.length; i++) {
+            binary += String.fromCharCode(encoded[i]);
+        }
+        var base64Content = btoa(binary);
+
+        var putBody = {
+            message: 'Add article #' + key + ' via admin panel - ' + new Date().toISOString(),
+            content: base64Content,
+            branch: 'main'
+        };
+        if (sha) putBody.sha = sha;
+
+        var putResponse = await fetch(fetchUrl, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify(putBody)
+        });
+
+        if (!putResponse.ok) {
+            var err = await putResponse.json();
+            throw new Error(err.message || 'خطا در ذخیره فایل');
+        }
+
+        // ===== ۴. آپلود فایل‌های ضمیمه (تصاویر و ...) =====
+        var basePath = 'assets/articles/' + key + '/';
+
+        if (coverData && coverData.startsWith('data:')) {
+            try {
+                await uploadFileToGitHub(basePath + 'cover.jpg', coverData.split(',')[1]);
+            } catch (e) { console.warn('⚠️ آپلود کاور ناموفق:', e); }
+        }
+
+        for (var g = 0; g < galleryData.length; g++) {
+            if (galleryData[g].startsWith('data:')) {
+                try {
+                    await uploadFileToGitHub(basePath + 'gallery_' + (g + 1) + '.jpg', galleryData[g].split(',')[1]);
+                } catch (e) { console.warn('⚠️ آپلود گالری ناموفق:', e); }
+            }
+        }
+
+        // فایل اصلی
+        var mainFileInput = document.getElementById('mainFileInput');
+        if (mainFileInput && mainFileInput.files.length > 0) {
+            var file = mainFileInput.files[0];
+            var reader = new FileReader();
+            var fileData = await new Promise(function(resolve) {
+                reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+                reader.readAsDataURL(file);
+            });
+            try {
+                await uploadFileToGitHub(basePath + file.name, fileData);
+            } catch (e) { console.warn('⚠️ آپلود فایل اصلی ناموفق:', e); }
+        }
+
+        // فایل‌های اضافی
+        var extraFiles = document.getElementById('filesFileInput');
+        if (extraFiles && extraFiles.files.length > 0) {
+            for (var f = 0; f < extraFiles.files.length; f++) {
+                var file = extraFiles.files[f];
+                var reader = new FileReader();
+                var fileData = await new Promise(function(resolve) {
+                    reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+                    reader.readAsDataURL(file);
+                });
+                try {
+                    await uploadFileToGitHub(basePath + file.name, fileData);
+                } catch (e) { console.warn('⚠️ آپلود فایل اضافی ناموفق:', e); }
+            }
+        }
+
+        showMsg('✅ مقاله با شماره ART-' + key + ' با موفقیت در گیت‌هاب ذخیره شد.', 'success');
+        showToast('✅ مقاله ذخیره شد', 'success');
+
+        // ===== ۵. بازنشانی فرم و بارگذاری مجدد =====
+        // اصلاح: استفاده از window. برای توابع
+        if (typeof window.resetArticleForm === 'function') {
+            window.resetArticleForm();
+        } else {
+            // در صورت نبود resetArticleForm، فرم را دستی بازنشانی کن
+            var fields = ['articleTitle', 'articleAbstract', 'articleBody', 'articleDate', 'articleYear', 'articleReadTime',
+                'articleKeywords', 'articleReferences', 'articleDoi'
+            ];
+            fields.forEach(function(fid) {
+                var el = document.getElementById(fid);
+                if (el) el.value = '';
+            });
+            var typeEl = document.getElementById('articleType');
+            if (typeEl) typeEl.value = 'article';
+            var diffEl = document.getElementById('articleDifficulty');
+            if (diffEl) diffEl.value = 'متوسط';
+            var tagsEl = document.getElementById('articleTags');
+            if (tagsEl) tagsEl.value = '';
+            var container = document.getElementById('articleTagsContainer');
+            if (container) container.querySelectorAll('.tag-item').forEach(function(el) { el.remove(); });
+            var previews = ['coverPreview', 'galleryPreview', 'mainFilePreview', 'filesPreview'];
+            previews.forEach(function(pid) {
+                var el = document.getElementById(pid);
+                if (el) el.innerHTML = '';
+            });
+            var inputs = ['coverFileInput', 'galleryFileInput', 'mainFileInput', 'filesFileInput'];
+            inputs.forEach(function(iid) {
+                var el = document.getElementById(iid);
+                if (el) el.value = '';
+            });
+            if (typeof window.generateArticleId === 'function') window.generateArticleId();
+        }
+
+        // بارگذاری مجدد مقالات با استفاده از window.
+        if (typeof window.loadArticles === 'function') {
+            window.loadArticles();
+        } else {
+            // اگر loadArticles در دسترس نبود، سعی کن از loadAllData استفاده کنی
+            if (typeof loadAllData === 'function') loadAllData();
+        }
+
+    } catch (e) {
+        console.error('❌ خطا در ذخیره مقاله:', e);
+        showMsg('❌ خطا در ذخیره: ' + e.message, 'error');
+        showToast('❌ ذخیره‌سازی ناموفق', 'error');
+    }
+};
+
+            // ===== ۴. override توابع بارگذاری =====
+            if (typeof window.loadArticles === 'function') {
+                window.loadArticles = async function() {
+                    var list = document.getElementById('proArticlesList');
+                    if (!list) return;
+                    var token = getToken();
+                    if (!token) {
+                        list.innerHTML =
+                            '<div class="pro-empty"><i class="fas fa-key"></i>لطفاً توکن گیت‌هاب را وارد کنید.</div>';
+                        return;
+                    }
+                    try {
+                        var fetchUrl = 'https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/_data/articles.json';
+                        var response = await fetch(fetchUrl, {
+                            headers: {
+                                'Authorization': 'token ' + token,
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        });
+
+                        if (response.status === 404) {
+                            articlesData = {};
+                            allArticles = [];
+                            articlesFiltered = [];
+                            renderArticles([]);
+                            return;
+                        }
+                        if (!response.ok) throw new Error('خطا در خواندن فایل: ' + response.status);
+
+                        var data = await response.json();
+                        var content = atob(data.content);
+                        try {
+                            articlesData = JSON.parse(content);
+                            articlesSha = data.sha;
+                        } catch (e) {
+                            console.warn('⚠️ فایل articles.json خراب است:', e);
+                            articlesData = {};
+                            articlesSha = data.sha;
+                        }
+                        allArticles = Object.keys(articlesData).map(function(key) {
+                            return { key: key, ...articlesData[key] };
+                        });
+                        articlesFiltered = allArticles.slice();
+                        renderArticles(articlesFiltered);
+                    } catch (e) {
+                        console.warn('⚠️ خطا در بارگذاری مقالات:', e);
+                        articlesData = {};
+                        allArticles = [];
+                        articlesFiltered = [];
+                        renderArticles([]);
+                    }
+                };
+            }
+
+            // ===== ۵. override updateDashboard =====
+            if (typeof window.updateDashboard === 'function') {
+                window.updateDashboard = function() {
+                    try {
+                        var articles = Object.values(window.articlesData || {});
+                        var products = Object.values(window.productsData || {});
+                        var archive = Object.values(window.archiveData || {});
+                        var fileCount = 0;
+                        articles.forEach(function(a) {
+                            if (a && a.files && Array.isArray(a.files)) fileCount += a.files.length;
+                        });
+                        products.forEach(function(p) {
+                            if (p && p.files && Array.isArray(p.files)) fileCount += p.files.length;
+                        });
+                        archive.forEach(function(a) {
+                            if (a && a.files && Array.isArray(a.files)) fileCount += a.files.length;
+                        });
+                        var dashArticles = document.getElementById('dashArticles');
+                        if (dashArticles) dashArticles.textContent = articles.length;
+                        var dashProducts = document.getElementById('dashProducts');
+                        if (dashProducts) dashProducts.textContent = products.length;
+                        var dashArchive = document.getElementById('dashArchive');
+                        if (dashArchive) dashArchive.textContent = archive.length;
+                        var dashFiles = document.getElementById('dashFiles');
+                        if (dashFiles) dashFiles.textContent = fileCount;
+                        var lastUpdate = document.getElementById('proLastUpdate');
+                        if (lastUpdate) lastUpdate.textContent = new Date().toLocaleString('fa-IR');
+                        var dashMembers = document.getElementById('dashMembers');
+                        if (dashMembers) dashMembers.textContent = (window.membersData || []).length || 0;
+                    } catch (e) {
+                        console.warn('⚠️ خطا در به‌روزرسانی داشبورد:', e);
+                    }
+                };
+            }
+
+            // ===== ۶. override checkLogin =====
+            if (typeof window.checkLogin === 'function') {
+                window.checkLogin = function() {
+                    // کاری نمی‌کنیم
+                };
+            }
+
+            // ===== ۷. بارگذاری داده‌ها =====
+            setTimeout(function() {
+                try {
+                    if (typeof loadAllData === 'function') loadAllData();
+                    if (typeof loadAppearanceSettings === 'function') loadAppearanceSettings();
+                    if (typeof loadMenuData === 'function') loadMenuData();
+                    if (typeof loadSectionsData === 'function') loadSectionsData();
+                    if (typeof loadAllIndexContent === 'function') loadAllIndexContent();
+                    if (typeof loadMembers === 'function') loadMembers();
+                    if (typeof loadGlobalOrders === 'function') loadGlobalOrders();
+                } catch (e) {
+                    console.warn('⚠️ خطا در بارگذاری داده‌ها:', e);
+                }
+            }, 500);
+
+            // ===== ۸. اتصال رویدادها =====
+            // ... (کد اتصال رویدادها که در نسخه‌های قبلی کامل بود)
+
+            // ---- خروج ----
+            var logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn && typeof proLogout === 'function') {
+                logoutBtn.addEventListener('click', proLogout);
+            }
+
+            // ---- توکن ----
+            var saveTokenBtn = document.getElementById('saveTokenBtn');
+            if (saveTokenBtn && typeof proSaveToken === 'function') {
+                saveTokenBtn.addEventListener('click', proSaveToken);
+            }
+
+            // ---- CSV ----
+            var exportCsvBtn = document.getElementById('exportCsvBtn');
+            if (exportCsvBtn && typeof exportCSV === 'function') {
+                exportCsvBtn.addEventListener('click', exportCSV);
+            }
+
+            // ---- ظاهر ----
+            var saveAppearanceBtn = document.getElementById('saveAppearanceBtn');
+            if (saveAppearanceBtn && typeof saveAppearance === 'function') {
+                saveAppearanceBtn.addEventListener('click', saveAppearance);
+            }
+            var resetAppearanceBtn = document.getElementById('resetAppearanceBtn');
+            if (resetAppearanceBtn && typeof resetAppearanceForm === 'function') {
+                resetAppearanceBtn.addEventListener('click', resetAppearanceForm);
+            }
+
+            // ---- منوها ----
+            var addHeaderMenuBtn = document.getElementById('addHeaderMenuBtn');
+            if (addHeaderMenuBtn && typeof addMenuItem === 'function') {
+                addHeaderMenuBtn.addEventListener('click', function() { addMenuItem('header'); });
+            }
+            var addSlideMenuBtn = document.getElementById('addSlideMenuBtn');
+            if (addSlideMenuBtn && typeof addMenuItem === 'function') {
+                addSlideMenuBtn.addEventListener('click', function() { addMenuItem('slide'); });
+            }
+            var saveMenusBtn = document.getElementById('saveMenusBtn');
+            if (saveMenusBtn && typeof saveMenus === 'function') {
+                saveMenusBtn.addEventListener('click', saveMenus);
+            }
+            var saveMenusBtn2 = document.getElementById('saveMenusBtn2');
+            if (saveMenusBtn2 && typeof saveMenus === 'function') {
+                saveMenusBtn2.addEventListener('click', saveMenus);
+            }
+            var resetMenusBtn = document.getElementById('resetMenusBtn');
+            if (resetMenusBtn && typeof resetMenusToDefault === 'function') {
+                resetMenusBtn.addEventListener('click', resetMenusToDefault);
+            }
+
+            // ---- بخش‌ها ----
+            var saveSectionsBtn = document.getElementById('saveSectionsBtn');
+            if (saveSectionsBtn && typeof saveSections === 'function') {
+                saveSectionsBtn.addEventListener('click', saveSections);
+            }
+
+            // ---- ایندکس ----
+            var addEduBtn = document.getElementById('addEduBtn');
+            if (addEduBtn && typeof addEducationItem === 'function') {
+                addEduBtn.addEventListener('click', addEducationItem);
+            }
+            var saveEduBtn = document.getElementById('saveEduBtn');
+            if (saveEduBtn && typeof saveEducation === 'function') {
+                saveEduBtn.addEventListener('click', saveEducation);
+            }
+            var addCertBtn = document.getElementById('addCertBtn');
+            if (addCertBtn && typeof addCertificateItem === 'function') {
+                addCertBtn.addEventListener('click', addCertificateItem);
+            }
+            var saveCertBtn = document.getElementById('saveCertBtn');
+            if (saveCertBtn && typeof saveCertificates === 'function') {
+                saveCertBtn.addEventListener('click', saveCertificates);
+            }
+            var addSkillBtn = document.getElementById('addSkillBtn');
+            if (addSkillBtn && typeof addSkillItem === 'function') {
+                addSkillBtn.addEventListener('click', addSkillItem);
+            }
+            var saveSkillBtn = document.getElementById('saveSkillBtn');
+            if (saveSkillBtn && typeof saveSkills === 'function') {
+                saveSkillBtn.addEventListener('click', saveSkills);
+            }
+            var addSocialBtn = document.getElementById('addSocialBtn');
+            if (addSocialBtn && typeof addSocialItem === 'function') {
+                addSocialBtn.addEventListener('click', addSocialItem);
+            }
+            var saveSocialBtn = document.getElementById('saveSocialBtn');
+            if (saveSocialBtn && typeof saveSocial === 'function') {
+                saveSocialBtn.addEventListener('click', saveSocial);
+            }
+            var addServiceBtn = document.getElementById('addServiceBtn');
+            if (addServiceBtn && typeof addServiceItem === 'function') {
+                addServiceBtn.addEventListener('click', addServiceItem);
+            }
+            var saveServiceBtn = document.getElementById('saveServiceBtn');
+            if (saveServiceBtn && typeof saveServices === 'function') {
+                saveServiceBtn.addEventListener('click', saveServices);
+            }
+            var addTestiBtn = document.getElementById('addTestiBtn');
+            if (addTestiBtn && typeof addTestimonialItem === 'function') {
+                addTestiBtn.addEventListener('click', addTestimonialItem);
+            }
+            var saveTestiBtn = document.getElementById('saveTestiBtn');
+            if (saveTestiBtn && typeof saveTestimonials === 'function') {
+                saveTestiBtn.addEventListener('click', saveTestimonials);
+            }
+            var addAwardBtn = document.getElementById('addAwardBtn');
+            if (addAwardBtn && typeof addAwardItem === 'function') {
+                addAwardBtn.addEventListener('click', addAwardItem);
+            }
+            var saveAwardBtn = document.getElementById('saveAwardBtn');
+            if (saveAwardBtn && typeof saveAwards === 'function') {
+                saveAwardBtn.addEventListener('click', saveAwards);
+            }
+            var addLinkBtn = document.getElementById('addLinkBtn');
+            if (addLinkBtn && typeof addLinkItem === 'function') {
+                addLinkBtn.addEventListener('click', addLinkItem);
+            }
+            var saveLinkBtn = document.getElementById('saveLinkBtn');
+            if (saveLinkBtn && typeof saveLinks === 'function') {
+                saveLinkBtn.addEventListener('click', saveLinks);
+            }
+
+            // ---- مقالات ----
+            var addArticleBtn = document.getElementById('addArticleBtn');
+            if (addArticleBtn && typeof switchTab === 'function') {
+                addArticleBtn.addEventListener('click', function() { switchTab('add-article'); });
+            }
+            var searchArticles = document.getElementById('articlesSearch');
+            if (searchArticles && typeof filterArticles === 'function') {
+                searchArticles.addEventListener('input', function() { filterArticles(this.value); });
+            }
+            var duplicateArticleBtn = document.getElementById('duplicateArticleBtn');
+            if (duplicateArticleBtn && typeof duplicateItem === 'function') {
+                duplicateArticleBtn.addEventListener('click', function() { duplicateItem('article'); });
+            }
+
+            // ---- افزودن مقاله ----
+            var saveArticleBtn = document.getElementById('saveArticleBtn');
+            if (saveArticleBtn && typeof window.saveArticle === 'function') {
+                saveArticleBtn.addEventListener('click', window.saveArticle);
+            }
+            var resetArticleBtn = document.getElementById('resetArticleBtn');
+            if (resetArticleBtn && typeof resetArticleForm === 'function') {
+                resetArticleBtn.addEventListener('click', resetArticleForm);
+            }
+            var generateArticleBtn = document.getElementById('generateArticleBtn');
+            if (generateArticleBtn && typeof generateArticleContent === 'function') {
+                generateArticleBtn.addEventListener('click', generateArticleContent);
+            }
+            var tagInput = document.getElementById('articleTagInput');
+            if (tagInput && typeof addTag === 'function') {
+                tagInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addTag('articleTagsContainer', 'articleTagInput');
+                    }
+                });
+            }
+
+            // ---- محصولات ----
+            var searchProducts = document.getElementById('productsSearch');
+            if (searchProducts && typeof filterProducts === 'function') {
+                searchProducts.addEventListener('input', function() { filterProducts(this.value); });
+            }
+            var addProductBtn = document.getElementById('addProductBtn');
+            if (addProductBtn && typeof switchTab === 'function') {
+                addProductBtn.addEventListener('click', function() { switchTab('add-product'); });
+            }
+
+            // ---- آرشیو ----
+            var searchArchive = document.getElementById('archiveSearch');
+            if (searchArchive && typeof filterArchive === 'function') {
+                searchArchive.addEventListener('input', function() { filterArchive(this.value); });
+            }
+            var addArchiveBtn = document.getElementById('addArchiveBtn');
+            if (addArchiveBtn && typeof switchTab === 'function') {
+                addArchiveBtn.addEventListener('click', function() { switchTab('add-archive'); });
+            }
+
+            // ---- کاربران ----
+            var refreshMembersBtn = document.getElementById('refreshMembersBtn');
+            if (refreshMembersBtn && typeof refreshMembers === 'function') {
+                refreshMembersBtn.addEventListener('click', refreshMembers);
+            }
+            var exportMembersBtn = document.getElementById('exportMembersBtn');
+            if (exportMembersBtn && typeof exportMembersData === 'function') {
+                exportMembersBtn.addEventListener('click', exportMembersData);
+            }
+            var searchMembers = document.getElementById('membersSearch');
+            if (searchMembers && typeof filterMembers === 'function') {
+                searchMembers.addEventListener('input', filterMembers);
+            }
+            var searchMembersBtn = document.getElementById('searchMembersBtn');
+            if (searchMembersBtn && typeof filterMembers === 'function') {
+                searchMembersBtn.addEventListener('click', filterMembers);
+            }
+            var syncMembersBtn = document.getElementById('syncMembersBtn');
+            if (syncMembersBtn && typeof syncAllMembers === 'function') {
+                syncMembersBtn.addEventListener('click', syncAllMembers);
+            }
+            var exportMembersCsvBtn = document.getElementById('exportMembersCsvBtn');
+            if (exportMembersCsvBtn && typeof exportMembersCSV === 'function') {
+                exportMembersCsvBtn.addEventListener('click', exportMembersCSV);
+            }
+            var editMemberBtn = document.getElementById('editMemberBtn');
+            if (editMemberBtn && typeof openEditMemberModal === 'function') {
+                editMemberBtn.addEventListener('click', openEditMemberModal);
+            }
+            var deleteMemberBtn = document.getElementById('deleteMemberBtn');
+            if (deleteMemberBtn && typeof deleteMember === 'function') {
+                deleteMemberBtn.addEventListener('click', deleteMember);
+            }
+            var closeMemberDetailBtn = document.getElementById('closeMemberDetailBtn');
+            if (closeMemberDetailBtn && typeof closeMemberDetail === 'function') {
+                closeMemberDetailBtn.addEventListener('click', closeMemberDetail);
+            }
+            var refreshMemberOrdersBtn = document.getElementById('refreshMemberOrdersBtn');
+            if (refreshMemberOrdersBtn && typeof refreshMemberOrders === 'function') {
+                refreshMemberOrdersBtn.addEventListener('click', refreshMemberOrders);
+            }
+
+            // ---- سفارشات ----
+            var refreshOrdersBtn = document.getElementById('refreshOrdersBtn');
+            if (refreshOrdersBtn && typeof refreshOrders === 'function') {
+                refreshOrdersBtn.addEventListener('click', refreshOrders);
+            }
+            var refreshOrdersBtn2 = document.getElementById('refreshOrdersBtn2');
+            if (refreshOrdersBtn2 && typeof refreshOrders === 'function') {
+                refreshOrdersBtn2.addEventListener('click', refreshOrders);
+            }
+            var exportOrdersCsvBtn = document.getElementById('exportOrdersCsvBtn');
+            if (exportOrdersCsvBtn && typeof exportOrdersCSV === 'function') {
+                exportOrdersCsvBtn.addEventListener('click', exportOrdersCSV);
+            }
+            var exportOrdersCsvBtn2 = document.getElementById('exportOrdersCsvBtn2');
+            if (exportOrdersCsvBtn2 && typeof exportOrdersCSV === 'function') {
+                exportOrdersCsvBtn2.addEventListener('click', exportOrdersCSV);
+            }
+            var exportOrdersJsonBtn = document.getElementById('exportOrdersJsonBtn');
+            if (exportOrdersJsonBtn && typeof exportAllOrders === 'function') {
+                exportOrdersJsonBtn.addEventListener('click', exportAllOrders);
+            }
+            var exportOrdersJsonBtn2 = document.getElementById('exportOrdersJsonBtn2');
+            if (exportOrdersJsonBtn2 && typeof exportAllOrders === 'function') {
+                exportOrdersJsonBtn2.addEventListener('click', exportAllOrders);
+            }
+            var filterOrdersBtn = document.getElementById('filterOrdersBtn');
+            if (filterOrdersBtn && typeof filterOrders === 'function') {
+                filterOrdersBtn.addEventListener('click', filterOrders);
+            }
+            var orderStatusFilter = document.getElementById('orderStatusFilter');
+            if (orderStatusFilter && typeof filterOrders === 'function') {
+                orderStatusFilter.addEventListener('change', filterOrders);
+            }
+            var orderSort = document.getElementById('orderSort');
+            if (orderSort && typeof filterOrders === 'function') {
+                orderSort.addEventListener('change', filterOrders);
+            }
+            var ordersSearch = document.getElementById('ordersSearch');
+            if (ordersSearch && typeof filterOrders === 'function') {
+                ordersSearch.addEventListener('input', filterOrders);
+            }
+            var syncOrdersBtn = document.getElementById('syncOrdersBtn');
+            if (syncOrdersBtn && typeof syncAllOrdersToGlobal === 'function') {
+                syncOrdersBtn.addEventListener('click', syncAllOrdersToGlobal);
+            }
+            var bulkActionBtn = document.getElementById('bulkActionBtn');
+            if (bulkActionBtn && typeof openBulkStatusModal === 'function') {
+                bulkActionBtn.addEventListener('click', openBulkStatusModal);
+            }
+            var exportOrderHistoryBtn = document.getElementById('exportOrderHistoryBtn');
+            if (exportOrderHistoryBtn && typeof exportOrderHistory === 'function') {
+                exportOrderHistoryBtn.addEventListener('click', exportOrderHistory);
+            }
+            var clean30Btn = document.getElementById('clean30Btn');
+            if (clean30Btn && typeof cleanOldUserOrders === 'function') {
+                clean30Btn.addEventListener('click', function() { cleanOldUserOrders(30); });
+            }
+            var clean60Btn = document.getElementById('clean60Btn');
+            if (clean60Btn && typeof cleanOldUserOrders === 'function') {
+                clean60Btn.addEventListener('click', function() { cleanOldUserOrders(60); });
+            }
+
+            // ---- تنظیمات ----
+            var changePassBtn = document.getElementById('changePassBtn');
+            if (changePassBtn && typeof changePassword === 'function') {
+                changePassBtn.addEventListener('click', changePassword);
+            }
+            var exportDataBtn = document.getElementById('exportDataBtn');
+            if (exportDataBtn && typeof exportData === 'function') {
+                exportDataBtn.addEventListener('click', exportData);
+            }
+            var exportCsvDataBtn = document.getElementById('exportCsvDataBtn');
+            if (exportCsvDataBtn && typeof exportCSV === 'function') {
+                exportCsvDataBtn.addEventListener('click', exportCSV);
+            }
+            var clearAllDataBtn = document.getElementById('clearAllDataBtn');
+            if (clearAllDataBtn && typeof clearAllData === 'function') {
+                clearAllDataBtn.addEventListener('click', clearAllData);
+            }
+
+            // ---- مودال‌ها ----
+            var closeEditModalBtn = document.getElementById('closeEditModalBtn');
+            if (closeEditModalBtn && typeof closeEditModal === 'function') {
+                closeEditModalBtn.addEventListener('click', closeEditModal);
+            }
+            var focusModeBtn = document.getElementById('focusModeBtn');
+            if (focusModeBtn && typeof toggleFocusMode === 'function') {
+                focusModeBtn.addEventListener('click', toggleFocusMode);
+            }
+            var closeEditMemberModalBtn = document.getElementById('closeEditMemberModalBtn');
+            if (closeEditMemberModalBtn && typeof closeEditMemberModal === 'function') {
+                closeEditMemberModalBtn.addEventListener('click', closeEditMemberModal);
+            }
+            var cancelEditMemberBtn = document.getElementById('cancelEditMemberBtn');
+            if (cancelEditMemberBtn && typeof closeEditMemberModal === 'function') {
+                cancelEditMemberBtn.addEventListener('click', closeEditMemberModal);
+            }
+            var saveEditMemberBtn = document.getElementById('saveEditMemberBtn');
+            if (saveEditMemberBtn) {
+                var editMemberForm = document.getElementById('editMemberForm');
+                if (editMemberForm) {
+                    saveEditMemberBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (typeof editMemberForm.submit === 'function') {
+                            editMemberForm.dispatchEvent(new Event('submit'));
+                        }
+                    });
+                }
+            }
+            var closeOrderDetailBtn = document.getElementById('closeOrderDetailBtn');
+            if (closeOrderDetailBtn && typeof closeOrderDetailModal === 'function') {
+                closeOrderDetailBtn.addEventListener('click', closeOrderDetailModal);
+            }
+            var closeEditOrderModalBtn = document.getElementById('closeEditOrderModalBtn');
+            if (closeEditOrderModalBtn && typeof closeEditOrderModal === 'function') {
+                closeEditOrderModalBtn.addEventListener('click', closeEditOrderModal);
+            }
+            var closeSendMessageBtn = document.getElementById('closeSendMessageBtn');
+            if (closeSendMessageBtn && typeof closeSendMessageModal === 'function') {
+                closeSendMessageBtn.addEventListener('click', closeSendMessageModal);
+            }
+            var cancelSendMessageBtn = document.getElementById('cancelSendMessageBtn');
+            if (cancelSendMessageBtn && typeof closeSendMessageModal === 'function') {
+                cancelSendMessageBtn.addEventListener('click', closeSendMessageModal);
+            }
+            var sendMessageBtn = document.getElementById('sendMessageBtn');
+            if (sendMessageBtn && typeof sendMessageToUser === 'function') {
+                sendMessageBtn.addEventListener('click', sendMessageToUser);
+            }
+
+            // ---- ویو تغییر ----
+            document.querySelectorAll('.pro-view-toggle button').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var type = this.dataset.type;
+                    var view = this.dataset.view;
+                    if (type && view && typeof setView === 'function') {
+                        setView(type, view);
+                    }
+                    var parent = this.closest('.pro-view-toggle');
+                    if (parent) {
+                        parent.querySelectorAll('button').forEach(function(b) {
+                            b.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            console.log('✅ پنل مدیریت با موفقیت راه‌اندازی شد (نسخه اصلاح‌شده برای مقالات).');
+        });
+        function b64ToUtf8(b64) {
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+    }
+    return new TextDecoder('utf-8').decode(bytes);
+}
+    </script>
+    <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // فایل‌های مربوطه — همه بخش‌ها
+    // ===== فایل‌های مربوطه — همه بخش‌ها =====
     var FILES = {
         education:   { path: '_data/education.json',    wrapper: 'items' },
         certificate: { path: '_data/certificates.json',  wrapper: 'items' },
@@ -1115,7 +1880,7 @@ document.addEventListener('DOMContentLoaded', function () {
         archive:     { path: '_data/archive.json',       wrapper: 'items' }
     };
 
-    // برچسب فارسی برای نمایش در عنوان مودال
+    // ===== برچسب فارسی برای عنوان مودال =====
     var TYPE_LABELS = {
         education: 'سوابق تحصیلی', certificate: 'گواهی‌نامه', skill: 'مهارت',
         social: 'شبکه اجتماعی',    service: 'خدمت',           testimonial: 'نظر مشتری',
@@ -1170,10 +1935,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // استخراج آرایه + کلیدها از ساختارهای مختلف
-    // حالت ۱: آرایه مستقیم  [{...}, {...}]
-    // حالت ۲: آبجکت با wrapper { items: [...] }
-    // حالت ۳: آبجکت با کلید { "0001": {...}, "0002": {...} }
+    // ===== استخراج آیتم‌ها از سه ساختار مختلف JSON =====
+    // ۱. آرایه مستقیم:                    [{...}, {...}]
+    // ۲. آبجکت با wrapper:                { items: [...] }
+    // ۳. آبجکت با کلید (articles/products): { "0001": {...}, "0002": {...} }
     function extractItems(data, wrapper) {
         if (Array.isArray(data)) {
             return { items: data, keys: null };
@@ -1187,12 +1952,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // آبجکت با کلید — کلیدهای متادیتا رو فیلتر کن
         var skipKeys = ['title', 'sectionTitle', 'desc', 'description', 'icon'];
         var keys = Object.keys(data).filter(function (k) {
-            return skipKeys.indexOf(k) === -1 && typeof data[k] === 'object';
+            return skipKeys.indexOf(k) === -1 && typeof data[k] === 'object' && data[k] !== null;
         });
         return { items: keys.map(function (k) { return data[k]; }), keys: keys };
     }
 
-    // باز کردن مودال ویرایش
+    // ===== باز کردن مودال ویرایش =====
     window.openEditItem = async function (type, index) {
         var info = FILES[type];
         if (!info) return alert('نوع نامعتبر: ' + type);
@@ -1274,16 +2039,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // توابع گم‌شده — همه بخش‌ها
-    var MAP = { Education:'education', Certificate:'certificate', Skill:'skill',
-                Social:'social', Service:'service', Testimonial:'testimonial',
-                Award:'award', Link:'link', Article:'article', Product:'product',
-                Archive:'archive' };
+    // ===== توابع گم‌شده — همه بخش‌ها (شامل article/product/archive) =====
+    var MAP = {
+        Education:'education', Certificate:'certificate', Skill:'skill',
+        Social:'social', Service:'service', Testimonial:'testimonial',
+        Award:'award', Link:'link', Article:'article', Product:'product',
+        Archive:'archive'
+    };
     Object.keys(MAP).forEach(function (n) {
         window['openEdit' + n + 'Modal'] = function (i) { window.openEditItem(MAP[n], i); };
     });
 
-    // حذف کاورها
+    // ===== حذف کاورها =====
     window.removeArticleCover = function () {
         var i = document.getElementById('coverFileInput'), p = document.getElementById('coverPreview');
         if (i) i.value = ''; if (p) p.innerHTML = '';

@@ -57,6 +57,46 @@
       "desc": "",
       "progress": 40,
       "color": "#2563eb"
+    },
+    {
+      "name": "powermill",
+      "icon": "",
+      "level": "پیشرفته",
+      "desc": "gcode",
+      "progress": 80,
+      "color": "#2563eb"
+    },
+    {
+      "name": "catia",
+      "icon": "",
+      "level": "متوسط",
+      "desc": "part design & assembly",
+      "progress": 100,
+      "color": "#2563eb"
+    },
+    {
+      "name": "matlab",
+      "icon": "",
+      "level": "مقدماتی",
+      "desc": "",
+      "progress": 0,
+      "color": "#2563eb"
+    },
+    {
+      "name": "photoshop",
+      "icon": "",
+      "level": "پیشرفته",
+      "desc": "آزاد",
+      "progress": 50,
+      "color": "#2563eb"
+    },
+    {
+      "name": "linux",
+      "icon": "",
+      "level": "متوسط",
+      "desc": "",
+      "progress": 0,
+      "color": "#2563eb"
     }
   ]
 }

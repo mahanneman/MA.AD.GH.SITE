@@ -2,11 +2,11 @@
   "items": [
     {
       "name": "تلگرام",
-      "url": "https://t.me/mahanenman",
+      "url": "https://t.me/mahan_amata",
       "icon": "fa-telegram",
       "color": "#0088cc",
-      "active": true,
-      "priority": 1
+      "active": "true",
+      "priority": "1"
     },
     {
       "name": "اینستاگرام",

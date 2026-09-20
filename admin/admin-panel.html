@@ -1862,6 +1862,96 @@ window.saveArticle = async function() {
     return new TextDecoder('utf-8').decode(bytes);
 }
     </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
 
+    // باز کردن مودال ویرایش
+    window.openEditItem = function (type, index) {
+        var arrNames = {
+            education: 'educationData', certificate: 'certificatesData',
+            skill: 'skillsData', social: 'socialData', service: 'servicesData',
+            testimonial: 'testimonialsData', award: 'awardsData', link: 'linksData'
+        };
+        var arr = window[arrNames[type]];
+        if (!arr || !arr[index]) { alert('داده پیدا نشد'); return; }
+
+        var data = arr[index];
+        var modal = document.getElementById('editModal');
+        var title = document.getElementById('editModalTitle');
+        var body  = document.getElementById('editModalBody');
+
+        title.innerHTML = '<i class="fas fa-edit"></i> ویرایش ' + type + ' #' + index;
+
+        var html = '<form id="dynEditForm"><div class="pro-grid">';
+        for (var f in data) {
+            if (!data.hasOwnProperty(f)) continue;
+            var v = data[f];
+            if (typeof v === 'object') v = JSON.stringify(v);
+            html += '<div class="pro-field"><label>' + f + '</label>' +
+                    '<input type="text" data-field="' + f + '" value="' +
+                    String(v == null ? '' : v).replace(/"/g, '&quot;') + '"></div>';
+        }
+        html += '</div><div style="display:flex;gap:12px;margin-top:18px;">' +
+                '<button type="button" class="pro-btn pro-btn-primary" id="dynSave">ذخیره</button>' +
+                '<button type="button" class="pro-btn pro-btn-outline" id="dynCancel">انصراف</button>' +
+                '</div></form>';
+        body.innerHTML = html;
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+
+        document.getElementById('dynCancel').onclick = function () {
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+        };
+
+        document.getElementById('dynSave').onclick = function () {
+            var inputs = body.querySelectorAll('input[data-field]');
+            inputs.forEach(function (inp) {
+                window[arrNames[type]][index][inp.dataset.field] = inp.value;
+            });
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+            var t = document.getElementById('proToast');
+            if (t) { t.textContent = '✅ ذخیره شد'; t.className = 'pro-toast success';
+                setTimeout(function(){ t.className = 'pro-toast'; }, 3000); }
+        };
+    };
+
+    // تعریف توابع گم‌شده که onclick صداشون می‌زنه
+    ['Education','Certificate','Skill','Social','Service','Testimonial','Award','Link'].forEach(function (n) {
+        window['openEdit' + n + 'Modal'] = function (i) {
+            var map = { Education:'education', Certificate:'certificate', Skill:'skill',
+                Social:'social', Service:'service', Testimonial:'testimonial',
+                Award:'award', Link:'link' };
+            window.openEditItem(map[n], i);
+        };
+    });
+
+    // حذف کاورها
+    window.removeArticleCover = function () {
+        var i = document.getElementById('coverFileInput'),
+            p = document.getElementById('coverPreview');
+        if (i) i.value = ''; if (p) p.innerHTML = '';
+    };
+    window.removeProductCover = function () {
+        var i = document.getElementById('productCoverInput'),
+            p = document.getElementById('productCoverPreview'),
+            g = document.getElementById('productCoverPreviewImg');
+        if (i) i.value = ''; if (p) p.style.display = 'none'; if (g) g.src = '';
+    };
+    window.removeArchiveCover = function () {
+        var i = document.getElementById('archiveCoverInput'),
+            p = document.getElementById('archiveCoverPreview'),
+            g = document.getElementById('archiveCoverPreviewImg');
+        if (i) i.value = ''; if (p) p.style.display = 'none'; if (g) g.src = '';
+    };
+
+    window.copyId = function (id) {
+        var el = document.getElementById(id);
+        if (el && navigator.clipboard)
+            navigator.clipboard.writeText(el.textContent || el.innerText || '');
+    };
+});
+</script>
 </body>
 </html>

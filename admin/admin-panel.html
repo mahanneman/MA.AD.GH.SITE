@@ -1137,6 +1137,16 @@
                 setTimeout(function() { el.className = 'pro-toast'; }, 4000);
             }
 
+            // ===== تابع تبدیل base64 به UTF-8 =====
+            function b64ToUtf8(b64) {
+                var binary = atob(b64);
+                var bytes = new Uint8Array(binary.length);
+                for (var i = 0; i < binary.length; i++) {
+                    bytes[i] = binary.charCodeAt(i);
+                }
+                return new TextDecoder('utf-8').decode(bytes);
+            }
+
        // ===== ۳. override تابع saveArticle برای ایجاد فایل در صورت نبود =====
 window.saveArticle = async function() {
     var id = document.getElementById('articleId')?.value;
@@ -1217,7 +1227,7 @@ window.saveArticle = async function() {
 
         if (response.status === 200) {
             var data = await response.json();
-            var content = atob(data.content);
+            var content = b64ToUtf8(data.content);   // ✅ اصلاح شد
             try {
                 existingData = JSON.parse(content);
                 sha = data.sha;
@@ -1398,7 +1408,7 @@ window.saveArticle = async function() {
                         if (!response.ok) throw new Error('خطا در خواندن فایل: ' + response.status);
 
                         var data = await response.json();
-                        var content = atob(data.content);
+                        var content = b64ToUtf8(data.content);   // ✅ اصلاح شد
                         try {
                             articlesData = JSON.parse(content);
                             articlesSha = data.sha;
@@ -1853,39 +1863,20 @@ window.saveArticle = async function() {
 
             console.log('✅ پنل مدیریت با موفقیت راه‌اندازی شد (نسخه اصلاح‌شده برای مقالات).');
         });
-        function b64ToUtf8(b64) {
-    const binary = atob(b64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-    }
-    return new TextDecoder('utf-8').decode(bytes);
-}
     </script>
     <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ===== فایل‌های مربوطه — همه بخش‌ها =====
+    // فایل‌های مربوطه
     var FILES = {
-        education:   { path: '_data/education.json',    wrapper: 'items' },
-        certificate: { path: '_data/certificates.json',  wrapper: 'items' },
-        skill:       { path: '_data/skills.json',        wrapper: 'items' },
-        social:      { path: '_data/social.json',        wrapper: 'items' },
-        service:     { path: '_data/services.json',      wrapper: 'items' },
-        testimonial: { path: '_data/testimonials.json',  wrapper: 'items' },
-        award:       { path: '_data/awards.json',        wrapper: 'items' },
-        link:        { path: '_data/links.json',         wrapper: 'items' },
-        article:     { path: '_data/articles.json',      wrapper: 'items' },
-        product:     { path: '_data/products.json',      wrapper: 'items' },
-        archive:     { path: '_data/archive.json',       wrapper: 'items' }
-    };
-
-    // ===== برچسب فارسی برای عنوان مودال =====
-    var TYPE_LABELS = {
-        education: 'سوابق تحصیلی', certificate: 'گواهی‌نامه', skill: 'مهارت',
-        social: 'شبکه اجتماعی',    service: 'خدمت',           testimonial: 'نظر مشتری',
-        award: 'جایزه',            link: 'لینک',              article: 'مقاله',
-        product: 'محصول',          archive: 'آیتم آرشیو'
+        education:   { path: '_data/education.json',   wrapper: 'items' },
+        certificate: { path: '_data/certificates.json', wrapper: 'items' },
+        skill:       { path: '_data/skills.json',       wrapper: 'items' },
+        social:      { path: '_data/social.json',       wrapper: 'items' },
+        service:     { path: '_data/services.json',     wrapper: 'items' },
+        testimonial: { path: '_data/testimonials.json', wrapper: 'items' },
+        award:       { path: '_data/awards.json',       wrapper: 'items' },
+        link:        { path: '_data/links.json',        wrapper: 'items' }
     };
 
     function b64ToUtf8(b64) {
@@ -1935,29 +1926,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ===== استخراج آیتم‌ها از سه ساختار مختلف JSON =====
-    // ۱. آرایه مستقیم:                    [{...}, {...}]
-    // ۲. آبجکت با wrapper:                { items: [...] }
-    // ۳. آبجکت با کلید (articles/products): { "0001": {...}, "0002": {...} }
-    function extractItems(data, wrapper) {
-        if (Array.isArray(data)) {
-            return { items: data, keys: null };
-        }
-        if (data && data[wrapper] && Array.isArray(data[wrapper])) {
-            return { items: data[wrapper], keys: null };
-        }
-        if (data && data.items && Array.isArray(data.items)) {
-            return { items: data.items, keys: null };
-        }
-        // آبجکت با کلید — کلیدهای متادیتا رو فیلتر کن
-        var skipKeys = ['title', 'sectionTitle', 'desc', 'description', 'icon'];
-        var keys = Object.keys(data).filter(function (k) {
-            return skipKeys.indexOf(k) === -1 && typeof data[k] === 'object' && data[k] !== null;
-        });
-        return { items: keys.map(function (k) { return data[k]; }), keys: keys };
-    }
-
-    // ===== باز کردن مودال ویرایش =====
+    // باز کردن مودال ویرایش
     window.openEditItem = async function (type, index) {
         var info = FILES[type];
         if (!info) return alert('نوع نامعتبر: ' + type);
@@ -1975,16 +1944,13 @@ document.addEventListener('DOMContentLoaded', function () {
             var res = await readFile(info.path);
             if (!res.data) throw new Error('فایل ' + info.path + ' وجود ندارد');
 
-            var ext = extractItems(res.data, info.wrapper);
-            var items = ext.items;
-            var keys  = ext.keys;
-
+            // استخراج آرایه - چه فایل آرایه باشه چه آبجکت با items
+            var items = Array.isArray(res.data) ? res.data
+                      : (res.data[info.wrapper] || res.data.items || []);
             var item = items[index];
             if (!item) throw new Error('آیتم شماره ' + index + ' پیدا نشد (' + items.length + ' آیتم موجود)');
 
-            var label = TYPE_LABELS[type] || type;
-            var itemId = keys ? keys[index] : index;
-            title.innerHTML = '<i class="fas fa-edit"></i> ویرایش ' + label + ' #' + itemId;
+            title.innerHTML = '<i class="fas fa-edit"></i> ویرایش ' + type + ' #' + index;
 
             var html = '<form id="dynEditForm"><div class="pro-grid">';
             for (var f in item) {
@@ -2008,24 +1974,16 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('dynSave').onclick = async function () {
                 var inputs = body.querySelectorAll('input[data-field]');
                 inputs.forEach(function (inp) { item[inp.dataset.field] = inp.value; });
+                if (Array.isArray(res.data)) res.data[index] = item;
+                else items[index] = item;
 
-                var payload;
-                if (keys) {
-                    // آبجکت با کلید — همون کلید رو حفظ کن
-                    res.data[keys[index]] = item;
-                    payload = res.data;
-                } else if (Array.isArray(res.data)) {
-                    res.data[index] = item;
-                    payload = res.data;
-                } else {
-                    res.data[info.wrapper || 'items'] = items;
-                    payload = res.data;
-                }
+                var payload = Array.isArray(res.data) ? res.data
+                            : (function () { res.data[info.wrapper || 'items'] = items; return res.data; })();
 
                 document.getElementById('dynMsg').textContent = '⏳ در حال ذخیره...';
                 try {
                     await writeFile(info.path, payload, res.sha,
-                        'Update ' + type + ' #' + itemId + ' via admin panel');
+                        'Update ' + type + ' #' + index + ' via admin panel');
                     document.getElementById('dynMsg').innerHTML =
                         '<span style="color:#10b981;">✅ ذخیره شد در گیت‌هاب</span>';
                 } catch (e) {
@@ -2039,18 +1997,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // ===== توابع گم‌شده — همه بخش‌ها (شامل article/product/archive) =====
-    var MAP = {
-        Education:'education', Certificate:'certificate', Skill:'skill',
-        Social:'social', Service:'service', Testimonial:'testimonial',
-        Award:'award', Link:'link', Article:'article', Product:'product',
-        Archive:'archive'
-    };
+    // توابع گم‌شده
+    var MAP = { Education:'education', Certificate:'certificate', Skill:'skill',
+                Social:'social', Service:'service', Testimonial:'testimonial',
+                Award:'award', Link:'link' };
     Object.keys(MAP).forEach(function (n) {
         window['openEdit' + n + 'Modal'] = function (i) { window.openEditItem(MAP[n], i); };
     });
 
-    // ===== حذف کاورها =====
+    // حذف کاورها
     window.removeArticleCover = function () {
         var i = document.getElementById('coverFileInput'), p = document.getElementById('coverPreview');
         if (i) i.value = ''; if (p) p.innerHTML = '';

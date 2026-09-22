@@ -4611,4 +4611,341 @@ function closeEditModal() {
         modal.style.display = 'none';
     }
 }
+    
+})();
+// ============================================================
+// SLIDESHOW EDITOR - مدیریت اسلایدها برای مقالات و آرشیو
+// این کد به صورت self-contained عمل می‌کند و با کدهای قبلی تداخل ندارد
+// ============================================================
+
+(function() {
+    'use strict';
+
+    // ============================================================
+    // آرایه اسلایدهای در حال ویرایش (Global)
+    // ============================================================
+    window._editSlides = [];
+
+    // ============================================================
+    // انواع اسلاید
+    // ============================================================
+    var SLIDE_TYPES = {
+        text:   '📝 متن',
+        image:  '🖼️ تصویر',
+        video:  '🎬 ویدیو',
+        iframe: '🌐 آی‌فریم'
+    };
+
+    // ============================================================
+    // HTML حالت خالی
+    // ============================================================
+    var EMPTY_STATE_HTML = '<div style="padding:20px;text-align:center;background:var(--pro-bg);border-radius:8px;border:1px dashed var(--pro-border);color:var(--pro-text-secondary);font-size:0.85rem;">هیچ اسلایدی اضافه نشده است.</div>';
+
+    // ============================================================
+    // رندر لیست اسلایدها در یک container مشخص
+    // ============================================================
+    function renderSlidesList(containerId) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+
+        if (!window._editSlides || window._editSlides.length === 0) {
+            container.innerHTML = EMPTY_STATE_HTML;
+            return;
+        }
+
+        var html = window._editSlides.map(function(slide, index) {
+            var type = slide.type || 'text';
+            var content = slide.content || '';
+            var safeContent = String(content).replace(/"/g, '&quot;');
+
+            var placeholder = 'متن یا HTML اسلاید...';
+            if (type === 'image') placeholder = 'آدرس تصویر (مثال: assets/articles/0001/img1.jpg)';
+            else if (type === 'video') placeholder = 'آدرس ویدیو (مثال: assets/videos/video.mp4)';
+            else if (type === 'iframe') placeholder = 'آدرس embed (مثال: https://www.aparat.com/video/video/embed/...)';
+
+            var fieldHtml = (type === 'text')
+                ? '<textarea data-slide-field="content" rows="4" placeholder="' + placeholder + '" style="width:100%;padding:10px;border-radius:8px;background:var(--pro-bg);color:var(--pro-text);border:1px solid var(--pro-border);font-family:inherit;font-size:0.9rem;resize:vertical;box-sizing:border-box;">' + content + '</textarea>'
+                : '<input type="text" data-slide-field="content" value="' + safeContent + '" placeholder="' + placeholder + '" style="width:100%;padding:10px;border-radius:8px;background:var(--pro-bg);color:var(--pro-text);border:1px solid var(--pro-border);font-family:inherit;font-size:0.9rem;box-sizing:border-box;" />';
+
+            var typeOptions = Object.keys(SLIDE_TYPES).map(function(t) {
+                return '<option value="' + t + '"' + (t === type ? ' selected' : '') + '>' + SLIDE_TYPES[t] + '</option>';
+            }).join('');
+
+            return '<div class="slide-editor-item" data-slide-index="' + index + '" style="padding:14px;background:var(--pro-card);border-radius:10px;border:1px solid var(--pro-border);margin-bottom:12px;">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">' +
+                    '<span style="font-weight:700;font-size:0.9rem;">' +
+                        '<i class="fas fa-images" style="color:var(--pro-primary);margin-left:6px;"></i> اسلاید ' + (index + 1) +
+                    '</span>' +
+                    '<div style="display:flex;gap:6px;">' +
+                        '<button type="button" onclick="slideEditorMove(' + index + ', -1)" title="بالا" ' + (index === 0 ? 'disabled' : '') + ' style="width:32px;height:32px;border-radius:6px;background:var(--pro-bg);color:var(--pro-text);border:1px solid var(--pro-border);cursor:pointer;font-size:0.8rem;">' +
+                            '<i class="fas fa-arrow-up"></i>' +
+                        '</button>' +
+                        '<button type="button" onclick="slideEditorMove(' + index + ', 1)" title="پایین" ' + (index === window._editSlides.length - 1 ? 'disabled' : '') + ' style="width:32px;height:32px;border-radius:6px;background:var(--pro-bg);color:var(--pro-text);border:1px solid var(--pro-border);cursor:pointer;font-size:0.8rem;">' +
+                            '<i class="fas fa-arrow-down"></i>' +
+                        '</button>' +
+                        '<button type="button" onclick="slideEditorRemove(' + index + ')" title="حذف" style="width:32px;height:32px;border-radius:6px;background:var(--pro-red);color:#fff;border:none;cursor:pointer;font-size:0.8rem;">' +
+                            '<i class="fas fa-trash"></i>' +
+                        '</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div style="display:grid;grid-template-columns:180px 1fr;gap:10px;">' +
+                    '<select data-slide-field="type" onchange="slideEditorChangeType(' + index + ', this.value)" style="padding:10px;border-radius:8px;background:var(--pro-bg);color:var(--pro-text);border:1px solid var(--pro-border);font-family:inherit;font-size:0.9rem;">' + typeOptions + '</select>' +
+                    fieldHtml +
+                '</div>' +
+            '</div>';
+        }).join('');
+
+        container.innerHTML = html;
+
+        // اتصال رویداد input به فیلدها
+        container.querySelectorAll('[data-slide-field="content"]').forEach(function(el) {
+            el.addEventListener('input', function() {
+                var item = el.closest('.slide-editor-item');
+                var idx = parseInt(item.dataset.slideIndex);
+                if (window._editSlides[idx]) {
+                    window._editSlides[idx].content = el.value;
+                }
+            });
+        });
+    }
+
+    // ============================================================
+    // رفرش همه لیست‌های اسلاید موجود در DOM
+    // ============================================================
+    function refreshAllSlidesLists() {
+        ['articleSlidesContainer', 'archiveSlidesContainer', 'editSlidesContainer'].forEach(function(id) {
+            if (document.getElementById(id)) {
+                renderSlidesList(id);
+            }
+        });
+    }
+
+    // ============================================================
+    // توابع عمومی (قابل استفاده از onclick در HTML)
+    // ============================================================
+    window.addSlide = function(context) {
+        window._editSlides.push({ type: 'text', content: '' });
+        var containerId = context === 'article' ? 'articleSlidesContainer' :
+                          context === 'archive' ? 'archiveSlidesContainer' :
+                          'editSlidesContainer';
+        renderSlidesList(containerId);
+    };
+
+    window.slideEditorRemove = function(index) {
+        if (!confirm('حذف اسلاید ' + (index + 1) + '؟')) return;
+        window._editSlides.splice(index, 1);
+        refreshAllSlidesLists();
+    };
+
+    window.slideEditorChangeType = function(index, newType) {
+        if (!window._editSlides[index]) return;
+        window._editSlides[index].type = newType;
+        refreshAllSlidesLists();
+    };
+
+    window.slideEditorMove = function(index, direction) {
+        var newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= window._editSlides.length) return;
+        var item = window._editSlides.splice(index, 1)[0];
+        window._editSlides.splice(newIndex, 0, item);
+        refreshAllSlidesLists();
+    };
+
+    // ============================================================
+    // پاک کردن اسلایدها هنگام Reset فرم مقاله
+    // (Overwrite روی تابع اصلی window.resetArticleForm)
+    // ============================================================
+    var _origResetArticle = window.resetArticleForm;
+    window.resetArticleForm = function() {
+        window._editSlides = [];
+        var c = document.getElementById('articleSlidesContainer');
+        if (c) c.innerHTML = EMPTY_STATE_HTML;
+        var c2 = document.getElementById('editSlidesContainer');
+        if (c2) c2.innerHTML = '';
+        if (typeof _origResetArticle === 'function') {
+            _origResetArticle.apply(this, arguments);
+        }
+    };
+
+    // ============================================================
+    // پاک کردن اسلایدها هنگام Reset فرم آرشیو
+    // ============================================================
+    window.resetArchiveForm = function() {
+        window._editSlides = [];
+        var c = document.getElementById('archiveSlidesContainer');
+        if (c) c.innerHTML = EMPTY_STATE_HTML;
+    };
+
+    // ============================================================
+    // Hook روی reset فرم آرشیو (دکمه type="reset")
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        var addArchiveForm = document.getElementById('addArchiveForm');
+        if (addArchiveForm) {
+            addArchiveForm.addEventListener('reset', function() {
+                setTimeout(function() {
+                    window._editSlides = [];
+                    var c = document.getElementById('archiveSlidesContainer');
+                    if (c) c.innerHTML = EMPTY_STATE_HTML;
+                }, 10);
+            });
+        }
+    });
+
+    // ============================================================
+    // Hook روی openEditModal برای اضافه کردن بخش اسلایدها به مودال ویرایش
+    // ============================================================
+    var _origOpenEditModal = window.openEditModal;
+    if (typeof _origOpenEditModal === 'function') {
+        window.openEditModal = function(type, key) {
+            // فراخوانی تابع اصلی
+            _origOpenEditModal.apply(this, arguments);
+
+            // اضافه کردن container اسلایدها به مودال (اگر نبود)
+            setTimeout(function() {
+                var form = document.getElementById('editForm');
+                if (form && !document.getElementById('editSlidesContainer')) {
+                    var wrap = document.createElement('div');
+                    wrap.style.cssText = 'margin-top:20px;padding:16px;background:var(--pro-bg);border-radius:var(--pro-radius);border:1px solid var(--pro-border);';
+                    wrap.innerHTML =
+                        '<h4 style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">' +
+                            '<i class="fas fa-images"></i> محتوای اسلایدی (اختیاری)' +
+                        '</h4>' +
+                        '<p style="font-size:0.8rem;color:var(--pro-text-secondary);margin-bottom:12px;">' +
+                            'می‌توانید چند اسلاید با محتوای مختلف بسازید. ترتیب اسلایدها قابل تغییر است.' +
+                        '</p>' +
+                        '<div id="editSlidesContainer"></div>' +
+                        '<button type="button" class="pro-btn pro-btn-secondary" onclick="addSlide(\'edit\')" style="margin-top:10px;">' +
+                            '<i class="fas fa-plus"></i> افزودن اسلاید' +
+                        '</button>';
+                    var submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.parentNode.insertBefore(wrap, submitBtn);
+                    } else {
+                        form.appendChild(wrap);
+                    }
+                }
+            }, 30);
+
+            // بارگذاری اسلایدهای موجود از فایل
+            loadExistingSlides(type, key);
+        };
+    }
+
+    // ============================================================
+    // بارگذاری اسلایدهای موجود هنگام باز شدن مودال ویرایش
+    // ============================================================
+    async function loadExistingSlides(type, key) {
+        try {
+            var token = localStorage.getItem('github_token');
+            if (!token) {
+                window._editSlides = [];
+                setTimeout(function() { renderSlidesList('editSlidesContainer'); }, 100);
+                return;
+            }
+            var path = type === 'article' ? '_data/articles.json' : '_data/archive.json';
+            var url = 'https://api.github.com/repos/mahanneman/MA.AD.GH.SITE/contents/' + path;
+            var res = await fetch(url, {
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            if (!res.ok) {
+                window._editSlides = [];
+                setTimeout(function() { renderSlidesList('editSlidesContainer'); }, 100);
+                return;
+            }
+            var data = await res.json();
+            var binary = atob(data.content);
+            var bytes = new Uint8Array(binary.length);
+            for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            var content = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+            var item = content[key];
+            window._editSlides = (item && item.slides) ? JSON.parse(JSON.stringify(item.slides)) : [];
+            setTimeout(function() { renderSlidesList('editSlidesContainer'); }, 50);
+        } catch (e) {
+            console.warn('خطا در بارگذاری اسلایدها:', e);
+            window._editSlides = [];
+            setTimeout(function() { renderSlidesList('editSlidesContainer'); }, 100);
+        }
+    }
+
+    // ============================================================
+    // Hook روی fetch برای تزریق خودکار اسلایدها هنگام ذخیره
+    // این کار بدون تغییر در توابع saveArticle و saveEdit عمل می‌کند
+    // ============================================================
+    var _origFetch = window.fetch;
+    if (typeof _origFetch === 'function') {
+        window.fetch = function(url, options) {
+            // فقط درخواست‌های PUT به articles.json یا archive.json را intercept می‌کنیم
+            if (typeof url === 'string' &&
+                options &&
+                options.method === 'PUT' &&
+                (url.indexOf('/contents/_data/articles.json') !== -1 ||
+                 url.indexOf('/contents/_data/archive.json') !== -1)) {
+
+                try {
+                    var isArticles = url.indexOf('articles.json') !== -1;
+                    var key = null;
+
+                    // تشخیص کلید از مودال ویرایش یا فرم افزودن
+                    var editKeyEl = document.getElementById('editKey');
+                    var editTypeEl = document.getElementById('editType');
+
+                    if (editKeyEl && editKeyEl.value && editTypeEl) {
+                        var editType = editTypeEl.value;
+                        if ((isArticles && editType === 'article') || (!isArticles && editType === 'archive')) {
+                            key = editKeyEl.value;
+                        }
+                    }
+
+                    // اگر در حالت افزودن هستیم
+                    if (!key) {
+                        var idEl = isArticles
+                            ? document.getElementById('articleId')
+                            : document.getElementById('archiveId');
+                        if (idEl && idEl.value) {
+                            key = String(idEl.value).padStart(4, '0');
+                        }
+                    }
+
+                    // اگر کلید داریم و اسلاید داریم، تزریق می‌کنیم
+                    if (key && window._editSlides && window._editSlides.length > 0) {
+                        var body = JSON.parse(options.body);
+                        if (body.content) {
+                            var content = JSON.parse(atob(body.content));
+                            if (content[key]) {
+                                content[key].slides = JSON.parse(JSON.stringify(window._editSlides));
+
+                                // Re-encode به base64 با UTF-8
+                                var jsonString = JSON.stringify(content, null, 2);
+                                var encoder = new TextEncoder();
+                                var encoded = encoder.encode(jsonString);
+                                var binary = '';
+                                for (var i = 0; i < encoded.length; i++) {
+                                    binary += String.fromCharCode(encoded[i]);
+                                }
+                                body.content = btoa(binary);
+                                options.body = JSON.stringify(body);
+
+                                console.log('✅ اسلایدها به ' + key + ' اضافه شدند.');
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error('❌ خطا در hook fetch برای ذخیره اسلایدها:', e);
+                }
+            }
+            return _origFetch.apply(this, arguments);
+        };
+    }
+
+    // ============================================================
+    // پیام موفقیت در console
+    // ============================================================
+    console.log('✅ ماژول اسلایدشو بارگذاری شد.');
+    console.log('📌 توابع قابل استفاده: addSlide(), slideEditorRemove(), slideEditorChangeType(), slideEditorMove()');
+    console.log('📌 Container IDs: articleSlidesContainer, archiveSlidesContainer, editSlidesContainer');
+
 })();

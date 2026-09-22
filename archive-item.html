@@ -140,6 +140,245 @@
         }
         .loading i { font-size: 3rem; color: var(--primary-color); animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* ============================================================
+           SLIDESHOW - اسلایدشو حرفه‌ای
+           ============================================================ */
+        .content-mode-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 24px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .mode-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(37,99,235,0.25);
+        }
+        .mode-btn:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        .slideshow-wrapper {
+            position: relative;
+            width: 100%;
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 20px 0;
+            min-height: 450px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .slideshow-wrapper.fullscreen {
+            position: fixed;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index: 9999;
+            border-radius: 0;
+            background: #000;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .slide {
+            display: none;
+            width: 100%;
+            min-height: 450px;
+            padding: 50px 70px;
+            align-items: center;
+            justify-content: center;
+            animation: slideFadeIn 0.5s ease;
+            color: var(--text-primary);
+        }
+        .slideshow-wrapper.fullscreen .slide {
+            min-height: 100vh;
+            padding: 80px 120px;
+        }
+        .slide.active { display: flex; }
+
+        .slide .text-content {
+            font-size: 1.2rem;
+            line-height: 2.1;
+            text-align: center;
+            max-width: 800px;
+        }
+        .slide .text-content h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .slide .text-content ul {
+            text-align: right;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .slide .text-content li {
+            padding: 5px 0;
+            list-style: none;
+            position: relative;
+            padding-right: 25px;
+        }
+        .slide .text-content li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .slide img {
+            max-width: 100%;
+            max-height: 550px;
+            border-radius: 12px;
+            object-fit: contain;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .slide video {
+            max-width: 100%;
+            max-height: 550px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .slide iframe {
+            width: 100%;
+            height: 550px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .slide-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            font-size: 1.4rem;
+            z-index: 10;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slide-nav:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .slide-nav.prev { right: 20px; }
+        .slide-nav.next { left: 20px; }
+
+        .slide-counter {
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            z-index: 10;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .slide-fullscreen-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.15);
+            cursor: pointer;
+            z-index: 10;
+            transition: 0.3s;
+        }
+        .slide-fullscreen-btn:hover {
+            background: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .slide-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+            padding: 8px 16px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            max-width: 80%;
+            overflow-x: auto;
+        }
+        .slide-dots::-webkit-scrollbar { display: none; }
+        .slide-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: 0.3s;
+            flex-shrink: 0;
+        }
+        .slide-dot.active {
+            background: var(--primary-color);
+            width: 26px;
+            border-radius: 6px;
+        }
+        .slide-dot:hover:not(.active) {
+            background: rgba(255,255,255,0.7);
+        }
+
+        @keyframes slideFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .slide { padding: 40px 20px; min-height: 350px; }
+            .slide .text-content { font-size: 1rem; }
+            .slide .text-content h2 { font-size: 1.4rem; }
+            .slide-nav { width: 44px; height: 44px; font-size: 1.1rem; }
+            .slide-nav.prev { right: 8px; }
+            .slide-nav.next { left: 8px; }
+            .slide iframe { height: 250px; }
+            .slide img, .slide video { max-height: 300px; }
+        }
     </style>
 </head>
 <body>
@@ -241,14 +480,11 @@
         </div>
     </footer>
 
-
     <!-- ============================================================
          اسکریپت‌ها (ترتیب مهم است)
          ============================================================ -->
-   <!--    <script src="auth.js"></script>-->
-   <!--    <script src="load-menu.js"></script>-->
-    <!--   <script src="menu-loader.js"></script>-->
-<script src="menu.js"></script>
+    <script src="menu.js"></script>
+
     <!-- ===== اسکریپت بارگذاری آرشیو + بارگذاری تنظیمات ظاهری ===== -->
     <script>
         // ===== بارگذاری تنظیمات ظاهری از settings.json =====
@@ -310,6 +546,122 @@
                 console.error('خطا در بارگذاری تنظیمات ظاهر:', e);
             }
         }
+
+        // ============================================================
+        // SLIDESHOW ENGINE
+        // ============================================================
+        let slideIndex = 0;
+
+        function renderSlideContent(slide) {
+            if (!slide || !slide.content) return '';
+            const type = slide.type || 'text';
+            if (type === 'image') {
+                return `<img src="${slide.content}" alt="slide" loading="lazy">`;
+            } else if (type === 'video') {
+                return `<video controls preload="metadata" src="${slide.content}"></video>`;
+            } else if (type === 'iframe') {
+                return `<iframe src="${slide.content}" allowfullscreen></iframe>`;
+            } else {
+                return `<div class="text-content">${slide.content}</div>`;
+            }
+        }
+
+        function buildSlideshow(slides) {
+            if (!slides || slides.length === 0) return '';
+            return `
+                <div class="slideshow-wrapper" id="slideshowWrapper">
+                    <span class="slide-counter"><span id="currentSlide">1</span> / ${slides.length}</span>
+                    <button class="slide-fullscreen-btn" onclick="toggleSlideshowFullscreen()" title="تمام صفحه">
+                        <i class="fas fa-expand" id="fullscreenIcon"></i>
+                    </button>
+                    ${slides.map((slide, idx) => `
+                        <div class="slide ${idx === 0 ? 'active' : ''}" data-slide="${idx}">
+                            ${renderSlideContent(slide)}
+                        </div>
+                    `).join('')}
+                    <button class="slide-nav prev" onclick="prevSlide()" title="قبلی"><i class="fas fa-chevron-right"></i></button>
+                    <button class="slide-nav next" onclick="nextSlide()" title="بعدی"><i class="fas fa-chevron-left"></i></button>
+                    <div class="slide-dots">
+                        ${slides.map((_, idx) => `<span class="slide-dot ${idx === 0 ? 'active' : ''}" onclick="goToSlide(${idx})"></span>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function showSlide(index) {
+            const wrapper = document.getElementById('slideshowWrapper');
+            if (!wrapper) return;
+            const slides = wrapper.querySelectorAll('.slide');
+            const dots = wrapper.querySelectorAll('.slide-dot');
+            if (slides.length === 0) return;
+            if (index < 0) index = slides.length - 1;
+            if (index >= slides.length) index = 0;
+            slideIndex = index;
+            slides.forEach((s, i) => s.classList.toggle('active', i === index));
+            dots.forEach((d, i) => d.classList.toggle('active', i === index));
+            const counter = document.getElementById('currentSlide');
+            if (counter) counter.textContent = index + 1;
+            const activeSlide = slides[index];
+            const vid = activeSlide.querySelector('video');
+            if (vid) vid.play().catch(() => {});
+        }
+
+        window.nextSlide = function() { showSlide(slideIndex + 1); };
+        window.prevSlide = function() { showSlide(slideIndex - 1); };
+        window.goToSlide = function(i) { showSlide(i); };
+        window.toggleSlideshowFullscreen = function() {
+            const wrapper = document.getElementById('slideshowWrapper');
+            if (!wrapper) return;
+            wrapper.classList.toggle('fullscreen');
+            const icon = document.getElementById('fullscreenIcon');
+            if (icon) {
+                icon.className = wrapper.classList.contains('fullscreen') ? 'fas fa-compress' : 'fas fa-expand';
+            }
+        };
+        window.switchContentMode = function(mode, btn) {
+            const slidesEl = document.getElementById('slidesModeContainer');
+            const textEl = document.getElementById('textModeContainer');
+            if (mode === 'slides') {
+                if (slidesEl) slidesEl.style.display = 'block';
+                if (textEl) textEl.style.display = 'none';
+                showSlide(0);
+            } else {
+                if (slidesEl) slidesEl.style.display = 'none';
+                if (textEl) textEl.style.display = 'block';
+            }
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        };
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (!document.getElementById('slideshowWrapper')) return;
+            if (e.key === 'ArrowRight') { e.preventDefault(); window.prevSlide(); }
+            if (e.key === 'ArrowLeft')  { e.preventDefault(); window.nextSlide(); }
+            if (e.key === 'Escape') {
+                const w = document.getElementById('slideshowWrapper');
+                if (w && w.classList.contains('fullscreen')) window.toggleSlideshowFullscreen();
+            }
+        });
+
+        // Touch swipe
+        (function() {
+            let touchStartX = 0;
+            let touchEndX = 0;
+            document.addEventListener('touchstart', function(e) {
+                if (!e.target.closest('#slideshowWrapper')) return;
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            document.addEventListener('touchend', function(e) {
+                if (!e.target.closest('#slideshowWrapper')) return;
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) window.nextSlide();
+                    else window.prevSlide();
+                }
+            }, { passive: true });
+        })();
 
         document.addEventListener('DOMContentLoaded', function() {
 
@@ -376,6 +728,32 @@
                         `<img src="${item.cover}" alt="${item.title}">` :
                         `<div class="placeholder"><i class="fas fa-archive"></i></div>`;
 
+                    // ===== بررسی حالت نمایش =====
+                    const hasSlides = item.slides && item.slides.length > 0;
+                    const hasContent = item.body || item.excerpt;
+
+                    let modeSelector = '';
+                    if (hasSlides && hasContent) {
+                        modeSelector = `
+                            <div class="content-mode-selector">
+                                <button class="mode-btn active" onclick="switchContentMode('slides', this)">
+                                    <i class="fas fa-images"></i> اسلایدی
+                                </button>
+                                <button class="mode-btn" onclick="switchContentMode('text', this)">
+                                    <i class="fas fa-file-alt"></i> متنی
+                                </button>
+                            </div>
+                        `;
+                    } else if (hasSlides) {
+                        modeSelector = `
+                            <div class="content-mode-selector">
+                                <button class="mode-btn active" style="cursor:default;">
+                                    <i class="fas fa-images"></i> نمایش اسلایدی
+                                </button>
+                            </div>
+                        `;
+                    }
+
                     let galleryHtml = '';
                     if (item.images && item.images.length > 0) {
                         galleryHtml = `
@@ -414,8 +792,16 @@
                                 <span><i class="fas fa-flag"></i> ${item.status || 'تکمیل شده'}</span>
                                 ${item.tags ? `<span><i class="fas fa-tags"></i> ${item.tags.join('، ')}</span>` : ''}
                             </div>
-                            ${galleryHtml}
-                            <div class="body">${item.body || item.excerpt || 'توضیحاتی برای این پروژه ثبت نشده است.'}</div>
+
+                            ${modeSelector}
+
+                            ${hasSlides ? `<div id="slidesModeContainer" style="display:${hasContent ? 'none' : 'block'};">${buildSlideshow(item.slides)}</div>` : ''}
+
+                            <div id="textModeContainer" style="display:${hasSlides && hasContent ? 'none' : 'block'};">
+                                ${galleryHtml}
+                                <div class="body">${item.body || item.excerpt || 'توضیحاتی برای این پروژه ثبت نشده است.'}</div>
+                            </div>
+
                             ${filesHtml}
                         </div>
                     `;
@@ -430,108 +816,7 @@
                     `;
                 }
             }
-// ============================================================
-// SLIDESHOW ENGINE
-// ============================================================
-let slideIndex = 0;
-let slideshowSlides = [];
 
-function renderSlideContent(slide) {
-    if (!slide || !slide.content) return '';
-    const type = slide.type || 'text';
-    if (type === 'image') {
-        return `<img src="${slide.content}" alt="slide" loading="lazy">`;
-    } else if (type === 'video') {
-        return `<video controls preload="metadata" src="${slide.content}"></video>`;
-    } else if (type === 'iframe') {
-        return `<iframe src="${slide.content}" allowfullscreen></iframe>`;
-    } else {
-        return `<div class="text-content">${slide.content}</div>`;
-    }
-}
-
-function buildSlideshow(slides) {
-    if (!slides || slides.length === 0) return '';
-    return `
-        <div class="slideshow-wrapper" id="slideshowWrapper">
-            <span class="slide-counter"><span id="currentSlide">1</span> / ${slides.length}</span>
-            <button class="slide-fullscreen-btn" onclick="toggleSlideshowFullscreen()" title="تمام صفحه">
-                <i class="fas fa-expand" id="fullscreenIcon"></i>
-            </button>
-            ${slides.map((slide, idx) => `
-                <div class="slide ${idx === 0 ? 'active' : ''}" data-slide="${idx}">
-                    ${renderSlideContent(slide)}
-                </div>
-            `).join('')}
-            <button class="slide-nav prev" onclick="prevSlide()" title="قبلی"><i class="fas fa-chevron-right"></i></button>
-            <button class="slide-nav next" onclick="nextSlide()" title="بعدی"><i class="fas fa-chevron-left"></i></button>
-            <div class="slide-dots">
-                ${slides.map((_, idx) => `<span class="slide-dot ${idx === 0 ? 'active' : ''}" onclick="goToSlide(${idx})"></span>`).join('')}
-            </div>
-        </div>
-    `;
-}
-
-function showSlide(index) {
-    const wrapper = document.getElementById('slideshowWrapper');
-    if (!wrapper) return;
-    const slides = wrapper.querySelectorAll('.slide');
-    const dots = wrapper.querySelectorAll('.slide-dot');
-    if (slides.length === 0) return;
-    if (index < 0) index = slides.length - 1;
-    if (index >= slides.length) index = 0;
-    slideIndex = index;
-    slides.forEach((s, i) => s.classList.toggle('active', i === index));
-    dots.forEach((d, i) => d.classList.toggle('active', i === index));
-    const counter = document.getElementById('currentSlide');
-    if (counter) counter.textContent = index + 1;
-    const activeSlide = slides[index];
-    const vid = activeSlide.querySelector('video');
-    if (vid) vid.play().catch(() => {});
-}
-
-window.nextSlide = function() { showSlide(slideIndex + 1); };
-window.prevSlide = function() { showSlide(slideIndex - 1); };
-window.goToSlide = function(i) { showSlide(i); };
-window.toggleSlideshowFullscreen = function() {
-    const wrapper = document.getElementById('slideshowWrapper');
-    if (!wrapper) return;
-    wrapper.classList.toggle('fullscreen');
-    const icon = document.getElementById('fullscreenIcon');
-    if (icon) {
-        icon.className = wrapper.classList.contains('fullscreen') ? 'fas fa-compress' : 'fas fa-expand';
-    }
-};
-
-// Keyboard navigation
-document.addEventListener('keydown', function(e) {
-    if (!document.getElementById('slideshowWrapper')) return;
-    if (e.key === 'ArrowRight') { e.preventDefault(); window.prevSlide(); }
-    if (e.key === 'ArrowLeft')  { e.preventDefault(); window.nextSlide(); }
-    if (e.key === 'Escape') {
-        const w = document.getElementById('slideshowWrapper');
-        if (w && w.classList.contains('fullscreen')) window.toggleSlideshowFullscreen();
-    }
-});
-
-// Touch swipe
-(function() {
-    let touchStartX = 0;
-    let touchEndX = 0;
-    document.addEventListener('touchstart', function(e) {
-        if (!e.target.closest('#slideshowWrapper')) return;
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-    document.addEventListener('touchend', function(e) {
-        if (!e.target.closest('#slideshowWrapper')) return;
-        touchEndX = e.changedTouches[0].screenX;
-        const diff = touchStartX - touchEndX;
-        if (Math.abs(diff) > 50) {
-            if (diff > 0) window.nextSlide();
-            else window.prevSlide();
-        }
-    }, { passive: true });
-})();
             loadItem();
         });
     </script>

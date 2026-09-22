@@ -283,6 +283,111 @@
                 transform: translateY(0);
             }
         }
+        /* ===== استایل‌های اسلایدشو در پنل ===== */
+        .slide-editor-item {
+            padding: 14px;
+            background: var(--pro-card);
+            border-radius: 10px;
+            border: 1px solid var(--pro-border);
+            margin-bottom: 12px;
+            transition: 0.3s;
+        }
+        .slide-editor-item:hover {
+            border-color: var(--pro-primary);
+        }
+        .slide-editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .slide-editor-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .slide-editor-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .slide-editor-actions button {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            border: none;
+            transition: 0.3s;
+        }
+        .slide-move-btn {
+            background: var(--pro-bg);
+            color: var(--pro-text);
+            border: 1px solid var(--pro-border) !important;
+        }
+        .slide-move-btn:hover:not(:disabled) {
+            background: var(--pro-primary);
+            color: #fff;
+        }
+        .slide-move-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .slide-remove-btn {
+            background: var(--pro-red);
+            color: #fff;
+        }
+        .slide-remove-btn:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+        .slide-editor-row {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 10px;
+        }
+        .slide-editor-row select {
+            padding: 10px;
+            border-radius: 8px;
+            background: var(--pro-bg);
+            color: var(--pro-text);
+            border: 1px solid var(--pro-border);
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .slide-editor-row input[type="text"],
+        .slide-editor-row textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            background: var(--pro-bg);
+            color: var(--pro-text);
+            border: 1px solid var(--pro-border);
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+        .slide-editor-hint {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: var(--pro-text-secondary);
+        }
+        .slide-empty-state {
+            padding: 20px;
+            text-align: center;
+            background: var(--pro-bg);
+            border-radius: 8px;
+            border: 1px dashed var(--pro-border);
+            color: var(--pro-text-secondary);
+            font-size: 0.85rem;
+        }
+        @media (max-width: 600px) {
+            .slide-editor-row {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -780,6 +885,19 @@
                     <div class="pro-field"><label><i class="fas fa-list"></i> فهرست منابع (هر منبع در یک خط)</label><textarea id="articleReferences" rows="4" placeholder="منبع ۱&#10;منبع ۲&#10;منبع ۳"></textarea></div>
                     <div class="pro-field"><label><i class="fas fa-link"></i> لینک DOI</label><input type="text" id="articleDoi" placeholder="10.xxxx/xxxxxx" /></div>
                 </div>
+
+                <!-- ===== اسلایدشو - افزودن مقاله ===== -->
+                <div class="form-section">
+                    <h4><i class="fas fa-images"></i> محتوای اسلایدی (اختیاری)</h4>
+                    <p style="font-size:0.8rem;color:var(--pro-text-secondary);margin-bottom:12px;">
+                        می‌توانید چند اسلاید با محتوای مختلف (متن، تصویر، ویدیو، آی‌فریم) بسازید. ترتیب اسلایدها قابل تغییر است.
+                    </p>
+                    <div id="articleSlidesContainer"></div>
+                    <button type="button" class="pro-btn pro-btn-secondary" onclick="addSlide('article')" style="margin-top:10px;">
+                        <i class="fas fa-plus"></i> افزودن اسلاید
+                    </button>
+                </div>
+
                 <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
                     <button type="button" class="pro-btn pro-btn-primary pro-btn-lg" id="saveArticleBtn"><i class="fas fa-save"></i> انتشار</button>
                     <button type="reset" class="pro-btn pro-btn-outline" id="resetArticleBtn"><i class="fas fa-undo"></i> بازنشانی</button>
@@ -866,6 +984,19 @@
                     <div class="pro-grid"><div class="pro-field full"><label>تصویر شاخص</label><div class="pro-upload-zone" id="archiveCoverZone"><i class="fas fa-cloud-upload-alt"></i><p>کلیک کنید</p><input type="file" id="archiveCoverInput" accept="image/*" style="display:none;"><div id="archiveCoverPreview" style="display:none;"><img id="archiveCoverPreviewImg" class="upload-preview-img"><button class="pro-btn pro-btn-danger pro-btn-sm" onclick="removeArchiveCover()">حذف</button></div></div></div></div>
                     <div class="pro-grid"><div class="pro-field full"><label>گالری (۴ عدد)</label><div class="pro-upload-zone" id="archiveGalleryZone"><i class="fas fa-plus-circle"></i><p>کلیک کنید</p><input type="file" id="archiveGalleryInput" accept="image/*" multiple style="display:none;"><div id="archiveGalleryList" class="file-list"></div></div></div></div>
                     <div class="pro-grid"><div class="pro-field full"><label>فایل‌های پیوست</label><div class="pro-upload-zone" id="archiveFilesZone"><i class="fas fa-cloud-upload-alt"></i><p>کلیک کنید</p><input type="file" id="archiveFilesInput" multiple style="display:none;"><div id="archiveFilesList" class="file-list"></div></div></div></div>
+
+                    <!-- ===== اسلایدشو - افزودن آرشیو ===== -->
+                    <div class="form-section" style="margin-top:20px;padding-top:20px;border-top:1px solid var(--pro-border);">
+                        <h4><i class="fas fa-images"></i> محتوای اسلایدی (اختیاری)</h4>
+                        <p style="font-size:0.8rem;color:var(--pro-text-secondary);margin-bottom:12px;">
+                            می‌توانید چند اسلاید با محتوای مختلف (متن، تصویر، ویدیو، آی‌فریم) بسازید. ترتیب اسلایدها قابل تغییر است.
+                        </p>
+                        <div id="archiveSlidesContainer"></div>
+                        <button type="button" class="pro-btn pro-btn-secondary" onclick="addSlide('archive')" style="margin-top:10px;">
+                            <i class="fas fa-plus"></i> افزودن اسلاید
+                        </button>
+                    </div>
+
                     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
                         <button type="submit" class="pro-btn pro-btn-purple pro-btn-lg" id="submitArchiveBtn"><i class="fas fa-save"></i> ذخیره</button>
                         <button type="reset" class="pro-btn pro-btn-outline"><i class="fas fa-undo"></i> بازنشانی</button>

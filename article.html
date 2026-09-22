@@ -629,7 +629,108 @@
                     `;
                 }
             }
+// ============================================================
+// SLIDESHOW ENGINE
+// ============================================================
+let slideIndex = 0;
+let slideshowSlides = [];
 
+function renderSlideContent(slide) {
+    if (!slide || !slide.content) return '';
+    const type = slide.type || 'text';
+    if (type === 'image') {
+        return `<img src="${slide.content}" alt="slide" loading="lazy">`;
+    } else if (type === 'video') {
+        return `<video controls preload="metadata" src="${slide.content}"></video>`;
+    } else if (type === 'iframe') {
+        return `<iframe src="${slide.content}" allowfullscreen></iframe>`;
+    } else {
+        return `<div class="text-content">${slide.content}</div>`;
+    }
+}
+
+function buildSlideshow(slides) {
+    if (!slides || slides.length === 0) return '';
+    return `
+        <div class="slideshow-wrapper" id="slideshowWrapper">
+            <span class="slide-counter"><span id="currentSlide">1</span> / ${slides.length}</span>
+            <button class="slide-fullscreen-btn" onclick="toggleSlideshowFullscreen()" title="تمام صفحه">
+                <i class="fas fa-expand" id="fullscreenIcon"></i>
+            </button>
+            ${slides.map((slide, idx) => `
+                <div class="slide ${idx === 0 ? 'active' : ''}" data-slide="${idx}">
+                    ${renderSlideContent(slide)}
+                </div>
+            `).join('')}
+            <button class="slide-nav prev" onclick="prevSlide()" title="قبلی"><i class="fas fa-chevron-right"></i></button>
+            <button class="slide-nav next" onclick="nextSlide()" title="بعدی"><i class="fas fa-chevron-left"></i></button>
+            <div class="slide-dots">
+                ${slides.map((_, idx) => `<span class="slide-dot ${idx === 0 ? 'active' : ''}" onclick="goToSlide(${idx})"></span>`).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function showSlide(index) {
+    const wrapper = document.getElementById('slideshowWrapper');
+    if (!wrapper) return;
+    const slides = wrapper.querySelectorAll('.slide');
+    const dots = wrapper.querySelectorAll('.slide-dot');
+    if (slides.length === 0) return;
+    if (index < 0) index = slides.length - 1;
+    if (index >= slides.length) index = 0;
+    slideIndex = index;
+    slides.forEach((s, i) => s.classList.toggle('active', i === index));
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    const counter = document.getElementById('currentSlide');
+    if (counter) counter.textContent = index + 1;
+    const activeSlide = slides[index];
+    const vid = activeSlide.querySelector('video');
+    if (vid) vid.play().catch(() => {});
+}
+
+window.nextSlide = function() { showSlide(slideIndex + 1); };
+window.prevSlide = function() { showSlide(slideIndex - 1); };
+window.goToSlide = function(i) { showSlide(i); };
+window.toggleSlideshowFullscreen = function() {
+    const wrapper = document.getElementById('slideshowWrapper');
+    if (!wrapper) return;
+    wrapper.classList.toggle('fullscreen');
+    const icon = document.getElementById('fullscreenIcon');
+    if (icon) {
+        icon.className = wrapper.classList.contains('fullscreen') ? 'fas fa-compress' : 'fas fa-expand';
+    }
+};
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+    if (!document.getElementById('slideshowWrapper')) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); window.prevSlide(); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); window.nextSlide(); }
+    if (e.key === 'Escape') {
+        const w = document.getElementById('slideshowWrapper');
+        if (w && w.classList.contains('fullscreen')) window.toggleSlideshowFullscreen();
+    }
+});
+
+// Touch swipe
+(function() {
+    let touchStartX = 0;
+    let touchEndX = 0;
+    document.addEventListener('touchstart', function(e) {
+        if (!e.target.closest('#slideshowWrapper')) return;
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    document.addEventListener('touchend', function(e) {
+        if (!e.target.closest('#slideshowWrapper')) return;
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) window.nextSlide();
+            else window.prevSlide();
+        }
+    }, { passive: true });
+})();
             loadArticle();
         });
     </script>
